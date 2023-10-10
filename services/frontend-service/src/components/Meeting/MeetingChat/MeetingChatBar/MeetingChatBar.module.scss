@@ -36,3 +36,15 @@
         color: $primary-white;
     }
 }
+
+.sendButton {
+    margin-left: 4px;
+    cursor: pointer;
+    height: 36px;
+    border-radius: 4px;
+    background: #9c9c9c;
+
+    &:hover {
+        color: $primary-white;
+    }
+}

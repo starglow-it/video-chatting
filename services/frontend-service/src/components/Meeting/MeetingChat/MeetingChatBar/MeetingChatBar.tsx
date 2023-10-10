@@ -8,18 +8,24 @@ import { CustomEmojiPicker } from '@library/custom/CustomEmojiPicker/CustomEmoji
 import { InputAdornment } from '@mui/material';
 import { EmojiIcon } from 'shared-frontend/icons/OtherIcons/EmojiIcon';
 import { EmojiClickData } from 'emoji-picker-react';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { SendIcon } from 'shared-frontend/icons/OtherIcons/SendIcon';
 import styles from './MeetingChatBar.module.scss';
 
 export const MeetingChatBar = () => {
     const refChatBar = useRef<any>(null);
     const refPicker = useRef<any>(null);
+
+    const send = () => {
+        if (refChatBar.current.value) {
+            sendMeetingChatEvent({ body: refChatBar.current.value });
+            refChatBar.current.value = '';
+        }
+    };
     const handleSendMessage = (e: any) => {
         if (e.key === 'Enter' || e.keyCode === '13') {
             e.preventDefault();
-            if (refChatBar.current.value) {
-                sendMeetingChatEvent({ body: refChatBar.current.value });
-                refChatBar.current.value = '';
-            }
+            send();
         }
     };
 
@@ -32,35 +38,43 @@ export const MeetingChatBar = () => {
     };
 
     return (
-        <CustomGrid>
-            <CustomEmojiPicker
-                ref={refPicker}
-                width={265}
-                className={styles.picker}
-                onEmojiClick={handleChooseEmoji}
-            />
-            <CustomInput
-                multiline
-                inputProps={{ className: styles.textField }}
-                ref={refChatBar}
-                placeholder="Type a message"
-                InputProps={{
-                    classes: {
-                        multiline: styles.rootField,
-                        focused: styles.focused,
-                    },
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <EmojiIcon
-                                width="20px"
-                                height="20px"
-                                onClick={openPicker}
-                                className={styles.icon}
-                            />
-                        </InputAdornment>
-                    ),
-                }}
-                onKeyDown={handleSendMessage}
+        <CustomGrid display="flex" alignItems="center">
+            <CustomGrid width="100%">
+                <CustomEmojiPicker
+                    ref={refPicker}
+                    width={280}
+                    className={styles.picker}
+                    onEmojiClick={handleChooseEmoji}
+                />
+                <CustomInput
+                    multiline
+                    inputProps={{ className: styles.textField }}
+                    ref={refChatBar}
+                    placeholder="Type a message"
+                    InputProps={{
+                        classes: {
+                            multiline: styles.rootField,
+                            focused: styles.focused,
+                        },
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <EmojiIcon
+                                    width="20px"
+                                    height="20px"
+                                    onClick={openPicker}
+                                    className={styles.icon}
+                                />
+                            </InputAdornment>
+                        ),
+                    }}
+                    onKeyDown={handleSendMessage}
+                />
+            </CustomGrid>
+            <ActionButton
+                variant="grey"
+                onAction={send}
+                className={styles.sendButton}
+                Icon={<SendIcon width="22px" height="22px" />}
             />
         </CustomGrid>
     );

@@ -21,7 +21,6 @@ interface TabPanelProps {
 
 export const CustomTabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
-
     return (
         <div
             role="tabpanel"
@@ -32,7 +31,14 @@ export const CustomTabPanel = (props: TabPanelProps) => {
             {...other}
         >
             {value === index && (
-                <CustomBox sx={{ p: 1, height: '100%' }}>{children}</CustomBox>
+                <CustomBox
+                    sx={{
+                        padding: value === 2 ? '8px 0px' : '8px',
+                        height: '100%',
+                    }}
+                >
+                    {children}
+                </CustomBox>
             )}
         </div>
     );

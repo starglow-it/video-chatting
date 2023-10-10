@@ -55,7 +55,7 @@ export type EnterMeetingRequestResponse = {
 };
 
 export type SendMessageChatResponse = {
-    message: MeetingChat
+    message: MeetingChat;
 };
 
 export type CancelAccessMeetingRequestResponse = {

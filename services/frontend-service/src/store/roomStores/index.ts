@@ -68,5 +68,5 @@ export default {
     meetingBackground,
     meetingAudio,
     meetingRole,
-    meetingChat
+    meetingChat,
 };
