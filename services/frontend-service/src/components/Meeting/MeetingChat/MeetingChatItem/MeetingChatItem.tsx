@@ -3,10 +3,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import clsx from 'clsx';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { memo } from 'react';
 import styles from './MeetingChatItem.module.scss';
 import { ChatItem } from '../type';
 
-export const MeetingChatItem = ({
+export const MeetingChatItem = memo(({
     type = 'text',
     isLocal = false,
 }: ChatItem) => {
@@ -65,4 +66,4 @@ export const MeetingChatItem = ({
             {renderItem()}
         </CustomGrid>
     );
-};
+});
