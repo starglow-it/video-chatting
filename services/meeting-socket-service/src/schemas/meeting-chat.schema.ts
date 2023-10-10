@@ -19,13 +19,14 @@ export class MeetingChat {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: MeetingUser.name,
+    ref: 'MeetingUser',
+    required: true
   })
   sender: MeetingUserDocument;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: Meeting.name,
+    ref: 'MeetingUser',
   })
   meeting: MeetingDocument;
 

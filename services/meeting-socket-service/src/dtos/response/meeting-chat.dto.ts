@@ -6,6 +6,21 @@ import { IMeetingChat } from 'src/interfaces/meeting-chat.interface';
 import { MeetingChatDocument } from 'src/schemas/meeting-chat.schema';
 import { ICommonMeetingDTO } from 'src/interfaces/common-meeting.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
+import { ISenderDto } from 'src/interfaces/sender.interface';
+export class SenderDto implements ISenderDto {
+  @Expose()
+  @Transform((data) => data.obj['_id']?.toString())
+  id: string;
+
+  @Expose()
+  username: ICommonMeetingUserDTO['username'];
+
+  @Expose()
+  profileAvatar: ICommonMeetingUserDTO['profileAvatar'];
+
+  @Expose()
+  meetingAvatarId: ICommonMeetingUserDTO['meetingAvatarId'];
+}
 
 export class MeetingChatDto implements IMeetingChat {
   @Expose()
@@ -16,8 +31,8 @@ export class MeetingChatDto implements IMeetingChat {
   body: string;
 
   @Expose()
-  @Type(() => CommonUserDTO)
-  sender: ICommonMeetingUserDTO;
+  @Type(() => SenderDto)
+  sender: ISenderDto;
 
   @Expose()
   @Type(() => CommonMeetingDTO)

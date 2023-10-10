@@ -9,13 +9,13 @@ import { MeetingReactionKind } from 'shared-types';
 export class MeetingChatReaction {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: MeetingChat.name,
+    ref: 'MeetingChat',
   })
   meetingChat: MeetingChatDocument;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: MeetingUser.name,
+    ref: 'MeetingUser',
   })
   user: MeetingUserDocument;
 

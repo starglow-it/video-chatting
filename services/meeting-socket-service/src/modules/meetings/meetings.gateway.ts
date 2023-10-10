@@ -80,6 +80,8 @@ import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../../utils/ws/wsResult';
 import { ObjectId } from 'src/utils/objectId';
+import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
+import { meetingChatSerialization } from 'src/dtos/response/meeting-chat.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -94,6 +96,7 @@ export class MeetingsGateway
   private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingsService: MeetingsService,
+    private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
     private coreService: CoreService,
     private taskService: TasksService,
@@ -201,6 +204,45 @@ export class MeetingsGateway
 
     if (!isMeetingHost) return;
     await this.setTimeoutFinishMeeting(meeting);
+  }
+
+  private async getLastOldMessageInMeeting(
+    meetingId: string,
+    session: ITransactionSession,
+  ) {
+    const [msg] = await this.meetingChatsService.findMany({
+      query: {
+        meeting: meetingId,
+      },
+      options: {
+        limit: 1,
+        sort: {
+          _id: -1,
+        },
+      },
+      session,
+    });
+    return msg;
+  }
+
+  private async getAllMessages(
+    meetingId: string,
+    session: ITransactionSession,
+  ) {
+    return this.meetingChatsService.findMany({
+      query: {
+        meeting: meetingId,
+      },
+      options: {
+        skip: 0,
+        limit: 15,
+        sort: {
+          createdAt: -1,
+        },
+      },
+      populatePaths: ['sender'],
+      session,
+    });
   }
 
   async handleDisconnect(client: Socket) {
@@ -608,11 +650,18 @@ export class MeetingsGateway
           }
         }
 
+        const allMessages = await this.getAllMessages(
+          meeting._id.toString(),
+          session,
+        );
+
         const plainUser = userSerialization(userUpdated);
 
         const plainMeeting = meetingSerialization(meeting);
 
         const plainUsers = userSerialization(meeting.users);
+
+        const plainMeetingChats = meetingChatSerialization(allMessages);
 
         socket.join(`meeting:${message.meetingId}`);
 
@@ -630,6 +679,7 @@ export class MeetingsGateway
           user: plainUser,
           meeting: plainMeeting,
           users: plainUsers,
+          messages: plainMeetingChats,
         });
       } catch (error) {
         return wsError(socket.id, error);
@@ -844,11 +894,19 @@ export class MeetingsGateway
           return wsError(socket.id, 'meeting.maxParticipantsNumber');
         }
 
+        const lastOldMessage = await this.getLastOldMessageInMeeting(
+          meeting._id.toString(),
+          session,
+        );
+
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.InMeeting,
           joinedAt: Date.now(),
           username: msg.username,
           meetingAvatarId: msg.meetingAvatarId === '' ? '' : undefined,
+          ...(!!lastOldMessage && {
+            lastOldMessage,
+          }),
         };
 
         if (msg.meetingAvatarId) {
@@ -868,6 +926,7 @@ export class MeetingsGateway
             meetingAvatarId: msg.meetingAvatarId,
           });
         }
+
         const mU = await this.usersService.findOneAndUpdate(
           {
             socketId: socket.id,
@@ -895,6 +954,7 @@ export class MeetingsGateway
             message: 'Host not found',
           });
         }
+
         await meeting.populate(['users']);
         socket.join(`lurker:${msg.meetingId}`);
         socket.join(`meeting:${msg.meetingId}`);
@@ -958,6 +1018,11 @@ export class MeetingsGateway
             return wsError(socket.id, 'meeting.maxParticipantsNumber');
           }
 
+          const lastOldMessage = await this.getLastOldMessageInMeeting(
+            meeting._id.toString(),
+            session,
+          );
+
           user = await this.usersService.findOneAndUpdate(
             {
               _id: user._id,
@@ -967,6 +1032,9 @@ export class MeetingsGateway
               joinedAt: Date.now(),
               userPosition: u.position,
               userSize: u.size,
+              ...(!!lastOldMessage && {
+                lastOldMessage,
+              }),
             },
             session,
           );

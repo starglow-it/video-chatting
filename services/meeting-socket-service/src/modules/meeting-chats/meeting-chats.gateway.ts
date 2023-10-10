@@ -117,6 +117,11 @@ export class MeetingChatsGateway extends BaseGateway {
         const meetingChats = await this.meetingChatsService.findMany({
           query: {
             meeting: meeting._id,
+            ...(!!user.lastOldMessage && {
+              _id: {
+                $gt: user.lastOldMessage,
+              },
+            }),
           },
           session,
           options: {
