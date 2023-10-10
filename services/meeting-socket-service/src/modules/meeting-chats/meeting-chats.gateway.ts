@@ -5,20 +5,19 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { MeetingChatEmitEvents } from 'src/const/socket-events/emitters/meetingchat';
-import { MeetingChatSubcribeEvent } from 'src/const/socket-events/subscribers';
 import { BaseGateway } from '../../gateway/base.gateway';
 import { MeetingChatsService } from './meeting-chats.service';
 import { UsersService } from '../users/users.service';
-import { MeetingsService } from '../meetings/meetings.service';
-import { SendMeetingChatRequestDto } from 'src/dtos/requests/chats/send-meeting-chat.dto';
-import { withTransaction } from 'src/helpers/mongo/withTransaction';
+import { SendMeetingChatRequestDto } from '../../dtos/requests/chats/send-meeting-chat.dto';
+import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { wsError } from 'src/utils/ws/wsError';
-import { meetingChatSerialization } from 'src/dtos/response/meeting-chat.dto';
-import { wsResult } from 'src/utils/ws/wsResult';
-import { LoadMoreMeetingChatRequestDto } from 'src/dtos/requests/chats/loadmore-meeting-chat.dto';
+import { wsError } from '../../utils/ws/wsError';
+import { meetingChatSerialization } from '../../dtos/response/meeting-chat.dto';
+import { wsResult } from '../../utils/ws/wsResult';
+import { LoadMoreMeetingChatRequestDto } from '../../dtos/requests/chats/loadmore-meeting-chat.dto';
+import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
+import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -35,7 +34,7 @@ export class MeetingChatsGateway extends BaseGateway {
     super();
   }
 
-  @SubscribeMessage(MeetingChatSubcribeEvent.OnSendMessage)
+  @SubscribeMessage(MeetingSubscribeEvents.OnSendMessage)
   async sendMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: SendMeetingChatRequestDto,
@@ -73,7 +72,7 @@ export class MeetingChatsGateway extends BaseGateway {
         const plainMeetingChat = meetingChatSerialization(meetingChat);
         this.emitToRoom(
           `meeting:${meeting._id.toString()}`,
-          MeetingChatEmitEvents.ReceiveMessage,
+          MeetingEmitEvents.ReceiveMessage,
           {
             message: plainMeetingChat,
           },
@@ -88,7 +87,7 @@ export class MeetingChatsGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(MeetingChatSubcribeEvent.OnLoadMoreMessages)
+  @SubscribeMessage(MeetingSubscribeEvents.OnLoadMoreMessages)
   async loadMoreMessages(
     @ConnectedSocket() socket: Socket,
     @MessageBody() { skip, limit }: LoadMoreMeetingChatRequestDto,
@@ -138,9 +137,9 @@ export class MeetingChatsGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(MeetingChatSubcribeEvent.OnReactionMessage)
+  @SubscribeMessage(MeetingSubscribeEvents.OnReactionMessage)
   async reactMessage() {}
 
-  @SubscribeMessage(MeetingChatSubcribeEvent.OnUnReactionMessage)
+  @SubscribeMessage(MeetingSubscribeEvents.OnUnReactionMessage)
   async unreactMessage() {}
 }
