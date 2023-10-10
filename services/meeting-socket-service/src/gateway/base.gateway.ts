@@ -1,8 +1,17 @@
-import { WebSocketServer } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayInit,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TEventEmitter } from '../types/socket-events';
+import { MAX_EVENT_LISTENER } from '../const/common';
 
-export class BaseGateway {
+export class BaseGateway implements OnGatewayConnection {
+  handleConnection(client: Socket, ...args: any[]) {
+    client.setMaxListeners(MAX_EVENT_LISTENER);
+  }
+
   @WebSocketServer() server: Server;
 
   emitToSocketId(...[socketId, eventName, data]: TEventEmitter) {
