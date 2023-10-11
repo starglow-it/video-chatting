@@ -9,6 +9,7 @@
 .main {
     display: flex;
     flex-direction: row;
+    position: relative;
 }
 
 .right {
@@ -68,4 +69,29 @@
 
 .break {
     margin-top: 15px;
+}
+
+.emotionLeft {
+    margin-right: 4px;
+    cursor: pointer;
+}
+
+.emotionRight {
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.releasedEmotion {
+    position: absolute;
+    bottom: -6px;
+    right: var(--right);
+    padding: 2px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    z-index: 10;
 }

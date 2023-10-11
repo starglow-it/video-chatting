@@ -11,7 +11,8 @@ import { handlePlaySound } from './handlePlaySound';
 import { handleMeetingFinished } from './handleMeetingFinished';
 import { handleMeetingTimeLimit } from './handleMeetingTimeLimit';
 import { emptyFunction } from '../../../../../utils/functions/emptyFunction';
-import { handleRecieveMessage } from './handleRecieveMessage';
+import { handleReceiveMessage } from './handleReceiveMessage';
+import { handleReceiveReaction } from './handleReceiveReaction';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -89,7 +90,13 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
         [
             MeetingSubscribeEvents.OnReceiveMessage,
             {
-                handler: handleRecieveMessage,
+                handler: handleReceiveMessage,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveReaction,
+            {
+                handler: handleReceiveReaction,
             },
         ],
     ]);

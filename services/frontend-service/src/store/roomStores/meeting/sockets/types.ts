@@ -1,9 +1,16 @@
 import {
     IUserTemplate,
     MeetingAccessStatusEnum,
+    MeetingReactionKind,
     MeetingRole,
 } from 'shared-types';
-import { Meeting, MeetingChat, MeetingUser, Profile } from '../../../types';
+import {
+    Meeting,
+    MeetingChat,
+    MeetingChatReaction,
+    MeetingUser,
+    Profile,
+} from '../../../types';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
@@ -87,4 +94,14 @@ export type JoinLurkerMeetingPayload = {
 
 export type SendMessageChatPayload = {
     body: string;
+};
+
+export type SendReactionMessagePayload = {
+    meetingChatId: string;
+    kind: MeetingReactionKind;
+};
+
+export type SendReactionMessageReponse = {
+    message: MeetingChat;
+    userReaction: MeetingChatReaction;
 };

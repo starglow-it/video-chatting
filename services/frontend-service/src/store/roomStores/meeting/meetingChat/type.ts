@@ -1,5 +1,7 @@
+import { ChatItem } from '@components/Meeting/MeetingChat/type';
+
 export type MeetingChatStore = {
-    list: any[];
+    list: ChatItem[];
     skip: number;
     limit: number;
 };

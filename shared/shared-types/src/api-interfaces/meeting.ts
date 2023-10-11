@@ -81,8 +81,10 @@ export interface IMeetingAvatar {
 }
 
 export enum MeetingReactionKind {
-  Fire = 'fire',
-  Wave = 'wave',
-  Like = 'like',
-  //please add more reaction
+  RollingEyes = 'RollingEyes',
+  Crying = 'Crying',
+  Smiling = 'Smiling',
+  Heart = 'Heart',
+  TearsOfJoy = 'TearsOfJoy',
+  Like = 'Like',
 }

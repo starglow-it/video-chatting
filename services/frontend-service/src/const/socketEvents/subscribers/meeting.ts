@@ -11,4 +11,5 @@ export enum MeetingSubscribeEvents {
     OnPlaySound = 'meeting:sounds.play',
     OnMeetingTimeLimit = 'meeting:timeLimit',
     OnReceiveMessage = 'meeting:chat:message:receive',
+    OnReceiveReaction = 'meeting:chat:reaction:receive'
 }

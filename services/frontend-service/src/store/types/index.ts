@@ -9,6 +9,7 @@ import {
     IUserTemplate,
     ICommonUser,
     MeetingRole,
+    MeetingReactionKind,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
@@ -54,6 +55,14 @@ export type MeetingChat = {
     body: string;
     meeting: Meeting;
     createdAt: Date;
+    reactionsCount: Map<MeetingReactionKind, number>;
+};
+
+export type MeetingChatReaction = {
+    id: string;
+    meetingChat: MeetingChat;
+    user: MeetingUser;
+    kind: MeetingReactionKind;
 };
 
 export type AuthUserState = {

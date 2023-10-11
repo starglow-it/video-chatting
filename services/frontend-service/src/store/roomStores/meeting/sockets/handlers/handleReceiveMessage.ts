@@ -1,6 +1,6 @@
 import { MeetingChat } from 'src/store/types';
 import { addMessageToChatEvent } from '../../meetingChat/model';
 
-export const handleRecieveMessage = ({ message }: { message: MeetingChat }) => {
+export const handleReceiveMessage = ({ message }: { message: MeetingChat }) => {
     addMessageToChatEvent(message);
 };

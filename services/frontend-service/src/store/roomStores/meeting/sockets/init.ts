@@ -409,4 +409,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnReceiveMessage,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveReaction,
+        ),
+    );
 });

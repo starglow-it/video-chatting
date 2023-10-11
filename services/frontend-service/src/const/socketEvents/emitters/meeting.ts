@@ -16,4 +16,5 @@ export enum MeetingSocketEmitters {
     ReactionMessage = 'meeting:chat:reaction',
     UnReactionMessage = 'meeting:chat:unreaction',
     LoadMoreMessages = 'meeting:chat:loadmore',
+    SendReactionMessage = 'meeting:chat:reaction:send'
 }

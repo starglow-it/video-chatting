@@ -34,6 +34,7 @@ export const MeetingChatBar = () => {
     };
 
     const handleChooseEmoji = (data: EmojiClickData) => {
+        console.log('#Duy Phan console', data)
         refChatBar.current.value += data.emoji;
     };
 
