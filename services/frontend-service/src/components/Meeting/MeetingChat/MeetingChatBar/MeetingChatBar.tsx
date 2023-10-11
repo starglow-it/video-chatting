@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { sendMeetingChatEvent } from 'src/store/roomStores';
 import { CustomEmojiPicker } from '@library/custom/CustomEmojiPicker/CustomEmojiPicker';
 import { InputAdornment } from '@mui/material';
-import { EmojiIcon } from 'shared-frontend/icons/OtherIcons/EmojiIcon';
+import { EmotionIcon } from 'shared-frontend/icons/OtherIcons/EmotionIcon';
 import { EmojiClickData } from 'emoji-picker-react';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { SendIcon } from 'shared-frontend/icons/OtherIcons/SendIcon';
@@ -34,7 +34,7 @@ export const MeetingChatBar = () => {
     };
 
     const handleChooseEmoji = (data: EmojiClickData) => {
-        console.log('#Duy Phan console', data)
+        console.log('#Duy Phan console', data);
         refChatBar.current.value += data.emoji;
     };
 
@@ -59,7 +59,7 @@ export const MeetingChatBar = () => {
                         },
                         endAdornment: (
                             <InputAdornment position="end">
-                                <EmojiIcon
+                                <EmotionIcon
                                     width="20px"
                                     height="20px"
                                     onClick={openPicker}

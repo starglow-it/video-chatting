@@ -15,5 +15,5 @@ export const addMessageToChatEvent = meetingDomain.createEvent<any>(
 );
 
 export const reactionMessageEvent = meetingDomain.createEvent<{
-    message: MeetingChat
+    message: MeetingChat;
 }>('reactionMessageEvent');

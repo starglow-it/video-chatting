@@ -6,13 +6,13 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CSSProperties, memo, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import { $localUserStore } from 'src/store/roomStores';
-import { EmojiIcon } from 'shared-frontend/icons/OtherIcons/EmojiIcon';
-import styles from './MeetingChatItem.module.scss';
-import { ChatItem } from '../type';
+import { EmotionIcon } from 'shared-frontend/icons/OtherIcons/EmotionIcon';
 import { Zoom } from '@mui/material';
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { Emoji } from 'emoji-picker-react';
 import { MeetingReactionKind } from 'shared-types';
+import { ChatItem } from '../type';
+import styles from './MeetingChatItem.module.scss';
 
 const Emotions = [
     {
@@ -78,7 +78,7 @@ export const MeetingChatItem = memo(
         };
 
         const renderEmotions = () => {
-            if(!Object.keys(reactionsCount).length) return null;
+            if (!Object.keys(reactionsCount).length) return null;
 
             const emotions = Array.from(
                 reactionsCount.keys(),
@@ -170,7 +170,7 @@ export const MeetingChatItem = memo(
                 onMouseLeave={handleHidePreview}
             >
                 <ConditionalRender condition={showPreview && isLocal}>
-                    <EmojiIcon
+                    <EmotionIcon
                         width="18px"
                         height="18px"
                         onClick={(e: any) => {
@@ -213,7 +213,7 @@ export const MeetingChatItem = memo(
                 </CustomPopover>
                 {renderItem()}
                 <ConditionalRender condition={showPreview && !isLocal}>
-                    <EmojiIcon
+                    <EmotionIcon
                         width="18px"
                         height="18px"
                         // onClick={openPicker}

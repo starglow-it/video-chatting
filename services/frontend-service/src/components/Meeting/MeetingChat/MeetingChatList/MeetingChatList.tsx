@@ -6,11 +6,13 @@ import {
     $meetingChat,
 } from 'src/store/roomStores/meeting/meetingChat/model';
 import { useCallback, useEffect, useRef } from 'react';
+import { MeetingReactionKind } from 'shared-types';
+import { sendMeetingReactionEvent } from 'src/store/roomStores';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
-import { MeetingReactionKind } from 'shared-types';
-import { sendMeetingReactionEvent } from 'src/store/roomStores';
 
 export const MeetingChatList = () => {
     const { list } = useStore($meetingChat);
@@ -45,12 +47,36 @@ export const MeetingChatList = () => {
 
     return (
         <CustomGrid flex={1} display="flex" flexDirection="column">
-            <CustomScroll
-                className={styles.scroll}
-                containerRef={(refS: any) => (refScroll.current = refS)}
-            >
-                {renderMessages()}
-            </CustomScroll>
+            <ConditionalRender condition={!list.length}>
+                <CustomGrid
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexDirection="column"
+                    height="100%"
+                >
+                    <CustomImage
+                        src="/images/empty-chat.png"
+                        width={130}
+                        height={150}
+                        className={styles.imageEmpty}
+                        loading="eager"
+                        alt="media-item"
+                    />
+                    <span className={styles.textEmpty}>Chat is empy</span>
+                    <span className={styles.textEmpty}>
+                        Please type a message and send.
+                    </span>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={!!list.length}>
+                <CustomScroll
+                    className={styles.scroll}
+                    containerRef={(refS: any) => (refScroll.current = refS)}
+                >
+                    {renderMessages()}
+                </CustomScroll>
+            </ConditionalRender>
         </CustomGrid>
     );
 };
