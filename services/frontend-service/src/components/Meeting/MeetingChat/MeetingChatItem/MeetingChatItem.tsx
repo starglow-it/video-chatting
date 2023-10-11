@@ -216,7 +216,10 @@ export const MeetingChatItem = memo(
                     <EmotionIcon
                         width="18px"
                         height="18px"
-                        // onClick={openPicker}
+                        onClick={(e: any) => {
+                            setShowReaction(true);
+                            setAnchor(e.currentTarget);
+                        }}
                         className={styles.emotionRight}
                     />
                 </ConditionalRender>

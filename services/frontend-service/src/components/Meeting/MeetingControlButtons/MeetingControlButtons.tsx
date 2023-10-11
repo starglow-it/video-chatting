@@ -190,7 +190,7 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={!isLurker}>
+
                 <CustomTooltip
                     title={
                         <Translation
@@ -218,7 +218,6 @@ const Component = () => {
                         />
                     </CustomPaper>
                 </CustomTooltip>
-            </ConditionalRender>
             <ConditionalRender condition={isLurker}>
                 <CustomTooltip
                     title={

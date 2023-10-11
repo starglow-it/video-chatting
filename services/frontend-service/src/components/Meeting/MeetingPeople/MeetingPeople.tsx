@@ -52,7 +52,7 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 export const MeetingPeople = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const isLurker = useStore($isLurker);
-    console.log('#Duy Phan console', isLurker);
+
     const participants = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -75,7 +75,7 @@ export const MeetingPeople = () => {
             ),
     });
 
-    const [value, setValue] = useState(isLurker ? 2 : 0);
+    const [value, setValue] = useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -136,10 +136,15 @@ export const MeetingPeople = () => {
                         <MeetingLurkers />
                     </CustomGrid>
                 </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <MeetingChat />
+                </CustomTabPanel>
             </ConditionalRender>
-            <CustomTabPanel value={value} index={2}>
-                <MeetingChat />
-            </CustomTabPanel>
+            <ConditionalRender condition={isLurker}>
+                <CustomTabPanel value={value} index={0}>
+                    <MeetingChat />
+                </CustomTabPanel>
+            </ConditionalRender>
         </CustomGrid>
     );
 };

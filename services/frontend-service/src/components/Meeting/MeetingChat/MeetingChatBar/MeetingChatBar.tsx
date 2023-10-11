@@ -50,6 +50,7 @@ export const MeetingChatBar = () => {
                 <CustomInput
                     multiline
                     inputProps={{ className: styles.textField }}
+                    maxRows={2}
                     ref={refChatBar}
                     placeholder="Type a message"
                     InputProps={{
