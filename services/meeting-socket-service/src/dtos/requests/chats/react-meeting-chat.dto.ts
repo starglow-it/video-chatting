@@ -3,10 +3,14 @@ import { MeetingReactionKind } from "shared-types";
 
 export class ReactMeetingChatRequestDto {
     @IsNotEmpty()
-    @IsString()
+    @IsString({
+        message: 'meetingChatId invalid'
+    })
     meetingChatId: string;
 
     @IsNotEmpty()
-    @IsString()
+    @IsString({
+        message: 'Kind invalid'
+    })
     kind: MeetingReactionKind;
 }

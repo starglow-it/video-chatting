@@ -29,4 +29,4 @@ export const meetingChatReactionSerialization = <
   D extends MeetingChatReactionDocument | MeetingChatReactionDocument[],
 >(
   meetingChatReaction: D,
-) => serializeInstance(meetingChatReaction, MeetingChatDto);
+) => serializeInstance(meetingChatReaction, MeetingChatReactionDto);

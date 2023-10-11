@@ -13,14 +13,14 @@ import { MeetingDocument } from './meeting.schema';
 export class MeetingChat {
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    required: true,
   })
   body: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'MeetingUser',
-    required: true
+    required: true,
   })
   sender: MeetingUserDocument;
 
@@ -32,7 +32,9 @@ export class MeetingChat {
 
   @Prop({
     type: mongoose.Schema.Types.Map,
-    of: Number,
+    of: {
+      type: Number,
+    },
     default: new Map<MeetingReactionKind, number>(),
   })
   reactionsCount: Map<MeetingReactionKind, number>;

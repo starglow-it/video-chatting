@@ -8,7 +8,10 @@ import {
   GetModelMultipleQuery,
   UpdateModelSingleQuery,
 } from '../../types/mongoose';
-import { MeetingChatReaction, MeetingChatReactionDocument } from 'src/schemas/meeting-chat-reaction.schema';
+import {
+  MeetingChatReaction,
+  MeetingChatReactionDocument,
+} from '../../schemas/meeting-chat-reaction.schema';
 
 @Injectable()
 export class MeetingChatReactionsService {
@@ -17,8 +20,13 @@ export class MeetingChatReactionsService {
     private meetingChatReaction: Model<MeetingChatReactionDocument>,
   ) {}
 
-  async create({ data, session: { session } }: InsertModelQuery<MeetingChatReaction>) {
-    const [meetingChat] = await this.meetingChatReaction.create([data], { session });
+  async create({
+    data,
+    session: { session },
+  }: InsertModelQuery<MeetingChatReaction>) {
+    const [meetingChat] = await this.meetingChatReaction.create([data], {
+      session,
+    });
     return meetingChat;
   }
 

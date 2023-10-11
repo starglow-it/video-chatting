@@ -1,13 +1,12 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
-import { CommonUserDTO } from './common-user.dto';
-import { serializeInstance } from '../serialization';
-import { IMeetingChat } from 'src/interfaces/meeting-chat.interface';
-import { MeetingChatDocument } from 'src/schemas/meeting-chat.schema';
-import { ICommonMeetingDTO } from 'src/interfaces/common-meeting.interface';
+import { IMeetingChat } from '../../interfaces/meeting-chat.interface';
+import { MeetingChatDocument } from '../../schemas/meeting-chat.schema';
+import { ICommonMeetingDTO } from '../../interfaces/common-meeting.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
-import { ISenderDto } from 'src/interfaces/sender.interface';
+import { ISenderDto } from '../../interfaces/sender.interface';
 import { SenderDto } from './sender.dto';
+import { mapToArray } from '../../utils/mapToArray';
+import { serializeInstance } from '../serialization';
 
 export class MeetingChatDto implements IMeetingChat {
   @Expose()
@@ -26,6 +25,7 @@ export class MeetingChatDto implements IMeetingChat {
   meeting: ICommonMeetingDTO;
 
   @Expose()
+  @Transform(({ obj }) => mapToArray(obj['reactionsCount']))
   reactionsCount: IMeetingChat['reactionsCount'];
 
   @Expose()

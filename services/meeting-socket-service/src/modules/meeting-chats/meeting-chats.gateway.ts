@@ -98,11 +98,29 @@ export class MeetingChatsGateway extends BaseGateway {
     return Object.values(MeetingReactionKind).includes(kind);
   }
 
+  private async getMessageById(
+    messageId: string,
+    session: ITransactionSession,
+  ) {
+    const m = await this.meetingChatsService.findOne({
+      query: {
+        _id: new ObjectId(messageId),
+      },
+      session,
+    });
+
+    if (!m) {
+      throw new WsBadRequestException('No message found');
+    }
+    return m;
+  }
+
   @SubscribeMessage(MeetingSubscribeEvents.OnSendMessage)
   async sendMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: SendMeetingChatRequestDto,
   ) {
+    console.debug(`Event ${MeetingSubscribeEvents.OnSendMessage}`);
     return withTransaction(this.connection, async (session) => {
       const user = await this.getUserFromSocketId(socket.id, session);
       const meeting = await this.getMeetingFromPopulateUser(user);
@@ -136,6 +154,7 @@ export class MeetingChatsGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() { skip, limit }: LoadMoreMeetingChatRequestDto,
   ) {
+    console.debug(`Event ${MeetingSubscribeEvents.OnLoadMoreMessages}`);
     return withTransaction(this.connection, async (session) => {
       const user = await this.getUserFromSocketId(socket.id, session);
       const meeting = await this.getMeetingFromPopulateUser(user);
@@ -172,39 +191,31 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() msg: ReactMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
+      console.debug(`Event ${MeetingSubscribeEvents.OnReactionMessage}`);
       const user = await this.getUserFromSocketId(socket.id, session);
       const meeting = await this.getMeetingFromPopulateUser(user);
 
-      const message = await this.meetingChatsService.findOne({
-        query: {
-          _id: new ObjectId(msg.meetingChatId),
-        },
-        session,
-      });
-      if (!message) {
-        throw new WsBadRequestException('No message found');
-      }
+      const message = await this.getMessageById(msg.meetingChatId, session);
 
       if (!this.checkReactionKind(msg.kind)) {
         throw new WsBadRequestException(`${msg.kind} not found`);
       }
 
-      let userReaction =
-        await this.meetingChatReactionsService.findOneAndUpdate({
-          query: {
-            user: user._id,
-            meetingChat: message._id,
-          },
-          data: {
-            kind: msg.kind,
-          },
-          session,
-        });
+      let reaction = await this.meetingChatReactionsService.findOneAndUpdate({
+        query: {
+          user: user._id,
+          meetingChat: message._id,
+        },
+        data: {
+          kind: MeetingReactionKind.Heart,
+        },
+        session,
+      });
 
-      if (!userReaction) {
-        userReaction = await this.meetingChatReactionsService.create({
+      if (!reaction) {
+        reaction = await this.meetingChatReactionsService.create({
           data: {
-            kind: msg.kind,
+            kind: MeetingReactionKind.Heart,
             meetingChat: message._id,
             user: user._id,
           },
@@ -214,35 +225,27 @@ export class MeetingChatsGateway extends BaseGateway {
 
       const rCount = this.caculateReactionsCount(
         message.reactionsCount,
-        msg.kind,
+        reaction.kind,
         1,
       );
 
-      const messageUpdated = await this.meetingChatsService.findOneAndUpdate({
-        query: {
-          _id: message._id,
-        },
-        data: {
-          reactionsCount: rCount,
-        },
-        session,
-      });
+      message.reactionsCount = rCount;
+      message.save();
 
-      const plainUserReaction = meetingChatReactionSerialization(userReaction);
-      const plainMessage = meetingChatSerialization(messageUpdated);
+      await reaction.populate(['meetingChat', 'user']);
+
+      const plainReaction = meetingChatReactionSerialization(reaction);
 
       this.emitToRoom(
         `meeting:${meeting._id.toString()}`,
         MeetingEmitEvents.ReceiveReaction,
         {
-          message: plainMessage,
-          userReaction: plainUserReaction,
+          reaction: plainReaction,
         },
       );
 
       return wsResult({
-        message: plainMessage,
-        userReaction: plainUserReaction,
+        reaction: plainReaction,
       });
     });
   }
@@ -252,20 +255,12 @@ export class MeetingChatsGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UnReactMeetingChatRequestDto,
   ) {
+    console.debug(`Event ${MeetingSubscribeEvents.OnUnReactionMessage}`);
     return withTransaction(this.connection, async (session) => {
       const user = await this.getUserFromSocketId(socket.id, session);
       const meeting = await this.getMeetingFromPopulateUser(user);
 
-      let message = await this.meetingChatsService.findOne({
-        query: {
-          _id: new ObjectId(msg.meetingChatId),
-        },
-        session,
-      });
-
-      if (!message) {
-        throw new WsBadRequestException('No message found');
-      }
+      let message = await this.getMessageById(msg.meetingChatId, session);
 
       const userReaction = await this.meetingChatReactionsService.findOne({
         query: {

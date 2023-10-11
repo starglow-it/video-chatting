@@ -29,6 +29,5 @@ export const InjectWsErrorHandler = (): MultiDecorators =>
           new WsValidationException(errors),
       }),
     ),
-    UseFilters(WsValidationExceptionFilter),
-    UseFilters(WsExceptionsFilter),
+    UseFilters(WsValidationExceptionFilter, WsExceptionsFilter),
   );
