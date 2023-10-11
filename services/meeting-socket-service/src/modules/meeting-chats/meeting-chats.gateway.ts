@@ -20,17 +20,17 @@ import { wsResult } from '../../utils/ws/wsResult';
 import { LoadMoreMeetingChatRequestDto } from '../../dtos/requests/chats/loadmore-meeting-chat.dto';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
-import { MESSAGES_LIMIT } from 'src/const/common';
-import { ReactMeetingChatRequestDto } from 'src/dtos/requests/chats/react-meeting-chat.dto';
-import { ObjectId } from 'src/utils/objectId';
+import { MESSAGES_LIMIT } from '../../const/common';
+import { ReactMeetingChatRequestDto } from '../../dtos/requests/chats/react-meeting-chat.dto';
+import { ObjectId } from '../../utils/objectId';
 import { MeetingReactionKind } from 'shared-types';
-import { MeetingChat } from 'src/schemas/meeting-chat.schema';
+import { MeetingChat } from '../../schemas/meeting-chat.schema';
 import { MeetingChatReactionsService } from './meeting-chat-reactions.service';
-import { userSerialization } from 'src/dtos/response/common-user.dto';
-import { meetingChatReactionSerialization } from 'src/dtos/response/meeting-chat-reaction.dto';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
-import { UnReactMeetingChatRequestDto } from 'src/dtos/requests/chats/unreact-meeting-chat.dto';
-import { WsBadRequestException } from 'src/exceptions/ws.exception';
+import { userSerialization } from '../../dtos/response/common-user.dto';
+import { meetingChatReactionSerialization } from '../../dtos/response/meeting-chat-reaction.dto';
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import { UnReactMeetingChatRequestDto } from '../../dtos/requests/chats/unreact-meeting-chat.dto';
+import { WsBadRequestException } from '../../exceptions/ws.exception';
 
 @WebSocketGateway({
   transports: ['websocket'],
