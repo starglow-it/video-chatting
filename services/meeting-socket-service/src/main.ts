@@ -33,8 +33,10 @@ async function bootstrap() {
       transform: true,
       disableErrorMessages: true,
       stopAtFirstError: true,
-      exceptionFactory: (errors: ValidationError[]) =>
-        new ValidationException(errors),
+      exceptionFactory: (errors: ValidationError[]) => {
+        console.log(errors);
+        return new ValidationException(errors);
+      },
     }),
   );
 

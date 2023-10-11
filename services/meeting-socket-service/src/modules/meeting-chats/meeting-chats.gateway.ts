@@ -15,7 +15,6 @@ import {
 } from '../../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { wsError } from '../../utils/ws/wsError';
 import { meetingChatSerialization } from '../../dtos/response/meeting-chat.dto';
 import { wsResult } from '../../utils/ws/wsResult';
 import { LoadMoreMeetingChatRequestDto } from '../../dtos/requests/chats/loadmore-meeting-chat.dto';
@@ -23,13 +22,6 @@ import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { MESSAGES_LIMIT } from 'src/const/common';
 import { ReactMeetingChatRequestDto } from 'src/dtos/requests/chats/react-meeting-chat.dto';
-import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
-import {
-  ArgumentsHost,
-  Catch,
-  HttpException,
-  UseFilters,
-} from '@nestjs/common';
 import { ObjectId } from 'src/utils/objectId';
 import { MeetingReactionKind } from 'shared-types';
 import { MeetingChat } from 'src/schemas/meeting-chat.schema';
@@ -38,6 +30,7 @@ import { userSerialization } from 'src/dtos/response/common-user.dto';
 import { meetingChatReactionSerialization } from 'src/dtos/response/meeting-chat-reaction.dto';
 import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 import { UnReactMeetingChatRequestDto } from 'src/dtos/requests/chats/unreact-meeting-chat.dto';
+import { WsBadRequestException } from 'src/exceptions/ws.exception';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -68,7 +61,7 @@ export class MeetingChatsGateway extends BaseGateway {
     });
 
     if (!user) {
-      throw new WsException('No user found');
+      throw new WsBadRequestException('No user found');
     }
     return user;
   }
@@ -76,7 +69,7 @@ export class MeetingChatsGateway extends BaseGateway {
   private async getMeetingFromPopulateUser(user: MeetingUserDocument) {
     await user.populate('meeting');
     if (!user.meeting) {
-      throw new WsException('No meeting found');
+      throw new WsBadRequestException('No meeting found');
     }
 
     return user.meeting;
@@ -189,11 +182,11 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
       if (!message) {
-        throw new WsException('No message found');
+        throw new WsBadRequestException('No message found');
       }
 
       if (!this.checkReactionKind(msg.kind)) {
-        throw new WsException(`${msg.kind} not found`);
+        throw new WsBadRequestException(`${msg.kind} not found`);
       }
 
       let userReaction =
@@ -271,7 +264,7 @@ export class MeetingChatsGateway extends BaseGateway {
       });
 
       if (!message) {
-        throw new WsException('No message found');
+        throw new WsBadRequestException('No message found');
       }
 
       const userReaction = await this.meetingChatReactionsService.findOne({
