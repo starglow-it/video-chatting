@@ -26,6 +26,9 @@ export class MeetingChatDto implements IMeetingChat {
   meeting: ICommonMeetingDTO;
 
   @Expose()
+  reactionsCount: IMeetingChat['reactionsCount'];
+
+  @Expose()
   createdAt: Date;
 }
 

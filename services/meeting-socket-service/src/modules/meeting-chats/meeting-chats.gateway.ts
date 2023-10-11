@@ -37,6 +37,7 @@ import { MeetingChatReactionsService } from './meeting-chat-reactions.service';
 import { userSerialization } from 'src/dtos/response/common-user.dto';
 import { meetingChatReactionSerialization } from 'src/dtos/response/meeting-chat-reaction.dto';
 import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { UnReactMeetingChatRequestDto } from 'src/dtos/requests/chats/unreact-meeting-chat.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -84,13 +85,19 @@ export class MeetingChatsGateway extends BaseGateway {
   private caculateReactionCount(
     reactionsList: MeetingChat['reactionsCount'],
     k: MeetingReactionKind,
+    direction: 1 | -1,
   ) {
     const v = reactionsList.get(k);
     if (!v) {
-      reactionsList.set(k, 1);
+      reactionsList.set(k, direction);
     } else {
-      reactionsList.set(k, v + 1);
+      reactionsList.set(k, v + direction);
     }
+
+    if (reactionsList.get(k) <= 0) {
+      reactionsList.delete(k);
+    }
+
     return reactionsList;
   }
 
@@ -215,6 +222,7 @@ export class MeetingChatsGateway extends BaseGateway {
       const rCount = this.caculateReactionCount(
         message.reactionsCount,
         msg.kind,
+        1,
       );
 
       const messageUpdated = await this.meetingChatsService.findOneAndUpdate({
@@ -247,5 +255,50 @@ export class MeetingChatsGateway extends BaseGateway {
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnUnReactionMessage)
-  async unreactMessage() {}
+  async unreactMessage(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() msg: UnReactMeetingChatRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.getUserFromSocketId(socket.id, session);
+      const meeting = await this.getMeetingFromPopulateUser(user);
+
+      let message = await this.meetingChatsService.findOne({
+        query: {
+          _id: new ObjectId(msg.meetingChatId),
+        },
+        session,
+      });
+
+      if (!message) {
+        throw new WsException('No message found');
+      }
+
+      const userReaction = await this.meetingChatReactionsService.findOne({
+        query: {
+          meetingChat: new ObjectId(msg.meetingChatId),
+          user: user._id,
+        },
+        session,
+      });
+
+      const rC = this.caculateReactionCount(
+        message.reactionsCount,
+        userReaction.kind,
+        -1,
+      );
+
+      await this.meetingChatReactionsService.deleteOne({
+        query: {
+          meetingChat: new ObjectId(msg.meetingChatId),
+          user: user._id,
+        },
+        session,
+      });
+
+      
+
+
+    });
+  }
 }

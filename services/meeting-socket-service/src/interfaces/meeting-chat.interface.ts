@@ -1,3 +1,4 @@
+import { MeetingReactionKind } from 'shared-types';
 import { ICommonMeetingDTO } from './common-meeting.interface';
 import { ISenderDto } from './sender.interface';
 
@@ -6,5 +7,6 @@ export interface IMeetingChat {
   sender: ISenderDto;
   body: string;
   meeting: ICommonMeetingDTO;
+  reactionsCount: Map<MeetingReactionKind, number>;
   createdAt: Date;
 }

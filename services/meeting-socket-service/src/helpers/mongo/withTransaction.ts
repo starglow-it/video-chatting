@@ -1,4 +1,5 @@
 import { ClientSession, Connection } from 'mongoose';
+import { WsError } from 'src/utils/ws/wsError';
 
 export interface IWithTransactionOptions {
   onRollback?: CallableFunction;
@@ -10,7 +11,7 @@ export interface ITransactionSession {
 
 export const withTransaction = async (
   connection: Connection,
-  func: CallableFunction,
+  func: CallableFunction & ((session: ITransactionSession) => any),
   { onRollback }: IWithTransactionOptions = {},
 ) => {
   const session = await connection.startSession();
