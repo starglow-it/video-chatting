@@ -82,7 +82,7 @@ export class MeetingChatsGateway extends BaseGateway {
     return user.meeting;
   }
 
-  private caculateReactionCount(
+  private caculateReactionsCount(
     reactionsList: MeetingChat['reactionsCount'],
     k: MeetingReactionKind,
     direction: 1 | -1,
@@ -219,7 +219,7 @@ export class MeetingChatsGateway extends BaseGateway {
         });
       }
 
-      const rCount = this.caculateReactionCount(
+      const rCount = this.caculateReactionsCount(
         message.reactionsCount,
         msg.kind,
         1,
@@ -282,7 +282,7 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
 
-      const rC = this.caculateReactionCount(
+      const rC = this.caculateReactionsCount(
         message.reactionsCount,
         userReaction.kind,
         -1,
@@ -296,9 +296,32 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
 
-      
+      message = await this.meetingChatsService.findOneAndUpdate({
+        query: {
+          _id: new ObjectId(msg.meetingChatId),
+        },
+        data: {
+          reactionsCount: rC,
+        },
+        session,
+      });
 
+      const plainMessage = meetingChatSerialization(message);
+      const plainUser = userSerialization(user);
 
+      this.emitToRoom(
+        `meeting:${meeting._id.toString()}`,
+        MeetingEmitEvents.ReceiveUnReaction,
+        {
+          message: plainMessage,
+          user: plainUser,
+        },
+      );
+
+      return wsResult({
+        message: plainMessage,
+        user: plainUser,
+      });
     });
   }
 }
