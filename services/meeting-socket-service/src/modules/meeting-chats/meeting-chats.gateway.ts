@@ -242,7 +242,6 @@ export class MeetingChatsGateway extends BaseGateway {
       return wsResult({
         message: plainMessage,
         userReaction: plainUserReaction,
-        kind: msg.kind,
       });
     });
   }
