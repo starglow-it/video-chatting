@@ -202,7 +202,7 @@ export class MeetingChatsGateway extends BaseGateway {
         });
 
       if (!userReaction) {
-        await this.meetingChatReactionsService.create({
+        userReaction = await this.meetingChatReactionsService.create({
           data: {
             kind: msg.kind,
             meetingChat: message._id,

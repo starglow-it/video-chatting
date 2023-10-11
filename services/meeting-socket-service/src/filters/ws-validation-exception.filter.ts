@@ -6,16 +6,9 @@ import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
 export class WsValidationExceptionFilter implements ExceptionFilter {
   catch(exception: WsValidationException, host: ArgumentsHost): any {
     const ctx = host.switchToWs();
-    const client = ctx.getClient<Socket>();
+    // const client = ctx.getClient<Socket>();
 
     const formattedError = this.formatErrors(exception.errors);
-
-    client.send({
-      timestamp: new Date().getTime(),
-      error: {
-        message: formattedError[0],
-      },
-    });
 
     console.log({
       timestamp: new Date().getTime(),
@@ -23,6 +16,13 @@ export class WsValidationExceptionFilter implements ExceptionFilter {
         message: formattedError[0],
       },
     });
+
+    return {
+      timestamp: new Date().getTime(),
+      error: {
+        message: formattedError[0],
+      },
+    };
   }
 
   formatErrors = (errors: any) => {

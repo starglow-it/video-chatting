@@ -1,6 +1,12 @@
+import { IsNotEmpty, IsString } from "class-validator";
 import { MeetingReactionKind } from "shared-types";
 
-export type ReactMeetingChatRequestDto = {
+export class ReactMeetingChatRequestDto {
+    @IsNotEmpty()
+    @IsString()
     meetingChatId: string;
-    kind: MeetingReactionKind
+
+    @IsNotEmpty()
+    @IsString()
+    kind: MeetingReactionKind;
 }
