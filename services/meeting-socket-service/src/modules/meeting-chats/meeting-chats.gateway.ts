@@ -303,6 +303,8 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
 
+      message.populate('sender');
+
       const plainMessage = meetingChatSerialization(message);
 
       this.emitToRoom(
