@@ -41,7 +41,14 @@ const Emotions = [
     },
 ];
 
-export const positionEmotion = ['10px', '22px', '34px', '46px', '58px', '60px'];
+export const positionEmotion = [
+    '10px',
+    '35px',
+    '60px',
+    '85px',
+    '110px',
+    '125px',
+];
 
 export const MeetingChatItem = memo(
     ({
@@ -84,6 +91,7 @@ export const MeetingChatItem = memo(
             } else {
                 onReaction?.(id, kind);
             }
+            handleHidePreview();
         };
 
         const handleTransformEmotion = (elId: string) => {
@@ -100,24 +108,39 @@ export const MeetingChatItem = memo(
             const emotionKeys = Object.keys(reactions) as MeetingReactionKind[];
             if (!emotionKeys.length) return null;
 
-            return emotionKeys.map((item, index) => {
-                const count = reactions[item]?.length ?? 0;
-                const emoji =
-                    Emotions.find(emo => emo.id === item)?.emoji ?? '';
-                const style = {
-                    '--right': positionEmotion[index],
-                } as CSSProperties;
-                return (
-                    <CustomGrid
-                        className={styles.releasedEmotion}
-                        key={item}
-                        style={style}
-                    >
-                        <Emoji unified={emoji} size={15} />
-                        {count > 1 && <span>{count}</span>}
-                    </CustomGrid>
-                );
-            });
+            return (
+                <CustomGrid display="flex" alignItems="center" justifyContent="flex-end">
+                    {emotionKeys.map((item, index) => {
+                        const count = reactions[item]?.length ?? 0;
+                        const emoji =
+                            Emotions.find(emo => emo.id === item)?.emoji ?? '';
+                        const style = {
+                            '--right': positionEmotion[index],
+                        } as CSSProperties;
+                        return (
+                            <CustomGrid
+                                className={styles.releasedEmotion}
+                                key={item}
+                                style={style}
+                            >
+                                <CustomGrid
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    p="2px"
+                                    width="100%"
+                                    height="100%"
+                                >
+                                    <Emoji unified={emoji} size={12} />
+                                    <div className={styles.emotionCount}>
+                                        {count}
+                                    </div>
+                                </CustomGrid>
+                            </CustomGrid>
+                        );
+                    })}{' '}
+                </CustomGrid>
+            );
         };
 
         const renderItem = () => {
@@ -143,8 +166,9 @@ export const MeetingChatItem = memo(
                                         __html: body,
                                     }}
                                 />
+                                {renderEmotions()}
                             </CustomGrid>
-                            {renderEmotions()}
+                            
                         </CustomGrid>
                     );
                 case 'recently':
@@ -158,12 +182,9 @@ export const MeetingChatItem = memo(
                                     dangerouslySetInnerHTML={{
                                         __html: body,
                                     }}
-                                />
+                                /> {renderEmotions()}
                             </CustomGrid>
-                            <CustomGrid className={styles.releasedEmotion}>
-                                <Emoji unified="1f602" size={15} />
-                            </CustomGrid>
-                            {renderEmotions()}
+                           
                         </CustomGrid>
                     );
                 default:

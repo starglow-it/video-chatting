@@ -13,12 +13,13 @@
 }
 
 .right {
-    padding: 8px 10px;
-    width: 155px;
+    padding: 10px 12px;
+    width: 170px;
+    gap: 8px;
     display: flex;
     flex-direction: column;
     line-height: 16px;
-    border-radius: 5px 13px 13px 15px;
+    border-radius: 15px;
     justify-content: center;
     background: rgba(0, 0, 0, 0.3882352941);
     position: relative;
@@ -61,7 +62,7 @@
 }
 
 .myMessage .right {
-    border-radius: 15px 13px 5px 13px;
+    border-radius: 15px;
 }
 
 .recently {
@@ -87,17 +88,13 @@
 }
 
 .releasedEmotion {
-    position: absolute;
-    bottom: -6px;
-    right: var(--right);
-    padding: 2px;
+    // position: absolute;
+    // bottom: -6px;
+    // right: var(--right);
     background: rgba(0, 0, 0, 0.3882352941); 
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
+    border-radius: 35%;
+    width: 28px;
+    height: 24px;
     z-index: 10;
 }
 
@@ -113,3 +110,8 @@
     transform: scale(1.2);
 }
 
+.emotionCount {
+    color: $primary-white;
+    font-size: 10px;
+    margin-left: 2px;
+}
