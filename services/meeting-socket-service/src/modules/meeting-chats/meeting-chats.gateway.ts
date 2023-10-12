@@ -303,7 +303,7 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
 
-      message.populate('sender');
+      await message.populate('sender');
 
       const plainMessage = meetingChatSerialization(message);
 
