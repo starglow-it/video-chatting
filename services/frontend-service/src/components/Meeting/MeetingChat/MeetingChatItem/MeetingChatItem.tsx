@@ -3,7 +3,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import clsx from 'clsx';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CSSProperties, memo, useRef, useState } from 'react';
+import { CSSProperties, memo, useMemo, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import { $localUserStore } from 'src/store/roomStores';
 import { EmotionIcon } from 'shared-frontend/icons/OtherIcons/EmotionIcon';
@@ -41,7 +41,7 @@ const Emotions = [
     },
 ];
 
-export const positionEmotion = ['10px', '16px', '22px', '28px', '34px', '40px'];
+export const positionEmotion = ['10px', '22px', '34px', '46px', '58px', '60px'];
 
 export const MeetingChatItem = memo(
     ({
@@ -52,6 +52,7 @@ export const MeetingChatItem = memo(
         id,
         reactions,
         onReaction,
+        onUnReaction,
     }: ChatItem) => {
         const localUser = useStore($localUserStore);
 
@@ -74,7 +75,15 @@ export const MeetingChatItem = memo(
         };
 
         const handleReaction = (kind: MeetingReactionKind) => {
-            onReaction?.(id, kind);
+            const kindReactions = reactions[kind] ?? [];
+            const hasReaction = kindReactions.find(
+                item => item === localUser.id,
+            );
+            if (hasReaction) {
+                onUnReaction?.(id, kind);
+            } else {
+                onReaction?.(id, kind);
+            }
         };
 
         const handleTransformEmotion = (elId: string) => {
@@ -222,7 +231,7 @@ export const MeetingChatItem = memo(
                                             `emotion-${item.id}`,
                                         )
                                     }
-                                    className={styles.emotion}
+                                    className={clsx(styles.emotion)}
                                 >
                                     <Emoji unified={item.emoji} size={27} />
                                 </CustomGrid>

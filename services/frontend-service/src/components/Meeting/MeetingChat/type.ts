@@ -7,4 +7,5 @@ export type ChatItem = {
     type?: ChatType;
     isBreak?: boolean;
     onReaction?: (chatId: string, kind: MeetingReactionKind) => void;
+    onUnReaction?: (chatId: string, kind: MeetingReactionKind) => void;
 } & MeetingChat;

@@ -7,7 +7,10 @@ import {
 } from 'src/store/roomStores/meeting/meetingChat/model';
 import { useCallback, useEffect, useRef } from 'react';
 import { MeetingReactionKind } from 'shared-types';
-import { sendMeetingReactionEvent } from 'src/store/roomStores';
+import {
+    sendMeetingReactionEvent,
+    sendMeetingUnReactionEvent,
+} from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
@@ -34,6 +37,13 @@ export const MeetingChatList = () => {
         [],
     );
 
+    const handleUnReaction = useCallback(
+        (chatId: string, kind: MeetingReactionKind) => {
+            sendMeetingUnReactionEvent({ meetingChatId: chatId, kind });
+        },
+        [],
+    );
+
     const renderMessages = () => {
         return list.map((item, index) => (
             <MeetingChatItem
@@ -41,6 +51,7 @@ export const MeetingChatList = () => {
                 key={item.id}
                 isBreak={list[index - 1]?.sender?.id !== item?.sender?.id}
                 onReaction={handleReaction}
+                onUnReaction={handleUnReaction}
             />
         ));
     };

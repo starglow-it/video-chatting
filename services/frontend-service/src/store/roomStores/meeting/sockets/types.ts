@@ -102,12 +102,12 @@ export type SendReactionMessagePayload = {
 };
 
 export type SendReactionMessageReponse = {
-    message: MeetingChat;
-    userReaction: MeetingChatReaction;
+    reaction: MeetingChatReaction;
 };
 
 export type SendUnReactionMessagePayload = {
     meetingChatId: string;
+    kind: MeetingReactionKind;
 };
 
 export type SendUnReactionMessageResponse = {

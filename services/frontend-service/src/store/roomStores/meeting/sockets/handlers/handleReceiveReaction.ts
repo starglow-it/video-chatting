@@ -1,6 +1,8 @@
 import { reactionMessageEvent } from '../../meetingChat/model';
 import { SendReactionMessageReponse } from '../types';
 
-export const handleReceiveReaction = (data: SendReactionMessageReponse) => {
-    reactionMessageEvent({ message: data.message });
+export const handleReceiveReaction = ({
+    reaction,
+}: SendReactionMessageReponse) => {
+    reactionMessageEvent({ message: reaction.meetingChat });
 };
