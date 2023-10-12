@@ -88,12 +88,12 @@ export class MeetingChatsGateway extends BaseGateway {
     ) => user._id.toString() === otherUser._id.toString();
     const isExistUser = () => v.some((u) => compareUsers(u, user));
     const findIndex = () => v.findIndex((u) => compareUsers(u, user));
+    const deleteUser = () => v.splice(findIndex(), 1);
     if (!v) {
       reactionsList.set(k, [user]);
     } else {
-      direaction === 'asc'
-        ? !isExistUser() && v.push(user)
-        : delete v[findIndex()];
+      direaction === 'asc' ? !isExistUser() && v.push(user) : deleteUser();
+
       reactionsList.set(k, v);
     }
 
