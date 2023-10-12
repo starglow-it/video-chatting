@@ -55,7 +55,7 @@ export type MeetingChat = {
     body: string;
     meeting: Meeting;
     createdAt: Date;
-    reactionsCount: Map<MeetingReactionKind, number>;
+    reactions: { [K in MeetingReactionKind]: string[] };
 };
 
 export type MeetingChatReaction = {

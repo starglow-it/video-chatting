@@ -50,7 +50,7 @@ export const MeetingChatItem = memo(
         sender,
         isBreak,
         id,
-        reactionsCount,
+        reactions,
         onReaction,
     }: ChatItem) => {
         const localUser = useStore($localUserStore);
@@ -88,14 +88,11 @@ export const MeetingChatItem = memo(
         };
 
         const renderEmotions = () => {
-            if (!Object.keys(reactionsCount).length) return null;
+            const emotionKeys = Object.keys(reactions) as MeetingReactionKind[];
+            if (!emotionKeys.length) return null;
 
-            const emotions = Array.from(
-                reactionsCount.keys(),
-            ) as MeetingReactionKind[];
-
-            return emotions.map((item, index) => {
-                const count = reactionsCount.get(item) ?? 0;
+            return emotionKeys.map((item, index) => {
+                const count = reactions[item]?.length ?? 0;
                 const emoji =
                     Emotions.find(emo => emo.id === item)?.emoji ?? '';
                 const style = {
@@ -201,7 +198,7 @@ export const MeetingChatItem = memo(
                         horizontal: 'center',
                     }}
                 >
-                    <Zoom in style={{borderRadius: '16px'}}>
+                    <Zoom in style={{ borderRadius: '16px' }}>
                         <CustomGrid
                             display="flex"
                             flexDirection="row"
