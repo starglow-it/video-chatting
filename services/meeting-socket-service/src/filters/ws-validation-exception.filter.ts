@@ -25,7 +25,7 @@ export class WsValidationExceptionFilter implements ExceptionFilter {
 
     return {
       clientId: client.id,
-      ctx: client.id,
+      ctx: data,
       error: {
         message: formattedError[0] || 'Invalid data',
       },

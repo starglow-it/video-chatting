@@ -1,7 +1,6 @@
 import { MeetingReactionKind } from 'shared-types';
 import { ICommonMeetingDTO } from './common-meeting.interface';
 import { ISenderDto } from './sender.interface';
-import { ICommonMeetingUserDTO } from './common-user.interface';
 
 export interface IMeetingChat {
   id: string;
