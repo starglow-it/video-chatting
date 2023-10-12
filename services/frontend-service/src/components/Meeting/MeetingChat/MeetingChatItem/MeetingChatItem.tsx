@@ -3,7 +3,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import clsx from 'clsx';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CSSProperties, memo, useMemo, useRef, useState } from 'react';
+import { CSSProperties, memo, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import { $localUserStore } from 'src/store/roomStores';
 import { EmotionIcon } from 'shared-frontend/icons/OtherIcons/EmotionIcon';
@@ -109,9 +109,14 @@ export const MeetingChatItem = memo(
             if (!emotionKeys.length) return null;
 
             return (
-                <CustomGrid display="flex" alignItems="center" justifyContent="flex-end">
+                <CustomGrid
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                >
                     {emotionKeys.map((item, index) => {
-                        const count = reactions[item]?.length ?? 0;
+                        const reactionItem = reactions[item];
+                        const count = reactionItem?.length ?? 0;
                         const emoji =
                             Emotions.find(emo => emo.id === item)?.emoji ?? '';
                         const style = {
@@ -119,7 +124,11 @@ export const MeetingChatItem = memo(
                         } as CSSProperties;
                         return (
                             <CustomGrid
-                                className={styles.releasedEmotion}
+                                className={clsx(styles.releasedEmotion, {
+                                    [styles.active]: reactionItem.includes(
+                                        localUser.id,
+                                    ),
+                                })}
                                 key={item}
                                 style={style}
                             >
@@ -168,7 +177,6 @@ export const MeetingChatItem = memo(
                                 />
                                 {renderEmotions()}
                             </CustomGrid>
-                            
                         </CustomGrid>
                     );
                 case 'recently':
@@ -182,9 +190,9 @@ export const MeetingChatItem = memo(
                                     dangerouslySetInnerHTML={{
                                         __html: body,
                                     }}
-                                /> {renderEmotions()}
+                                />
+                                {renderEmotions()}
                             </CustomGrid>
-                           
                         </CustomGrid>
                     );
                 default:

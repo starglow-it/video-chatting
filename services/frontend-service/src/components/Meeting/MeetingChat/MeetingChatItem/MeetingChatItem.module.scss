@@ -88,14 +88,16 @@
 }
 
 .releasedEmotion {
-    // position: absolute;
-    // bottom: -6px;
-    // right: var(--right);
     background: rgba(0, 0, 0, 0.3882352941); 
     border-radius: 35%;
-    width: 28px;
+    min-width: 22px;
+    padding: 0px 4px;
     height: 24px;
     z-index: 10;
+
+    &.active {
+        background-color: #66656578;
+    }
 }
 
 .emotion {
