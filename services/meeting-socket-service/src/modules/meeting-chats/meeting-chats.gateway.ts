@@ -82,14 +82,18 @@ export class MeetingChatsGateway extends BaseGateway {
     direaction: 'asc' | 'desc',
   ) {
     const v = reactionsList.get(k);
+    const compareUsers = (
+      user: MeetingUserDocument,
+      otherUser: MeetingUserDocument,
+    ) => user._id.toString() === otherUser._id.toString();
+    const isExistUser = () => v.some((u) => compareUsers(u, user));
+    const findIndex = () => v.findIndex((u) => compareUsers(u, user));
     if (!v) {
       reactionsList.set(k, [user]);
     } else {
       direaction === 'asc'
-        ? v.push(user)
-        : delete v[
-            v.findIndex((u) => u._id.toString() === user._id.toString())
-          ];
+        ? !isExistUser() && v.push(user)
+        : delete v[findIndex()];
       reactionsList.set(k, v);
     }
 
