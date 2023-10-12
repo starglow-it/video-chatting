@@ -58,7 +58,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.whoami.rule=(Host(`my.chatruume.com`) || Host(`socket.chatruume.com`) || Host(`livekit.chatruume.com`) || Host(`tlo-traefik.anhtuan57.click`)) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.rule=(Host(`my.chatruume.com`) || Host(`socket.chatruume.com`) || Host(`livekit.chatruume.com`) || Host(`tf.chatruume.com`)) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.priority=1000"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
