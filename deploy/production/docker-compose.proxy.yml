@@ -8,6 +8,7 @@ services:
       - AWS_ACCESS_KEY_ID=AKIAQY5KRUCZSFKRJ4P7
       - AWS_SECRET_ACCESS_KEY=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
       - AWS_REGION=us-east-2
+      - "LEGO_DISABLE_CNAME_SUPPORT=true"
     container_name: traefik
     restart: always
     ports:
