@@ -77,6 +77,16 @@ export const MeetingChatItem = memo(
             onReaction?.(id, kind);
         };
 
+        const handleTransformEmotion = (elId: string) => {
+            const el = document.getElementById(elId);
+            el && el.classList.add(styles.tranformEmotion);
+        };
+
+        const handleRemoveTransfromEmotion = (elId: string) => {
+            const el = document.getElementById(elId);
+            el && el.classList.remove(styles.tranformEmotion);
+        };
+
         const renderEmotions = () => {
             if (!Object.keys(reactionsCount).length) return null;
 
@@ -191,7 +201,7 @@ export const MeetingChatItem = memo(
                         horizontal: 'center',
                     }}
                 >
-                    <Zoom in>
+                    <Zoom in style={{borderRadius: '16px'}}>
                         <CustomGrid
                             display="flex"
                             flexDirection="row"
@@ -203,7 +213,19 @@ export const MeetingChatItem = memo(
                             {Emotions.map(item => (
                                 <CustomGrid
                                     key={item.id}
+                                    id={`emotion-${item.id}`}
                                     onClick={() => handleReaction(item.id)}
+                                    onMouseEnter={() =>
+                                        handleTransformEmotion(
+                                            `emotion-${item.id}`,
+                                        )
+                                    }
+                                    onMouseLeave={() =>
+                                        handleRemoveTransfromEmotion(
+                                            `emotion-${item.id}`,
+                                        )
+                                    }
+                                    className={styles.emotion}
                                 >
                                     <Emoji unified={item.emoji} size={27} />
                                 </CustomGrid>

@@ -191,33 +191,33 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
 
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="people.tooltip"
-                        />
-                    }
-                    placement="top"
+            <CustomTooltip
+                title={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="people.tooltip"
+                    />
+                }
+                placement="top"
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleUsersPanel}
-                            className={clsx(styles.actionButton, {
-                                [styles.active]: isUsersOpen,
-                                [styles.newRequests]:
-                                    isThereNewRequests && isMeetingHost,
-                                [styles.mobile]: isMobile,
-                            })}
-                            Icon={<PeopleIcon width="22px" height="22px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={handleToggleUsersPanel}
+                        className={clsx(styles.actionButton, {
+                            [styles.active]: isUsersOpen,
+                            [styles.newRequests]:
+                                isThereNewRequests && isMeetingHost,
+                            [styles.mobile]: isMobile,
+                        })}
+                        Icon={<PeopleIcon width="22px" height="22px" />}
+                    />
+                </CustomPaper>
+            </CustomTooltip>
             <ConditionalRender condition={isLurker}>
                 <CustomTooltip
                     title={
