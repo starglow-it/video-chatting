@@ -5,21 +5,34 @@ import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
 
 @Catch(WsValidationException)
 export class WsValidationExceptionFilter implements ExceptionFilter {
-  private formatErrors = (errors: ValidationError[]) =>
-    errors.map((error) => Object.values(error.constraints).join(', '));
+  private errs = [];
+  private formatErrors = (errors: ValidationError[]) => {
+    const r = errors.map((error) => {
+      if (error.children.length) return this.formatErrors(error.children);
+      return `${error.property} ${
+        Object.values(error.constraints).join(', ') || 'invalid'
+      }`;
+    });
+
+    if (!this.errs.length) {
+      this.errs = r;
+    }
+
+    return this.errs;
+  };
 
   catch(exception: WsValidationException, host: ArgumentsHost) {
     const ctx = host.switchToWs();
     const client = ctx.getClient<Socket>();
     const data = ctx.getData();
 
-    const formattedError = this.formatErrors(exception.errors);
+    this.formatErrors(exception.errors);
 
     console.error({
       clientId: client.id,
       ctx: data,
       error: {
-        message: formattedError[0] || 'Invalid data',
+        message: this.errs[0] || 'Invalid data',
       },
     });
 
@@ -27,7 +40,7 @@ export class WsValidationExceptionFilter implements ExceptionFilter {
       clientId: client.id,
       ctx: data,
       error: {
-        message: formattedError[0] || 'Invalid data',
+        message: this.errs[0] || 'Invalid data',
       },
     };
   }

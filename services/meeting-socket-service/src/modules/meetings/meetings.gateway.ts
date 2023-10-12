@@ -66,13 +66,6 @@ import {
   MeetingUser,
   MeetingUserDocument,
 } from '../../schemas/meeting-user.schema';
-import {
-  SendAnswerPayload,
-  SendDevicesPermissionsPayload,
-  SendIceCandidatePayload,
-  SendOfferPayload,
-  UserActionInMeeting,
-} from '../../types';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
@@ -81,6 +74,12 @@ import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dt
 import { wsResult } from '../../utils/ws/wsResult';
 import { ObjectId } from 'src/utils/objectId';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
+import { ChangeHostDto } from 'src/dtos/requests/change-host.dto';
+import { SendOfferRequestDto } from 'src/dtos/requests/send-offer.dto';
+import { SendAnswerOfferRequestDto } from 'src/dtos/requests/send-answer-offer.dto';
+import { SendIceCandidateRequestDto } from 'src/dtos/requests/send-candidate.dto';
+import { SendDevicesPermissionsRequestDto } from 'src/dtos/requests/send-devices-permissions.dto';
+import { UserActionInMeeting } from '../../types';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -1375,7 +1374,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(UsersSubscribeEvents.OnChangeHost)
   async changeHost(
-    @MessageBody() message: { userId: string },
+    @MessageBody() message: ChangeHostDto,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
@@ -1641,7 +1640,7 @@ export class MeetingsGateway
   }
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendOffer)
-  async sendOffer(@MessageBody() message: SendOfferPayload): Promise<void> {
+  async sendOffer(@MessageBody() message: SendOfferRequestDto): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendOffer} event]`,
       ctx: {
@@ -1660,7 +1659,7 @@ export class MeetingsGateway
   }
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendAnswer)
-  async sendAnswer(@MessageBody() message: SendAnswerPayload): Promise<void> {
+  async sendAnswer(@MessageBody() message: SendAnswerOfferRequestDto): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendAnswer} event]`,
       ctx: {
@@ -1680,7 +1679,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendIceCandidate)
   async sendIceCandidate(
-    @MessageBody() message: SendIceCandidatePayload,
+    @MessageBody() message: SendIceCandidateRequestDto,
   ): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendIceCandidate} event]`,
@@ -1701,7 +1700,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendDevicesPermissions)
   async updateDevicesPermissions(
-    @MessageBody() message: SendDevicesPermissionsPayload,
+    @MessageBody() message: SendDevicesPermissionsRequestDto,
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
     this.logger.log({

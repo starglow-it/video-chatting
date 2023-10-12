@@ -1,7 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 import { IEnterMeeting } from '../../interfaces/enter-meeting.interface';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
+import { Type } from 'class-transformer';
+import { MeetingUserDto } from './common/meeting-user.dto';
 
 export class EnterMeetingRequestDTO implements IEnterMeeting {
   @IsNotEmpty({
@@ -12,5 +14,10 @@ export class EnterMeetingRequestDTO implements IEnterMeeting {
   })
   readonly meetingId: string;
 
+  @IsNotEmpty()
+  @ValidateNested({
+    message: 'Invalid user'
+  })
+  @Type(() => MeetingUserDto)
   readonly user: ICommonMeetingUserDTO;
 }
