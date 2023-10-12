@@ -245,7 +245,13 @@ export class MeetingChatsGateway extends BaseGateway {
         });
       }
 
-      await reaction.populate(['meetingChat', 'user']);
+      await reaction.populate([
+        {
+          path: 'meetingChat',
+          populate: ['sender'],
+        },
+        'user',
+      ]);
 
       const plainReaction = meetingChatReactionSerialization(reaction);
 
