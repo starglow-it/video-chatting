@@ -26,9 +26,7 @@ export class MeetingChatDto implements IMeetingChat {
   meeting: ICommonMeetingDTO;
 
   @Expose()
-  @Transform(({ obj }) =>
-    mapToArray<MeetingReactionKind, string[]>(obj['reactions']),
-  )
+  @Transform(({ obj }) => Object.fromEntries(obj['reactions']))
   reactions: IMeetingChat['reactions'];
 
   @Expose()

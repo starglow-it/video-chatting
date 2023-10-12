@@ -269,7 +269,7 @@ export class MeetingChatsGateway extends BaseGateway {
 
       let message = await this.getMessageById(msg.meetingChatId, session);
 
-      const userReaction = await this.meetingChatReactionsService.findOne({
+      const reaction = await this.meetingChatReactionsService.findOne({
         query: {
           meetingChat: new ObjectId(msg.meetingChatId),
           user: user._id,
@@ -279,7 +279,7 @@ export class MeetingChatsGateway extends BaseGateway {
 
       const reactions = this.caculateReactions(
         message.reactions,
-        userReaction.kind,
+        reaction.kind,
         user,
         'desc',
       );

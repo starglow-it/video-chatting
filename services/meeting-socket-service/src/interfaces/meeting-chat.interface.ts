@@ -7,6 +7,6 @@ export interface IMeetingChat {
   sender: ISenderDto;
   body: string;
   meeting: ICommonMeetingDTO;
-  reactions: { [K in MeetingReactionKind]: string[] }[];
+  reactions: { [K in MeetingReactionKind]: string[] };
   createdAt: Date;
 }
