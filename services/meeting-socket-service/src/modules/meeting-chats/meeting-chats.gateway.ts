@@ -75,19 +75,25 @@ export class MeetingChatsGateway extends BaseGateway {
     return user.meeting;
   }
 
-  private caculateReactionsCount(
-    reactionsList: MeetingChat['reactionsCount'],
+  private caculateReactions(
+    reactionsList: MeetingChat['reactions'],
     k: MeetingReactionKind,
-    direction: 1 | -1,
+    user: MeetingUserDocument,
+    direaction: 'asc' | 'desc',
   ) {
     const v = reactionsList.get(k);
     if (!v) {
-      reactionsList.set(k, direction);
+      reactionsList.set(k, [user]);
     } else {
-      reactionsList.set(k, v + direction);
+      direaction === 'asc'
+        ? v.push(user)
+        : delete v[
+            v.findIndex((u) => u._id.toString() === user._id.toString())
+          ];
+      reactionsList.set(k, v);
     }
 
-    if (reactionsList.get(k) <= 0) {
+    if (reactionsList.get(k).length < 1) {
       reactionsList.delete(k);
     }
 
@@ -223,13 +229,14 @@ export class MeetingChatsGateway extends BaseGateway {
         });
       }
 
-      const rCount = this.caculateReactionsCount(
-        message.reactionsCount,
+      const reactions = this.caculateReactions(
+        message.reactions,
         reaction.kind,
-        1,
+        user,
+        'asc',
       );
 
-      message.reactionsCount = rCount;
+      message.reactions = reactions;
       message.save();
 
       await reaction.populate(['meetingChat', 'user']);
@@ -270,10 +277,11 @@ export class MeetingChatsGateway extends BaseGateway {
         session,
       });
 
-      const rC = this.caculateReactionsCount(
-        message.reactionsCount,
+      const reactions = this.caculateReactions(
+        message.reactions,
         userReaction.kind,
-        -1,
+        user,
+        'desc',
       );
 
       await this.meetingChatReactionsService.deleteOne({
@@ -289,26 +297,23 @@ export class MeetingChatsGateway extends BaseGateway {
           _id: new ObjectId(msg.meetingChatId),
         },
         data: {
-          reactionsCount: rC,
+          reactions,
         },
         session,
       });
 
       const plainMessage = meetingChatSerialization(message);
-      const plainUser = userSerialization(user);
 
       this.emitToRoom(
         `meeting:${meeting._id.toString()}`,
         MeetingEmitEvents.ReceiveUnReaction,
         {
           message: plainMessage,
-          user: plainUser,
         },
       );
 
       return wsResult({
         message: plainMessage,
-        user: plainUser,
       });
     });
   }

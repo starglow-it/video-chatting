@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { MeetingUserDocument } from './meeting-user.schema';
+import { MeetingUser, MeetingUserDocument } from './meeting-user.schema';
 import { MeetingReactionKind } from 'shared-types';
 import { MeetingDocument } from './meeting.schema';
 
@@ -33,11 +33,14 @@ export class MeetingChat {
   @Prop({
     type: mongoose.Schema.Types.Map,
     of: {
-      type: Number,
+      type: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MeetingUser'
+      }],
     },
-    default: new Map<MeetingReactionKind, number>(),
+    default: new Map<MeetingReactionKind, MeetingUserDocument[]>(),
   })
-  reactionsCount: Map<MeetingReactionKind, number>;
+  reactions: Map<MeetingReactionKind, MeetingUserDocument[]>;
 
   createdAt?: Date;
 }

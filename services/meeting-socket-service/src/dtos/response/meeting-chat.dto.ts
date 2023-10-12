@@ -7,6 +7,7 @@ import { ISenderDto } from '../../interfaces/sender.interface';
 import { SenderDto } from './sender.dto';
 import { mapToArray } from '../../utils/mapToArray';
 import { serializeInstance } from '../serialization';
+import { MeetingReactionKind } from 'shared-types';
 
 export class MeetingChatDto implements IMeetingChat {
   @Expose()
@@ -25,8 +26,10 @@ export class MeetingChatDto implements IMeetingChat {
   meeting: ICommonMeetingDTO;
 
   @Expose()
-  @Transform(({ obj }) => mapToArray(obj['reactionsCount']))
-  reactionsCount: IMeetingChat['reactionsCount'];
+  @Transform(({ obj }) =>
+    mapToArray<MeetingReactionKind, string[]>(obj['reactions']),
+  )
+  reactions: IMeetingChat['reactions'];
 
   @Expose()
   createdAt: Date;
