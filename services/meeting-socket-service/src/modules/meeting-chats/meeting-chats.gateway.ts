@@ -207,6 +207,16 @@ export class MeetingChatsGateway extends BaseGateway {
         throw new WsBadRequestException(`${msg.kind} not found`);
       }
 
+      const reactions = this.caculateReactions(
+        message.reactions,
+        msg.kind,
+        user,
+        'asc',
+      );
+
+      message.reactions = reactions;
+      message.save();
+
       let reaction = await this.meetingChatReactionsService.findOneAndUpdate({
         query: {
           user: user._id,
@@ -228,16 +238,6 @@ export class MeetingChatsGateway extends BaseGateway {
           session,
         });
       }
-
-      const reactions = this.caculateReactions(
-        message.reactions,
-        reaction.kind,
-        user,
-        'asc',
-      );
-
-      message.reactions = reactions;
-      message.save();
 
       await reaction.populate(['meetingChat', 'user']);
 
