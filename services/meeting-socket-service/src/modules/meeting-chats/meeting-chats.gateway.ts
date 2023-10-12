@@ -105,7 +105,11 @@ export class MeetingChatsGateway extends BaseGateway {
   }
 
   private checkReactionKind(kind: MeetingReactionKind) {
-    return Object.values(MeetingReactionKind).includes(kind);
+    const isExistKind = Object.values(MeetingReactionKind).includes(kind);
+    if (!isExistKind) {
+      throw new WsBadRequestException(`${kind} not found`);
+    }
+    return isExistKind;
   }
 
   private async getMessageById(
@@ -207,9 +211,7 @@ export class MeetingChatsGateway extends BaseGateway {
 
       const message = await this.getMessageById(msg.meetingChatId, session);
 
-      if (!this.checkReactionKind(msg.kind)) {
-        throw new WsBadRequestException(`${msg.kind} not found`);
-      }
+      this.checkReactionKind(msg.kind);
 
       const reactions = this.caculateReactions(
         message.reactions,
@@ -273,17 +275,11 @@ export class MeetingChatsGateway extends BaseGateway {
 
       let message = await this.getMessageById(msg.meetingChatId, session);
 
-      const reaction = await this.meetingChatReactionsService.findOne({
-        query: {
-          meetingChat: new ObjectId(msg.meetingChatId),
-          user: user._id,
-        },
-        session,
-      });
+      this.checkReactionKind(msg.kind);
 
       const reactions = this.caculateReactions(
         message.reactions,
-        reaction.kind,
+        msg.kind,
         user,
         'desc',
       );
@@ -292,6 +288,7 @@ export class MeetingChatsGateway extends BaseGateway {
         query: {
           meetingChat: new ObjectId(msg.meetingChatId),
           user: user._id,
+          kind: msg.kind,
         },
         session,
       });
