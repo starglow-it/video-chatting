@@ -105,3 +105,11 @@ export type SendReactionMessageReponse = {
     message: MeetingChat;
     userReaction: MeetingChatReaction;
 };
+
+export type SendUnReactionMessagePayload = {
+    meetingChatId: string;
+};
+
+export type SendUnReactionMessageResponse = {
+    message: MeetingChat;
+};
