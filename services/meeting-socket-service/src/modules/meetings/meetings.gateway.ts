@@ -1136,7 +1136,7 @@ export class MeetingsGateway
         );
 
         if (!socket) {
-          return wsError(socket.id, {
+          return wsError(null, {
             message: 'User has been deleted',
           });
         }

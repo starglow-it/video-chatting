@@ -1,7 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { Socket } from 'socket.io';
-import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
+import { WsValidationException } from '../exceptions/ws-validation.expcetion';
 
 @Catch(WsValidationException)
 export class WsValidationExceptionFilter implements ExceptionFilter {
