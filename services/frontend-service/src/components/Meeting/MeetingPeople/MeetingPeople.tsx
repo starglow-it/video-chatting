@@ -1,12 +1,15 @@
 import { useStore, useStoreMap } from 'effector-react';
 import {
+    $activeTabPanel,
     $isLurker,
     $isMeetingHostStore,
     $meetingUsersStore,
+    resetHaveNewMessageEvent,
+    setActiveTabPanelEvent,
 } from 'src/store/roomStores';
 import Tab from '@mui/material/Tab';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
@@ -75,10 +78,16 @@ export const MeetingPeople = () => {
             ),
     });
 
-    const [value, setValue] = useState(0);
+    const value = useStore($activeTabPanel);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+        setActiveTabPanelEvent(newValue);
+    };
+
+    const handleResetNewMessage = (tab: string) => {
+        if (tab === 'Chat') {
+            resetHaveNewMessageEvent();
+        }
     };
 
     const a11yProps = useCallback((index: number) => {
@@ -113,6 +122,7 @@ export const MeetingPeople = () => {
                         value={index}
                         {...a11yProps(index)}
                         classes={{ root: styles.tab }}
+                        onClick={() => handleResetNewMessage(tab)}
                     />
                 ))}
             </Tabs>

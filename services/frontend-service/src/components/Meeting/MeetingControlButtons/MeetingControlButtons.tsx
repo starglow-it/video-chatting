@@ -31,6 +31,7 @@ import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
+    $isHaveNewMessage,
     $isLurker,
     $isMeetingHostStore,
     $isToggleUsersPanel,
@@ -75,6 +76,7 @@ const Component = () => {
                         MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
+    const isThereNewMessage = useStore($isHaveNewMessage);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -211,7 +213,8 @@ const Component = () => {
                         className={clsx(styles.actionButton, {
                             [styles.active]: isUsersOpen,
                             [styles.newRequests]:
-                                isThereNewRequests && isMeetingHost,
+                                (isThereNewRequests && isMeetingHost) ||
+                                !!isThereNewMessage,
                             [styles.mobile]: isMobile,
                         })}
                         Icon={<PeopleIcon width="22px" height="22px" />}

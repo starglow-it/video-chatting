@@ -147,7 +147,7 @@ export const MeetingChatItem = memo(
                                 </CustomGrid>
                             </CustomGrid>
                         );
-                    })}{' '}
+                    })}
                 </CustomGrid>
             );
         };
@@ -166,9 +166,11 @@ export const MeetingChatItem = memo(
                                 />
                             </ConditionalRender>
                             <CustomGrid className={styles.right}>
-                                <span className={styles.userName}>
-                                    {sender.username}
-                                </span>
+                                <ConditionalRender condition={!isLocal}>
+                                    <span className={styles.userName}>
+                                        {sender.username}
+                                    </span>
+                                </ConditionalRender>
                                 <div
                                     className={styles.content}
                                     dangerouslySetInnerHTML={{

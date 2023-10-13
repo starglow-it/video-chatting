@@ -10,6 +10,8 @@ export const $meetingChat = meetingDomain.createStore<MeetingChatStore>({
 
 export const $isThereNewMessage = meetingDomain.createStore<number>(0);
 
+export const $isHaveNewMessage = meetingDomain.createStore<number>(0);
+
 export const addMessageToChatEvent = meetingDomain.createEvent<any>(
     'addMessageToChatEvent',
 );
@@ -17,3 +19,11 @@ export const addMessageToChatEvent = meetingDomain.createEvent<any>(
 export const reactionMessageEvent = meetingDomain.createEvent<{
     message: MeetingChat;
 }>('reactionMessageEvent');
+
+export const resetHaveNewMessageEvent = meetingDomain.createEvent(
+    'resetHaveNewMessageEvent',
+);
+
+export const setCountNewMessageEvent = meetingDomain.createEvent<number>(
+    'setCountNewMessageEvent',
+);
