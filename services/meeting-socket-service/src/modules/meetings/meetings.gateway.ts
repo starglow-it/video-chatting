@@ -725,6 +725,11 @@ export class MeetingsGateway
             message.meetingId,
             session,
           );
+          if (!meeting) {
+            return wsError(socket.id, {
+              message: 'Meeting not found',
+            });
+          }
 
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
@@ -1659,7 +1664,9 @@ export class MeetingsGateway
   }
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendAnswer)
-  async sendAnswer(@MessageBody() message: SendAnswerOfferRequestDto): Promise<void> {
+  async sendAnswer(
+    @MessageBody() message: SendAnswerOfferRequestDto,
+  ): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendAnswer} event]`,
       ctx: {
