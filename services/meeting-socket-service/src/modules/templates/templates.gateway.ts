@@ -16,7 +16,7 @@ import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from '../meetings/meetings.service';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
-import { UpdateMeetingTemplateRequestDto } from 'src/dtos/requests/templates/update-template.dto';
+import { UpdateMeetingTemplateRequestDto } from '../../dtos/requests/templates/update-template.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],

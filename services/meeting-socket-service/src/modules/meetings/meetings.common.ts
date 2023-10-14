@@ -27,6 +27,7 @@ import { Socket } from 'socket.io';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
+import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';
 
 @Injectable()
 export class MeetingsCommonService {
@@ -38,6 +39,7 @@ export class MeetingsCommonService {
     private taskService: TasksService,
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
+    private readonly meetingChatReactionsService: MeetingChatReactionsService,
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
@@ -93,6 +95,11 @@ export class MeetingsCommonService {
     meetingId,
     session,
   }) {
+    await this.meetingChatReactionsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
+
     await this.meetingChatsService.deleteMany({
       query: { meeting: meetingId },
       session,

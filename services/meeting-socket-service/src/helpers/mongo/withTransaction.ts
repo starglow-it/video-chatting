@@ -1,5 +1,5 @@
 import { ClientSession, Connection } from 'mongoose';
-import { WsError } from 'src/utils/ws/wsError';
+import { WsError } from '../../utils/ws/wsError';
 
 export interface IWithTransactionOptions {
   onRollback?: CallableFunction;

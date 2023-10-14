@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   MeetingChat,
   MeetingChatDocument,
-} from 'src/schemas/meeting-chat.schema';
+} from '../../schemas/meeting-chat.schema';
 import {
   InsertModelQuery,
   DeleteModelQuery,

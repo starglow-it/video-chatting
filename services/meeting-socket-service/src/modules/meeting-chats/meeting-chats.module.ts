@@ -7,12 +7,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   MeetingChat,
   MeetingChatSchema,
-} from 'src/schemas/meeting-chat.schema';
+} from '../../schemas/meeting-chat.schema';
 import { MeetingChatReactionsService } from './meeting-chat-reactions.service';
 import {
   MeetingChatReaction,
   MeetingChatReactionSchema,
-} from 'src/schemas/meeting-chat-reaction.schema';
+} from '../../schemas/meeting-chat-reaction.schema';
 
 @Module({
   imports: [

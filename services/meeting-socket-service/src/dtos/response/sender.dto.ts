@@ -1,6 +1,6 @@
 import { Expose, Transform } from "class-transformer";
-import { ICommonMeetingUserDTO } from "src/interfaces/common-user.interface";
-import { ISenderDto } from "src/interfaces/sender.interface";
+import { ICommonMeetingUserDTO } from "../../interfaces/common-user.interface";
+import { ISenderDto } from "../../interfaces/sender.interface";
 
 export class SenderDto implements ISenderDto {
   @Expose()

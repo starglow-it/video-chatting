@@ -223,13 +223,11 @@ export class MeetingChatsGateway extends BaseGateway {
       message.reactions = reactions;
       message.save();
 
-      let reaction = await this.meetingChatReactionsService.findOneAndUpdate({
+      let reaction = await this.meetingChatReactionsService.findOne({
         query: {
           user: user._id,
           meetingChat: message._id,
-        },
-        data: {
-          kind: MeetingReactionKind.Heart,
+          kind: msg.kind,
         },
         session,
       });
@@ -237,9 +235,10 @@ export class MeetingChatsGateway extends BaseGateway {
       if (!reaction) {
         reaction = await this.meetingChatReactionsService.create({
           data: {
-            kind: MeetingReactionKind.Heart,
+            kind: msg.kind,
             meetingChat: message._id,
             user: user._id,
+            meeting: meeting._id,
           },
           session,
         });

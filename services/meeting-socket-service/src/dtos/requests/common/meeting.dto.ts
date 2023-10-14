@@ -1,4 +1,4 @@
-import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
+import { ICommonMeetingUserDTO } from '../../../interfaces/common-user.interface';
 import { ICommonMeetingDTO } from '../../../interfaces/common-meeting.interface';
 import {
   IsBoolean,

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { IUserPosition } from 'src/interfaces/common-user.interface';
+import { IUserPosition } from '../../../interfaces/common-user.interface';
 
 export class UserPositionDto implements IUserPosition {
   @IsNotEmpty()

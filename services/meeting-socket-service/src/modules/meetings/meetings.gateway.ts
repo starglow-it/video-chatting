@@ -72,13 +72,13 @@ import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../../utils/ws/wsResult';
-import { ObjectId } from 'src/utils/objectId';
+import { ObjectId } from '../../utils/objectId';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
-import { ChangeHostDto } from 'src/dtos/requests/change-host.dto';
-import { SendOfferRequestDto } from 'src/dtos/requests/send-offer.dto';
-import { SendAnswerOfferRequestDto } from 'src/dtos/requests/send-answer-offer.dto';
-import { SendIceCandidateRequestDto } from 'src/dtos/requests/send-candidate.dto';
-import { SendDevicesPermissionsRequestDto } from 'src/dtos/requests/send-devices-permissions.dto';
+import { ChangeHostDto } from '../../dtos/requests/change-host.dto';
+import { SendOfferRequestDto } from '../../dtos/requests/send-offer.dto';
+import { SendAnswerOfferRequestDto } from '../../dtos/requests/send-answer-offer.dto';
+import { SendIceCandidateRequestDto } from '../../dtos/requests/send-candidate.dto';
+import { SendDevicesPermissionsRequestDto } from '../../dtos/requests/send-devices-permissions.dto';
 import { UserActionInMeeting } from '../../types';
 
 @WebSocketGateway({

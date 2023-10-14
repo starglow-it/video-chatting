@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { MeetingUser, MeetingUserDocument } from './meeting-user.schema';
 import { MeetingChat, MeetingChatDocument } from './meeting-chat.schema';
 import { MeetingReactionKind } from 'shared-types';
+import { MeetingDocument } from './meeting.schema';
 
 @Schema()
 export class MeetingChatReaction {
@@ -18,6 +19,12 @@ export class MeetingChatReaction {
     ref: 'MeetingUser',
   })
   user: MeetingUserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Meeting',
+  })
+  meeting: MeetingDocument;
 
   @Prop({
     type: mongoose.Schema.Types.String,
