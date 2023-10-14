@@ -66,20 +66,20 @@ import {
   MeetingUser,
   MeetingUserDocument,
 } from '../../schemas/meeting-user.schema';
-import {
-  SendAnswerPayload,
-  SendDevicesPermissionsPayload,
-  SendIceCandidatePayload,
-  SendOfferPayload,
-  UserActionInMeeting,
-} from '../../types';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../../utils/ws/wsResult';
-import { ObjectId } from 'src/utils/objectId';
+import { ObjectId } from '../../utils/objectId';
+import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
+import { ChangeHostDto } from '../../dtos/requests/change-host.dto';
+import { SendOfferRequestDto } from '../../dtos/requests/send-offer.dto';
+import { SendAnswerOfferRequestDto } from '../../dtos/requests/send-answer-offer.dto';
+import { SendIceCandidateRequestDto } from '../../dtos/requests/send-candidate.dto';
+import { SendDevicesPermissionsRequestDto } from '../../dtos/requests/send-devices-permissions.dto';
+import { UserActionInMeeting } from '../../types';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -94,6 +94,7 @@ export class MeetingsGateway
   private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingsService: MeetingsService,
+    private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
     private coreService: CoreService,
     private taskService: TasksService,
@@ -201,6 +202,25 @@ export class MeetingsGateway
 
     if (!isMeetingHost) return;
     await this.setTimeoutFinishMeeting(meeting);
+  }
+
+  private async getLastOldMessageInMeeting(
+    meetingId: string,
+    session: ITransactionSession,
+  ) {
+    const [msg] = await this.meetingChatsService.findMany({
+      query: {
+        meeting: meetingId,
+      },
+      options: {
+        limit: 1,
+        sort: {
+          _id: -1,
+        },
+      },
+      session,
+    });
+    return msg;
   }
 
   async handleDisconnect(client: Socket) {
@@ -528,6 +548,11 @@ export class MeetingsGateway
           return wsError(socket.id, 'meeting.maxParticipantsNumber');
         }
 
+        const lastOldMessage = await this.getLastOldMessageInMeeting(
+          meeting._id.toString(),
+          session,
+        );
+
         const userUpdated = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
@@ -539,6 +564,9 @@ export class MeetingsGateway
             joinedAt: Date.now(),
             userPosition: u.position,
             userSize: u.size,
+            ...(!!lastOldMessage && {
+              lastOldMessage,
+            }),
           },
           session,
         );
@@ -697,6 +725,11 @@ export class MeetingsGateway
             message.meetingId,
             session,
           );
+          if (!meeting) {
+            return wsError(socket.id, {
+              message: 'Meeting not found',
+            });
+          }
 
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
@@ -844,11 +877,19 @@ export class MeetingsGateway
           return wsError(socket.id, 'meeting.maxParticipantsNumber');
         }
 
+        const lastOldMessage = await this.getLastOldMessageInMeeting(
+          meeting._id.toString(),
+          session,
+        );
+
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.InMeeting,
           joinedAt: Date.now(),
           username: msg.username,
           meetingAvatarId: msg.meetingAvatarId === '' ? '' : undefined,
+          ...(!!lastOldMessage && {
+            lastOldMessage,
+          }),
         };
 
         if (msg.meetingAvatarId) {
@@ -868,6 +909,7 @@ export class MeetingsGateway
             meetingAvatarId: msg.meetingAvatarId,
           });
         }
+
         const mU = await this.usersService.findOneAndUpdate(
           {
             socketId: socket.id,
@@ -895,6 +937,7 @@ export class MeetingsGateway
             message: 'Host not found',
           });
         }
+
         await meeting.populate(['users']);
         socket.join(`lurker:${msg.meetingId}`);
         socket.join(`meeting:${msg.meetingId}`);
@@ -958,6 +1001,11 @@ export class MeetingsGateway
             return wsError(socket.id, 'meeting.maxParticipantsNumber');
           }
 
+          const lastOldMessage = await this.getLastOldMessageInMeeting(
+            meeting._id.toString(),
+            session,
+          );
+
           user = await this.usersService.findOneAndUpdate(
             {
               _id: user._id,
@@ -967,6 +1015,9 @@ export class MeetingsGateway
               joinedAt: Date.now(),
               userPosition: u.position,
               userSize: u.size,
+              ...(!!lastOldMessage && {
+                lastOldMessage,
+              }),
             },
             session,
           );
@@ -1090,7 +1141,7 @@ export class MeetingsGateway
         );
 
         if (!socket) {
-          return wsError(socket.id, {
+          return wsError(null, {
             message: 'User has been deleted',
           });
         }
@@ -1328,7 +1379,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(UsersSubscribeEvents.OnChangeHost)
   async changeHost(
-    @MessageBody() message: { userId: string },
+    @MessageBody() message: ChangeHostDto,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
@@ -1594,7 +1645,7 @@ export class MeetingsGateway
   }
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendOffer)
-  async sendOffer(@MessageBody() message: SendOfferPayload): Promise<void> {
+  async sendOffer(@MessageBody() message: SendOfferRequestDto): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendOffer} event]`,
       ctx: {
@@ -1613,7 +1664,9 @@ export class MeetingsGateway
   }
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendAnswer)
-  async sendAnswer(@MessageBody() message: SendAnswerPayload): Promise<void> {
+  async sendAnswer(
+    @MessageBody() message: SendAnswerOfferRequestDto,
+  ): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendAnswer} event]`,
       ctx: {
@@ -1633,7 +1686,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendIceCandidate)
   async sendIceCandidate(
-    @MessageBody() message: SendIceCandidatePayload,
+    @MessageBody() message: SendIceCandidateRequestDto,
   ): Promise<void> {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendIceCandidate} event]`,
@@ -1654,7 +1707,7 @@ export class MeetingsGateway
 
   @SubscribeMessage(VideoChatSubscribeEvents.SendDevicesPermissions)
   async updateDevicesPermissions(
-    @MessageBody() message: SendDevicesPermissionsPayload,
+    @MessageBody() message: SendDevicesPermissionsRequestDto,
     @ConnectedSocket() socket: Socket,
   ): Promise<void> {
     this.logger.log({

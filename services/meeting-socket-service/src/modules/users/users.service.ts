@@ -19,7 +19,7 @@ import {
 import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
-import { replaceItemInArray } from 'src/utils/replaceItemInArray';
+import { replaceItemInArray } from '../../utils/replaceItemInArray';
 
 @Injectable()
 export class UsersService {

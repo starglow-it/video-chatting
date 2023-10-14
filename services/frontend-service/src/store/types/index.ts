@@ -9,6 +9,7 @@ import {
     IUserTemplate,
     ICommonUser,
     MeetingRole,
+    MeetingReactionKind,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
@@ -46,6 +47,22 @@ export type Meeting = {
     owner: MeetingUser['id'];
     ownerProfileId: MeetingUser['profileId'];
     users: MeetingUser[];
+};
+
+export type MeetingChat = {
+    id: string;
+    sender: MeetingUser;
+    body: string;
+    meeting: Meeting;
+    createdAt: Date;
+    reactions: { [K in MeetingReactionKind]: string[] };
+};
+
+export type MeetingChatReaction = {
+    id: string;
+    meetingChat: MeetingChat;
+    user: MeetingUser;
+    kind: MeetingReactionKind;
 };
 
 export type AuthUserState = {

@@ -63,7 +63,7 @@ type TAnswerSwitchRoleParams = {
   transports: ['websocket'],
   cors: {
     origin: '*',
-  },
+  }
 })
 export class LurkersGateway extends BaseGateway {
   constructor(

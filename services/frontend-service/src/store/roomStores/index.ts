@@ -17,6 +17,7 @@ import * as meetingSounds from './meeting/meetingSounds/init';
 import * as meetingBackground from './meeting/meetingBackground/init';
 import * as meetingAudio from './meeting/meetingAudio/init';
 import * as meetingRole from './meeting/meetingRole/init';
+import * as meetingChat from './meeting/meetingChat/init';
 
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
@@ -40,6 +41,7 @@ export * from './meeting/meetingSounds/model';
 export * from './meeting/meetingBackground/model';
 export * from './meeting/meetingAudio/model';
 export * from './meeting/meetingRole/model';
+export * from './meeting/meetingChat/model';
 
 export * from './videoChat/p2p/init';
 export * from './videoChat/localMedia/init';
@@ -66,4 +68,5 @@ export default {
     meetingBackground,
     meetingAudio,
     meetingRole,
+    meetingChat,
 };

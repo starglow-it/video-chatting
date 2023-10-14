@@ -403,4 +403,22 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnMeetingTimeLimit,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveMessage,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveMessage,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiceUnReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiceUnReaction,
+        ),
+    );
 });

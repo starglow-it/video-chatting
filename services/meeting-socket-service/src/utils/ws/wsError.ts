@@ -1,4 +1,4 @@
-type WsError = {
+export type WsError = {
   success: false;
   message?: string;
 };

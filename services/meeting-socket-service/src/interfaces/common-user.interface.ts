@@ -1,6 +1,11 @@
 import { MeetingRole } from 'shared-types';
 import { ICommonMeetingDTO } from './common-meeting.interface';
 
+export interface IUserPosition {
+  bottom: number;
+  left: number;
+}
+
 export interface ICommonMeetingUserDTO {
   id: string;
   profileId: string;
@@ -16,6 +21,6 @@ export interface ICommonMeetingUserDTO {
   profileAvatar: string;
   meetingAvatarId: string;
   meetingRole: MeetingRole;
-  userPosition: { bottom: number; left: number };
+  userPosition: IUserPosition;
   userSize: number;
 }

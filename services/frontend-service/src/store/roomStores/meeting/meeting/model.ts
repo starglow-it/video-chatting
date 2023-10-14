@@ -32,6 +32,12 @@ export const $isScreenSharingStore = $meetingStore.map(meeting =>
     Boolean(meeting.sharingUserId),
 );
 
+export const $activeTabPanel = meetingDomain.createStore<number>(0);
+
+export const setActiveTabPanelEvent = meetingDomain.createEvent<number>(
+    'setActiveTabPanelEvent',
+);
+
 export const updateMeetingEvent = meetingDomain.createEvent<{
     meeting?: Meeting;
 }>('updateMeetingEvent');

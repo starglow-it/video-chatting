@@ -11,6 +11,8 @@ import {
     joinMeetingInWaitingRoomFx,
     joinMeetingWithLurkerFx,
     joinMeetingWithLurkerEvent,
+    $activeTabPanel,
+    setActiveTabPanelEvent,
 } from './model';
 import {
     $changeStreamStore,
@@ -37,6 +39,10 @@ $meetingStore
 
 $meetingConnectedStore
     .on(setMeetingConnectedEvent, (state, data) => data)
+    .reset(resetRoomStores);
+
+$activeTabPanel
+    .on(setActiveTabPanelEvent, (_, tab) => tab)
     .reset(resetRoomStores);
 
 joinMeetingFx.use(handleJoinMeting);

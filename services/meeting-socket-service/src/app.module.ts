@@ -9,6 +9,7 @@ import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module
 import { ConfigModule } from './services/config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { LurkerModule } from './modules/lurkers/lurkers.module';
+import { MeetingChatsModule } from './modules/meeting-chats/meeting-chats.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LurkerModule } from './modules/lurkers/lurkers.module';
     LurkerModule,
     TemplatesModule,
     MeetingNotesModule,
+    MeetingChatsModule,
     TasksModule,
     ConfigModule,
   ],

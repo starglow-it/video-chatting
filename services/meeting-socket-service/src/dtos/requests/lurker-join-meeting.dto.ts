@@ -14,7 +14,7 @@ export class LurkerJoinMeetingDto implements ILurkerJoinMeeting {
     meetingId: string;
 
     @IsNotEmpty()
-    @Type(() => UserDto)
+    @IsString()
     username: string;
 
     @IsOptional()

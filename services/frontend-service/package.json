@@ -77,7 +77,8 @@
     "ts-node": "10.9.1",
     "webrtc-adapter": "8.1.2",
     "xregexp": "5.1.1",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "emoji-picker-react": "4.4.9"
   },
   "devDependencies": {
     "@types/compression": "1.7.2",

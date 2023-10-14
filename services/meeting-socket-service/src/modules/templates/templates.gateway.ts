@@ -12,11 +12,11 @@ import { BaseGateway } from '../../gateway/base.gateway';
 
 import { UsersService } from '../users/users.service';
 
-import { IUserTemplate } from 'shared-types';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from '../meetings/meetings.service';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
+import { UpdateMeetingTemplateRequestDto } from '../../dtos/requests/templates/update-template.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -35,7 +35,7 @@ export class TemplatesGateway extends BaseGateway {
 
   @SubscribeMessage(MeetingSubscribeEvents.OnUpdateMeetingTemplate)
   async updateMeetingTemplate(
-    @MessageBody() data: { templateId: IUserTemplate['id'] },
+    @MessageBody() data: UpdateMeetingTemplateRequestDto,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {

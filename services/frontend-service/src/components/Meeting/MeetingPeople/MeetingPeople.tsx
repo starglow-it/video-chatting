@@ -1,17 +1,25 @@
 import { useStore, useStoreMap } from 'effector-react';
-import { $isMeetingHostStore, $meetingUsersStore } from 'src/store/roomStores';
+import {
+    $activeTabPanel,
+    $isLurker,
+    $isMeetingHostStore,
+    $meetingUsersStore,
+    resetHaveNewMessageEvent,
+    setActiveTabPanelEvent,
+} from 'src/store/roomStores';
 import Tab from '@mui/material/Tab';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
+import { MeetingChat } from '../MeetingChat/MeetingChat';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -21,22 +29,33 @@ interface TabPanelProps {
 
 export const CustomTabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
-
     return (
         <div
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
+            style={{ height: '100%' }}
             {...other}
         >
-            {value === index && <CustomBox sx={{ p: 1 }}>{children}</CustomBox>}
+            {value === index && (
+                <CustomBox
+                    sx={{
+                        padding: value === 2 ? '8px 0px' : '8px',
+                        height: '100%',
+                    }}
+                >
+                    {children}
+                </CustomBox>
+            )}
         </div>
     );
 };
 
 export const MeetingPeople = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
+    const isLurker = useStore($isLurker);
+
     const participants = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -59,10 +78,16 @@ export const MeetingPeople = () => {
             ),
     });
 
-    const [value, setValue] = useState(0);
+    const value = useStore($activeTabPanel);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+        setActiveTabPanelEvent(newValue);
+    };
+
+    const handleResetNewMessage = (tab: string) => {
+        if (tab === 'Chat') {
+            resetHaveNewMessageEvent();
+        }
     };
 
     const a11yProps = useCallback((index: number) => {
@@ -72,6 +97,16 @@ export const MeetingPeople = () => {
         };
     }, []);
 
+    const tabs = !isLurker
+        ? [
+              !participants.length
+                  ? 'Participants'
+                  : `Participants(${participants.length})`,
+              !lurkers.length ? 'Lurkers' : `Lurkers(${lurkers.length})`,
+              'Chat',
+          ]
+        : ['Chat'];
+
     return (
         <CustomGrid display="flex" flexDirection="column" height="400px">
             <Tabs
@@ -80,53 +115,46 @@ export const MeetingPeople = () => {
                 aria-label="lab API tabs example"
                 classes={{ root: styles.tabs }}
             >
-                <Tab
-                    label={
-                        !participants.length
-                            ? 'Participants'
-                            : `Participants(${participants.length})`
-                    }
-                    {...a11yProps(0)}
-                    classes={{ root: styles.tab }}
-                />
-                <Tab
-                    label={
-                        !lurkers.length
-                            ? 'Lurkers'
-                            : `Lurkers(${lurkers.length})`
-                    }
-                    {...a11yProps(1)}
-                    classes={{ root: styles.tab }}
-                />
-                <Tab
-                    label="Chat"
-                    {...a11yProps(2)}
-                    classes={{ root: styles.tab }}
-                />
+                {tabs.map((tab, index) => (
+                    <Tab
+                        key={tab}
+                        label={tab}
+                        value={index}
+                        {...a11yProps(index)}
+                        classes={{ root: styles.tab }}
+                        onClick={() => handleResetNewMessage(tab)}
+                    />
+                ))}
             </Tabs>
-
-            <CustomTabPanel value={value} index={0}>
-                <CustomGrid
-                    display="flex"
-                    flexDirection="column"
-                    paddingTop={1}
-                >
-                    {isMeetingHost && <MeetingAccessRequests />}
-                    <MeetingUsersList />
-                </CustomGrid>
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-                <CustomGrid
-                    display="flex"
-                    flexDirection="column"
-                    paddingTop={1}
-                >
-                    <MeetingLurkers />
-                </CustomGrid>
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-                <CustomTypography color="white">Coming soon!</CustomTypography>
-            </CustomTabPanel>
+            <ConditionalRender condition={!isLurker}>
+                <CustomTabPanel value={value} index={0}>
+                    <CustomGrid
+                        display="flex"
+                        flexDirection="column"
+                        paddingTop={1}
+                    >
+                        {isMeetingHost && <MeetingAccessRequests />}
+                        <MeetingUsersList />
+                    </CustomGrid>
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <CustomGrid
+                        display="flex"
+                        flexDirection="column"
+                        paddingTop={1}
+                    >
+                        <MeetingLurkers />
+                    </CustomGrid>
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <MeetingChat />
+                </CustomTabPanel>
+            </ConditionalRender>
+            <ConditionalRender condition={isLurker}>
+                <CustomTabPanel value={value} index={0}>
+                    <MeetingChat />
+                </CustomTabPanel>
+            </ConditionalRender>
         </CustomGrid>
     );
 };

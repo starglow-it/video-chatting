@@ -9,6 +9,7 @@ import { TasksModule } from '../tasks/tasks.module';
 import { CoreModule } from '../../services/core/core.module';
 import { MeetingTimeModule } from '../meeting-time/meeting-time.module';
 import { MeetingsCommonService } from './meetings.common';
+import { MeetingChatsModule } from '../meeting-chats/meeting-chats.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MeetingsCommonService } from './meetings.common';
     forwardRef(() => UsersModule),
     TasksModule,
     CoreModule,
+    MeetingChatsModule,
     MeetingTimeModule,
   ],
   controllers: [],

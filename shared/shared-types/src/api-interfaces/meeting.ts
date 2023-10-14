@@ -71,11 +71,20 @@ export enum MeetingAccessStatusEnum {
 
 export enum AnswerSwitchRoleAction {
   Accept = 'accept',
-  Rejected = 'rejected'
+  Rejected = 'rejected',
 }
 export interface IMeetingAvatar {
   id?: string;
   resouce: IResouce;
   status: MeetingAvatarStatus;
   roles: MeetingAvatarRole[];
+}
+
+export enum MeetingReactionKind {
+  RollingEyes = 'RollingEyes',
+  Crying = 'Crying',
+  Smiling = 'Smiling',
+  Heart = 'Heart',
+  TearsOfJoy = 'TearsOfJoy',
+  Like = 'Like',
 }

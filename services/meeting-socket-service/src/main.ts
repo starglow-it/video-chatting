@@ -33,8 +33,10 @@ async function bootstrap() {
       transform: true,
       disableErrorMessages: true,
       stopAtFirstError: true,
-      exceptionFactory: (errors: ValidationError[]) =>
-        new ValidationException(errors),
+      exceptionFactory: (errors: ValidationError[]) => {
+        console.log(errors);
+        return new ValidationException(errors);
+      },
     }),
   );
 
@@ -42,8 +44,4 @@ async function bootstrap() {
     console.log(`Meeting Socket Service listening at port: ${port}`),
   );
 }
-
-process.on('uncaughtException', (err, origin) => console.log(origin));
-
-process.on('unhandledRejection', (reason) => console.log(reason));
 bootstrap();
