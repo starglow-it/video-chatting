@@ -111,7 +111,7 @@
     },
     "becomeParticipant": {
       "title": "Become a Participant",
-      "text": "Are you want become a Participant by Host?"
+      "text": "The Host is inviting you to be seen & heard by all"
     }
   },
   "modes": {
@@ -194,5 +194,8 @@
     "buttons" : {
       "requestBecomeParticipant": "Become a Participant"
     }
+  },
+  "chat": {
+    "tooltip": "Chat"
   }
 }

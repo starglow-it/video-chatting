@@ -20,7 +20,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
-import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -197,7 +197,7 @@ const Component = () => {
                 title={
                     <Translation
                         nameSpace="meeting"
-                        translation="people.tooltip"
+                        translation="chat.tooltip"
                     />
                 }
                 placement="top"
@@ -217,7 +217,7 @@ const Component = () => {
                                 !!isThereNewMessage,
                             [styles.mobile]: isMobile,
                         })}
-                        Icon={<PeopleIcon width="22px" height="22px" />}
+                        Icon={<ChatIcon width="18px" height="18px" />}
                     />
                 </CustomPaper>
             </CustomTooltip>
