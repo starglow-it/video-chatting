@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 
-
 // modules
 import { UsersModule } from './modules/users/users.module';
 import { UserTokenModule } from './modules/user-token/user-token.module';
@@ -34,6 +33,7 @@ import { DatabaseModule } from './database/database.module';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 import { ResouceModule } from './modules/resouces/resouces.module';
 import { MeetingAvatarsModule } from './modules/meeting-avatars/meeting-avatars.module';
+import { TemplatePaymentsModule } from './modules/template-payments/template-payments.module';
 
 @Module({
   imports: [
@@ -59,6 +59,7 @@ import { MeetingAvatarsModule } from './modules/meeting-avatars/meeting-avatars.
     ResouceModule,
     MeetingAvatarsModule,
     MonitoringModule,
+    TemplatePaymentsModule,
     MongooseModule.forFeature([
       { name: MediaCategory.name, schema: MediaCategorySchema },
       { name: Media.name, schema: MediaSchema },

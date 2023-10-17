@@ -10,6 +10,7 @@ import {
   MeetingBrokerPatterns,
   UserTemplatesBrokerPatterns,
   CoreBrokerPatterns,
+  TemplatePaymentsBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -47,6 +48,8 @@ import {
   DeleteCommonUserPayload,
   FilterQuery,
   IResouce,
+  UpdateTemplatePaymentPayload,
+  ITemplatePayment,
 } from 'shared-types';
 
 @Injectable()
@@ -216,6 +219,15 @@ export class CoreService {
   ): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
 
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async updateTemplatePayment(
+    payload: UpdateTemplatePaymentPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    const pattern = {
+      cmd: TemplatePaymentsBrokerPatterns.UpdateTemplatePayments,
+    };
     return firstValueFrom(this.client.send(pattern, payload));
   }
 

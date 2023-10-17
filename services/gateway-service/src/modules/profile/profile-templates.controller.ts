@@ -7,6 +7,7 @@ import {
   Logger,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -24,6 +25,7 @@ import {
   ResponseSumType,
   EntityList,
   ICommonTemplate,
+  UpdateTemplatePaymentsData,
 } from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,6 +36,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency';
+import { TemplateIdParam } from 'src/dtos/params/template-id.params';
+import { UpdateTemplatePaymentsRequest } from 'src/dtos/requests/update-template-payment.request';
+import { UserId } from 'src/utils/decorators/user-id.decorator';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -245,10 +250,10 @@ export class ProfileTemplatesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:templateId')
-  @ApiOperation({ summary: 'Get Template' })
+  @ApiOperation({ summary: 'Get Detail Template' })
   @ApiOkResponse({
     type: CommonTemplateRestDTO,
-    description: 'Get Profile Template Success',
+    description: 'Get Detail Profile Template Success',
   })
   async getUserTemplate(@Param('templateId') templateId: string) {
     try {
@@ -320,6 +325,35 @@ export class ProfileTemplatesController {
   }
 
   @UseGuards(JwtAuthAnonymousGuard)
+  @Patch('/:templateId/payment')
+  @ApiOperation({ summary: 'Update User Template Payment' })
+  @ApiOkResponse({
+    description: 'Update user template payment',
+  })
+  async updatePaymentForUserTemplate(
+    @UserId() userId: string,
+    @Param() { templateId }: TemplateIdParam,
+    @Body() body: UpdateTemplatePaymentsRequest,
+  ) {
+    try {
+      return await this.coreService.updateTemplatePayment({
+        data: body as UpdateTemplatePaymentsData,
+        userId,
+        userTemplateId: templateId,
+      });
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while update template payments for user`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/add/:templateId')
   @ApiOperation({ summary: 'Add Template to profile' })
   @ApiOkResponse({
@@ -327,43 +361,36 @@ export class ProfileTemplatesController {
   })
   async addTemplateToProfile(
     @Req() req,
-    @Param('templateId') templateId: string,
-  ) {
+    @Param() { templateId }: TemplateIdParam,
+  ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      if (templateId) {
-        const template = await this.templatesService.getCommonTemplateById({
-          templateId,
-        });
+      const template = await this.templatesService.getCommonTemplateById({
+        templateId,
+      });
 
-        if (template) {
-          let userTemplate =
-            await this.userTemplatesService.getUserTemplateByTemplateId({
-              id: template.templateId,
-              userId: req.user.userId,
-            });
-
-          if (!userTemplate) {
-            userTemplate = await this.coreService.addTemplateToUser({
-              templateId: template.id,
-              userId: req.user.userId,
-            });
-          }
-
-          return {
-            success: true,
-            result: userTemplate,
-          };
-        }
-
+      if (!template) {
         return {
           success: false,
           result: null,
         };
       }
 
+      let userTemplate =
+        await this.userTemplatesService.getUserTemplateByTemplateId({
+          id: template.templateId,
+          userId: req.user.userId,
+        });
+
+      if (!userTemplate) {
+        userTemplate = await this.coreService.addTemplateToUser({
+          templateId: template.id,
+          userId: req.user.userId,
+        });
+      }
+
       return {
-        success: false,
-        result: null,
+        success: true,
+        result: userTemplate,
       };
     } catch (err) {
       this.logger.error(

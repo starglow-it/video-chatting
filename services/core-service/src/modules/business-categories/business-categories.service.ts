@@ -9,7 +9,10 @@ import {
 
 import { IBusinessCategory } from 'shared-types';
 
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
 @Injectable()
@@ -37,7 +40,7 @@ export class BusinessCategoriesService {
     query,
     options,
     session,
-  }: GetModelQuery<BusinessCategoryDocument>) {
+  }: GetModelMultipleQuery<BusinessCategoryDocument>) {
     return this.businessCategory
       .find(
         query,
@@ -66,10 +69,7 @@ export class BusinessCategoriesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    BusinessCategoryDocument,
-    BusinessCategoryDocument
-  >): Promise<BusinessCategoryDocument> {
+  }: UpdateModelSingleQuery<BusinessCategoryDocument>): Promise<BusinessCategoryDocument> {
     return this.businessCategory.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,
