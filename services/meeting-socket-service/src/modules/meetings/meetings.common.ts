@@ -204,10 +204,9 @@ export class MeetingsCommonService {
       accessStatus: {
         $in: [
           MeetingAccessStatusEnum.InMeeting,
-          MeetingAccessStatusEnum.SwitchRoleSent,
         ],
       },
-      meetingRole: role,
+      meetingRole: 'participant',
     });
 
     if (c === meeting.maxParticipants) return;
