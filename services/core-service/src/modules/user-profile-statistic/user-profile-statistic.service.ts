@@ -7,7 +7,7 @@ import {
   UserProfileStatisticDocument,
 } from '../../schemas/user-profile-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
 
 @Injectable()
 export class UserProfileStatisticService {
@@ -32,7 +32,7 @@ export class UserProfileStatisticService {
     query,
     options,
     session,
-  }: GetModelQuery<UserProfileStatisticDocument>) {
+  }: GetModelMultipleQuery<UserProfileStatisticDocument>) {
     return this.userProfileStatistic
       .findOne(
         query,
@@ -50,7 +50,7 @@ export class UserProfileStatisticService {
     query,
     data,
     session,
-  }: UpdateModelQuery<UserProfileStatisticDocument, UserProfileStatistic>) {
+  }: UpdateModelSingleQuery<UserProfileStatisticDocument>) {
     return this.userProfileStatistic
       .findOneAndUpdate(query, data, {
         new: true,

@@ -44,3 +44,20 @@ export const monetizationStatisticsData = [
     type: MonetizationStatisticTypes.RoomTransactions,
   },
 ];
+
+export enum StripeCurrency {
+  USD = 'USD',
+  CAD = 'CAD',
+  GBP = 'GBP',
+  EUR = 'EUR',
+  INR = 'INR',
+  AUS = 'AUS',
+}
+
+export enum PaymentType {
+  Meeting = 'meeting',
+  Paywall = 'paywall',
+}
+
+export const DEFAULT_PAYMENT_CURRENCY = StripeCurrency.USD;
+export const DEFAULT_PRICE = 5;

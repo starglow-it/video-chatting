@@ -361,6 +361,7 @@ export class CommonTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+          session
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
@@ -394,7 +395,7 @@ export class CommonTemplatesController {
     @Payload() payload: UploadTemplateFilePayload,
   ): Promise<void> {
     try {
-      return withTransaction(this.connection, async () => {
+      return withTransaction(this.connection, async (session) => {
         const { url, id, mimeType } = payload;
 
         const previewImages =
@@ -415,6 +416,7 @@ export class CommonTemplatesController {
             draftPreviewUrls: imageIds,
             draftUrl: url,
           },
+          session
         });
 
         return;
@@ -616,7 +618,7 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteCommonTemplate })
   async deleteCommonTemplate(
     @Payload() { templateId }: DeleteCommonTemplatePayload,
-  ): Promise<undefined> {
+  ){
     try {
       return withTransaction(this.connection, async (session) => {
         const template =

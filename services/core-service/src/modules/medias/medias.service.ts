@@ -4,7 +4,7 @@ import { FilterQuery, Model, PipelineStage } from 'mongoose';
 
 import { IMedia, IMediaCategory } from 'shared-types';
 
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   MediaCategory,
@@ -138,7 +138,7 @@ export class MediaService {
     query,
     options,
     session,
-  }: GetModelQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument[]> {
+  }: GetModelMultipleQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument[]> {
     return this.mediaCategory
       .find(
         query,
@@ -157,7 +157,7 @@ export class MediaService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<MediaDocument>) {
+  }: GetModelMultipleQuery<MediaDocument>) {
     return this.media
       .find(
         query,
@@ -176,7 +176,7 @@ export class MediaService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument> {
+  }: GetModelSingleQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument> {
     return this.mediaCategory
       .findOne(
         query,
@@ -191,10 +191,7 @@ export class MediaService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    MediaCategoryDocument,
-    IMediaCategory
-  >): Promise<MediaCategoryDocument> {
+  }: UpdateModelSingleQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument> {
     return this.mediaCategory.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,
@@ -207,7 +204,7 @@ export class MediaService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<MediaDocument, IMedia>): Promise<MediaDocument> {
+  }: UpdateModelSingleQuery<MediaDocument>): Promise<MediaDocument> {
     return this.media.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,

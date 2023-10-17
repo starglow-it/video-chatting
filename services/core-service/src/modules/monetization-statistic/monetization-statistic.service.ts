@@ -7,7 +7,7 @@ import {
   MonetizationStatisticDocument,
 } from '../../schemas/monetization-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
 
 @Injectable()
 export class MonetizationStatisticService {
@@ -32,7 +32,7 @@ export class MonetizationStatisticService {
     query,
     data,
     session,
-  }: UpdateModelQuery<MonetizationStatisticDocument, MonetizationStatistic>) {
+  }: UpdateModelSingleQuery<MonetizationStatisticDocument>) {
     return this.monetizationStatistic
       .findOneAndUpdate(query, data, {
         new: true,
@@ -45,7 +45,7 @@ export class MonetizationStatisticService {
     query,
     options,
     session,
-  }: GetModelQuery<MonetizationStatisticDocument>) {
+  }: GetModelMultipleQuery<MonetizationStatisticDocument>) {
     return this.monetizationStatistic
       .find(
         query,
@@ -59,12 +59,12 @@ export class MonetizationStatisticService {
       .exec();
   }
 
-  async exists({ query }: GetModelQuery<MonetizationStatisticDocument>) {
+  async exists({ query }: GetModelSingleQuery<MonetizationStatisticDocument>) {
     return this.monetizationStatistic.exists(query).exec();
   }
 
   async count(
-    query: GetModelQuery<MonetizationStatisticDocument>['query'],
+    query: GetModelSingleQuery<MonetizationStatisticDocument>['query'],
   ): Promise<number> {
     return this.monetizationStatistic.count(query).exec();
   }

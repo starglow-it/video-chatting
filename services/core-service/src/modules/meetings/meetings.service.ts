@@ -9,7 +9,7 @@ import {
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { IMeetingInstance } from 'shared-types';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
 
 @Injectable()
 export class MeetingsService {
@@ -56,7 +56,7 @@ export class MeetingsService {
   async find({
     query,
     session,
-  }: GetModelQuery<MeetingInstanceDocument>): Promise<
+  }: GetModelMultipleQuery<MeetingInstanceDocument>): Promise<
     MeetingInstanceDocument[]
   > {
     return this.meetingInstance
@@ -68,7 +68,7 @@ export class MeetingsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<MeetingInstanceDocument, MeetingInstanceDocument>) {
+  }: UpdateModelSingleQuery<MeetingInstanceDocument>) {
     return this.meetingInstance
       .findOneAndUpdate(query, data, { new: true, session: session?.session })
       .exec();

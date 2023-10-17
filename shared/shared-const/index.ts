@@ -6,3 +6,4 @@ export * from './src/providers';
 export * from './src/old';
 export * from './src/time';
 export * from './src/room';
+export * from './src/errors';

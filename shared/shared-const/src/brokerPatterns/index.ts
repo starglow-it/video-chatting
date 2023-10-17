@@ -10,3 +10,4 @@ export * from './templates';
 export * from './users';
 export * from './socket';
 export * from './user-templates';
+export * from './template-payments';

@@ -7,7 +7,7 @@ import {
   RoomStatistic,
   RoomStatisticDocument,
 } from '../../schemas/room-statistic.schema';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
 
 @Injectable()
 export class RoomsStatisticsService {
@@ -30,7 +30,7 @@ export class RoomsStatisticsService {
     query,
     options,
     session,
-  }: GetModelQuery<RoomStatisticDocument>) {
+  }: GetModelMultipleQuery<RoomStatisticDocument>) {
     return this.roomStatistic
       .find(
         query,
@@ -48,7 +48,7 @@ export class RoomsStatisticsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<RoomStatisticDocument, RoomStatistic>) {
+  }: UpdateModelSingleQuery<RoomStatisticDocument>) {
     return this.roomStatistic
       .findOneAndUpdate(query, data, {
         new: true,

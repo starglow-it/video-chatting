@@ -1,6 +1,7 @@
 import {
   ICommonTemplate,
   ICommonUser,
+  ITemplatePayment,
   IUpdateTemplate,
   IUserTemplate,
 } from '../api-interfaces';
@@ -35,6 +36,19 @@ export type UpdateUserTemplatePayload = {
   templateId: IUserTemplate['id'];
   userId: ICommonUser['id'];
   data: Partial<IUpdateTemplate>;
+};
+
+export type UpdateTemplatePaymentsData = {
+  [K in ITemplatePayment['type']]?: Pick<
+    ITemplatePayment,
+    'currency' | 'enabled' | 'price'
+  >;
+};
+
+export type UpdateTemplatePaymentPayload = {
+  userTemplateId: IUserTemplate['id'];
+  userId: ICommonUser['id'];
+  data: UpdateTemplatePaymentsData;
 };
 
 export type CreateUserTemplateByIdPayload = {

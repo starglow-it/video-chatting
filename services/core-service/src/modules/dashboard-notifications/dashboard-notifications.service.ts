@@ -9,7 +9,11 @@ import {
   DashboardNotificationDocument,
 } from '../../schemas/dashboard-notification.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class DashboardNotificationsService {
@@ -36,7 +40,7 @@ export class DashboardNotificationsService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<DashboardNotificationDocument>): Promise<
+  }: GetModelMultipleQuery<DashboardNotificationDocument>): Promise<
     DashboardNotificationDocument[]
   > {
     return this.dashboardNotification
@@ -48,10 +52,7 @@ export class DashboardNotificationsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<
-    DashboardNotificationDocument,
-    DashboardNotification
-  >): Promise<any> {
+  }: UpdateModelMultipleQuery<DashboardNotificationDocument>): Promise<any> {
     return this.dashboardNotification
       .updateMany(query, data, {
         session: session.session,
@@ -64,10 +65,7 @@ export class DashboardNotificationsService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    DashboardNotificationDocument,
-    DashboardNotification
-  >): Promise<DashboardNotificationDocument> {
+  }: UpdateModelSingleQuery<DashboardNotificationDocument>): Promise<DashboardNotificationDocument> {
     return this.dashboardNotification.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,

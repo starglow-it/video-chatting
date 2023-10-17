@@ -9,7 +9,7 @@ import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
 import { IResouce } from 'shared-types';
 import { PipelineStage } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
@@ -114,7 +114,7 @@ export class ResoucesService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<ResouceDocument>) {
+  }: GetModelMultipleQuery<ResouceDocument>) {
     return this.resouce
       .find(
         query,
@@ -133,7 +133,7 @@ export class ResoucesService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<ResouceDocument>): Promise<ResouceDocument> {
+  }: GetModelSingleQuery<ResouceDocument>): Promise<ResouceDocument> {
     return this.resouce
       .findOne(
         query,
@@ -148,7 +148,7 @@ export class ResoucesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<ResouceDocument, IResouce>): Promise<ResouceDocument> {
+  }: UpdateModelSingleQuery<ResouceDocument>): Promise<ResouceDocument> {
     return this.resouce.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,

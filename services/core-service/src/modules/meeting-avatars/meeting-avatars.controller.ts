@@ -107,7 +107,7 @@ export class MeetingAvatarsController {
   async createUserTemplateMedia(@Payload() {resouceId, roles}: CreateMeetingAvatarPayload) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const resouce = await this.resouceService.findOne({query: {_id: resouceId}});
+        const resouce = await this.resouceService.findOne({query: {_id: resouceId}, session});
         if(!resouce){
             throw new RpcException({
                 message: 'Resouce not found',

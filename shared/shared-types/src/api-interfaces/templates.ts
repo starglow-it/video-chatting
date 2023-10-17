@@ -109,12 +109,7 @@ export interface IUpdateTemplate {
   indexUsers?: string[];
   maxParticipants?: number;
   languages?: string[];
-  isMonetizationEnabled?: boolean;
   isPublic?: boolean;
-  templatePrice?: number;
-  templateCurrency?: string;
-  paywallCurrency?: string;
-  paywallPrice?: number;
   meetingInstance?: IMeetingInstance;
   links?: { item: string; position: { top: number; left: number } }[];
   socials: {
@@ -133,4 +128,12 @@ export interface IUploadTemplateFile {
   url: string;
   mimeType: string;
   previewUrls: IPreviewImage[];
+}
+
+export interface ITemplatePayment {
+  userTemplate: IUserTemplate;
+  currency: string;
+  price: number;
+  type: string;
+  enabled: boolean;
 }

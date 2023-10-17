@@ -89,7 +89,7 @@ export class MediaController {
     userTemplateId: string;
     session: ITransactionSession;
   }) {
-    const userTemplate = await this.userTemplateService.findUserTemplateById({
+    const userTemplate = await this.userTemplateService.findById({
       id: userTemplateId,
       populatePaths: ['user'],
       session,
@@ -273,9 +273,9 @@ export class MediaController {
   @MessagePattern({ cmd: CoreBrokerPatterns.UploadMediaFile })
   async uploadMediaFile(
     @Payload() { id, mimeType, url }: UploadMediaFilePayload,
-  ): Promise<void> {
+  ) {
     try {
-      return withTransaction(this.connection, async () => {
+      return withTransaction(this.connection, async (session) => {
         console.log('uploadMediaFile: url', url);
         const maxRetries = 10;
         const previewUrls = await retry<PreviewUrls>(async () => {
@@ -300,6 +300,7 @@ export class MediaController {
               path: 'previewUrls',
             },
           ],
+          session,
         });
 
         console.log('uploadMediaFile: media', media);
@@ -320,32 +321,35 @@ export class MediaController {
   async uploadMediaCategory(
     @Payload() { id, mimeType, url }: UploadMediaCategoryFile,
   ): Promise<CommonMediaCategoryDTO> {
-    try {
-      if (!mimeType.includes('image')) {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        if (!mimeType.includes('image')) {
+          throw new RpcException({
+            message: 'File must be image type',
+            ctx: MEDIA_SERVICE,
+          });
+        }
+
+        const category = await this.mediaService.updateMediaCategory({
+          query: {
+            _id: id,
+          },
+          data: {
+            emojiUrl: url,
+          },
+          session,
+        });
+        return plainToInstance(CommonMediaCategoryDTO, category, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      } catch (err) {
         throw new RpcException({
-          message: 'File must be image type',
+          message: err.message,
           ctx: MEDIA_SERVICE,
         });
       }
-
-      const category = await this.mediaService.updateMediaCategory({
-        query: {
-          _id: id,
-        },
-        data: {
-          emojiUrl: url,
-        },
-      });
-      return plainToInstance(CommonMediaCategoryDTO, category, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: MEDIA_SERVICE,
-      });
-    }
+    });
   }
 
   @MessagePattern({ cmd: CoreBrokerPatterns.CreateMediaCategory })
@@ -536,7 +540,7 @@ export class MediaController {
         let userTemplate = null;
 
         if (userTemplateId) {
-          userTemplate = await this.userTemplateService.findUserTemplateById({
+          userTemplate = await this.userTemplateService.findById({
             id: userTemplateId,
             session,
           });

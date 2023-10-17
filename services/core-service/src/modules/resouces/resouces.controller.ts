@@ -89,9 +89,9 @@ export class ResoucesController {
   @MessagePattern({ cmd: CoreBrokerPatterns.UploadResouce })
   async uploadMediaFile(
     @Payload() { id, mimeType, url, size, key }: UploadResoucePayload,
-  ): Promise<void> {
+  ) {
     try {
-      return withTransaction(this.connection, async () => {
+      return withTransaction(this.connection, async (session) => {
         const maxRetries = 10;
         const previewUrls = await retry<PreviewUrls>(async () => {
           return await this.generatePreviewUrs({
@@ -118,6 +118,7 @@ export class ResoucesController {
               path: 'previewUrls',
             },
           ],
+          session
         });
 
         return plainToInstance(CommonResouceDto, resouce, {
