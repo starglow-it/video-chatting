@@ -336,6 +336,15 @@ export class ProfileTemplatesController {
     @Body() body: UpdateTemplatePaymentsRequest,
   ) {
     try {
+      const promise = Object.keys(body).map(async (key) => {
+        return await checkValidCurrency({
+          currency: body[key]?.currency as string,
+          amount: body[key]?.price as number,
+        });
+      });
+
+      await Promise.all(promise);
+
       return await this.coreService.updateTemplatePayment({
         data: body as UpdateTemplatePaymentsData,
         userId,
