@@ -8,6 +8,7 @@ import * as mongoose from 'mongoose';
 // shared
 import {
   TEMPLATES_SERVICE,
+  TemplateNativeErrorEnum,
   UserTemplatesBrokerPatterns,
 } from 'shared-const';
 
@@ -26,6 +27,8 @@ import {
   UpdateUserTemplateUsageNumberPayload,
   DeleteLeastUsedTemplatesPayload,
   DeleteGlobalUserTemplatesPayload,
+  UpdateTemplatePaymentPayload,
+  ITemplatePayment,
 } from 'shared-types';
 
 // helpers
@@ -59,6 +62,11 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import { FilterQuery } from 'mongoose';
 import { MediaDocument } from '../../schemas/media.schema';
 import { UserTemplatesComponent } from './user-templates.component';
+import { TemplatePaymentsComponent } from '../template-payments/template-payments.component';
+import { TemplatePaymentsService } from '../template-payments/template-payments.service';
+import { throwRpcError } from 'src/utils/common/throwRpcError';
+import { TemplatePaymentDocument } from 'src/schemas/user-payment.schema';
+import { templatePaymentSerialization } from 'src/dtos/template-payment.dto';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -73,6 +81,9 @@ export class UserTemplatesController {
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     private mediaService: MediaService,
+    private readonly templatePaymentsComponent: TemplatePaymentsComponent,
+    private readonly userTemplatesComponent: UserTemplatesComponent,
+    private readonly templatePaymentsService: TemplatePaymentsService,
   ) {}
 
   private async getMyRoomMediaCategory(
@@ -356,7 +367,7 @@ export class UserTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
-          session
+          session,
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
@@ -771,12 +782,10 @@ export class UserTemplatesController {
             session,
           );
 
-          await this.userTemplatesService.deleteUserTemplates({
-            query: {
-              user: new ObjectId(userId),
-            },
+          await this.userTemplatesComponent.deleteUserTemplatesByUserId(
+            userId,
             session,
-          });
+          );
         } catch (err) {
           throw new RpcException({
             message: err.message,
@@ -825,7 +834,7 @@ export class UserTemplatesController {
 
         await this.deleteMedias({ userTemplate }, session);
 
-        await this.userTemplatesService.deleteUserTemplate(
+        await this.userTemplatesComponent.deleteUserTemplate(
           { _id: templateId },
           session,
         );
@@ -961,13 +970,13 @@ export class UserTemplatesController {
           ...leastUsedFreeTemplates,
         ].map((template) => template.id);
 
-        await this.userTemplatesService.deleteUserTemplates({
-          query: {
-            _id: { $nin: templatesIds },
-            user: payload.userId,
+        await this.userTemplatesComponent.deleteLeastUserTemplates(
+          {
+            templatesIds,
+            userId: payload.userId,
           },
           session,
-        });
+        );
       });
     } catch (err) {
       throw new RpcException({
@@ -975,5 +984,74 @@ export class UserTemplatesController {
         ctx: TEMPLATES_SERVICE,
       });
     }
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.UpdateTemplatePayments,
+  })
+  async updateUserTemplatePayment(
+    @Payload() { userTemplateId, data, userId }: UpdateTemplatePaymentPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const template = await this.userTemplatesComponent.findById(
+          userTemplateId,
+          session,
+        );
+
+        throwRpcError(
+          template.user.toString() !== userId,
+          TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
+        );
+
+        const query: FilterQuery<TemplatePaymentDocument> = {
+          userTemplate: template._id,
+          type: {
+            $in: Object.keys(data),
+          },
+        };
+
+        const templatePayments = await this.templatePaymentsService.find({
+          query,
+          session,
+        });
+
+        const countTemplatePayments = await this.templatePaymentsService.count(
+          query,
+        );
+
+        const promises: Promise<TemplatePaymentDocument>[] = [];
+
+        if (templatePayments.length) {
+          const p = templatePayments.map(async ({ type, _id }) => {
+            return this.templatePaymentsComponent.findOneAndUpdate({
+              query: {
+                _id,
+                type,
+              },
+              data: {
+                ...data[type],
+              },
+              session,
+            });
+          });
+          promises.push(...p);
+        }
+
+        const plainTemplatePayments = templatePaymentSerialization(
+          await Promise.all(promises),
+        );
+
+        return {
+          list: plainTemplatePayments,
+          count: countTemplatePayments,
+        };
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
   }
 }

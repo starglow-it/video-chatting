@@ -15,6 +15,8 @@ import {
   UpdateModelByIdQuery,
   UpdateModelMultipleQuery,
   UpdateModelSingleQuery,
+  InserModelMultipleQuery,
+  DeleteModelQuery,
 } from '../../types/custom';
 
 @Injectable()
@@ -38,6 +40,15 @@ export class TemplatePaymentsService
     return await this.templatePayment
       .findOne(query, {}, { session: session.session, populate: populatePaths })
       .exec();
+  }
+
+  async createMany({
+    data,
+    session: { session },
+  }: InserModelMultipleQuery<TemplatePaymentDocument>): Promise<
+    TemplatePaymentDocument[]
+  > {
+    return this.templatePayment.create(data, { session });
   }
 
   async find({
@@ -81,6 +92,14 @@ export class TemplatePaymentsService
       })
       .exec();
   }
+
+  async deleteMany({
+    query,
+    session: { session },
+  }: DeleteModelQuery<TemplatePaymentDocument>): Promise<void> {
+    await this.templatePayment.deleteMany(query, { session });
+  }
+
   async findOneAndUpdate({
     query,
     data,
@@ -100,7 +119,7 @@ export class TemplatePaymentsService
     id,
     session: { session },
   }: DeleteModelByIdQuery<TemplatePaymentDocument>) {
-    return this.templatePayment.findByIdAndRemove(id, {
+    return await this.templatePayment.findByIdAndRemove(id, {
       session,
       new: true,
     });
@@ -110,17 +129,21 @@ export class TemplatePaymentsService
     aggregationPipeline: PipelineStage[],
     session?: ITransactionSession,
   ): Promise<unknown[]> {
-    throw new Error('Method not implemented.');
+    return this.templatePayment
+      .aggregate(aggregationPipeline, {
+        session: session?.session,
+      })
+      .exec();
   }
 
-  updateMany({
+  async updateMany({
     query,
     data,
     session: { session },
     options,
     populatePaths,
   }: UpdateModelMultipleQuery<TemplatePaymentDocument>): Promise<unknown> {
-    return this.templatePayment
+    return await this.templatePayment
       .updateMany(query, data, {
         ...options,
         session,

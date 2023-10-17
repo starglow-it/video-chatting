@@ -27,9 +27,22 @@ export class TemplatePayment {
   userTemplate: UserTemplateDocument;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    required: true,
+  })
+  templateId: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
   })
   type: PaymentType;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  })
+  user: UserDocument;
 
   @Prop({
     type: mongoose.Schema.Types.Number,

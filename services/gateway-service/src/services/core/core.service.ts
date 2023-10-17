@@ -9,8 +9,6 @@ import {
   UserBrokerPatterns,
   MeetingBrokerPatterns,
   UserTemplatesBrokerPatterns,
-  CoreBrokerPatterns,
-  TemplatePaymentsBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -226,7 +224,7 @@ export class CoreService {
     payload: UpdateTemplatePaymentPayload,
   ): Promise<EntityList<ITemplatePayment>> {
     const pattern = {
-      cmd: TemplatePaymentsBrokerPatterns.UpdateTemplatePayments,
+      cmd: UserTemplatesBrokerPatterns.UpdateTemplatePayments,
     };
     return firstValueFrom(this.client.send(pattern, payload));
   }

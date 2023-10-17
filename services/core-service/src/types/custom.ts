@@ -7,6 +7,7 @@ import {
 } from 'mongoose';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
 import { QueryParams } from 'shared-types';
+import { SaveOptions } from 'mongoose';
 
 type OmitOptions = 'options';
 
@@ -33,9 +34,14 @@ export type GetModelByIdQuery<Entity> = Omit<
   'query'
 > & { id: string };
 
-export type InsertModelQuery<Entity> = {
+export type InsertModelSingleQuery<Entity> = {
   data: Partial<Entity>;
-  session: ITransactionSession;
+  session?: ITransactionSession;
+};
+
+export type InserModelMultipleQuery<Entity> = {
+  data: Partial<Entity>[];
+  session?: ITransactionSession;
 };
 
 export type DeleteModelQuery<Entity> = {

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TemplatePaymentsController } from './template-payments.controller';
 import { TemplatePaymentsComponent } from './template-payments.component';
 import { TemplatePaymentsService } from './template-payments.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,6 +7,8 @@ import {
   TemplatePaymentSchema,
 } from '../../schemas/user-payment.schema';
 import { UserTemplatesModule } from '../user-templates/user-templates.module';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
 
 @Module({
   imports: [
@@ -17,9 +18,7 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
         schema: TemplatePaymentSchema,
       },
     ]),
-    UserTemplatesModule,
   ],
-  controllers: [TemplatePaymentsController],
   providers: [TemplatePaymentsComponent, TemplatePaymentsService],
   exports: [TemplatePaymentsComponent, TemplatePaymentsService],
 })
