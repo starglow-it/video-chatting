@@ -16,6 +16,7 @@ import styles from './MeetingConnectStripe.module.scss';
 
 // stores
 import {
+    $isConnectedStripe,
     $isPortraitLayout,
     $profileStore,
     connectStripeAccountFx,
@@ -24,6 +25,7 @@ import {
 
 export const MeetingConnectStripe = () => {
     const profile = useStore($profileStore);
+    const isConnectedStripe = useStore($isConnectedStripe);
     const isConnectStripeAccountPending = useStore(
         connectStripeAccountFx.pending,
     );
@@ -49,7 +51,7 @@ export const MeetingConnectStripe = () => {
         return undefined;
     }, [isPortraitLayout]);
 
-    return profile.isStripeEnabled && profile.stripeAccountId ? (
+    return isConnectedStripe ? (
         <CustomButton
             className={styles.buttonWrapper}
             onClick={handleDeletePaymentSetUp}

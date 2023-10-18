@@ -20,6 +20,7 @@ import styles from './MonetizationInfo.module.scss';
 
 // stores
 import {
+    $isConnectedStripe,
     $profileStore,
     addNotificationEvent,
     connectStripeAccountFx,
@@ -33,6 +34,7 @@ import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 const MonetizationInfo = memo(() => {
     const profile = useStore($profileStore);
+    const isConnectedStripe = useStore($isConnectedStripe);
     const isConnectStripeAccountPending = useStore(
         connectStripeAccountFx.pending,
     );
@@ -117,7 +119,7 @@ const MonetizationInfo = memo(() => {
                 />
             </ConditionalRender>
             <CustomGrid container gap={6}>
-                {profile.isStripeEnabled && profile.stripeAccountId ? (
+                {isConnectedStripe ? (
                     <SocialLogin
                         className={styles.buttonWrapper}
                         onClick={handleLoginStripe}

@@ -39,7 +39,7 @@ import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import styles from './MeetingMonetization.module.scss';
 
 // stores
-import { $profileStore, addNotificationEvent } from '../../../store';
+import { $isConnectedStripe, addNotificationEvent } from '../../../store';
 import {
     $meetingTemplateStore,
     updateMeetingTemplateFxWithData,
@@ -59,12 +59,8 @@ const validationSchema = yup.object({
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const profile = useStore($profileStore);
+    const isConnectedStripe = useStore($isConnectedStripe);
     const resolver = useYupValidationResolver<FieldValues>(validationSchema);
-
-    const isConnectStripe = Boolean(
-        profile.isStripeEnabled && profile.stripeAccountId,
-    );
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -72,7 +68,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         defaultValues: {
             isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
             isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
-            isMonetizationEnabled: isConnectStripe
+            isMonetizationEnabled: isConnectedStripe
                 ? Boolean(meetingTemplate.isMonetizationEnabled)
                 : false,
             templatePrice: meetingTemplate.templatePrice || 5,
@@ -267,7 +263,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             onFocus={handleFocusInput}
                                             disabled={
                                                 !isInmeetingPaymentEnabled ||
-                                                !isConnectStripe
+                                                !isConnectedStripe
                                             }
                                         />
                                         <CustomGrid>
@@ -311,7 +307,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 onChange={onChange}
                                                 checked={value}
                                                 inputRef={ref}
-                                                disabled={!isConnectStripe}
+                                                disabled={!isConnectedStripe}
                                             />
                                         )}
                                     />
@@ -348,7 +344,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             onFocus={handleFocusInput}
                                             disabled={
                                                 !isPaywallPaymentEnabled ||
-                                                !isConnectStripe
+                                                !isConnectedStripe
                                             }
                                         />
                                         <CustomGrid>
@@ -392,7 +388,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 onChange={onChange}
                                                 checked={value}
                                                 inputRef={ref}
-                                                disabled={!isConnectStripe}
+                                                disabled={!isConnectedStripe}
                                             />
                                         )}
                                     />
@@ -402,7 +398,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         <CustomButton
                             type="submit"
                             className={styles.button}
-                            disabled={!isConnectStripe}
+                            disabled={!isConnectedStripe}
                             label={
                                 <Translation
                                     nameSpace="common"
