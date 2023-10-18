@@ -39,6 +39,7 @@ import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency
 import { TemplateIdParam } from 'src/dtos/params/template-id.params';
 import { UpdateTemplatePaymentsRequest } from 'src/dtos/requests/update-template-payment.request';
 import { UserId } from 'src/utils/decorators/user-id.decorator';
+import { CommonTemplatePaymentDto } from 'src/dtos/response/common-template-payment.dto';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -164,26 +165,6 @@ export class ProfileTemplatesController {
           });
         }
 
-        const {
-          paywallCurrency,
-          paywallPrice,
-          templateCurrency,
-          templatePrice,
-        } = updateTemplateData;
-        if (templatePrice) {
-          await checkValidCurrency({
-            amount: templatePrice,
-            currency: templateCurrency,
-          });
-        }
-
-        if (paywallPrice) {
-          await checkValidCurrency({
-            amount: paywallPrice,
-            currency: paywallCurrency,
-          });
-        }
-
         const template = await this.userTemplatesService.updateUserTemplate({
           templateId,
           userId: req.user.userId,
@@ -275,6 +256,34 @@ export class ProfileTemplatesController {
       this.logger.error(
         {
           message: `An error occurs, while get profile template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthAnonymousGuard)
+  @Get('/:templateId/payments')
+  @ApiOperation({ summary: 'Get Detail Template' })
+  @ApiOkResponse({
+    type: [CommonTemplatePaymentDto],
+    description: 'Get Detail Profile Template Success',
+  })
+  async getTemplatePayments(
+    @UserId() userId: string,
+    @Param() { templateId }: TemplateIdParam,
+  ) {
+    try {
+      return await this.coreService.getTemplatePayments({
+        userId,
+        userTemplateId: templateId,
+      });
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get template payments`,
         },
         JSON.stringify(err),
       );

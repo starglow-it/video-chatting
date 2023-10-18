@@ -68,12 +68,7 @@ export interface IUserTemplate extends ITemplate {
   companyName: string;
   position: string;
   contactEmail: string;
-  isMonetizationEnabled: boolean;
   isAudioAvailable: boolean;
-  templatePrice: number;
-  templateCurrency: string;  
-  paywallPrice: number | null,
-  paywallCurrency: string,
   customLink: string;
   businessCategories: IBusinessCategory[];
   languages: ILanguage[];
@@ -131,7 +126,7 @@ export interface IUploadTemplateFile {
 }
 
 export interface ITemplatePayment {
-  userTemplate: IUserTemplate;
+  userTemplate: string;
   currency: string;
   price: number;
   type: string;

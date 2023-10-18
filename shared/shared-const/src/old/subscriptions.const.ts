@@ -1,6 +1,7 @@
-import { PlanKeys } from 'shared-types';
+import { MeetingRole, PlanKeys } from 'shared-types';
+import { PaymentType } from 'src/subscriptions';
 
-type PlanData = {
+export type PlanData = {
   name: PlanKeys;
   key: string;
   priceInCents: number;
@@ -8,7 +9,9 @@ type PlanData = {
   features: {
     templatesLimit: number;
     timeLimit: number;
-    comissionFee: number;
+    comissionFee: {
+      [T in Exclude<MeetingRole, 'host'>]: number;
+    };
   };
   trialPeriodDays?: number;
   testTrialPeriodDays?: number;
@@ -22,7 +25,10 @@ const houseSubscription: PlanData = {
   features: {
     templatesLimit: 1,
     timeLimit: null,
-    comissionFee: 0.1,
+    comissionFee: {
+      lurker: 0.1,
+      participant: 0.1,
+    },
   },
 };
 
@@ -34,7 +40,10 @@ const professionalSubscription: PlanData = {
   features: {
     templatesLimit: 20,
     timeLimit: null,
-    comissionFee: 0.05,
+    comissionFee: {
+      lurker: 0.05,
+      participant: 0.05,
+    },
   },
   trialPeriodDays: 7,
   testTrialPeriodDays: 1,
@@ -48,7 +57,10 @@ const businessSubscription: PlanData = {
   features: {
     templatesLimit: 50,
     timeLimit: null,
-    comissionFee: 0,
+    comissionFee: {
+      lurker: 0.5,
+      participant: 0
+    },
   },
 };
 

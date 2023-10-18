@@ -33,7 +33,7 @@ export class TemplatePayment {
   templateId: number;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
+    type: mongoose.Schema.Types.String
   })
   type: PaymentType;
 

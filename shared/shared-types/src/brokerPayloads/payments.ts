@@ -1,4 +1,4 @@
-import { ICommonTemplate, ICommonUser } from '../api-interfaces';
+import { ICommonTemplate, ICommonUser, MeetingRole } from '../api-interfaces';
 
 export type LoginStripeExpressAccountPayload = { accountId: string };
 export type DeleteStripeExpressAccountPayload = { accountId: string };
@@ -18,7 +18,7 @@ export type CreatePaymentIntentPayload = {
   stripeSubscriptionId: string;
   templatePrice: number;
   templateCurrency: string;
-  platformFee: number;
+  meetingRole: MeetingRole;
   stripeAccountId: ICommonUser['stripeAccountId'];
   templateId: ICommonTemplate['id'];
 };
@@ -44,7 +44,7 @@ export type UpdateStripeTemplateProductPayload = {
     name: string;
     priceInCents: number;
     description: string;
-  }
+  };
 };
 
 export type DeleteTemplateStripeProductPayload = {

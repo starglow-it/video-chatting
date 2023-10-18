@@ -1,5 +1,7 @@
 export enum UserTemplatesBrokerPatterns {
   GetUserTemplate = 'get_user_template',
+  GetTemplatePayments = 'get_template_payments',
+  GetTemplatePayment = 'get_template_payment',
   CreateUserTemplate = 'create_user_template',
   GetUserTemplateByTemplateId = 'get_user_template_by_template_id',
   GetUserTemplateById = 'get_user_template_by_id',

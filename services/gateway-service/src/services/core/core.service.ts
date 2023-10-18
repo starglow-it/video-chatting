@@ -48,6 +48,8 @@ import {
   IResouce,
   UpdateTemplatePaymentPayload,
   ITemplatePayment,
+  GetTemplatePaymentsPayload,
+  GetTemplatePaymentPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -171,6 +173,22 @@ export class CoreService {
   async deleteUser(payload) {
     const pattern = { cmd: UserBrokerPatterns.DeleteProfile };
 
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async getTemplatePayments(
+    payload: GetTemplatePaymentsPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
+    };
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async getEnabledTemplatePayment(payload: GetTemplatePaymentPayload): Promise<ITemplatePayment> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
+    };
     return firstValueFrom(this.client.send(pattern, payload));
   }
 

@@ -45,6 +45,16 @@ export type UpdateTemplatePaymentsData = {
   >;
 };
 
+export type GetTemplatePaymentsPayload = {
+  userId: string;
+  userTemplateId: string;
+};
+
+export type GetTemplatePaymentPayload = {
+  paymentType: string;
+  userTemplateId: string;
+}
+
 export type UpdateTemplatePaymentPayload = {
   userTemplateId: IUserTemplate['id'];
   userId: ICommonUser['id'];

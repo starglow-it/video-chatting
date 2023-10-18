@@ -29,6 +29,8 @@ import {
   DeleteGlobalUserTemplatesPayload,
   UpdateTemplatePaymentPayload,
   ITemplatePayment,
+  GetTemplatePaymentsPayload,
+  GetTemplatePaymentPayload,
 } from 'shared-types';
 
 // helpers
@@ -65,8 +67,14 @@ import { UserTemplatesComponent } from './user-templates.component';
 import { TemplatePaymentsComponent } from '../template-payments/template-payments.component';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { throwRpcError } from 'src/utils/common/throwRpcError';
-import { TemplatePaymentDocument } from 'src/schemas/user-payment.schema';
-import { templatePaymentSerialization } from 'src/dtos/template-payment.dto';
+import {
+  TemplatePayment,
+  TemplatePaymentDocument,
+} from 'src/schemas/user-payment.schema';
+import {
+  TemplatePaymentDto,
+  templatePaymentSerialization,
+} from 'src/dtos/template-payment.dto';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -786,6 +794,96 @@ export class UserTemplatesController {
             userId,
             session,
           );
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  private async validateTemplateOwner(
+    userId: string,
+    userTemplateId: string,
+    session: ITransactionSession,
+  ) {
+    const userTemplate = await this.userTemplatesComponent.findById(
+      userTemplateId,
+      session,
+    );
+    throwRpcError(
+      userTemplate.user.toString() !== userId,
+      TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
+    );
+    return;
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
+  })
+  async getTemplatePayment(
+    @Payload() { userTemplateId, paymentType }: GetTemplatePaymentPayload,
+  ) {
+    return withTransaction<TemplatePaymentDto>(
+      this.connection,
+      async (session) => {
+        try {
+          const templatePayment = await this.templatePaymentsComponent.findOne({
+            query: {
+              userTemplate: new ObjectId(userTemplateId),
+              type: paymentType,
+            },
+            session,
+            populatePaths: 'userTemplate',
+          });
+
+          throwRpcError(
+            !templatePayment.enabled,
+            TemplateNativeErrorEnum.TEMPLATE_PAYMENT_DISABLED,
+          );
+
+          return templatePaymentSerialization(templatePayment);
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
+  })
+  async getTemplatePayments(
+    @Payload() { userId, userTemplateId }: GetTemplatePaymentsPayload,
+  ) {
+    return withTransaction<EntityList<TemplatePaymentDto>>(
+      this.connection,
+      async (session) => {
+        try {
+          await this.validateTemplateOwner(userId, userTemplateId, session);
+          const query = {
+            userTemplate: new ObjectId(userTemplateId),
+            user: new ObjectId(userId),
+          };
+          const templatePayments =
+            await this.templatePaymentsComponent.findMany({
+              query,
+            });
+
+          const countTemplatePayments =
+            await this.templatePaymentsService.count(query);
+
+          const plainTemplatePayments =
+            templatePaymentSerialization(templatePayments);
+          return {
+            list: plainTemplatePayments,
+            count: countTemplatePayments,
+          };
         } catch (err) {
           throw new RpcException({
             message: err.message,

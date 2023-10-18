@@ -133,45 +133,6 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Custom link must be string' })
   customLink: string;
 
-  @ApiProperty({
-    required: false,
-    type: Boolean,
-  })
-  @IsOptional()
-  @IsBoolean({ message: 'isMonetizationEnabled must be boolean' })
-  isMonetizationEnabled: boolean;
-
-  @ApiProperty({
-    required: false,
-    type: Number,
-  })
-  @IsOptional()
-  @IsNumber({}, { message: 'templatePrice must be number' })
-  templatePrice: number;
-
-  @ApiProperty({
-    type: String,
-    required: false,
-  })
-  @IsOptional()
-  @IsString({ message: 'Currency must be string' })
-  templateCurrency: string;
-
-  @ApiProperty({
-    type: String,
-    required: false,
-  })
-  @IsOptional()
-  @IsString({ message: 'Paywall Currency must be string' })
-  paywallCurrency: string;
-
-  @ApiProperty({
-    required: false,
-    type: Number,
-  })
-  @IsOptional()
-  @IsNumber({}, { message: 'Paywall Price must be number' })
-  paywallPrice: number;
 
   @ApiProperty({
     required: false,
