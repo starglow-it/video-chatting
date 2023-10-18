@@ -213,6 +213,7 @@ export enum HttpMethods {
     Get = 'GET',
     Delete = 'DELETE',
     Put = 'PUT',
+    Patch = 'PATCH',
 }
 
 export type ApiError = {

@@ -17,6 +17,8 @@ const Component = ({
 }) => {
     const { list, count } = useStore($featuredBackgroundStore);
 
+    if (!list.length) return null;
+
     return (
         <CustomGrid
             container
