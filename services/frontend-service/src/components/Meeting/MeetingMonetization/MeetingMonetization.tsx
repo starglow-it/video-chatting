@@ -41,24 +41,27 @@ import styles from './MeetingMonetization.module.scss';
 // stores
 import { $isConnectedStripe, addNotificationEvent } from '../../../store';
 import {
+    $meetingPaymentStore,
     $meetingTemplateStore,
     updateMeetingTemplateFxWithData,
+    updatePaymentMeetingEvent,
 } from '../../../store/roomStores';
 
 // const
 import { currencyValues } from '../../../const/profile/subscriptions';
 import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
+import { StripeCurrency } from 'shared-const';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
     paywallPrice: paywallPriceSchema(),
-    isMonetizationEnabled: booleanSchema().required('required'),
     templateCurrency: simpleStringSchema().required('required'),
 });
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
-    const meetingTemplate = useStore($meetingTemplateStore);
+    const { meeting: meetingPayment, paywall: paywallPayment } =
+        useStore($meetingPaymentStore);
     const isConnectedStripe = useStore($isConnectedStripe);
     const resolver = useYupValidationResolver<FieldValues>(validationSchema);
 
@@ -66,15 +69,12 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
-            isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
-            isMonetizationEnabled: isConnectedStripe
-                ? Boolean(meetingTemplate.isMonetizationEnabled)
-                : false,
-            templatePrice: meetingTemplate.templatePrice || 5,
-            paywallPrice: meetingTemplate.paywallPrice || 5,
-            templateCurrency: meetingTemplate.templateCurrency || 'USD',
-            paywallCurrency: meetingTemplate.paywallCurrency || 'USD',
+            enabledMeeting: meetingPayment.enabled,
+            enabledPaywall: paywallPayment.enabled,
+            templatePrice: meetingPayment.price,
+            paywallPrice: paywallPayment.price,
+            templateCurrency: meetingPayment.currency,
+            paywallCurrency: paywallPayment.currency,
         },
     });
 
@@ -88,7 +88,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleValueChanged = useCallback(
         (
-            newValue: 'USD' | 'CAD' | string,
+            newValue: StripeCurrency,
             type: 'templateCurrency' | 'paywallCurrency',
         ) => {
             setValue(type, newValue);
@@ -96,66 +96,43 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         [],
     );
 
-    const isInmeetingPaymentEnabled = useWatch({
+    const enabledMeeting = useWatch({
         control,
-        name: 'isInmeetingPayment',
+        name: 'enabledMeeting',
     });
 
-    const isPaywallPaymentEnabled = useWatch({
+    const enabledPaywall = useWatch({
         control,
-        name: 'isPaywallPayment',
+        name: 'enabledPaywall',
     });
 
-    const activeTemplateCurrency = useWatch({
+    const templateCurrency = useWatch({
         control,
         name: 'templateCurrency',
     });
 
-    const targetTemplateCurrency = useMemo(
-        () =>
-            currencyValues.find(
-                currency => currency.value === activeTemplateCurrency,
-            ) || currencyValues[0],
-        [activeTemplateCurrency],
-    );
-
-    const activePaywallCurrency = useWatch({
+    const paywallCurrency = useWatch({
         control,
         name: 'paywallCurrency',
     });
 
-    const targetPaywallCurrency = useMemo(
-        () =>
-            currencyValues.find(
-                currency => currency.value === activePaywallCurrency,
-            ) || currencyValues[0],
-        [activePaywallCurrency],
-    );
-
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            const res = await updateMeetingTemplateFxWithData({
-                isMonetizationEnabled:
-                    data.isInmeetingPayment || data.isPaywallPayment,
-                templatePrice: data.isInmeetingPayment
-                    ? +data.templatePrice
-                    : 0,
-                paywallPrice: data.isPaywallPayment ? +data.paywallPrice : 0,
-                templateCurrency: data.isInmeetingPayment
-                    ? data.templateCurrency
-                    : undefined,
-                paywallCurrency: data.isPaywallPayment
-                    ? data.paywallCurrency
-                    : undefined,
+            // if (!res.success) {
+            //     addNotificationEvent({
+            //         message: res.error?.message ?? '',
+            //         withErrorIcon: true,
+            //         type: NotificationType.validationError,
+            //     });
+            //     return;
+            // }
+            updatePaymentMeetingEvent({
+                meeting: {
+                    enabled: data.enabledMeeting,
+                    price: data.templatePrice,
+                    currency: data.templateCurrency,
+                },
             });
-            if (!res.success) {
-                addNotificationEvent({
-                    message: res.error?.message ?? '',
-                    withErrorIcon: true,
-                    type: NotificationType.validationError,
-                });
-                return;
-            }
             onUpdate?.();
         }),
         [],
@@ -262,7 +239,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             {...registerData}
                                             onFocus={handleFocusInput}
                                             disabled={
-                                                !isInmeetingPaymentEnabled ||
+                                                !enabledMeeting ||
                                                 !isConnectedStripe
                                             }
                                         />
@@ -270,9 +247,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             <CustomDropdown
                                                 selectId="currencyInMeetingSelect"
                                                 labelId="currencyInMeeting"
-                                                value={[
-                                                    targetTemplateCurrency.value,
-                                                ]}
+                                                value={[templateCurrency]}
                                                 className={styles.switcher}
                                                 renderValue={renderTimeValue}
                                                 list={renderTimeList}
@@ -293,7 +268,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                 <CustomBox marginTop={4.5}>
                                     <Controller
                                         control={control}
-                                        name="isInmeetingPayment"
+                                        name="enabledMeeting"
                                         render={({
                                             field: {
                                                 onChange,
@@ -343,7 +318,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             {...registerPaywallData}
                                             onFocus={handleFocusInput}
                                             disabled={
-                                                !isPaywallPaymentEnabled ||
+                                                !enabledPaywall ||
                                                 !isConnectedStripe
                                             }
                                         />
@@ -351,9 +326,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             <CustomDropdown
                                                 selectId="currencyPaywallSelect"
                                                 labelId="currencyPaywall"
-                                                value={[
-                                                    targetPaywallCurrency.value,
-                                                ]}
+                                                value={[paywallCurrency]}
                                                 className={styles.switcher}
                                                 renderValue={renderTimeValue}
                                                 list={renderTimeList}
@@ -374,7 +347,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                 <CustomBox marginTop={4.5}>
                                     <Controller
                                         control={control}
-                                        name="isPaywallPayment"
+                                        name="enabledPaywall"
                                         render={({
                                             field: {
                                                 onChange,
