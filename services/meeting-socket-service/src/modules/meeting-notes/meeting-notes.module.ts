@@ -6,14 +6,9 @@ import {
   MeetingNote,
   MeetingNoteSchema,
 } from '../../schemas/meeting-note.schema';
-import { MeetingNotesGateway } from './meeting-notes.gateway';
-import { UsersModule } from '../users/users.module';
-import { MeetingsModule } from '../meetings/meetings.module';
 
 @Module({
   imports: [
-    UsersModule,
-    MeetingsModule,
     MongooseModule.forFeature([
       {
         name: MeetingNote.name,
@@ -21,7 +16,7 @@ import { MeetingsModule } from '../meetings/meetings.module';
       },
     ]),
   ],
-  providers: [MeetingNotesService, MeetingNotesGateway],
+  providers: [MeetingNotesService],
   exports: [MeetingNotesService],
 })
 export class MeetingNotesModule {}

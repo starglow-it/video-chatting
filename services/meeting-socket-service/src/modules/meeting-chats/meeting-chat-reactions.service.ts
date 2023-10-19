@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  InsertModelQuery,
   DeleteModelQuery,
   GetModelSingleQuery,
   GetModelMultipleQuery,
   UpdateModelSingleQuery,
+  InsertModelSingleQuery,
 } from '../../types/mongoose';
 import {
   MeetingChatReaction,
@@ -23,7 +23,7 @@ export class MeetingChatReactionsService {
   async create({
     data,
     session: { session },
-  }: InsertModelQuery<MeetingChatReaction>) {
+  }: InsertModelSingleQuery<MeetingChatReaction>) {
     const [meetingChat] = await this.meetingChatReaction.create([data], {
       session,
     });

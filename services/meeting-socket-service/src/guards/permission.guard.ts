@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from '../modules/users/users.service';
@@ -12,12 +8,13 @@ import { MeetingNativeErrorEnum } from 'shared-const';
 import { PASS_AUTH_KEY } from '../utils/decorators/passAuth.decorator';
 import { ROLE } from 'src/utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
+import { UsersComponent } from '../modules/users/users.component';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly usersService: UsersService,
+    private readonly usersComponent: UsersComponent,
   ) {}
 
   private getPassAuthKey(ctx: ExecutionContext): Boolean {
@@ -41,13 +38,11 @@ export class PermissionGuard implements CanActivate {
       return true;
     }
 
-    const user = await this.usersService.findOne({
+    const user = await this.usersComponent.findOne({
       query: {
         socketId: client.id,
       },
     });
-
-    throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
     const roles = this.getRoles(context);
     throwWsError(

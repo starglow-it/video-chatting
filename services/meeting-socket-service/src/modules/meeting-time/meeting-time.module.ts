@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 
 import { MeetingTimeService } from './meeting-time.service';
-import { MeetingTimeController } from './meeting-time.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   MeetingHostTime,
@@ -18,7 +17,6 @@ import {
     ]),
   ],
   providers: [MeetingTimeService],
-  controllers: [MeetingTimeController],
   exports: [MeetingTimeService],
 })
 export class MeetingTimeModule {}

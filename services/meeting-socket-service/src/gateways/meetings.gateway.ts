@@ -10,12 +10,12 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 
-import { BaseGateway } from '../../gateway/base.gateway';
+import { BaseGateway } from './base.gateway';
 
-import { MeetingsService } from './meetings.service';
-import { UsersService } from '../users/users.service';
-import { TasksService } from '../tasks/tasks.service';
-import { CoreService } from '../../services/core/core.service';
+import { MeetingsService } from '../modules/meetings/meetings.service';
+import { UsersService } from '../modules/users/users.service';
+import { TasksService } from '../modules/tasks/tasks.service';
+import { CoreService } from '../services/core/core.service';
 
 import {
   IUserTemplate,
@@ -29,59 +29,60 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
-import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
-import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
+import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
+import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
 import {
   CommonUserDTO,
   userSerialization,
-} from '../../dtos/response/common-user.dto';
+} from '../dtos/response/common-user.dto';
 import {
   CommonMeetingDTO,
   meetingSerialization,
-} from '../../dtos/response/common-meeting.dto';
-import { EnterMeetingRequestDTO } from '../../dtos/requests/enter-meeting.dto';
-import { MeetingAccessAnswerRequestDTO } from '../../dtos/requests/answer-access-meeting.dto';
-import { LeaveMeetingRequestDTO } from '../../dtos/requests/leave-meeting.dto';
-import { EndMeetingRequestDTO } from '../../dtos/requests/end-meeting.dto';
-import { UpdateMeetingRequestDTO } from '../../dtos/requests/update-meeting.dto';
+} from '../dtos/response/common-meeting.dto';
+import { EnterMeetingRequestDTO } from '../dtos/requests/enter-meeting.dto';
+import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-meeting.dto';
+import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
+import { EndMeetingRequestDTO } from '../dtos/requests/end-meeting.dto';
+import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
+import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
 import {
   ITransactionSession,
   withTransaction,
-} from '../../helpers/mongo/withTransaction';
-import { MeetingTimeService } from '../meeting-time/meeting-time.service';
+} from '../helpers/mongo/withTransaction';
+import { MeetingTimeService } from '../modules/meeting-time/meeting-time.service';
 import {
   MeetingEmitEvents,
   UserEmitEvents,
   VideoChatEmitEvents,
-} from '../../const/socket-events/emitters';
+} from '../const/socket-events/emitters';
 import {
   MeetingSubscribeEvents,
   UsersSubscribeEvents,
   VideoChatSubscribeEvents,
-} from '../../const/socket-events/subscribers';
-import { MeetingsCommonService } from './meetings.common';
+} from '../const/socket-events/subscribers';
+import { MeetingsCommonService } from '../modules/meetings/meetings.common';
 import {
   MeetingUser,
   MeetingUserDocument,
-} from '../../schemas/meeting-user.schema';
-import { MeetingDocument } from '../../schemas/meeting.schema';
-import { wsError } from '../../utils/ws/wsError';
-import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
-import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
-import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
-import { wsResult } from '../../utils/ws/wsResult';
-import { ObjectId } from '../../utils/objectId';
-import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
-import { ChangeHostDto } from '../../dtos/requests/change-host.dto';
-import { SendOfferRequestDto } from '../../dtos/requests/send-offer.dto';
-import { SendAnswerOfferRequestDto } from '../../dtos/requests/send-answer-offer.dto';
-import { SendIceCandidateRequestDto } from '../../dtos/requests/send-candidate.dto';
-import { SendDevicesPermissionsRequestDto } from '../../dtos/requests/send-devices-permissions.dto';
-import { UserActionInMeeting } from '../../types';
-import { PassAuth } from 'src/utils/decorators/passAuth.decorator';
-import { Roles } from 'src/utils/decorators/role.decorator';
+} from '../schemas/meeting-user.schema';
+import { MeetingDocument } from '../schemas/meeting.schema';
+import { wsError } from '../utils/ws/wsError';
+import { ReconnectDto } from '../dtos/requests/recconnect.dto';
+import { notifyParticipantsMeetingInfo } from '../providers/socket.provider';
+import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
+import { wsResult } from '../utils/ws/wsResult';
+import { ObjectId } from '../utils/objectId';
+import { MeetingChatsService } from '../modules/meeting-chats/meeting-chats.service';
+import { ChangeHostDto } from '../dtos/requests/change-host.dto';
+import { SendOfferRequestDto } from '../dtos/requests/send-offer.dto';
+import { SendAnswerOfferRequestDto } from '../dtos/requests/send-answer-offer.dto';
+import { SendIceCandidateRequestDto } from '../dtos/requests/send-candidate.dto';
+import { SendDevicesPermissionsRequestDto } from '../dtos/requests/send-devices-permissions.dto';
+import { UserActionInMeeting } from '../types';
+import { PassAuth } from '../utils/decorators/passAuth.decorator';
+import { Roles } from '../utils/decorators/role.decorator';
+import { UsersComponent } from '../modules/users/users.component';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -102,6 +103,7 @@ export class MeetingsGateway
     private taskService: TasksService,
     private meetingHostTimeService: MeetingTimeService,
     private meetingsCommonService: MeetingsCommonService,
+    private usersComponent: UsersComponent,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -290,13 +292,13 @@ export class MeetingsGateway
           });
         }
 
-        const userUpdated = await this.usersService.findOneAndUpdate(
-          {
+        const userUpdated = await this.usersComponent.findOneAndUpdate({
+          query: {
             socketId: client.id,
           },
-          updateData,
+          data: updateData,
           session,
-        );
+        });
 
         if (isDisconnectStatus) return;
 
@@ -548,9 +550,9 @@ export class MeetingsGateway
           session,
         );
 
-        const userUpdated = await this.usersService.findOneAndUpdate(
-          { socketId: socket.id },
-          {
+        const userUpdated = await this.usersComponent.findOneAndUpdate({
+          query: { socketId: socket.id },
+          data: {
             accessStatus: MeetingAccessStatusEnum.InMeeting,
             micStatus: message.user.micStatus,
             cameraStatus: message.user.cameraStatus,
@@ -564,7 +566,7 @@ export class MeetingsGateway
             }),
           },
           session,
-        );
+        });
 
         await meeting.populate('users');
 
@@ -710,11 +712,11 @@ export class MeetingsGateway
             });
           }
 
-          const user = await this.usersService.findOneAndUpdate(
-            { socketId: socket.id },
-            updateData,
+          const user = await this.usersComponent.findOneAndUpdate({
+            query: { socketId: socket.id },
+            data: updateData,
             session,
-          );
+          });
 
           const meeting = await this.meetingsService.findById(
             message.meetingId,
@@ -802,11 +804,11 @@ export class MeetingsGateway
           session,
         );
 
-        const user = await this.usersService.findOneAndUpdate(
-          { socketId: socket.id },
-          { accessStatus: MeetingAccessStatusEnum.Waiting },
+        const user = await this.usersComponent.findOneAndUpdate({
+          query: { socketId: socket.id },
+          data: { accessStatus: MeetingAccessStatusEnum.Waiting },
           session,
-        );
+        });
 
         await meeting.populate(['owner', 'users']);
 
@@ -905,14 +907,14 @@ export class MeetingsGateway
           });
         }
 
-        const mU = await this.usersService.findOneAndUpdate(
-          {
+        const mU = await this.usersComponent.findOneAndUpdate({
+          query: {
             socketId: socket.id,
             meetingRole: MeetingRole.Lurker,
           },
-          updateData,
+          data: updateData,
           session,
-        );
+        });
 
         if (!mU) {
           return wsError(socket.id, {
@@ -1001,11 +1003,11 @@ export class MeetingsGateway
             session,
           );
 
-          user = await this.usersService.findOneAndUpdate(
-            {
+          user = await this.usersComponent.findOneAndUpdate({
+            query: {
               _id: user._id,
             },
-            {
+            data: {
               accessStatus: MeetingAccessStatusEnum.InMeeting,
               joinedAt: Date.now(),
               userPosition: u.position,
@@ -1015,17 +1017,17 @@ export class MeetingsGateway
               }),
             },
             session,
-          );
+          });
         } else if (!message.isUserAccepted) {
-          user = await this.usersService.findOneAndUpdate(
-            {
+          user = await this.usersComponent.findOneAndUpdate({
+            query: {
               _id: user._id,
             },
-            {
+            data: {
               accessStatus: MeetingAccessStatusEnum.Rejected,
             },
             session,
-          );
+          });
           this.emitToSocketId(
             user.socketId,
             MeetingEmitEvents.ReceiveAccessRequest,
@@ -1228,15 +1230,15 @@ export class MeetingsGateway
 
         const userId = user._id.toString();
 
-        await this.usersService.findOneAndUpdate(
-          {
+        await this.usersComponent.findOneAndUpdate({
+          query: {
             socketId: socket.id,
           },
-          {
+          data: {
             accessStatus: MeetingAccessStatusEnum.Left,
           },
           session,
-        );
+        });
 
         if (meeting) {
           await meeting.populate('users');
@@ -1329,13 +1331,13 @@ export class MeetingsGateway
           });
         }
 
-        const userUpdated = await this.usersService.findOneAndUpdate(
-          {
+        const userUpdated = await this.usersComponent.findOneAndUpdate({
+          query: {
             _id: meetingUserId,
           },
-          updateData,
+          data: updateData,
           session,
-        );
+        });
 
         await userUpdated.populate('meeting');
         const meeting = userUpdated.meeting;
@@ -1714,16 +1716,16 @@ export class MeetingsGateway
 
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersService.findOneAndUpdate(
-          {
+        const user = await this.usersComponent.findOneAndUpdate({
+          query: {
             _id: message.userId,
           },
-          {
+          data: {
             cameraStatus: message.video ? 'active' : 'inactive',
             micStatus: message.audio ? 'active' : 'inactive',
           },
           session,
-        );
+        });
 
         await user.populate('meeting');
 

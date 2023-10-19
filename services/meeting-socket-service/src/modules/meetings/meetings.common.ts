@@ -14,7 +14,6 @@ import {
   withTransaction,
 } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from './meetings.service';
-import { TasksService } from '../tasks/tasks.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { userSerialization } from '../../dtos/response/common-user.dto';
@@ -23,7 +22,6 @@ import { TEventEmitter } from '../../types/socket-events';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Socket } from 'socket.io';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
@@ -36,7 +34,6 @@ export class MeetingsCommonService {
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
     private coreService: CoreService,
-    private taskService: TasksService,
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,

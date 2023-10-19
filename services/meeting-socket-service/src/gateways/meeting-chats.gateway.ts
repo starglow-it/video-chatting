@@ -5,32 +5,32 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { BaseGateway } from '../../gateway/base.gateway';
-import { MeetingChatsService } from './meeting-chats.service';
-import { UsersService } from '../users/users.service';
-import { SendMeetingChatRequestDto } from '../../dtos/requests/chats/send-meeting-chat.dto';
+import { BaseGateway } from './base.gateway';
+import { MeetingChatsService } from '../modules/meeting-chats/meeting-chats.service';
+import { UsersService } from '../modules/users/users.service';
+import { SendMeetingChatRequestDto } from '../dtos/requests/chats/send-meeting-chat.dto';
 import {
   ITransactionSession,
   withTransaction,
-} from '../../helpers/mongo/withTransaction';
+} from '../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { meetingChatSerialization } from '../../dtos/response/meeting-chat.dto';
-import { wsResult } from '../../utils/ws/wsResult';
-import { LoadMoreMeetingChatRequestDto } from '../../dtos/requests/chats/loadmore-meeting-chat.dto';
-import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
-import { MeetingEmitEvents } from '../../const/socket-events/emitters';
-import { MESSAGES_LIMIT } from '../../const/common';
-import { ReactMeetingChatRequestDto } from '../../dtos/requests/chats/react-meeting-chat.dto';
-import { ObjectId } from '../../utils/objectId';
+import { meetingChatSerialization } from '../dtos/response/meeting-chat.dto';
+import { wsResult } from '../utils/ws/wsResult';
+import { LoadMoreMeetingChatRequestDto } from '../dtos/requests/chats/loadmore-meeting-chat.dto';
+import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
+import { MeetingEmitEvents } from '../const/socket-events/emitters';
+import { MESSAGES_LIMIT } from '../const/common';
+import { ReactMeetingChatRequestDto } from '../dtos/requests/chats/react-meeting-chat.dto';
+import { ObjectId } from '../utils/objectId';
 import { MeetingReactionKind } from 'shared-types';
-import { MeetingChat } from '../../schemas/meeting-chat.schema';
-import { MeetingChatReactionsService } from './meeting-chat-reactions.service';
-import { userSerialization } from '../../dtos/response/common-user.dto';
-import { meetingChatReactionSerialization } from '../../dtos/response/meeting-chat-reaction.dto';
-import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
-import { UnReactMeetingChatRequestDto } from '../../dtos/requests/chats/unreact-meeting-chat.dto';
-import { WsBadRequestException } from '../../exceptions/ws.exception';
+import { MeetingChat } from '../schemas/meeting-chat.schema';
+import { MeetingChatReactionsService } from '../modules/meeting-chats/meeting-chat-reactions.service';
+import { meetingChatReactionSerialization } from '../dtos/response/meeting-chat-reaction.dto';
+import { MeetingUserDocument } from '../schemas/meeting-user.schema';
+import { UnReactMeetingChatRequestDto } from '../dtos/requests/chats/unreact-meeting-chat.dto';
+import { WsBadRequestException } from '../exceptions/ws.exception';
+import { UsersComponent } from 'src/modules/users/users.component';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -43,36 +43,11 @@ export class MeetingChatsGateway extends BaseGateway {
   constructor(
     private readonly meetingChatsService: MeetingChatsService,
     private readonly usersService: UsersService,
+    private readonly usersComponent: UsersComponent,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
     @InjectConnection() private readonly connection: Connection,
   ) {
     super();
-  }
-
-  private async getUserFromSocketId(
-    socketId: string,
-    session: ITransactionSession,
-  ) {
-    const user = await this.usersService.findOne({
-      query: {
-        socketId,
-      },
-      session,
-    });
-
-    if (!user) {
-      throw new WsBadRequestException('No user found');
-    }
-    return user;
-  }
-
-  private async getMeetingFromPopulateUser(user: MeetingUserDocument) {
-    await user.populate('meeting');
-    if (!user.meeting) {
-      throw new WsBadRequestException('No meeting found');
-    }
-
-    return user.meeting;
   }
 
   private caculateReactions(
@@ -136,8 +111,10 @@ export class MeetingChatsGateway extends BaseGateway {
   ) {
     console.debug(`Event ${MeetingSubscribeEvents.OnSendMessage}`);
     return withTransaction(this.connection, async (session) => {
-      const user = await this.getUserFromSocketId(socket.id, session);
-      const meeting = await this.getMeetingFromPopulateUser(user);
+      const user = this.getUserFromSocket(socket);
+      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+        user,
+      );
       const meetingChat = await this.meetingChatsService.create({
         data: {
           body: msg.body,
@@ -170,8 +147,10 @@ export class MeetingChatsGateway extends BaseGateway {
   ) {
     console.debug(`Event ${MeetingSubscribeEvents.OnLoadMoreMessages}`);
     return withTransaction(this.connection, async (session) => {
-      const user = await this.getUserFromSocketId(socket.id, session);
-      const meeting = await this.getMeetingFromPopulateUser(user);
+      const user = this.getUserFromSocket(socket);
+      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+        user,
+      );
       const meetingChats = await this.meetingChatsService.findMany({
         query: {
           meeting: meeting._id,
@@ -206,8 +185,10 @@ export class MeetingChatsGateway extends BaseGateway {
   ) {
     return withTransaction(this.connection, async (session) => {
       console.debug(`Event ${MeetingSubscribeEvents.OnReactionMessage}`);
-      const user = await this.getUserFromSocketId(socket.id, session);
-      const meeting = await this.getMeetingFromPopulateUser(user);
+      const user = this.getUserFromSocket(socket);
+      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+        user,
+      );
 
       const message = await this.getMessageById(msg.meetingChatId, session);
 
@@ -275,8 +256,10 @@ export class MeetingChatsGateway extends BaseGateway {
   ) {
     console.debug(`Event ${MeetingSubscribeEvents.OnUnReactionMessage}`);
     return withTransaction(this.connection, async (session) => {
-      const user = await this.getUserFromSocketId(socket.id, session);
-      const meeting = await this.getMeetingFromPopulateUser(user);
+      const user = this.getUserFromSocket(socket);
+      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+        user,
+      );
 
       let message = await this.getMessageById(msg.meetingChatId, session);
 

@@ -6,10 +6,11 @@ import {
   MeetingUserSchema,
 } from '../../schemas/meeting-user.schema';
 import { MeetingsModule } from '../meetings/meetings.module';
-import { UsersGateway } from './users.gateway';
+import { UsersGateway } from '../../gateways/users.gateway';
 import { MeetingTimeModule } from '../meeting-time/meeting-time.module';
 import { CoreModule } from '../../services/core/core.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { UsersComponent } from './users.component';
 
 @Module({
   imports: [
@@ -19,13 +20,9 @@ import { TasksModule } from '../tasks/tasks.module';
         schema: MeetingUserSchema,
       },
     ]),
-    forwardRef(() => MeetingsModule),
     MeetingTimeModule,
-    CoreModule,
-    TasksModule,
   ],
-  controllers: [],
-  providers: [UsersService, UsersGateway],
-  exports: [UsersService],
+  providers: [UsersService, UsersComponent],
+  exports: [UsersService, UsersComponent],
 })
 export class UsersModule {}

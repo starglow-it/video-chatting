@@ -8,19 +8,19 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
 import { Connection } from 'mongoose';
 
-import { BaseGateway } from '../../gateway/base.gateway';
+import { BaseGateway } from './base.gateway';
 
-import { UsersService } from '../users/users.service';
-import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { SendMeetingNoteRequestDTO } from '../../dtos/requests/notes/send-meeting-note.dto';
-import { MeetingNotesService } from './meeting-notes.service';
-import { MeetingNoteDTO } from '../../dtos/response/meeting-note.dto';
-import { RemoveMeetingNoteRequestDTO } from '../../dtos/requests/notes/remove-meeting-note.dto';
+import { UsersService } from '../modules/users/users.service';
+import { withTransaction } from '../helpers/mongo/withTransaction';
+import { SendMeetingNoteRequestDTO } from '../dtos/requests/notes/send-meeting-note.dto';
+import { MeetingNotesService } from '../modules/meeting-notes/meeting-notes.service';
+import { MeetingNoteDTO } from '../dtos/response/meeting-note.dto';
+import { RemoveMeetingNoteRequestDTO } from '../dtos/requests/notes/remove-meeting-note.dto';
 import { plainToInstance } from 'class-transformer';
-import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
-import { MeetingEmitEvents } from '../../const/socket-events/emitters';
+import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
+import { MeetingEmitEvents } from '../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
-import { wsError } from '../../utils/ws/wsError';
+import { wsError } from '../utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -88,71 +88,45 @@ export class MeetingNotesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        const user = await this.usersService.findOne({
-          query: { socketId: socket.id },
-          session,
-          populatePaths: 'meeting',
-        });
+      const user = this.getUserFromSocket(socket);
 
-        await this.meetingNotesService.deleteOne(
-          { _id: message.noteId },
-          session,
-        );
+      await this.meetingNotesService.deleteOne(
+        { _id: message.noteId },
+        session,
+      );
 
-        this.emitToRoom(
-          `meeting:${user.meeting._id}`,
-          MeetingEmitEvents.RemoveMeetingNote,
-          {
-            meetingNoteId: message.noteId,
-          },
-        );
-      } catch (err) {
-        return wsError(socket.id, err);
-      }
+      this.emitToRoom(
+        `meeting:${user.meeting.toString()}`,
+        MeetingEmitEvents.RemoveMeetingNote,
+        {
+          meetingNoteId: message.noteId,
+        },
+      );
     });
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnGetMeetingNotes)
   async getMeetingNotes(@ConnectedSocket() socket: Socket) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        const user = await this.usersService.findOne({
-          query: { socketId: socket.id },
-          session,
-          populatePaths: 'meeting',
-        });
+      const user = this.getUserFromSocket(socket);
 
-        if (!user) {
-          return wsError(socket.id, {
-            message: 'No user found',
-          });
-        }
+      const meetingNotes = await this.meetingNotesService.findMany(
+        { meeting: user.meeting },
+        session,
+        'user',
+      );
 
-        const meetingNotes = await this.meetingNotesService.findMany(
-          { meeting: user.meeting._id },
-          session,
-          'user',
-        );
+      const plainMeetingNotes = plainToInstance(MeetingNoteDTO, meetingNotes, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
 
-        const plainMeetingNotes = plainToInstance(
-          MeetingNoteDTO,
-          meetingNotes,
-          {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          },
-        );
-
-        return {
-          success: true,
-          result: {
-            meetingNotes: plainMeetingNotes,
-          },
-        };
-      } catch (err) {
-        return wsError(socket.id, err);
-      }
+      return {
+        success: true,
+        result: {
+          meetingNotes: plainMeetingNotes,
+        },
+      };
     });
   }
 }

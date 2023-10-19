@@ -20,6 +20,7 @@ import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';
+import { UpdateModelSingleQuery } from 'src/types/mongoose';
 
 @Injectable()
 export class UsersService {
@@ -83,14 +84,16 @@ export class UsersService {
     return this.meetingUser.findById(id, {}, { session: session?.session });
   }
 
-  async findOneAndUpdate(
-    query: FilterQuery<MeetingUserDocument>,
-    data: Partial<MeetingUserDocument>,
-    { session }: ITransactionSession,
-  ): Promise<MeetingUserDocument> {
+  async findOneAndUpdate({
+    query,
+    data,
+    populatePaths,
+    session: { session },
+  }: UpdateModelSingleQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
     return this.meetingUser.findOneAndUpdate(query, data, {
       new: true,
       session,
+      populate: populatePaths,
     });
   }
 
