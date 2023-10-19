@@ -17,6 +17,9 @@ import { MeetingsService } from '../meetings/meetings.service';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { UpdateMeetingTemplateRequestDto } from '../../dtos/requests/templates/update-template.dto';
+import { UpdatePaymentRequestDto } from '../../dtos/requests/payment/update-payment.dto';
+import { WsBadRequestException } from '../../exceptions/ws.exception';
+import { MeetingNativeErrorEnum } from 'shared-const';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -31,6 +34,26 @@ export class TemplatesGateway extends BaseGateway {
     @InjectConnection() private connection: Connection,
   ) {
     super();
+  }
+
+  @SubscribeMessage(MeetingSubscribeEvents.OnUpdateTemplatePayments)
+  async updateMeetingPayments(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() msg: UpdatePaymentRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findOne({
+        query: {
+          socketId: socket.id,
+        },
+        populatePaths: 'meeting',
+        session,
+      });
+
+      if(!user){
+        throw new WsBadRequestException(MeetingNativeErrorEnum.USER_NOT_FOUND)
+      }
+    });
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnUpdateMeetingTemplate)
