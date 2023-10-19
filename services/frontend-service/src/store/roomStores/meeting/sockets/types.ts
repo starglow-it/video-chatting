@@ -11,6 +11,7 @@ import {
     MeetingUser,
     Profile,
 } from '../../../types';
+import { UpdatePaymentMeetingParams } from '../meetingPayment/type';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
@@ -113,3 +114,7 @@ export type SendUnReactionMessagePayload = {
 export type SendUnReactionMessageResponse = {
     message: MeetingChat;
 };
+
+export type SendUpdatePaymentsMeetingPayload = UpdatePaymentMeetingParams;
+
+export type SendUpdatePaymentsMeetingRespone = SendUpdatePaymentsMeetingPayload;
