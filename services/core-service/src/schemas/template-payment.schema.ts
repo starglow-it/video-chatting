@@ -7,7 +7,6 @@ import { UserDocument } from './user.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import {
   DEFAULT_PAYMENT_CURRENCY,
-  DEFAULT_PRICE,
   PaymentType,
   StripeCurrency,
 } from 'shared-const';
@@ -47,7 +46,7 @@ export class TemplatePayment {
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: DEFAULT_PRICE,
+    default: 0,
   })
   price: number;
 

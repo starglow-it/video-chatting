@@ -4,6 +4,7 @@ import { ITransactionSession } from 'src/helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from 'src/types/custom';
 import { throwRpcError } from 'src/utils/common/throwRpcError';
 import {
+  DEFAULT_PRICE,
   PaymentType,
   StripeCurrency,
   TemplateNativeErrorEnum,
@@ -12,6 +13,7 @@ import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { FilterQuery } from 'mongoose';
 import { MeetingRole } from 'shared-types';
+import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
 
 @Injectable()
 export class UserTemplatesComponent {
@@ -46,33 +48,42 @@ export class UserTemplatesComponent {
     const defaultPayment = {
       enabled: false,
       currency: StripeCurrency.USD,
-      price: 5,
+      price: DEFAULT_PRICE.participant,
       templateId: userTemplate.templateId,
       userTemplate: userTemplate._id,
       user: userTemplate.user,
+      meetingRole: MeetingRole.Participant as Exclude<MeetingRole, 'host'>,
+    };
+
+    const meetingPaymentRoleData: {
+      [K in Exclude<MeetingRole, 'host'>]: Partial<TemplatePaymentDocument>;
+    } = {
+      participant: { ...defaultPayment },
+      lurker: {
+        ...defaultPayment,
+        meetingRole: MeetingRole.Lurker,
+        price: DEFAULT_PRICE.lurker,
+      },
     };
 
     await this.templatePaymentsService.createMany({
       data: [
         {
           type: PaymentType.Meeting,
-          meetingRole: MeetingRole.Participant,
-          ...defaultPayment,
+          ...meetingPaymentRoleData['participant'],
         },
         {
           type: PaymentType.Paywall,
-          meetingRole: MeetingRole.Lurker,
-          ...defaultPayment,
+          ...meetingPaymentRoleData['lurker'],
         },
         {
           type: PaymentType.Meeting,
-          meetingRole: MeetingRole.Lurker,
-          ...defaultPayment,
+          ...meetingPaymentRoleData['lurker'],
         },
         {
           type: PaymentType.Paywall,
           meetingRole: MeetingRole.Participant,
-          ...defaultPayment,
+          ...meetingPaymentRoleData['participant'],
         },
       ],
       session,
