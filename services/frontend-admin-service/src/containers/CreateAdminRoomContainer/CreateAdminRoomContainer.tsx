@@ -502,7 +502,7 @@ const Component = () => {
                         </CustomGrid>
 
                         <CustomPaper
-                            variant="black-glass"
+                            variant="elevation"
                             className={styles.paper}
                         >
                             <ValuesSwitcher<TabsValues, TabsLabels>

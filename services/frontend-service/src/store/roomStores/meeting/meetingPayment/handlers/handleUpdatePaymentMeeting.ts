@@ -1,17 +1,18 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 import {
     MeetingPayment,
+    PaymentItem,
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,
 } from '../type';
-import { ErrorState } from 'shared-types';
+import { EntityList, ErrorState } from 'shared-types';
 import { updateMonetizationTemplateUrl } from 'src/utils/urls';
 
 export const handleUpdatePaymentMeeting = async (
     params: UpdatePaymentMeetingPayload,
 ): Promise<UpdatePaymentMeetingResponse> => {
     const response = await sendRequestWithCredentials<
-        MeetingPayment,
+        EntityList<PaymentItem>,
         ErrorState
     >({
         ...updateMonetizationTemplateUrl(params.templateId),
@@ -21,13 +22,13 @@ export const handleUpdatePaymentMeeting = async (
     if (response.success) {
         return {
             success: true,
-            data: response.result,
+            data: response.result?.list ?? [],
         };
     }
 
     return {
         success: false,
-        data: undefined,
+        data: [],
         message: response.error?.message,
     };
 };

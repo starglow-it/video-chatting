@@ -1,5 +1,5 @@
-import { attach, combine, Store } from 'effector-next';
-import { ErrorState, IUserTemplate } from 'shared-types';
+import { attach, combine, Store, StoreShape } from 'effector-next';
+import { ErrorState, IUserTemplate, MeetingRole } from 'shared-types';
 
 import { meetingDomain, paymentsDomain } from '../../../domains';
 import {
@@ -11,11 +11,13 @@ import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
     GetPaymentMeetingPayload,
     MeetingPayment,
+    PaymentItem,
+    UpdatePaymentMeetingParams,
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,
 } from './type';
-import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
-import { $isParticipant } from '../meetingRole/model';
+import { DEFAULT_PAYMENT_CURRENCY, PaymentType } from 'shared-const';
+import { $isLurker, $isParticipant } from '../meetingRole/model';
 
 export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     id: '',
@@ -65,33 +67,128 @@ export const cancelPaymentIntentWithData = attach<
     }),
 });
 
-export const $meetingPaymentStore = meetingDomain.createStore<MeetingPayment>({
-    meeting: {
-        enabled: false,
-        price: 5,
-        currency: DEFAULT_PAYMENT_CURRENCY,
-    },
-    paywall: {
-        enabled: false,
-        price: 5,
-        currency: DEFAULT_PAYMENT_CURRENCY,
-    },
-});
-
-export const $enabledPaymentMeeting = combine({
-    isParticipant: $isParticipant,
-    meetingPayment: $meetingPaymentStore,
-}).map(
-    ({ isParticipant, meetingPayment: { meeting } }) =>
-        isParticipant && meeting.enabled,
+export const $meetingPaymentStore = meetingDomain.createStore<MeetingPayment>(
+    [],
 );
 
-export const $enabledPaymentPaywall = combine({
+export const $enabledPaymentMeetingParticipant = combine({
     isParticipant: $isParticipant,
     meetingPayment: $meetingPaymentStore,
 }).map(
-    ({ isParticipant, meetingPayment: { paywall } }) =>
-        isParticipant && paywall.enabled,
+    ({ isParticipant, meetingPayment }) =>
+        isParticipant &&
+        meetingPayment.some(
+            item =>
+                item.meetingRole === MeetingRole.Participant &&
+                item.enabled &&
+                item.type === PaymentType.Meeting,
+        ),
+);
+
+export const $enabledPaymentPaywallParticipant = combine({
+    isParticipant: $isParticipant,
+    meetingPayment: $meetingPaymentStore,
+}).map(
+    ({ isParticipant, meetingPayment }) =>
+        isParticipant &&
+        meetingPayment.some(
+            item =>
+                item.meetingRole === MeetingRole.Participant &&
+                item.enabled &&
+                item.type === PaymentType.Paywall,
+        ),
+);
+
+export const $enabledPaymentMeetingLurker = combine({
+    isLurker: $isLurker,
+    meetingPayment: $meetingPaymentStore,
+}).map(
+    ({ isLurker, meetingPayment }) =>
+        isLurker &&
+        meetingPayment.some(
+            item =>
+                item.meetingRole === MeetingRole.Lurker &&
+                item.enabled &&
+                item.type === PaymentType.Meeting,
+        ),
+);
+
+export const $enabledPaymentPaywallLurker = combine({
+    isLurker: $isLurker,
+    meetingPayment: $meetingPaymentStore,
+}).map(
+    ({ isLurker, meetingPayment }) =>
+        isLurker &&
+        meetingPayment.some(
+            item =>
+                item.meetingRole === MeetingRole.Lurker &&
+                item.enabled &&
+                item.type === PaymentType.Paywall,
+        ),
+);
+
+export const $paymentMeetingParticipant = $meetingPaymentStore.map(
+    payments =>
+        payments.find(
+            item =>
+                item.type === PaymentType.Meeting &&
+                item.meetingRole === MeetingRole.Participant,
+        ) ??
+        ({
+            enabled: false,
+            price: 5,
+            type: PaymentType.Meeting,
+            meetingRole: MeetingRole.Participant,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        } as PaymentItem),
+);
+
+export const $paymentMeetingLurker = $meetingPaymentStore.map(
+    payments =>
+        payments.find(
+            item =>
+                item.type === PaymentType.Meeting &&
+                item.meetingRole === MeetingRole.Lurker,
+        ) ??
+        ({
+            enabled: false,
+            price: 5,
+            type: PaymentType.Meeting,
+            meetingRole: MeetingRole.Lurker,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        } as PaymentItem),
+);
+
+export const $paymentPaywallParticipant = $meetingPaymentStore.map(
+    payments =>
+        payments.find(
+            item =>
+                item.type === PaymentType.Paywall &&
+                item.meetingRole === MeetingRole.Participant,
+        ) ??
+        ({
+            enabled: false,
+            price: 5,
+            type: PaymentType.Paywall,
+            meetingRole: MeetingRole.Participant,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        } as PaymentItem),
+);
+
+export const $paymentPaywallLurker = $meetingPaymentStore.map(
+    payments =>
+        payments.find(
+            item =>
+                item.type === PaymentType.Paywall &&
+                item.meetingRole === MeetingRole.Lurker,
+        ) ??
+        ({
+            enabled: false,
+            price: 5,
+            type: PaymentType.Paywall,
+            meetingRole: MeetingRole.Lurker,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        } as PaymentItem),
 );
 
 export const getPaymentMeetingFx = meetingDomain.createEffect<
@@ -104,12 +201,18 @@ export const updatePaymentMeetingFx = meetingDomain.createEffect<
     UpdatePaymentMeetingResponse
 >('updatePaymentMeetingFx');
 
-export const getPaymentMeetingEvent = attach({
+export const getPaymentMeetingEvent = attach<
+    string,
+    any,
+    typeof getPaymentMeetingFx
+>({
     effect: getPaymentMeetingFx,
+    source: undefined,
+    mapParams: templateId => ({ templateId }),
 });
 
 export const updatePaymentMeetingEvent = attach<
-    MeetingPayment,
+    UpdatePaymentMeetingParams,
     Store<IUserTemplate>,
     typeof updatePaymentMeetingFx
 >({

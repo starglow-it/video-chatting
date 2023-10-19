@@ -48,7 +48,7 @@ export const MeetingConnectStripe = () => {
 
     const fontSize = useMemo(() => {
         if (isPortraitLayout) return 12;
-        return undefined;
+        return 14;
     }, [isPortraitLayout]);
 
     return isConnectedStripe ? (
@@ -65,11 +65,16 @@ export const MeetingConnectStripe = () => {
                 }
                 nameSpace="profile"
                 translation="monetization.disconnect"
+                fontSize={fontSize}
             />
         </CustomButton>
     ) : (
         <CustomGrid container gap={2} direction="column">
-            <CustomButton onClick={handleSetUpPayments}>
+            <CustomButton
+                onClick={handleSetUpPayments}
+                className={styles.button}
+
+            >
                 {!isConnectStripeAccountPending ? (
                     <>
                         &nbsp;

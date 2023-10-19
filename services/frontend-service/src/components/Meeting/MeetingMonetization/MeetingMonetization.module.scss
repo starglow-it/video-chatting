@@ -9,6 +9,7 @@
   background: transparent;
   border-radius: rem(10px);
   color: $primary-white;
+  width: 340px;
 
   .labelWrapper {
     margin: rem(0 0 20px 0);
@@ -16,15 +17,23 @@
 
   .switcher {
     max-width: rem(112px);
-    width: 90px;
-    height: 35px;
-    border-radius: 6px;
+    width: 82px;
+    height: 28px;
+    border-radius: 4px;
+
+    svg {
+      width: 18px;
+    }
+
+    input {
+      font-size: 12px;
+    }
   }
 
   .amountInput {
     position: relative;
-    height: 50px;
-    padding: rem(9px 11px);
+    // height: 50px;
+    padding: rem(8px);
 
     &:after {
       content: "";
@@ -38,6 +47,7 @@
     .inputWrapper {
       padding: rem(0 4px);
       color: $primary-white;
+      font-size: 13px;
 
       .input::-webkit-outer-spin-button,
       .input::-webkit-inner-spin-button {
@@ -55,6 +65,8 @@
 
 .button {
   margin: 0;
+  padding: 10px;
+  border-radius: 8px;
 
   &.animate {
     animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
@@ -171,4 +183,14 @@
   font-size: rem(20px);
   font-weight: 600;
   margin: rem(40px 0 0 0);
+}
+
+.switcherWrapper {
+  height: 40px;
+}
+
+.switchItem {
+  span {
+    font-size: 12px;
+  }
 }

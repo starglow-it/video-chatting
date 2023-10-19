@@ -1,5 +1,6 @@
 import {
     $isTogglePayment,
+    $meetingPaymentStore,
     $paymentIntent,
     cancelPaymentIntentFx,
     createPaymentIntentFx,
@@ -30,6 +31,11 @@ $paymentIntent
         id: '',
         clientSecret: '',
     }));
+$meetingPaymentStore
+    .on(getPaymentMeetingFx.doneData, (_, data) => data)
+    .on(updatePaymentMeetingFx.doneData, (state, payments) =>
+        payments.success ? payments.data : state,
+    );
 
 $isTogglePayment.on(togglePaymentFormEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,

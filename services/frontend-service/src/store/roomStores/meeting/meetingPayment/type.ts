@@ -1,26 +1,25 @@
 import { PaymentType, StripeCurrency } from 'shared-const';
-import { ErrorState } from 'shared-types';
+import { ErrorState, MeetingRole } from 'shared-types';
 
-export type PaymentItem = {
+type PaymentBase = {
     currency: StripeCurrency;
     price: number;
     enabled: boolean;
 };
 
-export type MeetingPayment = {
-    [k in PaymentType]: {
-        currency: StripeCurrency;
-        price: number;
-        enabled: boolean;
-    };
+export type PaymentItem = PaymentBase & {
+    type: PaymentType;
+    meetingRole: MeetingRole;
 };
 
-export type UpdatePaymentMeetingParams = Partial<MeetingPayment>;
+export type MeetingPayment = PaymentItem[];
 
-// {
-//     [PaymentType.Meeting]?: PaymentItem;
-//     [PaymentType.Paywall]?: PaymentItem;
-// };
+export type UpdatePaymentMeetingParams = {
+    [K in PaymentType]: {
+        [MeetingRole.Participant]: PaymentBase;
+        [MeetingRole.Lurker]: PaymentBase;
+    };
+};
 
 export type GetPaymentMeetingPayload = {
     templateId: string;
