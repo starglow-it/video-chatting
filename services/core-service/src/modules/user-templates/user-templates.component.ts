@@ -11,6 +11,7 @@ import {
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { FilterQuery } from 'mongoose';
+import { MeetingRole } from 'shared-types';
 
 @Injectable()
 export class UserTemplatesComponent {
@@ -55,10 +56,22 @@ export class UserTemplatesComponent {
       data: [
         {
           type: PaymentType.Meeting,
+          meetingRole: MeetingRole.Participant,
           ...defaultPayment,
         },
         {
           type: PaymentType.Paywall,
+          meetingRole: MeetingRole.Lurker,
+          ...defaultPayment,
+        },
+        {
+          type: PaymentType.Meeting,
+          meetingRole: MeetingRole.Lurker,
+          ...defaultPayment,
+        },
+        {
+          type: PaymentType.Paywall,
+          meetingRole: MeetingRole.Participant,
           ...defaultPayment,
         },
       ],
@@ -111,7 +124,7 @@ export class UserTemplatesComponent {
     session: ITransactionSession,
   ) {
     console.log(query);
-    
+
     await this.userTemplatesService.deleteUserTemplate(query, session);
     await this.templatePaymentsService.deleteMany({
       query: {
