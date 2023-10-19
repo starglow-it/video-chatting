@@ -5,10 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   TemplatePayment,
   TemplatePaymentSchema,
-} from '../../schemas/user-payment.schema';
-import { UserTemplatesModule } from '../user-templates/user-templates.module';
-import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+} from '../../schemas/template-payment.schema';
 
 @Module({
   imports: [

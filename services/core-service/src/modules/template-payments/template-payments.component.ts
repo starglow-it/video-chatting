@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TemplatePaymentsService } from './template-payments.service';
-import { FilterQuery } from 'mongoose';
-import { TemplatePaymentDocument } from '../../schemas/user-payment.schema';
+import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
 import {
   GetModelMultipleQuery,
   GetModelSingleQuery,

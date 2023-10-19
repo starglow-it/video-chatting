@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { PaymentType, StripeCurrency } from 'shared-const';
+import { MeetingRole } from 'shared-types';
 
 export class CommonTemplatePaymentDto {
   @ApiProperty({
@@ -30,6 +31,13 @@ export class CommonTemplatePaymentDto {
   })
   @Expose()
   type: string;
+
+  @ApiProperty({
+    type: String,
+    example: 'participant'
+  })
+  @Expose()
+  meetingRole: Exclude<MeetingRole, 'host'>;
 
   @ApiProperty({
     type: Boolean,

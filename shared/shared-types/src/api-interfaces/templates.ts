@@ -6,14 +6,14 @@ import {
   TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
-import { IMeetingInstance } from './meeting';
+import { IMeetingInstance, MeetingRole } from './meeting';
 
 export enum RoomType {
   Normal = 'normal',
-  Featured = 'featured'
+  Featured = 'featured',
 }
 
-interface ITemplate{
+interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
   authorName?: string;
@@ -130,5 +130,6 @@ export interface ITemplatePayment {
   currency: string;
   price: number;
   type: string;
+  meetingRole: Exclude<MeetingRole, 'host'>;
   enabled: boolean;
 }

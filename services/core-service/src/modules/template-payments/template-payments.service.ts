@@ -5,7 +5,7 @@ import { IBaseService } from '../../base/base-service.interface';
 import {
   TemplatePayment,
   TemplatePaymentDocument,
-} from '../../schemas/user-payment.schema';
+} from '../../schemas/template-payment.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   GetModelByIdQuery,

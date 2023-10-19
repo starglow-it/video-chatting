@@ -345,10 +345,12 @@ export class ProfileTemplatesController {
     @Body() body: UpdateTemplatePaymentsRequest,
   ) {
     try {
-      const promise = Object.keys(body).map(async (key) => {
-        return await checkValidCurrency({
-          currency: body[key]?.currency as string,
-          amount: body[key]?.price as number,
+      const promise = Object.values(body).map(async (paymentValue) => {
+        return Object.values(paymentValue).map(async (value) => {
+          return await checkValidCurrency({
+            currency: value['currency'] as string,
+            amount: value['price'] as number,
+          });
         });
       });
 

@@ -11,6 +11,7 @@ import {
   PaymentType,
   StripeCurrency,
 } from 'shared-const';
+import { MeetingRole } from 'shared-types';
 
 @Schema({
   timestamps: {
@@ -33,7 +34,7 @@ export class TemplatePayment {
   templateId: number;
 
   @Prop({
-    type: mongoose.Schema.Types.String
+    type: mongoose.Schema.Types.String,
   })
   type: PaymentType;
 
@@ -57,6 +58,11 @@ export class TemplatePayment {
   currency: StripeCurrency;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  meetingRole: Exclude<MeetingRole, 'host'>;
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
@@ -69,4 +75,5 @@ export class TemplatePayment {
 
 export type TemplatePaymentDocument = TemplatePayment & Document;
 
-export const TemplatePaymentSchema = SchemaFactory.createForClass(TemplatePayment);
+export const TemplatePaymentSchema =
+  SchemaFactory.createForClass(TemplatePayment);

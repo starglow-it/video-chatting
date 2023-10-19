@@ -60,7 +60,7 @@ export class UsersService {
     populatePaths,
   }: {
     query: FilterQuery<MeetingUserDocument>;
-    session: ITransactionSession;
+    session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }): Promise<MeetingUserDocument> {
     return this.meetingUser

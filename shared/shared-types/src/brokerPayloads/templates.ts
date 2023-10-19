@@ -4,6 +4,7 @@ import {
   ITemplatePayment,
   IUpdateTemplate,
   IUserTemplate,
+  MeetingRole,
 } from '../api-interfaces';
 import { FilterQuery, QueryParams } from '../common';
 
@@ -39,10 +40,12 @@ export type UpdateUserTemplatePayload = {
 };
 
 export type UpdateTemplatePaymentsData = {
-  [K in ITemplatePayment['type']]?: Pick<
-    ITemplatePayment,
-    'currency' | 'enabled' | 'price'
-  >;
+  [K in ITemplatePayment['type']]?: {
+    [K in Exclude<MeetingRole, 'host'>]: Pick<
+      ITemplatePayment,
+      'currency' | 'enabled' | 'price'
+    >;
+  };
 };
 
 export type GetTemplatePaymentsPayload = {
@@ -53,7 +56,7 @@ export type GetTemplatePaymentsPayload = {
 export type GetTemplatePaymentPayload = {
   paymentType: string;
   userTemplateId: string;
-}
+};
 
 export type UpdateTemplatePaymentPayload = {
   userTemplateId: IUserTemplate['id'];

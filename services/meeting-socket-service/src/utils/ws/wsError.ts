@@ -1,3 +1,5 @@
+import { WsBadRequestException } from 'src/exceptions/ws.exception';
+
 export type WsError = {
   success: false;
   message?: string;
@@ -22,3 +24,9 @@ export function wsError(
     }),
   };
 }
+
+export const throwWsError = (condition: boolean, message: string) => {
+  if (condition) {
+    throw new WsBadRequestException(message);
+  }
+};

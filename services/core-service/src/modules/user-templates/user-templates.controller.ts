@@ -66,11 +66,10 @@ import { MediaDocument } from '../../schemas/media.schema';
 import { UserTemplatesComponent } from './user-templates.component';
 import { TemplatePaymentsComponent } from '../template-payments/template-payments.component';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
-import { throwRpcError } from 'src/utils/common/throwRpcError';
+import { throwRpcError } from '../../utils/common/throwRpcError';
 import {
-  TemplatePayment,
   TemplatePaymentDocument,
-} from 'src/schemas/user-payment.schema';
+} from '../../schemas/template-payment.schema';
 import {
   TemplatePaymentDto,
   templatePaymentSerialization,
@@ -1121,14 +1120,15 @@ export class UserTemplatesController {
         const promises: Promise<TemplatePaymentDocument>[] = [];
 
         if (templatePayments.length) {
-          const p = templatePayments.map(async ({ type, _id }) => {
+          const p = templatePayments.map(async ({ type, _id, meetingRole }) => {
             return this.templatePaymentsComponent.findOneAndUpdate({
               query: {
                 _id,
                 type,
+                meetingRole,
               },
               data: {
-                ...data[type],
+                ...data[type][meetingRole],
               },
               session,
             });

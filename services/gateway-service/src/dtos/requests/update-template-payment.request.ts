@@ -8,6 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { StripeCurrency } from 'shared-const';
+import { MeetingRole } from 'shared-types';
 
 class UpdateTemplatePaymentsData {
   @ApiProperty({
@@ -35,22 +36,40 @@ class UpdateTemplatePaymentsData {
     default: false,
   })
   @IsNotEmpty()
-  @IsBoolean({ message: 'IsEnabled must be boolean ' })
+  @IsBoolean({ message: 'Enabled must be boolean' })
   enabled: boolean;
+}
+
+class QueryTemplatePaymentsRequest
+  implements Record<Exclude<MeetingRole, 'host'>, UpdateTemplatePaymentsData>
+{
+  @ApiProperty({
+    type: UpdateTemplatePaymentsData,
+  })
+  @IsNotEmpty()
+  @Type(() => UpdateTemplatePaymentsData)
+  participant: UpdateTemplatePaymentsData;
+
+  @ApiProperty({
+    type: UpdateTemplatePaymentsData,
+  })
+  @IsNotEmpty()
+  @Type(() => UpdateTemplatePaymentsData)
+  lurker: UpdateTemplatePaymentsData;
 }
 
 export class UpdateTemplatePaymentsRequest {
   @ApiProperty({
-    type: UpdateTemplatePaymentsData,
+    type: QueryTemplatePaymentsRequest,
   })
   @IsOptional()
-  @Type(() => UpdateTemplatePaymentsData)
-  meeting?: UpdateTemplatePaymentsData;
+  @Type(() => QueryTemplatePaymentsRequest)
+  meeting?: QueryTemplatePaymentsRequest;
 
   @ApiProperty({
-    type: UpdateTemplatePaymentsData,
+    type: QueryTemplatePaymentsRequest,
   })
   @IsOptional()
-  @Type(() => UpdateTemplatePaymentsData)
-  paywall?: UpdateTemplatePaymentsData;
+  @Type(() => QueryTemplatePaymentsRequest)
+  paywall?: QueryTemplatePaymentsRequest;
 }

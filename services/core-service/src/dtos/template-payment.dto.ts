@@ -1,7 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { ITemplatePayment, IUserTemplate } from 'shared-types';
+import { ITemplatePayment, IUserTemplate, MeetingRole } from 'shared-types';
 import { UserTemplateDTO } from './user-template.dto';
-import { TemplatePaymentDocument } from 'src/schemas/user-payment.schema';
+import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
 import { serializeInstance } from 'shared-utils';
 
 export class TemplatePaymentDto implements ITemplatePayment {
@@ -17,6 +17,9 @@ export class TemplatePaymentDto implements ITemplatePayment {
 
   @Expose()
   type: string;
+
+  @Expose()
+  meetingRole: Exclude<MeetingRole, 'host'>;
 
   @Expose()
   enabled: boolean;

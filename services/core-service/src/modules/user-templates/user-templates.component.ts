@@ -10,7 +10,6 @@ import {
 } from 'shared-const';
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
-import { TemplatePaymentDocument } from 'src/schemas/user-payment.schema';
 import { FilterQuery } from 'mongoose';
 
 @Injectable()
