@@ -531,7 +531,7 @@ export class MeetingsGateway
           });
         }
 
-        const user = socket.data['user'] as MeetingUserDocument;
+        const user = this.getUserFromSocket(socket);
 
         const u = await this.usersService.updateSizeAndPositionForUser({
           userTemplate: template,

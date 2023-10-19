@@ -20,6 +20,9 @@ import { UpdateMeetingTemplateRequestDto } from '../../dtos/requests/templates/u
 import { UpdatePaymentRequestDto } from '../../dtos/requests/payment/update-payment.dto';
 import { WsBadRequestException } from '../../exceptions/ws.exception';
 import { MeetingNativeErrorEnum } from 'shared-const';
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import { Roles } from 'src/utils/decorators/role.decorator';
+import { MeetingRole } from 'shared-types';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -29,30 +32,27 @@ import { MeetingNativeErrorEnum } from 'shared-const';
 })
 export class TemplatesGateway extends BaseGateway {
   constructor(
-    private meetingsService: MeetingsService,
     private usersService: UsersService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
   }
 
+  @Roles([MeetingRole.Host])
   @SubscribeMessage(MeetingSubscribeEvents.OnUpdateTemplatePayments)
   async updateMeetingPayments(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UpdatePaymentRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findOne({
-        query: {
-          socketId: socket.id,
+      const user = this.getUserFromSocket(socket);
+      this.emitToRoom(
+        `meeting:${user.meeting.toString()}`,
+        MeetingEmitEvents.UpdateTemplatePayments,
+        {
+          ...msg,
         },
-        populatePaths: 'meeting',
-        session,
-      });
-
-      if(!user){
-        throw new WsBadRequestException(MeetingNativeErrorEnum.USER_NOT_FOUND)
-      }
+      );
     });
   }
 

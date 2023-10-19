@@ -7,8 +7,9 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { MeetingRole } from 'shared-types';
 
-export class PaymentInfo {
+class PaymentInfo {
   @IsNotEmpty()
   @IsNumber()
   price: number;
@@ -26,18 +27,36 @@ export class PaymentInfo {
   enabled: boolean;
 }
 
+class QueryPaymentRequest
+  implements Record<Exclude<MeetingRole, 'host'>, PaymentInfo>
+{
+  @IsNotEmpty()
+  @ValidateNested({
+    message: 'Invalid participant payment info',
+  })
+  @Type(() => PaymentInfo)
+  participant: PaymentInfo;
+
+  @IsNotEmpty()
+  @ValidateNested({
+    message: 'Invalid lurker payment info',
+  })
+  @Type(() => PaymentInfo)
+  lurker: PaymentInfo;
+}
+
 export class UpdatePaymentRequestDto {
   @IsOptional()
   @ValidateNested({
-    message: 'Invalid meeting payment',
+    message: 'Invalid meeting payment info',
   })
-  @Type(() => PaymentInfo)
-  meeting: PaymentInfo;
+  @Type(() => QueryPaymentRequest)
+  meeting: QueryPaymentRequest;
 
   @IsOptional()
   @ValidateNested({
-    message: 'Invalid paywall payment',
+    message: 'Invalid paywall payment info',
   })
-  @Type(() => PaymentInfo)
-  paywall: PaymentInfo;
+  @Type(() => QueryPaymentRequest)
+  paywall: QueryPaymentRequest;
 }

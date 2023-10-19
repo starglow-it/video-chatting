@@ -8,10 +8,15 @@ import { TEventEmitter } from '../types/socket-events';
 import { MAX_EVENT_LISTENER } from '../const/common';
 import { InjectWsErrorHandler } from '../utils/decorators/injectWsErrorHandler.decorator';
 import { InjectWsGlobalGuard } from 'src/utils/decorators/injectWsGlobalGuard.decorator';
+import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 
 @InjectWsGlobalGuard()
 @InjectWsErrorHandler()
 export class BaseGateway implements OnGatewayConnection {
+  getUserFromSocket(socket: Socket): MeetingUserDocument {
+    return socket.data['user'];
+  }
+
   handleConnection(client: Socket, ...args: any[]) {
     client.setMaxListeners(MAX_EVENT_LISTENER);
   }
