@@ -80,6 +80,7 @@ import { SendAnswerOfferRequestDto } from '../../dtos/requests/send-answer-offer
 import { SendIceCandidateRequestDto } from '../../dtos/requests/send-candidate.dto';
 import { SendDevicesPermissionsRequestDto } from '../../dtos/requests/send-devices-permissions.dto';
 import { UserActionInMeeting } from '../../types';
+import { PassAuth } from 'src/utils/decorators/passAuth.decorator';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -332,6 +333,7 @@ export class MeetingsGateway
     }
   }
 
+  @PassAuth()
   @SubscribeMessage(MeetingSubscribeEvents.OnJoinWaitingRoom)
   async handleJoinWaitingRoom(
     @MessageBody() message: JoinMeetingRequestDTO,
