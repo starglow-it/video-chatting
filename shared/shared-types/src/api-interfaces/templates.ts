@@ -126,7 +126,7 @@ export interface IUploadTemplateFile {
 }
 
 export interface ITemplatePayment {
-  userTemplate: string;
+  userTemplate?: string;
   currency: string;
   price: number;
   type: string;

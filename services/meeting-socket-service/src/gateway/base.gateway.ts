@@ -9,7 +9,7 @@ import { MAX_EVENT_LISTENER } from '../const/common';
 import { InjectWsErrorHandler } from '../utils/decorators/injectWsErrorHandler.decorator';
 import { InjectWsGlobalGuard } from 'src/utils/decorators/injectWsGlobalGuard.decorator';
 
-// @InjectWsGlobalGuard()
+@InjectWsGlobalGuard()
 @InjectWsErrorHandler()
 export class BaseGateway implements OnGatewayConnection {
   handleConnection(client: Socket, ...args: any[]) {

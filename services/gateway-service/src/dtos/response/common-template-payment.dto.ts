@@ -6,13 +6,6 @@ import { MeetingRole } from 'shared-types';
 export class CommonTemplatePaymentDto {
   @ApiProperty({
     type: String,
-    example: '650d457cf03e729a754d1f83',
-  })
-  @Expose()
-  userTemplate: string;
-
-  @ApiProperty({
-    type: String,
     example: StripeCurrency.USD,
   })
   @Expose()

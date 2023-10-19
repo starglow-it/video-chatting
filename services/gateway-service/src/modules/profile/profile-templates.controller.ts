@@ -318,7 +318,7 @@ export class ProfileTemplatesController {
         };
       }
       return {
-        success: false,
+        success: false, 
         result: null,
       };
     } catch (err) {

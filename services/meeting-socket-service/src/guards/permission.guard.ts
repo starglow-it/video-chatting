@@ -1,4 +1,8 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from '../modules/users/users.service';
@@ -6,6 +10,8 @@ import { Socket } from 'socket.io';
 import { throwWsError } from '../utils/ws/wsError';
 import { MeetingNativeErrorEnum } from 'shared-const';
 import { PASS_AUTH_KEY } from '../utils/decorators/passAuth.decorator';
+import { ROLE } from 'src/utils/decorators/role.decorator';
+import { MeetingRole } from 'shared-types';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -14,8 +20,15 @@ export class PermissionGuard implements CanActivate {
     private readonly usersService: UsersService,
   ) {}
 
-  private getPassAuthKey(ctx: ExecutionContext) {
+  private getPassAuthKey(ctx: ExecutionContext): Boolean {
     return this.reflector.getAllAndOverride(PASS_AUTH_KEY, [
+      ctx.getClass(),
+      ctx.getHandler(),
+    ]);
+  }
+
+  private getRoles(ctx: ExecutionContext): MeetingRole[] {
+    return this.reflector.getAllAndMerge(ROLE, [
       ctx.getClass(),
       ctx.getHandler(),
     ]);
@@ -23,7 +36,6 @@ export class PermissionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client = context.switchToWs().getClient() as Socket;
-    console.log('client guard', client.id);
 
     if (this.getPassAuthKey(context)) {
       return true;
@@ -37,8 +49,14 @@ export class PermissionGuard implements CanActivate {
 
     throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
-    console.log('user guard', user);
+    const roles = this.getRoles(context);
+    throwWsError(
+      roles.length && !roles.includes(user.meetingRole as MeetingRole),
+      MeetingNativeErrorEnum.USER_NOT_HAVE_PERMISSION,
+    );
 
-    return false;
+    client.data['user'] = user;
+
+    return true;
   }
 }

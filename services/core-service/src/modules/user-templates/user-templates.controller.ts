@@ -67,9 +67,7 @@ import { UserTemplatesComponent } from './user-templates.component';
 import { TemplatePaymentsComponent } from '../template-payments/template-payments.component';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { throwRpcError } from '../../utils/common/throwRpcError';
-import {
-  TemplatePaymentDocument,
-} from '../../schemas/template-payment.schema';
+import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
 import {
   TemplatePaymentDto,
   templatePaymentSerialization,
@@ -872,6 +870,7 @@ export class UserTemplatesController {
           const templatePayments =
             await this.templatePaymentsComponent.findMany({
               query,
+              session,
             });
 
           const countTemplatePayments =

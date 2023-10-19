@@ -81,6 +81,7 @@ import { SendIceCandidateRequestDto } from '../../dtos/requests/send-candidate.d
 import { SendDevicesPermissionsRequestDto } from '../../dtos/requests/send-devices-permissions.dto';
 import { UserActionInMeeting } from '../../types';
 import { PassAuth } from 'src/utils/decorators/passAuth.decorator';
+import { Roles } from 'src/utils/decorators/role.decorator';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -480,6 +481,7 @@ export class MeetingsGateway
     });
   }
 
+  @Roles([MeetingRole.Host])
   @SubscribeMessage(MeetingSubscribeEvents.OnStartMeeting)
   async startMeeting(
     @MessageBody() message: StartMeetingRequestDTO,
@@ -529,17 +531,8 @@ export class MeetingsGateway
           });
         }
 
-        const user = await this.usersService.findOne({
-          query: {
-            socketId: socket.id,
-          },
-          session,
-        });
-        if (!user) {
-          return wsError(socket.id, {
-            message: 'No User found',
-          });
-        }
+        const user = socket.data['user'] as MeetingUserDocument;
+
         const u = await this.usersService.updateSizeAndPositionForUser({
           userTemplate: template,
           userId: user._id.toString(),
