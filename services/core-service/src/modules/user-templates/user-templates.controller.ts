@@ -821,7 +821,8 @@ export class UserTemplatesController {
     cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
   })
   async getTemplatePayment(
-    @Payload() { userTemplateId, paymentType }: GetTemplatePaymentPayload,
+    @Payload()
+    { userTemplateId, paymentType, meetingRole }: GetTemplatePaymentPayload,
   ) {
     return withTransaction<TemplatePaymentDto>(
       this.connection,
@@ -831,6 +832,7 @@ export class UserTemplatesController {
             query: {
               userTemplate: new ObjectId(userTemplateId),
               type: paymentType,
+              meetingRole,
             },
             session,
             populatePaths: 'userTemplate',

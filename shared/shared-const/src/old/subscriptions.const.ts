@@ -1,5 +1,4 @@
 import { MeetingRole, PlanKeys } from 'shared-types';
-import { PaymentType } from 'src/subscriptions';
 
 export type PlanData = {
   name: PlanKeys;

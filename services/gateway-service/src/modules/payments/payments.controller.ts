@@ -29,13 +29,12 @@ import {
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { CreatePaymentRequest } from '../../dtos/requests/create-payment.request';
-import { UserId } from 'src/utils/decorators/user-id.decorator';
-import { PaymentIntentRestDto } from 'src/dtos/response/payment-intent.dto';
+import { PaymentIntentRestDto } from '../../dtos/response/payment-intent.dto';
 
 @ApiTags('Payments')
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(PaymentsController.name);
 
   constructor(
     private paymentsService: PaymentsService,
@@ -233,6 +232,7 @@ export class PaymentsController {
       const templatePayment = await this.coreService.getEnabledTemplatePayment({
         userTemplateId: userTemplate.id,
         paymentType: body.paymentType,
+        meetingRole: body.meetingRole,
       });
 
       const price = templatePayment.price;
