@@ -6,10 +6,6 @@ import { serializeInstance } from 'shared-utils';
 
 export class TemplatePaymentDto implements ITemplatePayment {
   @Expose()
-  @Transform((data) => data.obj['_id'])
-  userTemplate: string;
-
-  @Expose()
   currency: string;
 
   @Expose()
