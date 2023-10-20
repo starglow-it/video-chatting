@@ -25,9 +25,7 @@ import { MeetingRole } from 'shared-types';
   },
 })
 export class TemplatesGateway extends BaseGateway {
-  constructor(
-    @InjectConnection() private connection: Connection,
-  ) {
+  constructor(@InjectConnection() private connection: Connection) {
     super();
   }
 
@@ -37,7 +35,7 @@ export class TemplatesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UpdatePaymentRequestDto[],
   ) {
-    return withTransaction(this.connection, async (session) => {
+    return withTransaction(this.connection, async () => {
       const user = this.getUserFromSocket(socket);
       this.emitToRoom(
         `meeting:${user.meeting.toString()}`,
@@ -46,9 +44,11 @@ export class TemplatesGateway extends BaseGateway {
           ...msg,
         },
       );
+      return;
     });
   }
 
+  @Roles([MeetingRole.Host])
   @SubscribeMessage(MeetingSubscribeEvents.OnUpdateMeetingTemplate)
   async updateMeetingTemplate(
     @MessageBody() data: UpdateMeetingTemplateRequestDto,

@@ -127,7 +127,7 @@ export class UsersGateway extends BaseGateway {
   async updateUser(
     @MessageBody() message: UpdateUserRequestDTO,
     @ConnectedSocket() client: Socket,
-  ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
+  ) {
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersComponent.findOneAndUpdate({
         query: message.id ? { _id: message.id } : { socketId: client.id },

@@ -341,13 +341,7 @@ export class MeetingsGateway
   async handleJoinWaitingRoom(
     @MessageBody() message: JoinMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<
-    ResponseSumType<{
-      user: CommonUserDTO;
-      meeting: CommonMeetingDTO;
-      users: CommonUserDTO[];
-    }>
-  > {
+  ){
     return withTransaction(this.connection, async (session) => {
       try {
         const eventName = 'handleJoinWaitingRoom event';
@@ -488,13 +482,7 @@ export class MeetingsGateway
   async startMeeting(
     @MessageBody() message: StartMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<
-    ResponseSumType<{
-      user?: CommonUserDTO;
-      meeting?: CommonMeetingDTO;
-      users: CommonUserDTO[];
-    }>
-  > {
+  ){
     const eventName = 'startMeeting event';
     console.time(eventName);
     this.logger.log({
@@ -666,13 +654,7 @@ export class MeetingsGateway
   async sendEnterMeetingRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<
-    ResponseSumType<{
-      user?: CommonUserDTO;
-      meeting?: CommonMeetingDTO;
-      users: CommonUserDTO[];
-    }>
-  > {
+  ) {
     this.logger.log({
       message: 'sendEnterMeetingRequest event',
       ctx: message,
@@ -783,13 +765,7 @@ export class MeetingsGateway
   async cancelAccessRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<
-    ResponseSumType<{
-      user?: CommonUserDTO;
-      meeting?: CommonMeetingDTO;
-      users?: CommonUserDTO[];
-    }>
-  > {
+  ) {
     this.logger.log({
       message: 'cancelAccessRequest event',
       ctx: message,
@@ -1706,7 +1682,7 @@ export class MeetingsGateway
   async updateDevicesPermissions(
     @MessageBody() message: SendDevicesPermissionsRequestDto,
     @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
+  ) {
     this.logger.log({
       message: `[${VideoChatSubscribeEvents.SendDevicesPermissions} event]`,
       ctx: {
