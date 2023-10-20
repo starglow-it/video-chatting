@@ -17,11 +17,11 @@ import { StripeCardExpiry } from '@components/Stripe/StripeCardExpiry/StripeCard
 import { StripeCardCvc } from '@components/Stripe/StripeCardCvc/StripeCardCvc';
 import clsx from 'clsx';
 // styles
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { PaymentType } from 'shared-const';
 import { CardDataFormProps } from './types';
 
 import styles from './CardDataForm.module.scss';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { PaymentType } from 'shared-const';
 
 // types
 
@@ -53,7 +53,7 @@ const Component = ({
                         },
                     },
                 );
-                console.log('#Duy Phan console', result)
+                console.log('#Duy Phan console', result);
 
                 if (result.error) {
                     onError();
@@ -77,21 +77,33 @@ const Component = ({
                         [styles.borderFieldBlack]: isFormBlack,
                     })}
                     colorForm={colorForm}
-                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                    styleBase={{
+                        height: '45px',
+                        fontSize: '14px',
+                        lineHeight: '45px',
+                    }}
                 />
                 <StripeCardExpiry
                     className={clsx(styles.datePaywallField, {
                         [styles.borderFieldBlack]: isFormBlack,
                     })}
                     colorForm={colorForm}
-                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                    styleBase={{
+                        height: '45px',
+                        fontSize: '14px',
+                        lineHeight: '45px',
+                    }}
                 />
                 <StripeCardCvc
                     className={clsx(styles.cvcPaywallField, {
                         [styles.borderFieldBlack]: isFormBlack,
                     })}
                     colorForm={colorForm}
-                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                    styleBase={{
+                        height: '45px',
+                        fontSize: '14px',
+                        lineHeight: '45px',
+                    }}
                 />
             </CustomGrid>
         );

@@ -1,6 +1,7 @@
-import { attach, combine, Store, StoreShape } from 'effector-next';
+import { attach, combine, Store } from 'effector-next';
 import { ErrorState, IUserTemplate, MeetingRole } from 'shared-types';
 
+import { DEFAULT_PAYMENT_CURRENCY, PaymentType } from 'shared-const';
 import { meetingDomain, paymentsDomain } from '../../../domains';
 import {
     CancelPaymentIntentPayload,
@@ -20,10 +21,8 @@ import {
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,
 } from './type';
-import { DEFAULT_PAYMENT_CURRENCY, PaymentType } from 'shared-const';
 import { $isLurker, $isParticipant } from '../meetingRole/model';
 import { $localUserStore } from '../../users/localUser/model';
-import { SendUpdatePaymentsMeetingRespone } from '../sockets/types';
 
 export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     id: '',

@@ -1,11 +1,11 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
+import { EntityList, ErrorState } from 'shared-types';
+import { updateMonetizationTemplateUrl } from 'src/utils/urls';
 import {
     PaymentItem,
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,
 } from '../type';
-import { EntityList, ErrorState } from 'shared-types';
-import { updateMonetizationTemplateUrl } from 'src/utils/urls';
 
 export const handleUpdatePaymentMeeting = async (
     params: UpdatePaymentMeetingPayload,

@@ -12,6 +12,6 @@ export type FormDataPayment = {
 export type ChargeButtonProps = {
     children?: any;
     tooltipButton: string | JSX.Element;
-    onClose?(): void
-    onToggle?: (isToggle: boolean) => void
+    onClose?(): void;
+    onToggle?: (isToggle: boolean) => void;
 };

@@ -15,10 +15,16 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // styles
-import styles from './MeetingMonetization.module.scss';
 
 // stores
-import { $isConnectedStripe } from '../../../store';
+
+// const
+import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
+import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
 import {
     $paymentMeetingLurker,
     $paymentMeetingParticipant,
@@ -26,14 +32,8 @@ import {
     $paymentPaywallParticipant,
     updatePaymentMeetingEvent,
 } from '../../../store/roomStores';
-
-// const
-import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
-import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
-import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
+import { $isConnectedStripe } from '../../../store';
+import styles from './MeetingMonetization.module.scss';
 import { MeetingMonezationForm } from './MeetingMonezationForm';
 import { FormDataPayment } from './type';
 
@@ -62,7 +62,7 @@ const tabs: ValuesSwitcherAlias[] = [
         //         color="white"
         //         padding={2}
         //     >
-               
+
         //         <ul>
         //         <p>Participants (10 Max)</p>
         //             <li>

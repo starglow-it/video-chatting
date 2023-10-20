@@ -1,4 +1,4 @@
-import { PaymentType } from "shared-const";
+import { PaymentType } from 'shared-const';
 
 export type CardDataFormProps = {
     paymentIntentSecret: string;

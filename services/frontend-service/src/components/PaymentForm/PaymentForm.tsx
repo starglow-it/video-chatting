@@ -13,6 +13,7 @@ import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 
 // stores
 import { PaymentFormProps } from '@components/PaymentForm/types';
+import { PaymentType } from 'shared-const';
 import { addNotificationEvent } from '../../store';
 import {
     $paymentIntent,
@@ -24,7 +25,6 @@ import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
-import { PaymentType } from 'shared-const';
 
 const currencySigns: { [key: string]: string } = {
     USD: '$',

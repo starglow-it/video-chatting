@@ -1,3 +1,7 @@
+import { sample } from 'effector';
+import { addNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
+import { resetRoomStores } from 'src/store/root';
 import {
     $enabledPaymentMeetingParticipant,
     $isTogglePayment,
@@ -10,18 +14,13 @@ import {
     getPaymentMeetingFx,
     receivePaymentMeetingEvent,
     togglePaymentFormEvent,
-    updatePaymentMeetingEvent,
     updatePaymentMeetingFx,
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
 import { handleUpdatePaymentMeeting } from './handlers/handleUpdatePaymentMeeting';
 import { handleGetPaymentMeeting } from './handlers/handleGetPaymentMeeting';
-import { sample } from 'effector';
-import { addNotificationEvent } from 'src/store/notifications/model';
-import { NotificationType } from 'src/store/types';
 import { sendUpdatePaymentsMeetingEvent } from '../sockets/model';
-import { resetRoomStores } from 'src/store/root';
 
 createPaymentIntentFx.use(handleCreatePaymentIntent);
 cancelPaymentIntentFx.use(handleCancelPaymentIntent);
@@ -62,8 +61,8 @@ sample({
 
 sample({
     clock: updatePaymentMeetingFx.doneData,
-    filter:({data}) => !!data,
-    fn: ({data}) => data,
+    filter: ({ data }) => !!data,
+    fn: ({ data }) => data,
     target: sendUpdatePaymentsMeetingEvent,
 });
 

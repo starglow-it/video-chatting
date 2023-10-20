@@ -1,6 +1,5 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import styles from './MeetingMonetization.module.scss';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { InputBase, MenuItem } from '@mui/material';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
@@ -21,18 +20,13 @@ import {
     templatePriceSchema,
 } from 'shared-frontend/validation';
 import { paywallPriceSchema } from 'src/validation/payments/templatePrice';
-import {
-    forwardRef,
-    useCallback,
-    useEffect,
-    useImperativeHandle,
-    useMemo,
-} from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import { StripeCurrency } from 'shared-const';
 import { currencyValues } from 'src/const/profile/subscriptions';
 import { $isConnectedStripe } from 'src/store';
 import { useStore } from 'effector-react';
 import { PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
+import styles from './MeetingMonetization.module.scss';
 import { FormDataPayment } from './type';
 
 const validationSchema = yup.object({
@@ -82,7 +76,6 @@ export const MeetingMonezationForm = forwardRef(
             control,
             formState: { errors },
             getValues,
-            reset,
         } = methods;
 
         // useEffect(() => {

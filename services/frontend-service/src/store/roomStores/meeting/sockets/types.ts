@@ -1,5 +1,4 @@
 import {
-    EntityList,
     IUserTemplate,
     MeetingAccessStatusEnum,
     MeetingReactionKind,
@@ -12,10 +11,7 @@ import {
     MeetingUser,
     Profile,
 } from '../../../types';
-import {
-    MeetingPayment,
-    PaymentItem,
-} from '../meetingPayment/type';
+import { MeetingPayment } from '../meetingPayment/type';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];

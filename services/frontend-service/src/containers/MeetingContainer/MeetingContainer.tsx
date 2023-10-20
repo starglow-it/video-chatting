@@ -155,9 +155,7 @@ const MeetingContainer = memo(() => {
         },
     });
 
-    useSubscriptionNotification(
-        getClientMeetingUrl(queryToken)
-    );
+    useSubscriptionNotification(getClientMeetingUrl(queryToken));
 
     useEffect(() => {
         (async () => {

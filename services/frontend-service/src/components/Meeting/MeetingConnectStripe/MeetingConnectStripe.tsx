@@ -73,7 +73,6 @@ export const MeetingConnectStripe = () => {
             <CustomButton
                 onClick={handleSetUpPayments}
                 className={styles.button}
-
             >
                 {!isConnectStripeAccountPending ? (
                     <>

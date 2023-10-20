@@ -3,6 +3,7 @@ import { useCallback, useRef } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { Translation } from '@library/common/Translation/Translation';
+import { PaymentType } from 'shared-const';
 import { MeetingMonetization } from './MeetingMonetization';
 import {
     $paymentIntent,
@@ -15,7 +16,6 @@ import {
     cancelPaymentIntentWithData,
 } from '../../../store/roomStores';
 import { ChargeButtonBase } from './ChargeButtonBase';
-import { PaymentType } from 'shared-const';
 
 export const MeetingMonetizationButton = () => {
     const paymentIntent = useStore($paymentIntent);
@@ -25,7 +25,6 @@ export const MeetingMonetizationButton = () => {
     );
     const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
     const intentId = paymentIntent?.id;
-    console.log('#Duy Phan console intentID', intentId);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
@@ -34,8 +33,7 @@ export const MeetingMonetizationButton = () => {
 
     const managePaymentRef = useRef<any>(null);
 
-    const handleTogglePayment = (isToggle: boolean) => {
-        console.log('#Duy Phan console', intentId);
+    const handleTogglePayment = () => {
         if (!isCreatePaymentIntentPending) {
             if (!intentId) {
                 createPaymentIntentWithData({

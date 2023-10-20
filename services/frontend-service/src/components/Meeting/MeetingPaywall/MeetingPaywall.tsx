@@ -6,6 +6,8 @@ import { useStore } from 'effector-react';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { PaymentType } from 'shared-const';
 import {
     createPaymentIntentWithData,
     $paymentIntent,
@@ -17,8 +19,6 @@ import {
 
 // types
 import styles from './MeetingPaywall.module.scss';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { PaymentType } from 'shared-const';
 
 interface Props {
     onPaymentSuccess: () => void;
@@ -38,9 +38,12 @@ const Component = ({ onPaymentSuccess }: Props) => {
 
     const initStripe = () => {
         if (!isCreatePaymentIntentPending && !intentId) {
-            if(enabledPaymentPaywallParticipant || enabledPaymentPaywallLurker) {
+            if (
+                enabledPaymentPaywallParticipant ||
+                enabledPaymentPaywallLurker
+            ) {
                 createPaymentIntentWithData({
-                    paymentType: PaymentType.Paywall
+                    paymentType: PaymentType.Paywall,
                 });
             }
         }

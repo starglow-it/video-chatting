@@ -1,6 +1,3 @@
-import { ChargeButtonProps } from './type';
-
-import styles from './MeetingMonetization.module.scss';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -18,6 +15,8 @@ import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { $isPortraitLayout } from 'src/store';
 import { useStore } from 'effector-react';
 import { useToggle } from '@hooks/useToggle';
+import styles from './MeetingMonetization.module.scss';
+import { ChargeButtonProps } from './type';
 
 export const ChargeButtonBase = forwardRef(
     (
@@ -85,7 +84,7 @@ export const ChargeButtonBase = forwardRef(
                     open={togglePopover}
                     onClose={handleCloseButton}
                     anchorEl={anchorEl}
-                    style={{zIndex: 20}}
+                    style={{ zIndex: 20 }}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'left',
