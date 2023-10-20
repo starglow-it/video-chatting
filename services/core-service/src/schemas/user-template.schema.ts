@@ -160,12 +160,6 @@ export class UserTemplate {
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
-  isMonetizationEnabled: boolean;
-
-  @Prop({
-    type: mongoose.Schema.Types.Boolean,
-    default: false,
-  })
   isAudioAvailable: boolean;
 
   @Prop({

@@ -30,6 +30,7 @@ export interface IBaseService<T extends Document> {
   findOneAndUpdate?(args: UpdateModelSingleQuery<T>): Promise<T>;
   findByIdAndDelete?(args: DeleteModelByIdQuery<T>): Promise<T>;
   deleteMany(args: DeleteModelQuery<T>): Promise<void>;
+  exists(args: GetModelSingleQuery<T>['query']): Promise<boolean>;
   updateMany?(args: UpdateModelMultipleQuery<T>): Promise<unknown>;
   count?(args: FilterQuery<T>): Promise<number>;
   aggregate?(

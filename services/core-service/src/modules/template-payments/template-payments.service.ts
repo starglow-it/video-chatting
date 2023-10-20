@@ -42,6 +42,11 @@ export class TemplatePaymentsService
       .exec();
   }
 
+  async exists(args: FilterQuery<TemplatePaymentDocument>): Promise<boolean> {
+    const existsDocument = await this.templatePayment.exists(args).exec();
+    return Boolean(existsDocument?._id);
+  }
+
   async createMany({
     data,
     session: { session },

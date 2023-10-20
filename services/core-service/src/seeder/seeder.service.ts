@@ -11,8 +11,15 @@ import {
   FILES_SCOPE,
   MEDIA_CATEGORIES,
   USERS_SERVICE,
+  PaymentType,
 } from 'shared-const';
-import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
+import {
+  Counters,
+  MediaCategoryType,
+  MeetingRole,
+  PlanKeys,
+  UserRoles,
+} from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -39,15 +46,20 @@ import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
 import { CommonTemplateDTO } from '../dtos/common-template.dto';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  withTransaction,
-} from '../helpers/mongo/withTransaction';
+import { withTransaction } from '../helpers/mongo/withTransaction';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaDocument } from '..//schemas/media.schema';
 import * as mime from 'mime';
+import { OldUserTemplate } from './old-schema';
+import { TemplatePaymentsService } from 'src/modules/template-payments/template-payments.service';
+import {
+  TemplatePayment,
+  TemplatePaymentDocument,
+} from 'src/schemas/template-payment.schema';
+import { InsertModelSingleQuery } from 'src/types/custom';
 
 // utils
 
@@ -66,6 +78,7 @@ export class SeederService {
     private monetizationStatisticService: MonetizationStatisticService,
     private roomsStatisticService: RoomsStatisticsService,
     private transcodeService: TranscodeService,
+    private readonly templatePaymentsService: TemplatePaymentsService,
     @InjectConnection() private connection: Connection,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
@@ -512,7 +525,7 @@ export class SeederService {
               },
             ],
           },
-          session
+          session,
         });
 
         await this.userTemplatesService.updateUserTemplates({
@@ -613,6 +626,73 @@ export class SeederService {
 
         await executePromiseQueue(promises);
         return;
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+
+  async syncDataInUserTemplates() {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplates =
+          (await this.userTemplatesService.findUserTemplates({
+            query: {
+              isPublic: true,
+              draft: false,
+            },
+            session,
+          })) as unknown as OldUserTemplate[];
+        const templatePaymentsData = userTemplates.reduce<
+          Promise<InsertModelSingleQuery<TemplatePaymentDocument>['data'][]>
+        >(async (tps, ut) => {
+          const isExistTemplatePayment =
+            await this.templatePaymentsService.exists({
+              userTemplate: ut._id,
+            });
+
+          if (isExistTemplatePayment) return await tps;
+
+          const defaultPayment = {
+            user: ut.user,
+            // userTemplate: ut,
+            userTemplate: ut._id,
+            enabled: !!ut.templatePrice,
+            templateId: ut.templateId,
+          };
+          const defaultMeetingPayment = {
+            ...defaultPayment,
+            type: PaymentType.Meeting,
+          };
+          const defaultPaywallPayment = {
+            ...defaultMeetingPayment,
+            type: PaymentType.Paywall,
+          };
+          return [
+            ...(await tps),
+            {
+              ...defaultMeetingPayment,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultMeetingPayment,
+              meetingRole: MeetingRole.Lurker,
+            },
+            {
+              ...defaultPaywallPayment,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultPaywallPayment,
+              meetingRole: MeetingRole.Lurker,
+            },
+          ];
+        }, Promise.resolve([]));
+        await this.templatePaymentsService.createMany({
+          data: await templatePaymentsData,
+          session,
+        });
       } catch (err) {
         console.error(err);
         return;
