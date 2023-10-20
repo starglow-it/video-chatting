@@ -49,7 +49,6 @@ export type UpdateTemplatePaymentsData = {
 };
 
 export type GetTemplatePaymentsPayload = {
-  userId: string;
   userTemplateId: string;
 };
 

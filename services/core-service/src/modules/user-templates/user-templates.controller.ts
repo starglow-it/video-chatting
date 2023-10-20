@@ -858,16 +858,19 @@ export class UserTemplatesController {
     cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
   })
   async getTemplatePayments(
-    @Payload() { userId, userTemplateId }: GetTemplatePaymentsPayload,
+    @Payload() { userTemplateId }: GetTemplatePaymentsPayload,
   ) {
     return withTransaction<EntityList<TemplatePaymentDto>>(
       this.connection,
       async (session) => {
         try {
-          await this.validateTemplateOwner(userId, userTemplateId, session);
+          const userTemplate = await this.userTemplatesComponent.findById(
+            userTemplateId,
+            session,
+          );
+
           const query = {
-            userTemplate: new ObjectId(userTemplateId),
-            user: new ObjectId(userId),
+            userTemplate: userTemplate._id,
           };
           const templatePayments =
             await this.templatePaymentsComponent.findMany({

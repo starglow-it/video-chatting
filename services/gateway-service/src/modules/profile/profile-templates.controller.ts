@@ -264,7 +264,6 @@ export class ProfileTemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/:templateId/payments')
   @ApiOperation({ summary: 'Get Detail Template' })
   @ApiOkResponse({
@@ -272,12 +271,10 @@ export class ProfileTemplatesController {
     description: 'Get Detail Profile Template Success',
   })
   async getTemplatePayments(
-    @UserId() userId: string,
     @Param() { templateId }: TemplateIdParam,
   ) {
     try {
       return await this.coreService.getTemplatePayments({
-        userId,
         userTemplateId: templateId,
       });
     } catch (err) {
