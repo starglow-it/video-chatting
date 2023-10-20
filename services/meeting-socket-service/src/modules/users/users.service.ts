@@ -21,6 +21,7 @@ import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';
 import { UpdateModelSingleQuery } from 'src/types/mongoose';
+import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 
 @Injectable()
 export class UsersService {
@@ -134,10 +135,12 @@ export class UsersService {
     const updateIndexParams: UserActionInMeetingParams = {
       [UserActionInMeeting.Join]: {
         condition: null,
+        errMessage: MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
         replaceItem: userId,
       },
       [UserActionInMeeting.Leave]: {
         condition: userId,
+        errMessage: MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED,
         replaceItem: null,
       },
     };
