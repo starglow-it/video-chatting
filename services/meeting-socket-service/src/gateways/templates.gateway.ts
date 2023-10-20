@@ -35,7 +35,7 @@ export class TemplatesGateway extends BaseGateway {
   @SubscribeMessage(MeetingSubscribeEvents.OnUpdateTemplatePayments)
   async updateMeetingPayments(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() msg: UpdatePaymentRequestDto,
+    @MessageBody() msg: UpdatePaymentRequestDto[],
   ) {
     return withTransaction(this.connection, async (session) => {
       const user = this.getUserFromSocket(socket);

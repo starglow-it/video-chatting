@@ -7,56 +7,33 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { PaymentType } from 'shared-const';
 import { MeetingRole } from 'shared-types';
 
-class PaymentInfo {
+export class UpdatePaymentRequestDto {
+  @IsNotEmpty()
+  @IsString({
+    message: 'invalid',
+  })
+  currency: string;
+
   @IsNotEmpty()
   @IsNumber()
   price: number;
 
   @IsNotEmpty()
   @IsString({
-    message: 'Invalid currency',
+    message: 'invalid',
   })
-  currency: string;
+  type: PaymentType;
 
   @IsNotEmpty()
-  @IsBoolean({
-    message: 'Invalid enabled',
+  @IsString({
+    message: 'invalid',
   })
+  meetingRole: Exclude<MeetingRole, 'host'>;
+
+  @IsNotEmpty()
+  @IsBoolean()
   enabled: boolean;
-}
-
-class QueryPaymentRequest
-  implements Record<Exclude<MeetingRole, 'host'>, PaymentInfo>
-{
-  @IsNotEmpty()
-  @ValidateNested({
-    message: 'Invalid participant payment info',
-  })
-  @Type(() => PaymentInfo)
-  participant: PaymentInfo;
-
-  @IsNotEmpty()
-  @ValidateNested({
-    message: 'Invalid lurker payment info',
-  })
-  @Type(() => PaymentInfo)
-  lurker: PaymentInfo;
-}
-
-export class UpdatePaymentRequestDto {
-  @IsOptional()
-  @ValidateNested({
-    message: 'Invalid meeting payment info',
-  })
-  @Type(() => QueryPaymentRequest)
-  meeting: QueryPaymentRequest;
-
-  @IsOptional()
-  @ValidateNested({
-    message: 'Invalid paywall payment info',
-  })
-  @Type(() => QueryPaymentRequest)
-  paywall: QueryPaymentRequest;
 }
