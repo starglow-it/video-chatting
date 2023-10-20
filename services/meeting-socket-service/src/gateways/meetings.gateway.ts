@@ -83,6 +83,7 @@ import { UserActionInMeeting } from '../types';
 import { PassAuth } from '../utils/decorators/passAuth.decorator';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
+import { MeetingNativeErrorEnum } from 'shared-const';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -238,14 +239,14 @@ export class MeetingsGateway
         });
         if (!user) {
           return wsError(client.id, {
-            message: 'No user found',
+            message: MeetingNativeErrorEnum.USER_NOT_FOUND,
           });
         }
 
         await user.populate('meeting');
         if (!user.meeting) {
           return wsError(client.id, {
-            message: 'Meeting not found',
+            message: MeetingNativeErrorEnum.MEETING_NOT_FOUND,
           });
         }
 
@@ -341,7 +342,7 @@ export class MeetingsGateway
   async handleJoinWaitingRoom(
     @MessageBody() message: JoinMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ){
+  ) {
     return withTransaction(this.connection, async (session) => {
       try {
         const eventName = 'handleJoinWaitingRoom event';
@@ -482,7 +483,7 @@ export class MeetingsGateway
   async startMeeting(
     @MessageBody() message: StartMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ){
+  ) {
     const eventName = 'startMeeting event';
     console.time(eventName);
     this.logger.log({
@@ -650,6 +651,7 @@ export class MeetingsGateway
     });
   }
 
+  @Roles([MeetingRole.Participant])
   @SubscribeMessage(MeetingSubscribeEvents.OnSendAccessRequest)
   async sendEnterMeetingRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
@@ -761,6 +763,7 @@ export class MeetingsGateway
     );
   }
 
+  @Roles([MeetingRole.Participant])
   @SubscribeMessage(MeetingSubscribeEvents.OnCancelAccessRequest)
   async cancelAccessRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
@@ -934,6 +937,7 @@ export class MeetingsGateway
     });
   }
 
+  @Roles([MeetingRole.Host])
   @SubscribeMessage(MeetingSubscribeEvents.OnAnswerAccessRequest)
   async sendAccessAnswer(
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
@@ -1350,6 +1354,7 @@ export class MeetingsGateway
     });
   }
 
+  @Roles([MeetingRole.Host])
   @SubscribeMessage(UsersSubscribeEvents.OnChangeHost)
   async changeHost(
     @MessageBody() message: ChangeHostDto,

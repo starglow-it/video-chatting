@@ -12,6 +12,7 @@ import {
   MEDIA_CATEGORIES,
   USERS_SERVICE,
   PaymentType,
+  DEFAULT_PRICE,
 } from 'shared-const';
 import {
   Counters,
@@ -673,18 +674,22 @@ export class SeederService {
             ...(await tps),
             {
               ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.participant,
               meetingRole: MeetingRole.Participant,
             },
             {
               ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.lurker,
               meetingRole: MeetingRole.Lurker,
             },
             {
               ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.participant,
               meetingRole: MeetingRole.Participant,
             },
             {
               ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.lurker,
               meetingRole: MeetingRole.Lurker,
             },
           ];
