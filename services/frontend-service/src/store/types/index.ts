@@ -12,6 +12,7 @@ import {
     MeetingReactionKind,
 } from 'shared-types';
 import { NextPageContext } from 'next';
+import { PaymentType } from 'shared-const';
 
 export type Profile = ICommonUser;
 
@@ -280,7 +281,7 @@ export type Notification = {
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
 export type PaymentIntentParams = {
-    isPaymentPaywall?: boolean;
+    paymentType: PaymentType;
 };
 export enum SocialLinkKeysEnum {
     Youtube = 'youtube',

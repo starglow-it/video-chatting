@@ -1,160 +1,99 @@
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { useStore } from 'effector-react';
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
+import { useCallback, useRef } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
-import { useToggle } from '@hooks/useToggle';
 import { Translation } from '@library/common/Translation/Translation';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-import clsx from 'clsx';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isPortraitLayout } from 'src/store';
 import { MeetingMonetization } from './MeetingMonetization';
 import {
-    $isTogglePayment,
     $paymentIntent,
     $isOwner,
-    $meetingTemplateStore,
-    cancelPaymentIntentWithData,
     createPaymentIntentWithData,
-    togglePaymentFormEvent,
+    $enabledPaymentMeetingParticipant,
+    $enabledPaymentMeetingLurker,
+    $paymentMeetingParticipant,
+    $paymentMeetingLurker,
 } from '../../../store/roomStores';
-import styles from './MeetingMonetization.module.scss';
+import { ChargeButtonBase } from './ChargeButtonBase';
+import { PaymentType } from 'shared-const';
 
 export const MeetingMonetizationButton = () => {
     const paymentIntent = useStore($paymentIntent);
-    const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const enabledPaymentMeetingParticipant = useStore(
+        $enabledPaymentMeetingParticipant,
+    );
+    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
     const intentId = paymentIntent?.id;
-    const isPaymentOpen = useStore($isTogglePayment);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
-    const isPortraitLayout = useStore($isPortraitLayout);
-    const {
-        value: togglePopover,
-        onToggleSwitch: handleTogglePopover,
-        onSetSwitch: handleSetPopover,
-    } = useToggle(false);
-    const { isMobile } = useBrowserDetect();
+    const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
+    const paymentMeetingLurker = useStore($paymentMeetingLurker);
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const handleTogglePayments = (e: MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        handleTogglePopover();
-        setAnchorEl(anchorEl ? null : e.currentTarget);
+    const managePaymentRef = useRef<any>(null);
+
+    const handleTogglePayment = (isToggle: boolean) => {
+        console.log('#Duy Phan console', isToggle);
         if (!isCreatePaymentIntentPending) {
-            if (!isPaymentOpen && !intentId && !isOwner) {
-                createPaymentIntentWithData();
+            if (!intentId) {
+                createPaymentIntentWithData({
+                    paymentType: PaymentType.Meeting,
+                });
             }
-            if (intentId) cancelPaymentIntentWithData();
-            togglePaymentFormEvent();
         }
     };
 
-    const handleClosePayment = useCallback(async () => {
-        setAnchorEl(null);
-        handleSetPopover(false);
-        if (paymentIntent?.id) {
-            cancelPaymentIntentWithData();
-        }
-        togglePaymentFormEvent(false);
-    }, [paymentIntent?.id]);
-
-    const handleUpdateMonetization = useCallback(() => {
-        setAnchorEl(null);
-        handleSetPopover(false);
-        togglePaymentFormEvent();
+    const handleCloseForm = useCallback(() => {
+        managePaymentRef.current?.close();
     }, []);
 
-    useEffect(() => {
-        if (!isOwner) {
-            handleClosePayment();
-        }
-    }, [
-        isOwner,
-        meetingTemplate?.isMonetizationEnabled,
-        meetingTemplate?.templatePrice,
-    ]);
-
-    const styleIcon = useMemo(() => {
-        if (isMobile) return { width: '26px', height: '26px' };
-        return { width: '32px', height: '32px' };
-    }, [isMobile]);
-
     return (
-        <ConditionalRender
-            condition={
-                isOwner ||
-                (meetingTemplate.isMonetizationEnabled &&
-                    !!meetingTemplate?.templatePrice)
-            }
-        >
-            <CustomTooltip
-                title={
-                    <Translation
-                        nameSpace="meeting"
-                        translation={
-                            isOwner ? 'features.getPaid' : 'features.sendMoney'
-                        }
-                    />
-                }
-                placement="left"
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    className={clsx(styles.deviceButton, {
-                        [styles.mobile]: isMobile,
-                    })}
-                    aria-describedby="monetization"
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleTogglePayments}
-                        Icon={<MonetizationIcon {...styleIcon} />}
-                        style={{
-                            borderRadius: 12,
-                        }}
-                    />
-                </CustomPaper>
-            </CustomTooltip>
-            <CustomPopover
-                id="monetization"
-                open={togglePopover}
-                onClose={handleClosePayment}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                PaperProps={{
-                    className: clsx(styles.popoverMonetization, {
-                        [styles.portrait]: isPortraitLayout,
-                        [styles.landscape]: !isPortraitLayout && isMobile,
-                    }),
-                }}
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    className={styles.commonOpenPanel}
-                >
-                    <ConditionalRender condition={!isOwner}>
-                        <PaymentForm onClose={handleClosePayment} />
-                    </ConditionalRender>
-                    <ConditionalRender condition={isOwner}>
-                        <MeetingMonetization
-                            onUpdate={handleUpdateMonetization}
+        <>
+            <ConditionalRender condition={isOwner}>
+                <ChargeButtonBase
+                    tooltipButton={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="features.getPaid"
                         />
-                    </ConditionalRender>
-                </CustomPaper>
-            </CustomPopover>
-        </ConditionalRender>
+                    }
+                    ref={managePaymentRef}
+                >
+                    <MeetingMonetization onUpdate={handleCloseForm} />
+                </ChargeButtonBase>
+            </ConditionalRender>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+                <ChargeButtonBase
+                    tooltipButton={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="features.sendMoney"
+                        />
+                    }
+                    onToggle={handleTogglePayment}
+                >
+                    <PaymentForm
+                        onClose={handleCloseForm}
+                        payment={paymentMeetingParticipant}
+                    />
+                </ChargeButtonBase>
+            </ConditionalRender>
+            <ConditionalRender condition={enabledPaymentMeetingLurker}>
+                <ChargeButtonBase
+                    tooltipButton={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="features.sendMoney"
+                        />
+                    }
+                    onToggle={handleTogglePayment}
+                >
+                    <PaymentForm
+                        onClose={handleCloseForm}
+                        payment={paymentMeetingLurker}
+                    />
+                </ChargeButtonBase>
+            </ConditionalRender>
+        </>
     );
 };

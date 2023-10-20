@@ -27,7 +27,7 @@ const Component = <Value extends ValueType, Label extends string>(
   }, [onValueChanged, activeValue, value]);
 
   return (
-    <CustomTooltip title={value.tooltip || ""} placement="bottom">
+    <CustomTooltip title={value.tooltip || ""} placement="bottom" style={{zIndex: 9999}}>
       <CustomGrid
         container
         ref={ref}

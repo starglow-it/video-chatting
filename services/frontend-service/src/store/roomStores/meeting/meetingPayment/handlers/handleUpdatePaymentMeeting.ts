@@ -1,6 +1,5 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 import {
-    MeetingPayment,
     PaymentItem,
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,

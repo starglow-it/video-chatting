@@ -48,7 +48,10 @@ import {
 } from '../../../types';
 import { SendAnswerMeetingRequestParams } from './types';
 
-import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
+import {
+    MeetingSubscribeEvents,
+    TemplateSubscribeEvents,
+} from '../../../../const/socketEvents/subscribers';
 import {
     getMeetingSocketSubscribeHandler,
     getMeetingTemplateSocketSubscribeHandler,
@@ -425,9 +428,9 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
-        TemplateSocketSubscribes.OnUpdatePaymentsTemplate,
+        TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         getMeetingTemplateSocketSubscribeHandler(
-            TemplateSocketSubscribes.OnUpdatePaymentsTemplate,
+            TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         ),
     );
 });

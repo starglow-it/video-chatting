@@ -54,11 +54,61 @@ const tabs: ValuesSwitcherAlias[] = [
         id: 1,
         value: TabsValues.Participants,
         label: TabsLabels.Participants,
+        // tooltip: (
+        //     <CustomGrid
+        //         display="flex"
+        //         flexDirection="column"
+        //         bgcolor="black"
+        //         color="white"
+        //         padding={2}
+        //     >
+               
+        //         <ul>
+        //         <p>Participants (10 Max)</p>
+        //             <li>
+        //                 <p>Are Seen & Heard</p>
+        //             </li>
+        //             <li>
+        //                 <p>Can Chat on Sidebar</p>
+        //             </li>
+        //             <li>
+        //                 <p>Post Sticky Notes</p>
+        //             </li>
+        //             <li>
+        //                 <p>Visit your Links</p>
+        //             </li>
+        //         </ul>
+        //     </CustomGrid>
+        // ),
     },
     {
         id: 2,
         value: TabsValues.Audience,
         label: TabsLabels.Audience,
+        // tooltip: (
+        //     <CustomGrid
+        //         display="flex"
+        //         flexDirection="column"
+        //         bgcolor="black"
+        //         color="white"
+        //     >
+        //         <p>Audience (1000 Max)</p>
+        //         <ul>
+        //             <li>
+        //                 <p>Are Seen & Hear</p>
+        //             </li>
+        //             <li>
+        //                 <p>Can Chat on Sidebar</p>
+        //             </li>
+        //             <li>
+        //                 <p>Post Sticky Notes (members)</p>
+        //             </li>
+        //             <li>
+        //                 <p>Visit your Links</p>
+        //             </li>
+        //         </ul>
+        //     </CustomGrid>
+        // ),
     },
 ];
 
@@ -86,8 +136,6 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const onSubmit = useCallback(async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
-        console.log('#Duy Phan console', paymentParticipant);
-        console.log('#Duy Phan console', paymentAudience);
         updatePaymentMeetingEvent({
             meeting: {
                 participant: {

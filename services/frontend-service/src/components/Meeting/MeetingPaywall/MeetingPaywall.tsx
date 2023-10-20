@@ -7,40 +7,42 @@ import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import {
-    $isOwner,
-    cancelPaymentIntentWithData,
     createPaymentIntentWithData,
-    $isTogglePayment,
     $paymentIntent,
-    togglePaymentFormEvent,
+    $enabledPaymentPaywallParticipant,
+    $enabledPaymentPaywallLurker,
+    $paymentPaywallLurker,
+    $paymentPaywallParticipant,
 } from '../../../store/roomStores';
 
 // types
 import styles from './MeetingPaywall.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { PaymentType } from 'shared-const';
 
 interface Props {
     onPaymentSuccess: () => void;
 }
 const Component = ({ onPaymentSuccess }: Props) => {
     const paymentIntent = useStore($paymentIntent);
-    const isOwner = useStore($isOwner);
     const intentId = paymentIntent?.id;
-    const isPaymentOpen = useStore($isTogglePayment);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
+    const enabledPaymentPaywallParticipant = useStore(
+        $enabledPaymentPaywallParticipant,
+    );
+    const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
+    const paymentPaywallLurker = useStore($paymentPaywallLurker);
+
     const initStripe = () => {
-        if (!isCreatePaymentIntentPending) {
-            if (!isPaymentOpen && !intentId && !isOwner) {
+        if (!isCreatePaymentIntentPending && !intentId) {
+            if(enabledPaymentPaywallParticipant || enabledPaymentPaywallLurker) {
                 createPaymentIntentWithData({
-                    isPaymentPaywall: true,
+                    paymentType: PaymentType.Paywall
                 });
             }
-            if (intentId)
-                cancelPaymentIntentWithData({
-                    isPaymentPaywall: true,
-                });
-            togglePaymentFormEvent();
         }
     };
 
@@ -57,20 +59,36 @@ const Component = ({ onPaymentSuccess }: Props) => {
                 component="div"
                 className={styles.title}
             />
-            <PaymentForm
-                onClose={onPaymentSuccess}
-                templateType="black"
-                subLabel={
-                    <CustomTypography
-                        nameSpace="subscriptions"
-                        translation="paywall.labelForm"
-                        sx={{
-                            marginRight: '5px',
-                        }}
-                    />
-                }
-                paymentType="paywall"
-            />
+            <ConditionalRender condition={enabledPaymentPaywallParticipant}>
+                <PaymentForm
+                    onClose={onPaymentSuccess}
+                    payment={paymentPaywallParticipant}
+                    subLabel={
+                        <CustomTypography
+                            nameSpace="subscriptions"
+                            translation="paywall.labelForm"
+                            sx={{
+                                marginRight: '5px',
+                            }}
+                        />
+                    }
+                />
+            </ConditionalRender>
+            <ConditionalRender condition={enabledPaymentPaywallLurker}>
+                <PaymentForm
+                    onClose={onPaymentSuccess}
+                    payment={paymentPaywallLurker}
+                    subLabel={
+                        <CustomTypography
+                            nameSpace="subscriptions"
+                            translation="paywall.labelForm"
+                            sx={{
+                                marginRight: '5px',
+                            }}
+                        />
+                    }
+                />
+            </ConditionalRender>
         </CustomBox>
     );
 };

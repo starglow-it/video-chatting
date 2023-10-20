@@ -1,4 +1,5 @@
 import {
+    EntityList,
     IUserTemplate,
     MeetingAccessStatusEnum,
     MeetingReactionKind,
@@ -11,7 +12,10 @@ import {
     MeetingUser,
     Profile,
 } from '../../../types';
-import { UpdatePaymentMeetingParams } from '../meetingPayment/type';
+import {
+    MeetingPayment,
+    PaymentItem,
+} from '../meetingPayment/type';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
@@ -115,6 +119,6 @@ export type SendUnReactionMessageResponse = {
     message: MeetingChat;
 };
 
-export type SendUpdatePaymentsMeetingPayload = UpdatePaymentMeetingParams;
+export type SendUpdatePaymentsMeetingPayload = MeetingPayment;
 
-export type SendUpdatePaymentsMeetingRespone = SendUpdatePaymentsMeetingPayload;
+export type SendUpdatePaymentsMeetingRespone = MeetingPayment;

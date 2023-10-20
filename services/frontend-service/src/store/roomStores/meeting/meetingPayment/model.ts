@@ -6,7 +6,11 @@ import {
     CancelPaymentIntentPayload,
     CreatePaymentIntentPayload,
 } from '../../../payments/types';
-import { PaymentIntentParams, PaymentIntentStore } from '../../../types';
+import {
+    MeetingUser,
+    PaymentIntentParams,
+    PaymentIntentStore,
+} from '../../../types';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
     GetPaymentMeetingPayload,
@@ -18,6 +22,8 @@ import {
 } from './type';
 import { DEFAULT_PAYMENT_CURRENCY, PaymentType } from 'shared-const';
 import { $isLurker, $isParticipant } from '../meetingRole/model';
+import { $localUserStore } from '../../users/localUser/model';
+import { SendUpdatePaymentsMeetingRespone } from '../sockets/types';
 
 export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     id: '',
@@ -42,15 +48,19 @@ export const cancelPaymentIntentFx = paymentsDomain.effect<
 >('cancelPaymentIntentFx');
 
 export const createPaymentIntentWithData = attach<
-    PaymentIntentParams | void,
-    Store<IUserTemplate>,
+    PaymentIntentParams,
+    Store<{ meetingTemplate: IUserTemplate; localUser: MeetingUser }>,
     typeof createPaymentIntentFx
 >({
     effect: createPaymentIntentFx,
-    source: $meetingTemplateStore,
-    mapParams: (params, meetingTemplate) => ({
+    source: combine({
+        meetingTemplate: $meetingTemplateStore,
+        localUser: $localUserStore,
+    }),
+    mapParams: (params, { meetingTemplate, localUser }) => ({
         templateId: meetingTemplate.id,
-        isPaymentPaywall: Boolean(params?.isPaymentPaywall),
+        meetingRole: localUser.meetingRole,
+        paymentType: params.paymentType,
     }),
 });
 
@@ -61,9 +71,8 @@ export const cancelPaymentIntentWithData = attach<
 >({
     effect: cancelPaymentIntentFx,
     source: $paymentIntent,
-    mapParams: (params, paymentIntent) => ({
+    mapParams: (_, paymentIntent) => ({
         paymentIntentId: paymentIntent.id,
-        isPaymentPaywall: Boolean(params?.isPaymentPaywall),
     }),
 });
 
@@ -81,7 +90,8 @@ export const $enabledPaymentMeetingParticipant = combine({
             item =>
                 item.meetingRole === MeetingRole.Participant &&
                 item.enabled &&
-                item.type === PaymentType.Meeting,
+                item.type === PaymentType.Meeting &&
+                item.price > 0,
         ),
 );
 
@@ -95,7 +105,8 @@ export const $enabledPaymentPaywallParticipant = combine({
             item =>
                 item.meetingRole === MeetingRole.Participant &&
                 item.enabled &&
-                item.type === PaymentType.Paywall,
+                item.type === PaymentType.Paywall &&
+                item.price > 0,
         ),
 );
 
@@ -109,7 +120,8 @@ export const $enabledPaymentMeetingLurker = combine({
             item =>
                 item.meetingRole === MeetingRole.Lurker &&
                 item.enabled &&
-                item.type === PaymentType.Meeting,
+                item.type === PaymentType.Meeting &&
+                item.price > 0,
         ),
 );
 
@@ -123,7 +135,8 @@ export const $enabledPaymentPaywallLurker = combine({
             item =>
                 item.meetingRole === MeetingRole.Lurker &&
                 item.enabled &&
-                item.type === PaymentType.Paywall,
+                item.type === PaymentType.Paywall &&
+                item.price > 0,
         ),
 );
 
@@ -223,3 +236,6 @@ export const updatePaymentMeetingEvent = attach<
         templateId: template.id,
     }),
 });
+
+export const receivePaymentMeetingEvent =
+    meetingDomain.createEvent<MeetingPayment>('receivePaymentMeetingEvent');

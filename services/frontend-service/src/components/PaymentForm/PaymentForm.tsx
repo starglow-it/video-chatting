@@ -15,7 +15,6 @@ import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 import { PaymentFormProps } from '@components/PaymentForm/types';
 import { addNotificationEvent } from '../../store';
 import {
-    $meetingTemplateStore,
     $paymentIntent,
     createPaymentIntentWithData,
 } from '../../store/roomStores';
@@ -25,6 +24,7 @@ import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
+import { PaymentType } from 'shared-const';
 
 const currencySigns: { [key: string]: string } = {
     USD: '$',
@@ -35,13 +35,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({
-    onClose,
-    templateType = 'white',
-    subLabel,
-    paymentType = 'in-meeting',
-}: PaymentFormProps) => {
-    const meetingTemplate = useStore($meetingTemplateStore);
+const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -64,24 +58,17 @@ const Component = ({
         });
     }, []);
 
-    const colorMain = `colors.${templateType}.primary`;
-    const isInMeetingPayment = paymentType === 'in-meeting';
-    const currency: string =
-        currencySigns[
-            isInMeetingPayment
-                ? meetingTemplate.templateCurrency
-                : meetingTemplate.paywallCurrency
-        ];
-    const price = isInMeetingPayment
-        ? meetingTemplate.templatePrice
-        : meetingTemplate.paywallPrice;
+    const colorMain = `colors.${
+        payment.type === PaymentType.Paywall ? 'black' : 'white'
+    }.primary`;
+    
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
                 {subLabel ? <>{subLabel} </> : null}
                 <CustomTypography variant="h3bold" color={colorMain}>
-                    {currency}
-                    {price}
+                    {currencySigns[payment.currency]}
+                    {payment.price}
                 </CustomTypography>
                 &nbsp;
                 <CustomTypography
@@ -119,7 +106,11 @@ const Component = ({
                             onSubmit={handleSubmit}
                             onError={handleSubmitError}
                             paymentIntentSecret={paymentIntent.clientSecret}
-                            colorForm={templateType}
+                            colorForm={
+                                payment.type === PaymentType.Paywall
+                                    ? 'black'
+                                    : 'white'
+                            }
                         />
                     </StripeElement>
                 </CustomGrid>
