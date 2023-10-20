@@ -24,3 +24,23 @@
 .button {
   margin: rem(20px 0 0 0);
 }
+
+.cardPaywallField {
+  width: rem(300px);
+  flex: 1 1 100%;
+  height: 45px;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.datePaywallField {
+  flex: 1;
+  height: 45px;
+}
+
+.cvcPaywallField {
+  flex: 1;
+  height: 45px;
+}

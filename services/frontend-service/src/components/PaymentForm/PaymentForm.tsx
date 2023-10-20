@@ -61,7 +61,7 @@ const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
     const colorMain = `colors.${
         payment.type === PaymentType.Paywall ? 'black' : 'white'
     }.primary`;
-    
+
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
@@ -111,6 +111,7 @@ const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
                                     ? 'black'
                                     : 'white'
                             }
+                            paymentType={payment.type}
                         />
                     </StripeElement>
                 </CustomGrid>

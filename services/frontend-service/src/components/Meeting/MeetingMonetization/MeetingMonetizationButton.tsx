@@ -12,6 +12,7 @@ import {
     $enabledPaymentMeetingLurker,
     $paymentMeetingParticipant,
     $paymentMeetingLurker,
+    cancelPaymentIntentWithData,
 } from '../../../store/roomStores';
 import { ChargeButtonBase } from './ChargeButtonBase';
 import { PaymentType } from 'shared-const';
@@ -24,6 +25,7 @@ export const MeetingMonetizationButton = () => {
     );
     const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
     const intentId = paymentIntent?.id;
+    console.log('#Duy Phan console intentID', intentId);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
@@ -33,7 +35,7 @@ export const MeetingMonetizationButton = () => {
     const managePaymentRef = useRef<any>(null);
 
     const handleTogglePayment = (isToggle: boolean) => {
-        console.log('#Duy Phan console', isToggle);
+        console.log('#Duy Phan console', intentId);
         if (!isCreatePaymentIntentPending) {
             if (!intentId) {
                 createPaymentIntentWithData({
@@ -45,6 +47,7 @@ export const MeetingMonetizationButton = () => {
 
     const handleCloseForm = useCallback(() => {
         managePaymentRef.current?.close();
+        cancelPaymentIntentWithData();
     }, []);
 
     return (
@@ -71,6 +74,7 @@ export const MeetingMonetizationButton = () => {
                         />
                     }
                     onToggle={handleTogglePayment}
+                    ref={managePaymentRef}
                 >
                     <PaymentForm
                         onClose={handleCloseForm}
@@ -87,6 +91,7 @@ export const MeetingMonetizationButton = () => {
                         />
                     }
                     onToggle={handleTogglePayment}
+                    ref={managePaymentRef}
                 >
                     <PaymentForm
                         onClose={handleCloseForm}

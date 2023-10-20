@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -26,6 +26,7 @@ import { fullNameSchema } from '../../validation/users/fullName';
 // stores
 import { $profileStore, $authStore, $isSocketConnected } from '../../store';
 import {
+    $enabledPaymentPaywallLurker,
     $isLurker,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -40,6 +41,7 @@ import {
 
 // styles
 import styles from './EnterMeetingName.module.scss';
+import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 
 const validationSchema = yup.object({
     fullName: fullNameSchema().required('required'),
@@ -58,12 +60,14 @@ const Component = () => {
     );
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
+    const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
         fullName: string;
     }>(validationSchema);
 
     const { isMobile } = useBrowserDetect();
+    const [isJoinPaywall, setIsJoinPaywall] = useState(false);
 
     const {
         register,
@@ -87,7 +91,11 @@ const Component = () => {
                 updateLocalUserEvent({
                     username: data.fullName,
                 });
-                joinLurkerMeetingSocketEvent();
+                if (enabledPaymentPaywallLurker) {
+                    setIsJoinPaywall(true);
+                } else {
+                    joinLurkerMeetingSocketEvent();
+                }
             } else {
                 updateLocalUserEvent({
                     username: data.fullName,
@@ -95,8 +103,13 @@ const Component = () => {
                 });
             }
         }),
-        [],
+        [enabledPaymentPaywallLurker, isLurker],
     );
+
+    const handlePaymentSuccess = useCallback(() => {
+        joinLurkerMeetingSocketEvent();
+        // setIsJoinPaywall(false);
+    }, []);
 
     const fullNameError = errors.fullName?.message;
 
@@ -108,6 +121,7 @@ const Component = () => {
             });
         }
     }, []);
+
     return (
         <CustomGrid
             container
@@ -116,87 +130,92 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <CustomTypography
-                variant="h3bold"
-                nameSpace="meeting"
-                textAlign={isMobile ? 'center' : 'left'}
-                translation="enterName.title"
-            />
-            <CustomGrid container direction="column" flex="1 1 auto">
-                <CustomGrid
-                    container
-                    justifyContent={isMobile ? 'center' : 'left'}
-                >
-                    <CustomTypography
-                        className={styles.title}
-                        nameSpace="meeting"
-                        translation="enterName.text.part1"
-                    />
-                    {!isAuthenticated && (
-                        <>
-                            &nbsp;
-                            <CustomTypography
-                                nameSpace="meeting"
-                                translation="enterName.text.part2"
-                            />
-                            &nbsp;
-                            <CustomLink
-                                href="/login"
-                                nameSpace="meeting"
-                                translation="enterName.text.part3"
-                            />
-                            &nbsp;
-                            <CustomTypography
-                                nameSpace="meeting"
-                                translation="enterName.text.part4"
-                            />
-                        </>
-                    )}
-                </CustomGrid>
-
-                <form onSubmit={onSubmit} className={styles.formContent}>
-                    <CustomInput
-                        nameSpace="forms"
-                        translation="yourName"
-                        autoComplete="given-name"
-                        onChange={fullNameRegister.onChange}
-                        onBlur={fullNameRegister.onBlur}
-                        ref={fullNameRegister.ref}
-                        name={fullNameRegister.name}
-                        error={fullNameError}
-                    />
-                    <ConditionalRender condition={isMobile}>
-                        <CustomImage
-                            src="/images/banner-mobile.png"
-                            width={10}
-                            className={styles.banner}
-                            height={250}
-                            objectFit="fill"
+            <ConditionalRender condition={!isJoinPaywall}>
+                <CustomTypography
+                    variant="h3bold"
+                    nameSpace="meeting"
+                    textAlign={isMobile ? 'center' : 'left'}
+                    translation="enterName.title"
+                />
+                <CustomGrid container direction="column" flex="1 1 auto">
+                    <CustomGrid
+                        container
+                        justifyContent={isMobile ? 'center' : 'left'}
+                    >
+                        <CustomTypography
+                            className={styles.title}
+                            nameSpace="meeting"
+                            translation="enterName.text.part1"
                         />
-                    </ConditionalRender>
-                    <CustomButton
-                        disabled={
-                            !isSocketConnected ||
-                            isMeetingSocketConnecting ||
-                            isJoinWaitingRoomPending
-                        }
-                        className={clsx(styles.button, {
-                            [styles.mobile]: isMobile,
-                        })}
-                        type="submit"
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation={
-                                    isLurker
-                                        ? 'buttons.join'
-                                        : 'buttons.continue'
-                                }
+                        {!isAuthenticated && (
+                            <>
+                                &nbsp;
+                                <CustomTypography
+                                    nameSpace="meeting"
+                                    translation="enterName.text.part2"
+                                />
+                                &nbsp;
+                                <CustomLink
+                                    href="/login"
+                                    nameSpace="meeting"
+                                    translation="enterName.text.part3"
+                                />
+                                &nbsp;
+                                <CustomTypography
+                                    nameSpace="meeting"
+                                    translation="enterName.text.part4"
+                                />
+                            </>
+                        )}
+                    </CustomGrid>
+
+                    <form onSubmit={onSubmit} className={styles.formContent}>
+                        <CustomInput
+                            nameSpace="forms"
+                            translation="yourName"
+                            autoComplete="given-name"
+                            onChange={fullNameRegister.onChange}
+                            onBlur={fullNameRegister.onBlur}
+                            ref={fullNameRegister.ref}
+                            name={fullNameRegister.name}
+                            error={fullNameError}
+                        />
+                        <ConditionalRender condition={isMobile}>
+                            <CustomImage
+                                src="/images/banner-mobile.png"
+                                width={10}
+                                className={styles.banner}
+                                height={250}
+                                objectFit="fill"
                             />
-                        }
-                    />
-                </form>
-            </CustomGrid>
+                        </ConditionalRender>
+                        <CustomButton
+                            disabled={
+                                !isSocketConnected ||
+                                isMeetingSocketConnecting ||
+                                isJoinWaitingRoomPending
+                            }
+                            className={clsx(styles.button, {
+                                [styles.mobile]: isMobile,
+                            })}
+                            type="submit"
+                            label={
+                                <Translation
+                                    nameSpace="meeting"
+                                    translation={
+                                        isLurker
+                                            ? 'buttons.join'
+                                            : 'buttons.continue'
+                                    }
+                                />
+                            }
+                        />
+                    </form>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={isJoinPaywall}>
+                <MeetingPaywall onPaymentSuccess={handlePaymentSuccess} />
+            </ConditionalRender>
         </CustomGrid>
     );
 };

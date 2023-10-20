@@ -9,11 +9,13 @@ import styles from '../StripeCommon.module.scss';
 
 interface Props extends CardCvcElementProps {
     colorForm?: string;
+    styleBase?: any;
 }
 
 const Component = ({
     className,
     colorForm = 'white',
+    styleBase,
     ...rest
 }: PropsWithClassName<Props>) => (
     <CardCvcElement
@@ -33,6 +35,7 @@ const Component = ({
                     '::placeholder': {
                         color: `rgba(${colorForm}, 0.6)`,
                     },
+                    ...styleBase,
                 },
             },
         }}

@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import {
     CardNumberElement,
     useElements,
@@ -20,6 +20,8 @@ import clsx from 'clsx';
 import { CardDataFormProps } from './types';
 
 import styles from './CardDataForm.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { PaymentType } from 'shared-const';
 
 // types
 
@@ -28,9 +30,11 @@ const Component = ({
     onError,
     paymentIntentSecret,
     colorForm = 'white',
+    paymentType,
 }: CardDataFormProps) => {
     const stripe = useStripe();
     const elements = useElements();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = useCallback(
         async (event: { preventDefault: () => void }) => {
@@ -38,6 +42,7 @@ const Component = ({
             console.log('submit card', event);
 
             if (stripe && elements) {
+                setIsLoading(true);
                 const result = await stripe.confirmCardPayment(
                     paymentIntentSecret,
                     {
@@ -48,11 +53,14 @@ const Component = ({
                         },
                     },
                 );
+                console.log('#Duy Phan console', result)
 
                 if (result.error) {
                     onError();
+                    setIsLoading(false);
                 } else {
                     onSubmit();
+                    setIsLoading(false);
                 }
             }
         },
@@ -60,8 +68,37 @@ const Component = ({
     );
 
     const isFormBlack = colorForm === 'black';
-    return (
-        <form onSubmit={handleSubmit}>
+
+    const renderFormMeeting = () => {
+        return (
+            <CustomGrid container gap={2}>
+                <StripeCardNumber
+                    className={clsx(styles.cardPaywallField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                />
+                <StripeCardExpiry
+                    className={clsx(styles.datePaywallField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                />
+                <StripeCardCvc
+                    className={clsx(styles.cvcPaywallField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                    styleBase={{ height: '45px', fontSize: '14px', lineHeight: '45px' }}
+                />
+            </CustomGrid>
+        );
+    };
+
+    const renderFormPaywall = () => {
+        return (
             <CustomGrid container gap={2}>
                 <StripeCardNumber
                     className={clsx(styles.cardField, {
@@ -82,11 +119,22 @@ const Component = ({
                     colorForm={colorForm}
                 />
             </CustomGrid>
+        );
+    };
+    return (
+        <form onSubmit={handleSubmit}>
+            <ConditionalRender condition={paymentType === PaymentType.Meeting}>
+                {renderFormMeeting()}
+            </ConditionalRender>
+            <ConditionalRender condition={paymentType === PaymentType.Paywall}>
+                {renderFormPaywall()}
+            </ConditionalRender>
             <CustomButton
                 type="submit"
                 variant="custom-common"
                 Icon={<StripeIcon width="24px" height="24px" />}
                 className={styles.button}
+                isLoading={isLoading}
             >
                 &nbsp;
                 <CustomTypography
