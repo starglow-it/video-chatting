@@ -54,61 +54,75 @@ const tabs: ValuesSwitcherAlias[] = [
         id: 1,
         value: TabsValues.Participants,
         label: TabsLabels.Participants,
-        // tooltip: (
-        //     <CustomGrid
-        //         display="flex"
-        //         flexDirection="column"
-        //         bgcolor="black"
-        //         color="white"
-        //         padding={2}
-        //     >
-
-        //         <ul>
-        //         <p>Participants (10 Max)</p>
-        //             <li>
-        //                 <p>Are Seen & Heard</p>
-        //             </li>
-        //             <li>
-        //                 <p>Can Chat on Sidebar</p>
-        //             </li>
-        //             <li>
-        //                 <p>Post Sticky Notes</p>
-        //             </li>
-        //             <li>
-        //                 <p>Visit your Links</p>
-        //             </li>
-        //         </ul>
-        //     </CustomGrid>
-        // ),
+        tooltip: (
+            <CustomGrid
+                display="flex"
+                flexDirection="column"
+                bgcolor="black"
+                color="white"
+                padding="5px"
+                paddingTop="10px"
+                borderRadius="16px"
+                alignItems="center"
+            >
+                <span style={{ textAlign: 'center' }}>
+                    Participants (10 Max)
+                </span>
+                <ul className={styles.tooltipList}>
+                    <li>
+                        <span>Are Seen & Heard</span>
+                    </li>
+                    <li>
+                        <span>Can Chat on Sidebar</span>
+                    </li>
+                    <li>
+                        <span>Post Sticky Notes</span>
+                    </li>
+                    <li>
+                        <span>Visit your Links</span>
+                    </li>
+                </ul>
+            </CustomGrid>
+        ),
+        tooltipClassName: styles.tooltipSwitch,
+        tooltipPlacement: 'top'
     },
     {
         id: 2,
         value: TabsValues.Audience,
         label: TabsLabels.Audience,
-        // tooltip: (
-        //     <CustomGrid
-        //         display="flex"
-        //         flexDirection="column"
-        //         bgcolor="black"
-        //         color="white"
-        //     >
-        //         <p>Audience (1000 Max)</p>
-        //         <ul>
-        //             <li>
-        //                 <p>Are Seen & Hear</p>
-        //             </li>
-        //             <li>
-        //                 <p>Can Chat on Sidebar</p>
-        //             </li>
-        //             <li>
-        //                 <p>Post Sticky Notes (members)</p>
-        //             </li>
-        //             <li>
-        //                 <p>Visit your Links</p>
-        //             </li>
-        //         </ul>
-        //     </CustomGrid>
-        // ),
+        tooltip: (
+            <CustomGrid
+                display="flex"
+                flexDirection="column"
+                bgcolor="black"
+                color="white"
+                padding="5px"
+                paddingTop="10px"
+                borderRadius="16px"
+                alignItems="center"
+            >
+                <span style={{ textAlign: 'center' }}>Audience (1000 Max)</span>
+                <ul className={styles.tooltipList}>
+                    <li>
+                        <span>Are Seen & Heard</span>
+                    </li>
+                    <li>
+                        <span>Can Chat on Sidebar</span>
+                    </li>
+                    <li>
+                        <span>
+                            Post Sticky Notes <small>(members)</small>
+                        </span>
+                    </li>
+                    <li>
+                        <span>Visit your Links</span>
+                    </li>
+                </ul>
+            </CustomGrid>
+        ),
+        tooltipClassName: styles.tooltipSwitch,
+        tooltipPlacement: 'top'
     },
 ];
 

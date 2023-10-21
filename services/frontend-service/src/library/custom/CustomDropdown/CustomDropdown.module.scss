@@ -15,6 +15,10 @@
   max-height: rem(400px);
 }
 
+.paperRoot {
+  padding: 2px !important;
+}
+
 .paper {
   overflow: auto;
   -webkit-overflow-scrolling: touch;

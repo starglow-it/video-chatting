@@ -3,6 +3,7 @@
 
 .wrapperForm {
   height: rem(200px);
+  margin-top: 10px;
 }
 
 .monetization {
@@ -193,4 +194,20 @@
   span {
     font-size: 12px;
   }
+}
+
+.menuItem {
+  padding: 6px;
+}
+
+.tooltipSwitch {
+  display: flex;
+  height: max-content;
+  border-radius: 16px;
+}
+
+.tooltipList {
+  width: 100%;
+  line-height: 15px;
+  margin: 4px;
 }

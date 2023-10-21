@@ -78,17 +78,6 @@ export const MeetingMonezationForm = forwardRef(
             getValues,
         } = methods;
 
-        // useEffect(() => {
-        //     reset({
-        //         enabledMeeting: paymentMeeting.enabled,
-        //         enabledPaywall: paymentPaywall.enabled,
-        //         templatePrice: paymentMeeting.price,
-        //         paywallPrice: paymentPaywall.price,
-        //         templateCurrency: paymentMeeting.currency,
-        //         paywallCurrency: paymentPaywall.currency,
-        //     });
-        // }, [paymentMeeting, paymentPaywall]);
-
         const registerData = register('templatePrice');
         const registerPaywallData = register('paywallPrice');
 
@@ -107,7 +96,7 @@ export const MeetingMonezationForm = forwardRef(
 
         const renderTimeList = useMemo(() => {
             return currencyValues.map(time => (
-                <MenuItem key={time.id} value={time.value}>
+                <MenuItem key={time.id} value={time.value} className={styles.menuItem}>
                     {time.label}
                 </MenuItem>
             ));
@@ -163,14 +152,40 @@ export const MeetingMonezationForm = forwardRef(
                             container
                             wrap="nowrap"
                             className={styles.monetization}
-                            gap={2}
+                            gap={1}
+                            flexDirection="column"
                         >
                             <CustomGrid container flex={1} gap={1}>
                                 <CustomTypography
                                     translation="features.inMeeting"
                                     nameSpace="meeting"
                                     fontSize={13}
+                                    flex={1}
                                 />
+                                <CustomBox>
+                                    <Controller
+                                        control={control}
+                                        name="enabledMeeting"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref: refMeeting,
+                                            },
+                                        }) => (
+                                            <CustomSwitch
+                                                name={name}
+                                                onChange={onChange}
+                                                checked={value}
+                                                inputRef={refMeeting}
+                                                disabled={!isConnectedStripe}
+                                            />
+                                        )}
+                                    />
+                                </CustomBox>
+                            </CustomGrid>
+                            <CustomGrid>
                                 <CustomGrid
                                     container
                                     className={styles.amountInput}
@@ -211,46 +226,51 @@ export const MeetingMonezationForm = forwardRef(
                                         />
                                     </CustomGrid>
                                 </CustomGrid>
+
                                 <ErrorMessage
                                     error={templatePriceMessage}
                                     className={styles.error}
                                 />
                             </CustomGrid>
-                            <CustomBox marginTop={4.5}>
-                                <Controller
-                                    control={control}
-                                    name="enabledMeeting"
-                                    render={({
-                                        field: {
-                                            onChange,
-                                            value,
-                                            name,
-                                            ref: refMeeting,
-                                        },
-                                    }) => (
-                                        <CustomSwitch
-                                            name={name}
-                                            onChange={onChange}
-                                            checked={value}
-                                            inputRef={refMeeting}
-                                            disabled={!isConnectedStripe}
-                                        />
-                                    )}
-                                />
-                            </CustomBox>
                         </CustomGrid>
                         <CustomGrid
                             container
                             wrap="nowrap"
                             className={styles.monetization}
-                            gap={2}
+                            gap={1}
+                            flexDirection="column"
                         >
                             <CustomGrid container flex={1} gap={1}>
                                 <CustomTypography
                                     translation="features.payWall"
                                     nameSpace="meeting"
                                     fontSize={13}
+                                    flex={1}
                                 />
+                                <CustomBox>
+                                    <Controller
+                                        control={control}
+                                        name="enabledPaywall"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref: refPaywall,
+                                            },
+                                        }) => (
+                                            <CustomSwitch
+                                                name={name}
+                                                onChange={onChange}
+                                                checked={value}
+                                                inputRef={refPaywall}
+                                                disabled={!isConnectedStripe}
+                                            />
+                                        )}
+                                    />
+                                </CustomBox>
+                            </CustomGrid>
+                            <CustomGrid>
                                 <CustomGrid
                                     container
                                     className={styles.amountInput}
@@ -296,28 +316,6 @@ export const MeetingMonezationForm = forwardRef(
                                     className={styles.error}
                                 />
                             </CustomGrid>
-                            <CustomBox marginTop={4.5}>
-                                <Controller
-                                    control={control}
-                                    name="enabledPaywall"
-                                    render={({
-                                        field: {
-                                            onChange,
-                                            value,
-                                            name,
-                                            ref: refPaywall,
-                                        },
-                                    }) => (
-                                        <CustomSwitch
-                                            name={name}
-                                            onChange={onChange}
-                                            checked={value}
-                                            inputRef={refPaywall}
-                                            disabled={!isConnectedStripe}
-                                        />
-                                    )}
-                                />
-                            </CustomBox>
                         </CustomGrid>
                     </CustomGrid>
                 </form>

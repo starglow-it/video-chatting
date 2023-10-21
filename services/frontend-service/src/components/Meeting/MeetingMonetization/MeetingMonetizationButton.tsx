@@ -45,8 +45,10 @@ export const MeetingMonetizationButton = () => {
 
     const handleCloseForm = useCallback(() => {
         managePaymentRef.current?.close();
-        cancelPaymentIntentWithData();
-    }, []);
+        if (!isOwner) {
+            cancelPaymentIntentWithData();
+        }
+    }, [isOwner]);
 
     return (
         <>

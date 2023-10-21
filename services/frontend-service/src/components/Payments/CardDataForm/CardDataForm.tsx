@@ -71,40 +71,62 @@ const Component = ({
 
     const renderFormMeeting = () => {
         return (
-            <CustomGrid container gap={2}>
-                <StripeCardNumber
-                    className={clsx(styles.cardPaywallField, {
-                        [styles.borderFieldBlack]: isFormBlack,
-                    })}
-                    colorForm={colorForm}
-                    styleBase={{
-                        height: '45px',
-                        fontSize: '14px',
-                        lineHeight: '45px',
-                    }}
-                />
-                <StripeCardExpiry
-                    className={clsx(styles.datePaywallField, {
-                        [styles.borderFieldBlack]: isFormBlack,
-                    })}
-                    colorForm={colorForm}
-                    styleBase={{
-                        height: '45px',
-                        fontSize: '14px',
-                        lineHeight: '45px',
-                    }}
-                />
-                <StripeCardCvc
-                    className={clsx(styles.cvcPaywallField, {
-                        [styles.borderFieldBlack]: isFormBlack,
-                    })}
-                    colorForm={colorForm}
-                    styleBase={{
-                        height: '45px',
-                        fontSize: '14px',
-                        lineHeight: '45px',
-                    }}
-                />
+            <CustomGrid container gap={2} flexDirection="column">
+                <CustomGrid
+                    display="flex"
+                    flexDirection="column"
+                    flex={1}
+                    width={300}
+                >
+                    <CustomTypography className={styles.textField}>
+                        Card number
+                    </CustomTypography>
+                    <StripeCardNumber
+                        className={clsx(styles.cardPaywallField, {
+                            [styles.borderFieldBlack]: isFormBlack,
+                        })}
+                        colorForm={colorForm}
+                        styleBase={{
+                            height: '42px',
+                            fontSize: '13px',
+                            lineHeight: '42px',
+                        }}
+                    />
+                </CustomGrid>
+                <CustomGrid display="flex" flexDirection="row" gap={1}>
+                    <CustomGrid display="flex" flexDirection="column" flex={1}>
+                        <CustomTypography className={styles.textField}>
+                            Expired date
+                        </CustomTypography>
+                        <StripeCardExpiry
+                            className={clsx(styles.datePaywallField, {
+                                [styles.borderFieldBlack]: isFormBlack,
+                            })}
+                            colorForm={colorForm}
+                            styleBase={{
+                                height: '42px',
+                                fontSize: '13px',
+                                lineHeight: '42px',
+                            }}
+                        />
+                    </CustomGrid>
+                    <CustomGrid flex={1} display="flex" flexDirection="column">
+                        <CustomTypography className={styles.textField}>
+                            CVC
+                        </CustomTypography>
+                        <StripeCardCvc
+                            className={clsx(styles.cvcPaywallField, {
+                                [styles.borderFieldBlack]: isFormBlack,
+                            })}
+                            colorForm={colorForm}
+                            styleBase={{
+                                height: '42px',
+                                fontSize: '13px',
+                                lineHeight: '42px',
+                            }}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
             </CustomGrid>
         );
     };
@@ -145,7 +167,9 @@ const Component = ({
                 type="submit"
                 variant="custom-common"
                 Icon={<StripeIcon width="24px" height="24px" />}
-                className={styles.button}
+                className={clsx(styles.button, {
+                    [styles.paddingButton]: paymentType === PaymentType.Meeting,
+                })}
                 isLoading={isLoading}
             >
                 &nbsp;
