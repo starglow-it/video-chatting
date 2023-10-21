@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER, CoreBrokerPatterns, UserTemplatesBrokerPatterns } from 'shared-const';
+import {
+  CORE_PROVIDER,
+  CoreBrokerPatterns,
+  UserTemplatesBrokerPatterns,
+} from 'shared-const';
 import {
   StatisticBrokerPatterns,
   UserBrokerPatterns,
@@ -115,7 +119,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createMonitoring(payload: CreateMonitoringPayload){
+  async createMonitoring(payload: CreateMonitoringPayload) {
     const pattern = { cmd: CoreBrokerPatterns.CreateMonitoring };
     return this.client.send(pattern, payload).toPromise();
   }

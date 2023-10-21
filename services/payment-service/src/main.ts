@@ -43,7 +43,9 @@ async function bootstrap() {
 
   await paymentsController.createSubscriptionsIfNotExists();
 
-  await app.listen(port, () => console.log(`Payment service started at port ${port}`));
+  await app.listen(port, () =>
+    console.log(`Payment service started at port ${port}`),
+  );
 }
 
 bootstrap();
