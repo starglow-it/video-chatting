@@ -105,7 +105,7 @@ const tabs: ValuesSwitcherAlias[] = [
                 <span style={{ textAlign: 'center' }}>Audience (1000 Max)</span>
                 <ul className={styles.tooltipList}>
                     <li>
-                        <span>Are Seen & Heard</span>
+                        <span>Can View & Hear</span>
                     </li>
                     <li>
                         <span>Can Chat on Sidebar</span>
