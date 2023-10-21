@@ -157,36 +157,6 @@ export class UserTemplate {
   customLink: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
-    default: 'USD',
-  })
-  templateCurrency: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: '',
-  })
-  templatePrice: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: 'USD',
-  })
-  paywallCurrency: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: '',
-  })
-  paywallPrice: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.Boolean,
-    default: false,
-  })
-  isMonetizationEnabled: boolean;
-
-  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })

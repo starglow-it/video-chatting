@@ -24,7 +24,7 @@ export class MonitoringController {
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetMonitorings })
   async getMonitorings(@Payload() payload: GetMonitoringsPayload) {
-    return withTransaction(this.connection, async () => {
+    return withTransaction(this.connection, async (session) => {
       try {
         const {
           event,
@@ -49,6 +49,7 @@ export class MonitoringController {
             limit,
             skip: skip * limit,
           },
+          session,
         });
         const msPlain = plainToInstance(MonitoringDto, ms, {
           excludeExtraneousValues: true,

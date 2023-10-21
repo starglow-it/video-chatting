@@ -51,6 +51,7 @@ import {
     $localUserStore,
     $meetingTemplateStore,
     getMeetingTemplateFx,
+    getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
     initiateMeetingSocketConnectionEvent,
     joinMeetingEvent,
@@ -124,6 +125,7 @@ const MeetingContainer = memo(() => {
     const { isMobile } = useBrowserDetect();
 
     const roleUrl = router.query?.role as string;
+    const queryToken = router.query.token as string;
 
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
@@ -153,9 +155,7 @@ const MeetingContainer = memo(() => {
         },
     });
 
-    useSubscriptionNotification(
-        getClientMeetingUrl(router.query.token as string),
-    );
+    useSubscriptionNotification(getClientMeetingUrl(queryToken));
 
     useEffect(() => {
         (async () => {
@@ -164,7 +164,7 @@ const MeetingContainer = memo(() => {
             getSubscriptionWithDataFx({ subscriptionId: '' });
 
             const data: any = await getMeetingTemplateFx({
-                templateId: router.query.token as string,
+                templateId: queryToken,
                 subdomain: isSubdomain() ? window.location.origin : undefined,
             });
 
@@ -186,6 +186,7 @@ const MeetingContainer = memo(() => {
 
     useEffect(() => {
         getAvatarsMeetingEvent();
+        getPaymentMeetingEvent(queryToken);
     }, []);
 
     useEffect(() => {

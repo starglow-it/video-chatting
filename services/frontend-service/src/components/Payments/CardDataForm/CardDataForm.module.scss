@@ -24,3 +24,30 @@
 .button {
   margin: rem(20px 0 0 0);
 }
+
+.paddingButton {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.cardPaywallField {
+  width: rem(300px);
+  height: 42px;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.datePaywallField {
+  height: 42px;
+}
+
+.cvcPaywallField {
+  height: 42px;
+}
+
+.textField {
+  font-size: 12px;
+  color: $primary-white;
+}

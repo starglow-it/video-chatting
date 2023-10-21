@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection, UpdateQuery } from 'mongoose';
@@ -6,7 +6,11 @@ import { plainToInstance } from 'class-transformer';
 import * as mongoose from 'mongoose';
 
 // shared
-import { TEMPLATES_SERVICE, UserTemplatesBrokerPatterns } from 'shared-const';
+import {
+  TEMPLATES_SERVICE,
+  TemplateNativeErrorEnum,
+  UserTemplatesBrokerPatterns,
+} from 'shared-const';
 
 import {
   CreateUserTemplateByIdPayload,
@@ -23,6 +27,10 @@ import {
   UpdateUserTemplateUsageNumberPayload,
   DeleteLeastUsedTemplatesPayload,
   DeleteGlobalUserTemplatesPayload,
+  UpdateTemplatePaymentPayload,
+  ITemplatePayment,
+  GetTemplatePaymentsPayload,
+  GetTemplatePaymentPayload,
 } from 'shared-types';
 
 // helpers
@@ -55,6 +63,15 @@ import { PreviewImageDocument } from '../../schemas/preview-image.schema';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { FilterQuery } from 'mongoose';
 import { MediaDocument } from '../../schemas/media.schema';
+import { UserTemplatesComponent } from './user-templates.component';
+import { TemplatePaymentsComponent } from '../template-payments/template-payments.component';
+import { TemplatePaymentsService } from '../template-payments/template-payments.service';
+import { throwRpcError } from '../../utils/common/throwRpcError';
+import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
+import {
+  TemplatePaymentDto,
+  templatePaymentSerialization,
+} from '../../dtos/template-payment.dto';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -69,6 +86,9 @@ export class UserTemplatesController {
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     private mediaService: MediaService,
+    private readonly templatePaymentsComponent: TemplatePaymentsComponent,
+    private readonly userTemplatesComponent: UserTemplatesComponent,
+    private readonly templatePaymentsService: TemplatePaymentsService,
   ) {}
 
   private async getMyRoomMediaCategory(
@@ -352,6 +372,7 @@ export class UserTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+          session,
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
@@ -510,7 +531,7 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const template = await this.userTemplatesService.findUserTemplateById({
+        const template = await this.userTemplatesService.findById({
           id: templateId,
           session,
           populatePaths: 'user',
@@ -526,17 +547,6 @@ export class UserTemplatesController {
           contactEmail: data.contactEmail,
           description: data.description,
           signBoard: data.signBoard,
-          isMonetizationEnabled: data.isMonetizationEnabled,
-          templatePrice:
-            typeof data.templatePrice !== 'undefined'
-              ? data.templatePrice || ''
-              : template.templatePrice,
-          templateCurrency: data.templateCurrency,
-          paywallCurrency: data.paywallCurrency,
-          paywallPrice:
-            typeof data.paywallPrice !== 'undefined'
-              ? data.paywallPrice || ''
-              : template.paywallPrice,
           customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
@@ -653,7 +663,7 @@ export class UserTemplatesController {
       id: IUserTemplate['id'];
       mimeType: string;
     },
-  ): Promise<void> {
+  ) {
     return withTransaction(this.connection, async (session) => {
       const { url, id, mimeType } = data;
 
@@ -665,12 +675,10 @@ export class UserTemplatesController {
 
       const imageIds = previewImages.map((image) => image._id);
 
-      const userTemplate = await this.userTemplatesService.findUserTemplateById(
-        {
-          id,
-          session,
-        },
-      );
+      const userTemplate = await this.userTemplatesService.findById({
+        id,
+        session,
+      });
 
       await this.commonTemplatesService.updateCommonTemplate({
         query: {
@@ -779,12 +787,106 @@ export class UserTemplatesController {
             session,
           );
 
-          await this.userTemplatesService.deleteUserTemplates({
+          await this.userTemplatesComponent.deleteUserTemplatesByUserId(
+            userId,
+            session,
+          );
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  private async validateTemplateOwner(
+    userId: string,
+    userTemplateId: string,
+    session: ITransactionSession,
+  ) {
+    const userTemplate = await this.userTemplatesComponent.findById(
+      userTemplateId,
+      session,
+    );
+    throwRpcError(
+      userTemplate.user.toString() !== userId,
+      TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
+    );
+    return;
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
+  })
+  async getTemplatePayment(
+    @Payload()
+    { userTemplateId, paymentType, meetingRole }: GetTemplatePaymentPayload,
+  ) {
+    return withTransaction<TemplatePaymentDto>(
+      this.connection,
+      async (session) => {
+        try {
+          const templatePayment = await this.templatePaymentsComponent.findOne({
             query: {
-              user: new ObjectId(userId),
+              userTemplate: new ObjectId(userTemplateId),
+              type: paymentType,
+              meetingRole,
             },
             session,
+            populatePaths: 'userTemplate',
           });
+
+          throwRpcError(
+            !templatePayment.enabled,
+            TemplateNativeErrorEnum.TEMPLATE_PAYMENT_DISABLED,
+          );
+
+          return templatePaymentSerialization(templatePayment);
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
+  })
+  async getTemplatePayments(
+    @Payload() { userTemplateId }: GetTemplatePaymentsPayload,
+  ) {
+    return withTransaction<EntityList<TemplatePaymentDto>>(
+      this.connection,
+      async (session) => {
+        try {
+          const userTemplate = await this.userTemplatesComponent.findById(
+            userTemplateId,
+            session,
+          );
+
+          const query = {
+            userTemplate: userTemplate._id,
+          };
+          const templatePayments =
+            await this.templatePaymentsComponent.findMany({
+              query,
+              session,
+            });
+
+          const countTemplatePayments =
+            await this.templatePaymentsService.count(query);
+
+          const plainTemplatePayments =
+            templatePaymentSerialization(templatePayments);
+          return {
+            list: plainTemplatePayments,
+            count: countTemplatePayments,
+          };
         } catch (err) {
           throw new RpcException({
             message: err.message,
@@ -798,15 +900,14 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplate })
   async deleteUserTemplate(
     @Payload() { templateId, userId }: DeleteUsersTemplatesPayload,
-  ): Promise<undefined> {
+  ) {
     try {
       return withTransaction(this.connection, async (session) => {
-        const userTemplate =
-          await this.userTemplatesService.findUserTemplateById({
-            id: templateId,
-            session,
-            populatePaths: 'author',
-          });
+        const userTemplate = await this.userTemplatesService.findById({
+          id: templateId,
+          session,
+          populatePaths: 'author',
+        });
 
         if (!userTemplate) {
           return;
@@ -834,7 +935,7 @@ export class UserTemplatesController {
 
         await this.deleteMedias({ userTemplate }, session);
 
-        await this.userTemplatesService.deleteUserTemplate(
+        await this.userTemplatesComponent.deleteUserTemplate(
           { _id: templateId },
           session,
         );
@@ -908,7 +1009,7 @@ export class UserTemplatesController {
   })
   async updateUserTemplateUsageNumber(
     @Payload() payload: UpdateUserTemplateUsageNumberPayload,
-  ): Promise<void> {
+  ) {
     try {
       return withTransaction(this.connection, async (session) => {
         await this.userTemplatesService.findUserTemplateByIdAndUpdate(
@@ -970,13 +1071,13 @@ export class UserTemplatesController {
           ...leastUsedFreeTemplates,
         ].map((template) => template.id);
 
-        await this.userTemplatesService.deleteUserTemplates({
-          query: {
-            _id: { $nin: templatesIds },
-            user: payload.userId,
+        await this.userTemplatesComponent.deleteLeastUserTemplates(
+          {
+            templatesIds,
+            userId: payload.userId,
           },
           session,
-        });
+        );
       });
     } catch (err) {
       throw new RpcException({
@@ -984,5 +1085,75 @@ export class UserTemplatesController {
         ctx: TEMPLATES_SERVICE,
       });
     }
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.UpdateTemplatePayments,
+  })
+  async updateUserTemplatePayment(
+    @Payload() { userTemplateId, data, userId }: UpdateTemplatePaymentPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const template = await this.userTemplatesComponent.findById(
+          userTemplateId,
+          session,
+        );
+
+        throwRpcError(
+          template.user.toString() !== userId,
+          TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
+        );
+
+        const query: FilterQuery<TemplatePaymentDocument> = {
+          userTemplate: template._id,
+          type: {
+            $in: Object.keys(data),
+          },
+        };
+
+        const templatePayments = await this.templatePaymentsService.find({
+          query,
+          session,
+        });
+
+        const countTemplatePayments = await this.templatePaymentsService.count(
+          query,
+        );
+
+        const promises: Promise<TemplatePaymentDocument>[] = [];
+
+        if (templatePayments.length) {
+          const p = templatePayments.map(async ({ type, _id, meetingRole }) => {
+            return this.templatePaymentsComponent.findOneAndUpdate({
+              query: {
+                _id,
+                type,
+                meetingRole,
+              },
+              data: {
+                ...data[type][meetingRole],
+              },
+              session,
+            });
+          });
+          promises.push(...p);
+        }
+
+        const plainTemplatePayments = templatePaymentSerialization(
+          await Promise.all(promises),
+        );
+
+        return {
+          list: plainTemplatePayments,
+          count: countTemplatePayments,
+        };
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
   }
 }

@@ -32,6 +32,7 @@ import {
     $audioErrorStore,
     $backgroundAudioVolume,
     $changeStreamStore,
+    $enabledPaymentPaywallParticipant,
     $isAuraActive,
     $isBackgroundAudioActive,
     $isCameraActiveStore,
@@ -86,6 +87,10 @@ const Component = () => {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
     const { isAuthenticated } = useStore($authStore);
+    const enabledPaymentPaywallParticipant = useStore(
+        $enabledPaymentPaywallParticipant,
+    );
+    console.log('#Duy Phan console pay', enabledPaymentPaywallParticipant);
 
     const isCameraActiveRef = useRef(isCameraActive);
 
@@ -198,11 +203,10 @@ const Component = () => {
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
 
     const isPayWallBeforeJoin =
-        Boolean(meetingTemplate?.paywallPrice) && !isOwner && waitingPaywall;
-    const functionPaywall =
-        Boolean(meetingTemplate?.paywallPrice) && !isOwner
-            ? handlePaywallPayment
-            : handleJoinMeeting;
+        enabledPaymentPaywallParticipant && waitingPaywall;
+    const functionPaywall = enabledPaymentPaywallParticipant
+        ? handlePaywallPayment
+        : handleJoinMeeting;
     const joinHandler = isOwner ? onSubmit : functionPaywall;
 
     const linkToDefault = () => {

@@ -11,7 +11,7 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Stripe } from 'stripe';
 
 // patterns
-import { PaymentsBrokerPatterns } from 'shared-const';
+import { PaymentsBrokerPatterns, PlanData } from 'shared-const';
 
 // services
 import { ConfigClientService } from '../../services/config/config.service';
@@ -51,7 +51,9 @@ import {
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
-  MonetizationStatisticTypes, PlanKeys, UpdateStripeTemplateProductPayload,
+  MonetizationStatisticTypes,
+  PlanKeys,
+  UpdateStripeTemplateProductPayload,
 } from 'shared-types';
 import { DeleteTemplateStripeProductPayload } from 'shared-types/src/brokerPayloads';
 
@@ -342,7 +344,7 @@ export class PaymentsController {
         ctx: payload,
       });
 
-      let product = null;
+      let product: Stripe.Response<Stripe.Product> = null;
 
       if (payload.stripeSubscriptionId) {
         const subscription = await this.paymentService.getSubscription(
@@ -355,14 +357,13 @@ export class PaymentsController {
         );
       }
 
-      const plan = plans[product?.name || PlanKeys.House];
+      const plan = plans[product?.name || PlanKeys.House] as PlanData;
 
       const paymentIntent = await this.paymentService.createPaymentIntent({
         templatePrice: payload.templatePrice,
         templateCurrency: payload.templateCurrency,
-        stripeSubscriptionId: payload.stripeSubscriptionId,
         stripeAccountId: payload.stripeAccountId,
-        platformFee: plan.features.comissionFee,
+        platformFee: plan.features.comissionFee[payload.meetingRole],
         templateId: payload.templateId,
       });
 
@@ -419,9 +420,7 @@ export class PaymentsController {
       const products = await this.paymentService.getStripeProducts();
 
       const pricesPromise = products.data.map(async (product) => {
-        const price = await this.paymentService.getProductPrice(
-          product.id,
-        );
+        const price = await this.paymentService.getProductPrice(product.id);
 
         return {
           product,
@@ -444,13 +443,8 @@ export class PaymentsController {
       const subscriptionProducts =
         await this.paymentService.getStripeSubscriptions();
 
-
-        
-
       const pricesPromise = subscriptionProducts.map(async (product) => {
-        const price = await this.paymentService.getProductPrice(
-          product.id,
-        );
+        const price = await this.paymentService.getProductPrice(product.id);
 
         return {
           product,
@@ -484,9 +478,7 @@ export class PaymentsController {
         payload.productId,
       );
 
-      const price = await this.paymentService.getProductPrice(
-        product.id,
-      );
+      const price = await this.paymentService.getProductPrice(product.id);
 
       const plan = plans[product.name ?? PlanKeys.House];
       return this.paymentService.getStripeCheckoutSession({
@@ -604,10 +596,10 @@ export class PaymentsController {
   }
 
   @MessagePattern({
-    cmd: PaymentsBrokerPatterns.UpdateStripeTemplateProduct
+    cmd: PaymentsBrokerPatterns.UpdateStripeTemplateProduct,
   })
   async updateStripeTemplateProduct(
-      @Payload() payload: UpdateStripeTemplateProductPayload,
+    @Payload() payload: UpdateStripeTemplateProductPayload,
   ) {
     return this.paymentService.updateProduct(payload.productId, payload.data);
   }
@@ -714,13 +706,13 @@ export class PaymentsController {
         renewSubscriptionTimestampInSeconds: subscription.current_period_end,
       },
     });
-    
+
     if (
       Boolean(user.isSubscriptionActive) === false &&
       ['active', 'trialing'].includes(subscription.status)
     ) {
       console.log('send email');
-      
+
       this.notificationsService.sendEmail({
         template: {
           key: emailTemplates.subscriptionSuccessful,

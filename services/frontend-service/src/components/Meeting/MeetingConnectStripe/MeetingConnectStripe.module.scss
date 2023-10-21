@@ -35,8 +35,16 @@
 
 .buttonWrapper {
   flex-wrap: nowrap;
+  width: 140px;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .email {
   @extend %text-ellips;
+}
+
+.button {
+  padding: 10px;
+  border-radius: 8px;
 }

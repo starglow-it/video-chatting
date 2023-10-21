@@ -22,6 +22,7 @@ import { MonetizationStatisticModule } from '../modules/monetization-statistic/m
 import { RoomsStatisticsModule } from '../modules/rooms-statistics/rooms-statistics.module';
 import { TranscodeModule } from '../modules/transcode/transcode.module';
 import { MediasModule } from '../modules/medias/medias.module';
+import { TemplatePaymentsModule } from '../modules/template-payments/template-payments.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { MediasModule } from '../modules/medias/medias.module';
     MonetizationStatisticModule,
     RoomsStatisticsModule,
     TranscodeModule,
+    TemplatePaymentsModule,
     MongooseModule.forFeature([
       { name: PreviewImage.name, schema: PreviewImageSchema },
     ]),

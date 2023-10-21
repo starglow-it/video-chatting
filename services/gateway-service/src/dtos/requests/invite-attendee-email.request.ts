@@ -5,7 +5,7 @@ import { IInviteAttendeeEmail, MeetingRole } from 'shared-types';
 
 export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
   @ApiProperty({
-    type: [String]
+    type: [String],
   })
   @IsString({ message: '', each: true })
   readonly userEmails: string[];
@@ -17,7 +17,7 @@ export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
     message: 'Invalid meetingId value',
   })
   @ApiProperty({
-    type: String
+    type: String,
   })
   readonly meetingId: string;
 
@@ -29,7 +29,7 @@ export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
   })
   @ApiProperty({
     type: String,
-    example: 'participant'
+    example: 'participant',
   })
   readonly role: MeetingRole.Participant | MeetingRole.Lurker;
 }

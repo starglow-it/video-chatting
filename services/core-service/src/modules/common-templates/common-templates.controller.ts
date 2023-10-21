@@ -46,6 +46,8 @@ import {
 import { ICommonTemplate } from 'shared-types';
 import { EntityList } from 'shared-types';
 import { PriceValues } from 'shared-types';
+import { TemplatePaymentsService } from '../template-payments/template-payments.service';
+import { UserTemplatesComponent } from '../user-templates/user-templates.component';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -63,6 +65,8 @@ export class CommonTemplatesController {
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
     private mediaService: MediaService,
+    private readonly userTemplatesComponent: UserTemplatesComponent,
+    private readonly templatePaymentsService: TemplatePaymentsService,
   ) {}
 
   async onModuleInit() {
@@ -315,12 +319,11 @@ export class CommonTemplatesController {
           subdomain: targetTemplate.subdomain,
         };
 
-        const [userTemplate] =
-          await this.userTemplatesService.createUserTemplate(
+        const userTemplate =
+          await this.userTemplatesComponent.createUserTemplate(
             templateData,
             session,
           );
-
         targetUser.templates.push(userTemplate);
 
         await targetUser.save({ session: session?.session });
@@ -361,6 +364,7 @@ export class CommonTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+          session,
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
@@ -394,7 +398,7 @@ export class CommonTemplatesController {
     @Payload() payload: UploadTemplateFilePayload,
   ): Promise<void> {
     try {
-      return withTransaction(this.connection, async () => {
+      return withTransaction(this.connection, async (session) => {
         const { url, id, mimeType } = payload;
 
         const previewImages =
@@ -415,6 +419,7 @@ export class CommonTemplatesController {
             draftPreviewUrls: imageIds,
             draftUrl: url,
           },
+          session,
         });
 
         return;
@@ -555,11 +560,11 @@ export class CommonTemplatesController {
 
         if (updateData.subdomain) {
           if (
-            (await this.commonTemplatesService.exists({
+            await this.commonTemplatesService.exists({
               query: {
                 subdomain: updateData.subdomain,
               },
-            }))
+            })
           ) {
             throw new RpcException({
               message: 'Subdomain existed',
@@ -616,7 +621,7 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteCommonTemplate })
   async deleteCommonTemplate(
     @Payload() { templateId }: DeleteCommonTemplatePayload,
-  ): Promise<undefined> {
+  ) {
     try {
       return withTransaction(this.connection, async (session) => {
         const template =
@@ -655,10 +660,7 @@ export class CommonTemplatesController {
           session,
         });
 
-        await this.userTemplatesService.deleteUserTemplates({
-          query,
-          session,
-        });
+        await this.userTemplatesComponent.deleteUserTemplates(query, session);
 
         await this.commonTemplatesService.deleteCommonTemplate({
           query: {

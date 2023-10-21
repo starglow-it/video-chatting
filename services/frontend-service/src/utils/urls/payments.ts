@@ -1,5 +1,10 @@
 import { HttpMethods } from '../../store/types';
-import { paymentsScope, serverUrl } from './baseData';
+import {
+    paymentsScope,
+    profileScope,
+    serverUrl,
+    templatesScope,
+} from './baseData';
 
 export const connectStripeAccountUrl = {
     url: `${serverUrl}/${paymentsScope}/stripe`,
@@ -65,4 +70,14 @@ export const purchaseTemplateUrl = ({
 }) => ({
     url: `${serverUrl}/${paymentsScope}/templates/${templateId}`,
     method: HttpMethods.Get,
+});
+
+export const getMonetizationTemplateUrl = (templateId: string) => ({
+    url: `${serverUrl}/${profileScope}/${templatesScope}/${templateId}/payments`,
+    method: HttpMethods.Get,
+});
+
+export const updateMonetizationTemplateUrl = (templateId: string) => ({
+    url: `${serverUrl}/${profileScope}/${templatesScope}/${templateId}/payment`,
+    method: HttpMethods.Patch,
 });

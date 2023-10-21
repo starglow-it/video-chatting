@@ -8,7 +8,10 @@ import {
   CountryStatisticDocument,
 } from '../../schemas/country-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class CountryStatisticsService {
@@ -35,7 +38,7 @@ export class CountryStatisticsService {
     query,
     options,
     session,
-  }: GetModelQuery<CountryStatisticDocument>) {
+  }: GetModelMultipleQuery<CountryStatisticDocument>) {
     return this.countryStatistic
       .find(
         query,
@@ -54,10 +57,7 @@ export class CountryStatisticsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<
-    CountryStatisticDocument,
-    CountryStatistic
-  >): Promise<CountryStatisticDocument> {
+  }: UpdateModelSingleQuery<CountryStatisticDocument>): Promise<CountryStatisticDocument> {
     return this.countryStatistic
       .findOneAndUpdate(query, data, {
         new: true,

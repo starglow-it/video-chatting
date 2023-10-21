@@ -48,8 +48,14 @@ import {
 } from '../../../types';
 import { SendAnswerMeetingRequestParams } from './types';
 
-import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
-import { getMeetingSocketSubscribeHandler } from './handlers';
+import {
+    MeetingSubscribeEvents,
+    TemplateSubscribeEvents,
+} from '../../../../const/socketEvents/subscribers';
+import {
+    getMeetingSocketSubscribeHandler,
+    getMeetingTemplateSocketSubscribeHandler,
+} from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
@@ -419,6 +425,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         MeetingSubscribeEvents.OnReceiceUnReaction,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnReceiceUnReaction,
+        ),
+    );
+    socketInstance?.on(
+        TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
+        getMeetingTemplateSocketSubscribeHandler(
+            TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         ),
     );
 });

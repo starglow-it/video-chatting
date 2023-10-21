@@ -14,7 +14,6 @@ import {
   withTransaction,
 } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from './meetings.service';
-import { TasksService } from '../tasks/tasks.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { userSerialization } from '../../dtos/response/common-user.dto';
@@ -23,7 +22,6 @@ import { TEventEmitter } from '../../types/socket-events';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Socket } from 'socket.io';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
@@ -36,7 +34,6 @@ export class MeetingsCommonService {
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
     private coreService: CoreService,
-    private taskService: TasksService,
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
@@ -119,79 +116,6 @@ export class MeetingsCommonService {
       templateId,
       userId,
       data: { meetingInstance: null },
-    });
-  }
-
-  async changeUsersPositions({
-    meetingId,
-    templateId,
-    emitToRoom,
-  }: {
-    meetingId: string;
-    templateId: string;
-    emitToRoom: (...args: TEventEmitter) => void;
-  }): Promise<void> {
-    return withTransaction(this.connection, async (session) => {
-      try {
-        const template = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        const usersTemplate = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        usersTemplate.indexUsers.forEach(async (userId, i) => {
-          const user = await this.usersService.findById(userId);
-          if (!user) return;
-
-          const userPosition = template?.usersPosition?.[i];
-          const userSize = template?.usersSize?.[i];
-
-          user.userPosition = userPosition;
-          user.userSize = userSize;
-
-          user.save();
-        });
-
-        const meetingUsers = await this.usersService.findUsers(
-          {
-            meeting: meetingId,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-          },
-          session,
-        );
-
-        const updatedMeeting = await this.meetingsService.findById(
-          meetingId,
-          session,
-          ['owner', 'users'],
-        );
-
-        if (!updatedMeeting) return;
-        const plainUsers = userSerialization(meetingUsers);
-        const plainMeeting = meetingSerialization(updatedMeeting);
-
-        emitToRoom(
-          `waitingRoom:${templateId}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
-
-        emitToRoom(
-          `meeting:${plainMeeting.id}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
-      } catch (err) {
-        wsError(null, err);
-      }
     });
   }
 

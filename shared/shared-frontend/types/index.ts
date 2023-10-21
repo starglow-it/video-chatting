@@ -8,6 +8,8 @@ export type ValuesSwitcherItem<Value extends ValueType, Label = string> = {
     label: Label;
     disabled?: boolean;
     tooltip?: string | JSX.Element;
+    tooltipClassName?: string;
+    tooltipPlacement?: string;
 };
 
 export type AutocompleteType<ValueType> = ValueType & { key: string; value: string; label: string };

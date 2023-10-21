@@ -27,8 +27,9 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 // types
 import {
   CustomPopulateOptions,
-  GetModelQuery,
-  UpdateModelQuery,
+  GetModelMultipleQuery,
+  UpdateModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
@@ -64,7 +65,7 @@ export class CommonTemplatesService {
     options,
     populatePaths,
     session,
-  }: GetModelQuery<CommonTemplateDocument>) {
+  }: GetModelMultipleQuery<CommonTemplateDocument>) {
     return this.commonTemplate
       .find(
         query,
@@ -164,7 +165,7 @@ export class CommonTemplatesService {
     session,
     populatePaths,
     options,
-  }: GetModelQuery<CommonTemplateDocument>) {
+  }: GetModelMultipleQuery<CommonTemplateDocument>) {
     return this.commonTemplate
       .findOne(
         query,
@@ -234,10 +235,7 @@ export class CommonTemplatesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    CommonTemplateDocument,
-    CommonTemplate
-  >): Promise<CommonTemplateDocument> {
+  }: UpdateModelSingleQuery<CommonTemplateDocument>): Promise<CommonTemplateDocument> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
@@ -251,7 +249,7 @@ export class CommonTemplatesService {
     query,
     data,
     session,
-  }: UpdateModelQuery<CommonTemplateDocument, CommonTemplate>): Promise<any> {
+  }: UpdateModelMultipleQuery<CommonTemplateDocument>): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
     };

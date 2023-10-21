@@ -7,7 +7,11 @@ import {
   MeetingAvatar,
   MeetingAvatarDocument,
 } from '../../schemas/meeting-avatar.schema';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class MeetingAvatarsService {
@@ -48,7 +52,7 @@ export class MeetingAvatarsService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<MeetingAvatarDocument>) {
+  }: GetModelMultipleQuery<MeetingAvatarDocument>) {
     return this.meetingAvatar
       .find(
         query,
@@ -63,12 +67,11 @@ export class MeetingAvatarsService {
       .exec();
   }
 
-
   async findOne({
     query,
     session,
     populatePaths,
-  }: GetModelQuery<MeetingAvatarDocument>): Promise<MeetingAvatarDocument> {
+  }: GetModelSingleQuery<MeetingAvatarDocument>): Promise<MeetingAvatarDocument> {
     return this.meetingAvatar
       .findOne(
         query,
@@ -78,16 +81,12 @@ export class MeetingAvatarsService {
       .exec();
   }
 
-
   async update({
     query,
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    MeetingAvatarDocument,
-    IMeetingAvatar
-  >): Promise<MeetingAvatarDocument> {
+  }: UpdateModelSingleQuery<MeetingAvatarDocument>): Promise<MeetingAvatarDocument> {
     return this.meetingAvatar.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,

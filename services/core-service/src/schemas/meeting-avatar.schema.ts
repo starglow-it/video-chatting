@@ -1,12 +1,12 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import * as mongoose from "mongoose";
-import { Resouce, ResouceDocument, ResouceSchema } from "./resouce.schema";
-import { Type } from "class-transformer";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
+import { Resouce, ResouceDocument, ResouceSchema } from './resouce.schema';
+import { Type } from 'class-transformer';
 
 @Schema()
 export class MeetingAvatar {
   @Prop({
-    type: ResouceSchema
+    type: ResouceSchema,
   })
   @Type(() => Resouce)
   resouce: ResouceDocument;
@@ -19,9 +19,9 @@ export class MeetingAvatar {
   @Prop({
     type: [
       {
-        type:  mongoose.Schema.Types.String
-      }
-    ]
+        type: mongoose.Schema.Types.String,
+      },
+    ],
   })
   roles: string[];
 }

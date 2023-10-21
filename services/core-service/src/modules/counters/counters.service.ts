@@ -6,7 +6,10 @@ import { ICounter } from 'shared-types';
 
 import { Counter, CounterDocument } from '../../schemas/counter.schema';
 
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
@@ -34,7 +37,7 @@ export class CountersService {
   async find({
     query,
     session,
-  }: GetModelQuery<CounterDocument>): Promise<CounterDocument[]> {
+  }: GetModelMultipleQuery<CounterDocument>): Promise<CounterDocument[]> {
     return this.counter.find(query, {}, { session: session?.session }).exec();
   }
 
@@ -42,7 +45,7 @@ export class CountersService {
     query,
     data,
     session,
-  }: UpdateModelQuery<CounterDocument, Counter>) {
+  }: UpdateModelSingleQuery<CounterDocument>) {
     return this.counter
       .findOneAndUpdate(query, data, {
         new: true,

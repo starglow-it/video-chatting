@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { IEnterMeeting } from '../../interfaces/enter-meeting.interface';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
@@ -14,7 +14,7 @@ export class EnterMeetingRequestDTO implements IEnterMeeting {
   })
   readonly meetingId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ValidateNested({
     message: 'Invalid user'
   })

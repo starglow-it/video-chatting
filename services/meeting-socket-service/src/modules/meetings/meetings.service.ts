@@ -6,11 +6,7 @@ import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   CustomPopulateOptions,
-  UserActionInMeeting,
-  UserActionInMeetingParams,
 } from '../../types';
-import { IUserTemplate } from 'shared-types';
-import { CoreService } from '../../services/core/core.service';
 @Injectable()
 export class MeetingsService {
   constructor(

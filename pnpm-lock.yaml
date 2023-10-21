@@ -1395,6 +1395,7 @@ importers:
       '@typescript-eslint/parser': ^5.40.1
       axios: ^0.27.2
       bowser: 2.11.0
+      class-transformer: 0.5.1
       date-fns: 2.29.3
       eslint: ^8.25.0
       eslint-config-prettier: 8.5.0
@@ -1408,6 +1409,7 @@ importers:
       '@typescript-eslint/parser': 5.46.1_gvz5miypafn642uwspdhy656la
       axios: 0.27.2
       bowser: 2.11.0
+      class-transformer: 0.5.1
       date-fns: 2.29.3
       eslint: 8.29.0
       eslint-config-prettier: 8.5.0_eslint@8.29.0

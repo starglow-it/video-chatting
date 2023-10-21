@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { PaymentType } from 'shared-const';
+import { MeetingRole } from 'shared-types';
 
 export class CreatePaymentRequest {
   @ApiProperty({
@@ -14,13 +16,28 @@ export class CreatePaymentRequest {
   templateId: string;
 
   @ApiProperty({
-    type: Boolean,
+    type: String,
+    enum: Object.values(PaymentType),
+    example: PaymentType.Meeting,
   })
   @IsNotEmpty({
-    message: 'IsPaymentPaywall must be present',
+    message: 'PaymentPaywall must be present',
   })
-  @IsBoolean({
-    message: ' isValid IsPaymentPaywall value',
+  @IsString({
+    message: ' IsValid PaymentPaywall value',
   })
-  isPaymentPaywall: boolean;
+  paymentType: PaymentType;
+
+  @ApiProperty({
+    type: String,
+    enum: Object.values(MeetingRole),
+    example: MeetingRole.Lurker,
+  })
+  @IsNotEmpty({
+    message: 'PaymentPaywall must be present',
+  })
+  @IsString({
+    message: ' IsValid PaymentPaywall value',
+  })
+  meetingRole: MeetingRole;
 }

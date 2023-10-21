@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { PreviewImage, PreviewImageDocument } from '../../schemas/preview-image.schema';
+import {
+  PreviewImage,
+  PreviewImageDocument,
+} from '../../schemas/preview-image.schema';
 import { Resouce, ResouceDocument } from '../../schemas/resouce.schema';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
@@ -9,7 +12,11 @@ import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 import { IResouce } from 'shared-types';
 import { PipelineStage } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
@@ -114,7 +121,7 @@ export class ResoucesService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<ResouceDocument>) {
+  }: GetModelMultipleQuery<ResouceDocument>) {
     return this.resouce
       .find(
         query,
@@ -133,7 +140,7 @@ export class ResoucesService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<ResouceDocument>): Promise<ResouceDocument> {
+  }: GetModelSingleQuery<ResouceDocument>): Promise<ResouceDocument> {
     return this.resouce
       .findOne(
         query,
@@ -148,15 +155,13 @@ export class ResoucesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<ResouceDocument, IResouce>): Promise<ResouceDocument> {
+  }: UpdateModelSingleQuery<ResouceDocument>): Promise<ResouceDocument> {
     return this.resouce.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,
       new: true,
     });
   }
-
-
 
   async count(query: FilterQuery<ResouceDocument>): Promise<number> {
     return this.resouce.count(query).exec();
