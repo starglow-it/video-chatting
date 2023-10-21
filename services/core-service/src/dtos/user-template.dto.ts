@@ -97,7 +97,6 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   customLink: IUserTemplate['customLink'];
 
-
   @Expose()
   isAudioAvailable: IUserTemplate['isAudioAvailable'];
 

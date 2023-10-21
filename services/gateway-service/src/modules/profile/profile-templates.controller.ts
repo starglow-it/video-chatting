@@ -36,10 +36,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency';
-import { TemplateIdParam } from 'src/dtos/params/template-id.params';
-import { UpdateTemplatePaymentsRequest } from 'src/dtos/requests/update-template-payment.request';
-import { UserId } from 'src/utils/decorators/user-id.decorator';
-import { CommonTemplatePaymentDto } from 'src/dtos/response/common-template-payment.dto';
+import { TemplateIdParam } from '../../dtos/params/template-id.params';
+import { UpdateTemplatePaymentsRequest } from '../../dtos/requests/update-template-payment.request';
+import { UserId } from '../../utils/decorators/user-id.decorator';
+import { CommonTemplatePaymentDto } from '../../dtos/response/common-template-payment.dto';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -270,9 +270,7 @@ export class ProfileTemplatesController {
     type: [CommonTemplatePaymentDto],
     description: 'Get Detail Profile Template Success',
   })
-  async getTemplatePayments(
-    @Param() { templateId }: TemplateIdParam,
-  ) {
+  async getTemplatePayments(@Param() { templateId }: TemplateIdParam) {
     try {
       return await this.coreService.getTemplatePayments({
         userTemplateId: templateId,
@@ -315,7 +313,7 @@ export class ProfileTemplatesController {
         };
       }
       return {
-        success: false, 
+        success: false,
         result: null,
       };
     } catch (err) {

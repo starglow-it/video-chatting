@@ -6,7 +6,10 @@ import { ICounter } from 'shared-types';
 
 import { Counter, CounterDocument } from '../../schemas/counter.schema';
 
-import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 

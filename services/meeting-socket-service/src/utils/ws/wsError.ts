@@ -1,4 +1,4 @@
-import { WsBadRequestException } from 'src/exceptions/ws.exception';
+import { WsBadRequestException } from '../../exceptions/ws.exception';
 
 export type WsError = {
   success: false;

@@ -16,7 +16,11 @@ import {
 } from '../../schemas/social-link.schema';
 
 import {
-  CustomPopulateOptions, GetModelMultipleQuery, GetModelSingleQuery, UpdateModelMultipleQuery, UpdateModelSingleQuery,
+  CustomPopulateOptions,
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/custom';
 import {
   ProfileAvatar,

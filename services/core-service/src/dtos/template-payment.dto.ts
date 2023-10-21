@@ -1,7 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { ITemplatePayment, IUserTemplate, MeetingRole } from 'shared-types';
 import { UserTemplateDTO } from './user-template.dto';
-import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
+import { TemplatePaymentDocument } from '../schemas/template-payment.schema';
 import { serializeInstance } from 'shared-utils';
 
 export class TemplatePaymentDto implements ITemplatePayment {

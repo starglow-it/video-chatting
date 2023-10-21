@@ -7,8 +7,8 @@ import { Server, Socket } from 'socket.io';
 import { TEventEmitter } from '../types/socket-events';
 import { MAX_EVENT_LISTENER } from '../const/common';
 import { InjectWsErrorHandler } from '../utils/decorators/injectWsErrorHandler.decorator';
-import { InjectWsGlobalGuard } from 'src/utils/decorators/injectWsGlobalGuard.decorator';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { InjectWsGlobalGuard } from '../utils/decorators/injectWsGlobalGuard.decorator';
+import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 
 @InjectWsGlobalGuard()
 @InjectWsErrorHandler()

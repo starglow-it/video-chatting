@@ -9,7 +9,10 @@ import {
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { IMeetingInstance } from 'shared-types';
-import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class MeetingsService {

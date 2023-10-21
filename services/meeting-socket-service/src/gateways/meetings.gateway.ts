@@ -822,6 +822,7 @@ export class MeetingsGateway
     });
   }
 
+  @Roles([MeetingRole.Lurker])
   @SubscribeMessage(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
   async joinMeetingWithLurker(
     @MessageBody() msg: LurkerJoinMeetingDto,

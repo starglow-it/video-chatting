@@ -10,6 +10,6 @@ export class CreateMeetingAvatarRequest {
   @IsArray({
     message: 'Invalid Roles value',
   })
-  @Transform(({value}) => value.split(','))
+  @Transform(({ value }) => value.split(','))
   readonly roles: IMeetingAvatar['roles'];
 }

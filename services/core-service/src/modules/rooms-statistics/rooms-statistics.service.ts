@@ -7,7 +7,10 @@ import {
   RoomStatistic,
   RoomStatisticDocument,
 } from '../../schemas/room-statistic.schema';
-import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class RoomsStatisticsService {
@@ -57,9 +60,9 @@ export class RoomsStatisticsService {
       .exec();
   }
 
-async exists({ query }: { query: FilterQuery<RoomStatisticDocument> }) {
-  return this.roomStatistic.exists(query);
-}
+  async exists({ query }: { query: FilterQuery<RoomStatisticDocument> }) {
+    return this.roomStatistic.exists(query);
+  }
 
   async count(query: FilterQuery<RoomStatisticDocument>): Promise<number> {
     return this.roomStatistic.count(query).exec();

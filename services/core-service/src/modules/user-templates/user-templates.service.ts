@@ -178,9 +178,7 @@ export class UserTemplatesService {
     query,
     data,
     session,
-  }: UpdateModelMultipleQuery<
-    UserTemplateDocument
-  >): Promise<unknown> {
+  }: UpdateModelMultipleQuery<UserTemplateDocument>): Promise<unknown> {
     const options: QueryOptions = {
       session: session?.session,
     };

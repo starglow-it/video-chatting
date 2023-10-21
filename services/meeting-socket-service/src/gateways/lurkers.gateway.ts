@@ -4,7 +4,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { Connection, FilterQuery } from 'mongoose';
+import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
 
@@ -47,7 +47,7 @@ import {
 import { CoreService } from '../services/core/core.service';
 import { UserActionInMeeting } from '../types';
 import { BaseGateway } from './base.gateway';
-import { UsersComponent } from 'src/modules/users/users.component';
+import { UsersComponent } from '../modules/users/users.component';
 
 type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;

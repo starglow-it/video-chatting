@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { PreviewImage, PreviewImageDocument } from '../../schemas/preview-image.schema';
+import {
+  PreviewImage,
+  PreviewImageDocument,
+} from '../../schemas/preview-image.schema';
 import { Resouce, ResouceDocument } from '../../schemas/resouce.schema';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
@@ -9,7 +12,11 @@ import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 import { IResouce } from 'shared-types';
 import { PipelineStage } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
@@ -155,8 +162,6 @@ export class ResoucesService {
       new: true,
     });
   }
-
-
 
   async count(query: FilterQuery<ResouceDocument>): Promise<number> {
     return this.resouce.count(query).exec();

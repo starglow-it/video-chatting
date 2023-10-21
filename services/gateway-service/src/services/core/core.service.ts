@@ -185,7 +185,9 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async getEnabledTemplatePayment(payload: GetTemplatePaymentPayload): Promise<ITemplatePayment> {
+  async getEnabledTemplatePayment(
+    payload: GetTemplatePaymentPayload,
+  ): Promise<ITemplatePayment> {
     const pattern = {
       cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
     };

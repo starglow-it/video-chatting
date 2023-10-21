@@ -49,7 +49,7 @@ import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../types';
 import { wsError } from '../utils/ws/wsError';
 import { wsResult } from '../utils/ws/wsResult';
-import { Roles } from 'src/utils/decorators/role.decorator';
+import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
 @WebSocketGateway({
   transports: ['websocket'],

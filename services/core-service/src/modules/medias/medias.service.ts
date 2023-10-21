@@ -4,7 +4,11 @@ import { FilterQuery, Model, PipelineStage } from 'mongoose';
 
 import { IMedia, IMediaCategory } from 'shared-types';
 
-import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   MediaCategory,
@@ -138,7 +142,9 @@ export class MediaService {
     query,
     options,
     session,
-  }: GetModelMultipleQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument[]> {
+  }: GetModelMultipleQuery<MediaCategoryDocument>): Promise<
+    MediaCategoryDocument[]
+  > {
     return this.mediaCategory
       .find(
         query,

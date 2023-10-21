@@ -133,7 +133,6 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Custom link must be string' })
   customLink: string;
 
-
   @ApiProperty({
     required: false,
     type: [BusinessCategoryDTO],

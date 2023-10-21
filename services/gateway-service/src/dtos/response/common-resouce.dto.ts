@@ -42,5 +42,4 @@ export class CommonResouceResDto implements IResouce {
     type: [PreviewImageDTO],
   })
   previewUrls: IPreviewImage[];
-
 }

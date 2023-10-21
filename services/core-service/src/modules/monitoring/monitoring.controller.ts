@@ -49,7 +49,7 @@ export class MonitoringController {
             limit,
             skip: skip * limit,
           },
-          session
+          session,
         });
         const msPlain = plainToInstance(MonitoringDto, ms, {
           excludeExtraneousValues: true,

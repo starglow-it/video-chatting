@@ -20,7 +20,7 @@ import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';
-import { UpdateModelSingleQuery } from 'src/types/mongoose';
+import { UpdateModelSingleQuery } from '../../types/mongoose';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 
 @Injectable()

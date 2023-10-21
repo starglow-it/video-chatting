@@ -71,7 +71,7 @@ import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
 import {
   TemplatePaymentDto,
   templatePaymentSerialization,
-} from 'src/dtos/template-payment.dto';
+} from '../../dtos/template-payment.dto';
 
 @Controller('templates')
 export class UserTemplatesController {

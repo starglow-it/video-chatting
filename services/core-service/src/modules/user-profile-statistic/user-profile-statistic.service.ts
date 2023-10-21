@@ -7,7 +7,10 @@ import {
   UserProfileStatisticDocument,
 } from '../../schemas/user-profile-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelMultipleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class UserProfileStatisticService {

@@ -33,5 +33,4 @@ export class CommonMeetingAvatarResDto implements IMeetingAvatar {
     enum: MeetingAvatarStatus,
   })
   roles: IMeetingAvatar['roles'];
-
 }

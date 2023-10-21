@@ -30,7 +30,7 @@ import { meetingChatReactionSerialization } from '../dtos/response/meeting-chat-
 import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UnReactMeetingChatRequestDto } from '../dtos/requests/chats/unreact-meeting-chat.dto';
 import { WsBadRequestException } from '../exceptions/ws.exception';
-import { UsersComponent } from 'src/modules/users/users.component';
+import { UsersComponent } from '../modules/users/users.component';
 
 @WebSocketGateway({
   transports: ['websocket'],

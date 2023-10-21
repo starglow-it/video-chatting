@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserTemplatesService } from './user-templates.service';
-import { ITransactionSession } from 'src/helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from 'src/types/custom';
-import { throwRpcError } from 'src/utils/common/throwRpcError';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { CustomPopulateOptions } from '../../types/custom';
+import { throwRpcError } from '../../utils/common/throwRpcError';
 import {
   DEFAULT_PRICE,
   PaymentType,
@@ -13,7 +13,7 @@ import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { FilterQuery } from 'mongoose';
 import { MeetingRole } from 'shared-types';
-import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
+import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
 
 @Injectable()
 export class UserTemplatesComponent {

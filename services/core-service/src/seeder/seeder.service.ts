@@ -55,12 +55,12 @@ import { MediaService } from '../modules/medias/medias.service';
 import { MediaDocument } from '..//schemas/media.schema';
 import * as mime from 'mime';
 import { OldUserTemplate } from './old-schema';
-import { TemplatePaymentsService } from 'src/modules/template-payments/template-payments.service';
+import { TemplatePaymentsService } from '../modules/template-payments/template-payments.service';
 import {
   TemplatePayment,
   TemplatePaymentDocument,
-} from 'src/schemas/template-payment.schema';
-import { InsertModelSingleQuery } from 'src/types/custom';
+} from '../schemas/template-payment.schema';
+import { InsertModelSingleQuery } from '../types/custom';
 
 // utils
 
@@ -441,7 +441,7 @@ export class SeederService {
     );
 
     const url = await this.readFileAndUpload({
-      filePath: './src/public/global_template.mp4',
+      filePath: './../../public/global_template.mp4',
       key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`,
     });
 

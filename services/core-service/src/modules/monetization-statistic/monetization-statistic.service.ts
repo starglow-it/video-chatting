@@ -7,7 +7,11 @@ import {
   MonetizationStatisticDocument,
 } from '../../schemas/monetization-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelMultipleQuery, GetModelSingleQuery, UpdateModelSingleQuery } from '../../types/custom';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class MonetizationStatisticService {

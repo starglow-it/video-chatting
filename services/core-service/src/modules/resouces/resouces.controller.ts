@@ -111,14 +111,14 @@ export class ResoucesController {
             url,
             size,
             mimeType,
-            key
+            key,
           },
           populatePaths: [
             {
               path: 'previewUrls',
             },
           ],
-          session
+          session,
         });
 
         return plainToInstance(CommonResouceDto, resouce, {

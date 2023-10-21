@@ -27,7 +27,7 @@ export class CommonTemplatePaymentDto {
 
   @ApiProperty({
     type: String,
-    example: 'participant'
+    example: 'participant',
   })
   @Expose()
   meetingRole: Exclude<MeetingRole, 'host'>;

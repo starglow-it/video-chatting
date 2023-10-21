@@ -6,7 +6,7 @@ import { Socket } from 'socket.io';
 import { throwWsError } from '../utils/ws/wsError';
 import { MeetingNativeErrorEnum } from 'shared-const';
 import { PASS_AUTH_KEY } from '../utils/decorators/passAuth.decorator';
-import { ROLE } from 'src/utils/decorators/role.decorator';
+import { ROLE } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
 import { UsersComponent } from '../modules/users/users.component';
 
