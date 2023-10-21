@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MeetingChatsGateway } from './meeting-chats.gateway';
+import { MeetingChatsGateway } from '../../gateways/meeting-chats.gateway';
 import { MeetingChatsService } from './meeting-chats.service';
 import { UsersModule } from '../users/users.module';
-import { MeetingsModule } from '../meetings/meetings.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   MeetingChat,
@@ -16,7 +15,6 @@ import {
 
 @Module({
   imports: [
-    UsersModule,
     MongooseModule.forFeature([
       {
         name: MeetingChat.name,
@@ -29,7 +27,6 @@ import {
     ]),
   ],
   providers: [
-    MeetingChatsGateway,
     MeetingChatsService,
     MeetingChatReactionsService,
   ],

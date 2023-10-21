@@ -171,18 +171,17 @@ export class MeetingsController {
   })
   @ApiFile(CreateMeetingAvatarSwaggerProperty)
   async createMeetingAvatar(
-    @Body() {roles}: CreateMeetingAvatarRequest,
+    @Body() { roles }: CreateMeetingAvatarRequest,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IMeetingAvatar>> {
     try {
-      
       const resouce = await this.resouceService.handleCreateResouce({ file });
       if (!resouce) {
         throw new BadRequestException('Resouce not found');
       }
       const meetingAvatar = await this.meetingService.createMeetingAvatar({
         resouceId: resouce.id,
-        roles
+        roles,
       });
       return {
         success: true,

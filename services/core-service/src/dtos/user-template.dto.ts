@@ -98,21 +98,6 @@ export class UserTemplateDTO implements IUserTemplate {
   customLink: IUserTemplate['customLink'];
 
   @Expose()
-  isMonetizationEnabled: IUserTemplate['isMonetizationEnabled'];
-
-  @Expose()
-  templatePrice: IUserTemplate['templatePrice'];
-
-  @Expose()
-  templateCurrency: IUserTemplate['templateCurrency'];
-
-  @Expose()
-  paywallCurrency: IUserTemplate['paywallCurrency'];
-
-  @Expose()
-  paywallPrice: IUserTemplate['paywallPrice'];
-
-  @Expose()
   isAudioAvailable: IUserTemplate['isAudioAvailable'];
 
   @Expose()

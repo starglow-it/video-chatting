@@ -16,6 +16,7 @@ import styles from './MeetingConnectStripe.module.scss';
 
 // stores
 import {
+    $isConnectedStripe,
     $isPortraitLayout,
     $profileStore,
     connectStripeAccountFx,
@@ -24,6 +25,7 @@ import {
 
 export const MeetingConnectStripe = () => {
     const profile = useStore($profileStore);
+    const isConnectedStripe = useStore($isConnectedStripe);
     const isConnectStripeAccountPending = useStore(
         connectStripeAccountFx.pending,
     );
@@ -46,10 +48,10 @@ export const MeetingConnectStripe = () => {
 
     const fontSize = useMemo(() => {
         if (isPortraitLayout) return 12;
-        return undefined;
+        return 14;
     }, [isPortraitLayout]);
 
-    return profile.isStripeEnabled && profile.stripeAccountId ? (
+    return isConnectedStripe ? (
         <CustomButton
             className={styles.buttonWrapper}
             onClick={handleDeletePaymentSetUp}
@@ -63,11 +65,15 @@ export const MeetingConnectStripe = () => {
                 }
                 nameSpace="profile"
                 translation="monetization.disconnect"
+                fontSize={fontSize}
             />
         </CustomButton>
     ) : (
         <CustomGrid container gap={2} direction="column">
-            <CustomButton onClick={handleSetUpPayments}>
+            <CustomButton
+                onClick={handleSetUpPayments}
+                className={styles.button}
+            >
                 {!isConnectStripeAccountPending ? (
                     <>
                         &nbsp;

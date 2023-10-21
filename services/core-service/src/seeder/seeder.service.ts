@@ -11,8 +11,16 @@ import {
   FILES_SCOPE,
   MEDIA_CATEGORIES,
   USERS_SERVICE,
+  PaymentType,
+  DEFAULT_PRICE,
 } from 'shared-const';
-import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
+import {
+  Counters,
+  MediaCategoryType,
+  MeetingRole,
+  PlanKeys,
+  UserRoles,
+} from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -46,6 +54,13 @@ import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaDocument } from '..//schemas/media.schema';
 import * as mime from 'mime';
+import { OldUserTemplate } from './old-schema';
+import { TemplatePaymentsService } from '../modules/template-payments/template-payments.service';
+import {
+  TemplatePayment,
+  TemplatePaymentDocument,
+} from '../schemas/template-payment.schema';
+import { InsertModelSingleQuery } from '../types/custom';
 
 // utils
 
@@ -64,6 +79,7 @@ export class SeederService {
     private monetizationStatisticService: MonetizationStatisticService,
     private roomsStatisticService: RoomsStatisticsService,
     private transcodeService: TranscodeService,
+    private readonly templatePaymentsService: TemplatePaymentsService,
     @InjectConnection() private connection: Connection,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
@@ -130,32 +146,40 @@ export class SeederService {
   }
 
   async seedIndexsDataByUserTemplates() {
-    await this.userTemplatesService.updateUserTemplates({
-      query: {
-        indexUsers: [],
-      },
-      data: [
-        {
-          $set: {
-            indexUsers: {
-              $map: {
-                input: {
-                  $range: [0, '$maxParticipants'],
-                },
-                in: null,
-              },
-            },
-            usersSize: {
-              $map: {
-                input: {
-                  $range: [0, '$maxParticipants'],
-                },
-                in: 0,
-              },
-            },
+    return withTransaction(this.connection, async (session) => {
+      try {
+        await this.userTemplatesService.updateUserTemplates({
+          query: {
+            indexUsers: [],
           },
-        },
-      ],
+          data: [
+            {
+              $set: {
+                indexUsers: {
+                  $map: {
+                    input: {
+                      $range: [0, '$maxParticipants'],
+                    },
+                    in: null,
+                  },
+                },
+                usersSize: {
+                  $map: {
+                    input: {
+                      $range: [0, '$maxParticipants'],
+                    },
+                    in: 0,
+                  },
+                },
+              },
+            },
+          ],
+          session,
+        });
+      } catch (err) {
+        console.error(err);
+        return;
+      }
     });
   }
 
@@ -417,7 +441,7 @@ export class SeederService {
     );
 
     const url = await this.readFileAndUpload({
-      filePath: './src/public/global_template.mp4',
+      filePath: './../../public/global_template.mp4',
       key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`,
     });
 
@@ -487,107 +511,197 @@ export class SeederService {
   }
 
   async seedLinks() {
-    await this.commonTemplatesService.updateCommonTemplates({
-      query: { name: 'Spaceballs' },
-      data: {
-        links: [
-          {
-            item: 'https://pizzahut.com/',
-            position: {
-              top: 0.86,
-              left: 0.33,
-            },
+    return withTransaction(this.connection, async (session) => {
+      try {
+        await this.commonTemplatesService.updateCommonTemplates({
+          query: { name: 'Spaceballs' },
+          data: {
+            links: [
+              {
+                item: 'https://pizzahut.com/',
+                position: {
+                  top: 0.86,
+                  left: 0.33,
+                },
+              },
+            ],
           },
-        ],
-      },
-    });
+          session,
+        });
 
-    await this.userTemplatesService.updateUserTemplates({
-      query: { name: 'Spaceballs' },
-      data: {
-        links: [
-          {
-            item: 'https://pizzahut.com/',
-            position: {
-              top: 0.86,
-              left: 0.33,
-            },
+        await this.userTemplatesService.updateUserTemplates({
+          query: { name: 'Spaceballs' },
+          data: {
+            links: [
+              {
+                item: 'https://pizzahut.com/',
+                position: {
+                  top: 0.86,
+                  left: 0.33,
+                },
+              },
+            ],
           },
-        ],
-      },
+          session,
+        });
+      } catch (err) {
+        console.error(err);
+        return;
+      }
     });
   }
 
   async migrateToWebp(): Promise<void> {
-    const imagesCache = [];
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const imagesCache = [];
 
-    const commonTemplates =
-      await this.commonTemplatesService.findCommonTemplates({
-        query: {},
-        populatePaths: ['previewUrls'],
-      });
+        const commonTemplates =
+          await this.commonTemplatesService.findCommonTemplates({
+            query: {},
+            populatePaths: ['previewUrls'],
+          });
 
-    const userTemplates = await this.userTemplatesService.findUserTemplates({
-      query: {},
-      populatePaths: ['previewUrls'],
-    });
-
-    const promises = [...userTemplates, ...commonTemplates].map(
-      (template) => async () => {
-        const imagePromises = template?.previewUrls?.map(
-          (image) => async () => {
-            if (!imagesCache.includes(image?._id)) {
-              // key - mimeType - size - url
-              // url - https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/free-lake_harmony/70178d4c-a18d-4098-9e3a-fd3c419d0b29_1080p.png
-
-              const oldKey = this.awsService.getUploadKeyFromUrl(image.url);
-
-              this.awsService.deleteResource(oldKey);
-
-              const fileNameMatch = image.url.match(/.*\/(.*)\..*$/);
-
-              if (fileNameMatch) {
-                const existedFileName = fileNameMatch?.[1];
-
-                const newKey = `templates/${template._id}/images/${existedFileName}.webp`;
-
-                const newImageUrl = await this.transcodeService.transcodeImage({
-                  url: image.url,
-                  uploadKey: newKey,
-                });
-
-                const fileData = await this.transcodeService.getFileData({
-                  url: newImageUrl,
-                });
-
-                const updateData = {
-                  url: newImageUrl,
-                  size: fileData.size,
-                  mimeType: 'image/webp',
-                  key: newKey,
-                };
-
-                imagesCache.push(image._id);
-
-                return this.previewImage.updateOne(
-                  { _id: image._id },
-                  { $set: updateData },
-                );
-              }
-
-              return;
-            }
-
-            return;
+        const userTemplates = await this.userTemplatesService.findUserTemplates(
+          {
+            query: {},
+            populatePaths: ['previewUrls'],
+            session,
           },
         );
 
-        return executePromiseQueue(imagePromises);
-      },
-    );
+        const promises = [...userTemplates, ...commonTemplates].map(
+          (template) => async () => {
+            const imagePromises = template?.previewUrls?.map(
+              (image) => async () => {
+                if (!imagesCache.includes(image?._id)) {
+                  // key - mimeType - size - url
+                  // url - https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/free-lake_harmony/70178d4c-a18d-4098-9e3a-fd3c419d0b29_1080p.png
 
-    await executePromiseQueue(promises);
+                  const oldKey = this.awsService.getUploadKeyFromUrl(image.url);
 
-    return;
+                  this.awsService.deleteResource(oldKey);
+
+                  const fileNameMatch = image.url.match(/.*\/(.*)\..*$/);
+
+                  if (fileNameMatch) {
+                    const existedFileName = fileNameMatch?.[1];
+
+                    const newKey = `templates/${template._id}/images/${existedFileName}.webp`;
+
+                    const newImageUrl =
+                      await this.transcodeService.transcodeImage({
+                        url: image.url,
+                        uploadKey: newKey,
+                      });
+
+                    const fileData = await this.transcodeService.getFileData({
+                      url: newImageUrl,
+                    });
+
+                    const updateData = {
+                      url: newImageUrl,
+                      size: fileData.size,
+                      mimeType: 'image/webp',
+                      key: newKey,
+                    };
+
+                    imagesCache.push(image._id);
+
+                    return this.previewImage.updateOne(
+                      { _id: image._id },
+                      { $set: updateData },
+                    );
+                  }
+
+                  return;
+                }
+
+                return;
+              },
+            );
+
+            return executePromiseQueue(imagePromises);
+          },
+        );
+
+        await executePromiseQueue(promises);
+        return;
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+
+  async syncDataInUserTemplates() {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplates =
+          (await this.userTemplatesService.findUserTemplates({
+            query: {
+              isPublic: true,
+              draft: false,
+            },
+            session,
+          })) as unknown as OldUserTemplate[];
+        const templatePaymentsData = userTemplates.reduce<
+          Promise<InsertModelSingleQuery<TemplatePaymentDocument>['data'][]>
+        >(async (tps, ut) => {
+          const isExistTemplatePayment =
+            await this.templatePaymentsService.exists({
+              userTemplate: ut._id,
+            });
+
+          if (isExistTemplatePayment) return await tps;
+
+          const defaultPayment = {
+            user: ut.user,
+            // userTemplate: ut,
+            userTemplate: ut._id,
+            enabled: !!ut.templatePrice,
+            templateId: ut.templateId,
+          };
+          const defaultMeetingPayment = {
+            ...defaultPayment,
+            type: PaymentType.Meeting,
+          };
+          const defaultPaywallPayment = {
+            ...defaultMeetingPayment,
+            type: PaymentType.Paywall,
+          };
+          return [
+            ...(await tps),
+            {
+              ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.participant,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.lurker,
+              meetingRole: MeetingRole.Lurker,
+            },
+            {
+              ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.participant,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.lurker,
+              meetingRole: MeetingRole.Lurker,
+            },
+          ];
+        }, Promise.resolve([]));
+        await this.templatePaymentsService.createMany({
+          data: await templatePaymentsData,
+          session,
+        });
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    });
   }
 }

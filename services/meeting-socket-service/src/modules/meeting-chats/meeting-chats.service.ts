@@ -6,7 +6,7 @@ import {
   MeetingChatDocument,
 } from '../../schemas/meeting-chat.schema';
 import {
-  InsertModelQuery,
+  InsertModelSingleQuery,
   DeleteModelQuery,
   GetModelSingleQuery,
   GetModelMultipleQuery,
@@ -20,7 +20,7 @@ export class MeetingChatsService {
     private meetingChat: Model<MeetingChatDocument>,
   ) {}
 
-  async create({ data, session: { session } }: InsertModelQuery<MeetingChat>) {
+  async create({ data, session: { session } }: InsertModelSingleQuery<MeetingChat>) {
     const [meetingChat] = await this.meetingChat.create([data], { session });
     return meetingChat;
   }

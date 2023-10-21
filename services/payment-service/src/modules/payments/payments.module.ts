@@ -27,7 +27,7 @@ import { SocketModule } from '../../services/socket/socket.module';
         config: ConfigClientService,
       ): Promise<StripeOptions> => {
         const allConfig = await config.getAll();
-        
+
         return {
           apiKey: allConfig.stripeApiKey,
           apiVersion: '2022-08-01',

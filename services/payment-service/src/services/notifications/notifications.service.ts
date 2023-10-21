@@ -10,8 +10,8 @@ import { AxiosError } from 'axios';
 export class NotificationsService {
   constructor(
     @Inject(NOTIFICATIONS_PROVIDER) private client: ClientProxy,
-    private readonly coreService: CoreService
-  ) { }
+    private readonly coreService: CoreService,
+  ) {}
 
   async onApplicationBootstrap() {
     await this.client.connect();
@@ -20,14 +20,16 @@ export class NotificationsService {
   async sendEmail(payload) {
     const statuses = ['sent', 'queued'];
     const pattern = { cmd: NotificationsBrokerPatterns.SendEmail };
-    const messages = await this.client
+    const messages = (await this.client
       .send(pattern, payload)
-      .toPromise() as MessagesSendResponse[];
-    const m = messages.find ? messages.find(item => statuses.includes(item.status)) : undefined;
+      .toPromise()) as MessagesSendResponse[];
+    const m = messages.find
+      ? messages.find((item) => statuses.includes(item.status))
+      : undefined;
     if (m) {
       await this.coreService.createMonitoring({
         event: MonitoringEvent.SendEmail,
-        eventId: m._id
+        eventId: m._id,
       });
     }
     return messages;

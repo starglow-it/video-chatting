@@ -19,19 +19,19 @@ export class Resouce {
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
-    default: []
+    default: [],
   })
   previewUrls: PreviewImageDocument[];
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: ''
+    default: '',
   })
   mimeType: string;
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: ''
+    default: '',
   })
   key: string;
 }

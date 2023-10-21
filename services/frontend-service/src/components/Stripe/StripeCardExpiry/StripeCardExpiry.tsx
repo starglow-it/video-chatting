@@ -11,11 +11,13 @@ import styles from '../StripeCommon.module.scss';
 
 interface Props extends CardExpiryElementProps {
     colorForm?: string;
+    styleBase?: any;
 }
 
 const Component = ({
     className,
     colorForm = 'white',
+    styleBase,
     ...rest
 }: PropsWithClassName<Props>) => (
     <CardExpiryElement
@@ -35,6 +37,7 @@ const Component = ({
                     '::placeholder': {
                         color: ' rgba(white, 0.6)',
                     },
+                    ...styleBase,
                 },
             },
         }}

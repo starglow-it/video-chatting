@@ -8,12 +8,13 @@ export interface ITransactionSession {
   session: ClientSession;
 }
 
-export const withTransaction = async (
+export const withTransaction = async <T>(
   connection: Connection,
-  func: CallableFunction,
+  func: (session: ITransactionSession) => Promise<T>,
   { onRollback }: IWithTransactionOptions = {},
 ) => {
   const session = await connection.startSession();
+
   session.startTransaction();
   try {
     const res = await func({ session });

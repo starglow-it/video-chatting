@@ -1,9 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { MeetingAvatarsService } from './meeting-avatars.service';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { CoreBrokerPatterns, MEETING_AVATAR_SERVICE, MeetingBrokerPatterns } from 'shared-const';
 import {
-    CreateMeetingAvatarPayload,
+  CoreBrokerPatterns,
+  MEETING_AVATAR_SERVICE,
+  MeetingBrokerPatterns,
+} from 'shared-const';
+import {
+  CreateMeetingAvatarPayload,
   EntityList,
   GetMeetingAvatarPayload,
   GetMeetingAvatarsPayload,
@@ -76,18 +80,17 @@ export class MeetingAvatarsController {
   ): Promise<IMeetingAvatar> {
     return withTransaction(this.connection, async (session) => {
       try {
-        
         const meetingAvatar = await this.meetingAvatarService.findOne({
-            query,
-            session,
-            populatePaths: ['resouce']
+          query,
+          session,
+          populatePaths: ['resouce'],
         });
 
-        if(!meetingAvatar || !meetingAvatar?.resouce){
-            throw new RpcException({
-                message: 'Meeting Avatar not found',
-                ctx: MEETING_AVATAR_SERVICE
-            });
+        if (!meetingAvatar || !meetingAvatar?.resouce) {
+          throw new RpcException({
+            message: 'Meeting Avatar not found',
+            ctx: MEETING_AVATAR_SERVICE,
+          });
         }
 
         return plainToInstance(CommonMeetingAvatarDto, meetingAvatar, {
@@ -104,22 +107,27 @@ export class MeetingAvatarsController {
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.CreateMeetingAvatar })
-  async createUserTemplateMedia(@Payload() {resouceId, roles}: CreateMeetingAvatarPayload) {
+  async createUserTemplateMedia(
+    @Payload() { resouceId, roles }: CreateMeetingAvatarPayload,
+  ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const resouce = await this.resouceService.findOne({query: {_id: resouceId}});
-        if(!resouce){
-            throw new RpcException({
-                message: 'Resouce not found',
-                ctx: MEETING_AVATAR_SERVICE,
-            });
+        const resouce = await this.resouceService.findOne({
+          query: { _id: resouceId },
+          session,
+        });
+        if (!resouce) {
+          throw new RpcException({
+            message: 'Resouce not found',
+            ctx: MEETING_AVATAR_SERVICE,
+          });
         }
 
         const meetingAvatar = await this.meetingAvatarService.create({
           data: {
             resouce,
             status: MeetingAvatarStatus.Active,
-            roles
+            roles,
           },
           session,
         });

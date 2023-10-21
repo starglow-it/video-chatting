@@ -7,6 +7,7 @@ import {
   DeleteTemplateStripeProductPayload,
 } from 'shared-types';
 import { parseBoolean } from 'shared-utils';
+import { TCreatePaymentIntent } from 'src/common/types/createPaymentIntent';
 
 @Injectable()
 export class PaymentsService {
@@ -61,7 +62,7 @@ export class PaymentsService {
     stripeAccountId,
     platformFee,
     templateId,
-  }: CreatePaymentIntentPayload) {
+  }: TCreatePaymentIntent) {
     const amount = templatePrice * 100;
 
     return this.stripeClient.paymentIntents.create({
@@ -233,7 +234,7 @@ export class PaymentsService {
         type: productData.type,
       },
       ...(productData.description && {
-        description: productData.description
+        description: productData.description,
       }),
     });
 
@@ -242,14 +243,14 @@ export class PaymentsService {
       currency: 'usd',
       unit_amount: productData.priceInCents,
       ...(productData.type === 'subscription'
-          ? {
+        ? {
             recurring: {
               interval: ['demo', 'production'].includes(environment)
-                  ? 'month'
-                  : 'day',
+                ? 'month'
+                : 'day',
             },
           }
-          : {}),
+        : {}),
     });
 
     return product;
@@ -302,7 +303,6 @@ export class PaymentsService {
     const allProducts = await this.stripeClient.products.list({
       active: true,
     });
-
 
     return allProducts.data.filter(
       (product) => product.metadata.type === 'subscription',

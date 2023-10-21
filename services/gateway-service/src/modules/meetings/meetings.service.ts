@@ -36,6 +36,4 @@ export class MeetingsService {
     const pattern = { cmd: MeetingBrokerPatterns.CreateMeetingAvatar };
     return this.coreService.sendCustom(pattern, payload);
   }
-
-  
 }

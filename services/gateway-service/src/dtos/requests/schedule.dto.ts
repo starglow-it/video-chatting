@@ -1,4 +1,11 @@
-import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { MeetingRole, ITimestamp } from 'shared-types';
 import { IsTimestamp } from '../../utils/decorators/validators/isTimestamp';
 import { ApiProperty } from '@nestjs/swagger';
@@ -58,14 +65,14 @@ export class ScheduleRequestDto {
   endAt: ITimestamp;
 
   @ApiProperty({
-    type: String
+    type: String,
   })
   @IsNotEmpty()
   @IsString()
   timeZone: string;
 
   @ApiProperty({
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString()
@@ -73,7 +80,7 @@ export class ScheduleRequestDto {
 
   @ApiProperty({
     type: String,
-    example: 'participant'
+    example: 'participant',
   })
   @IsNotEmpty()
   @IsString()
@@ -84,7 +91,7 @@ export class ScheduleRequestDto {
   })
   @IsNotEmpty()
   @IsString({
-    each: true
+    each: true,
   })
   userEmails: string[];
 }

@@ -8,14 +8,9 @@ import { ValidationError } from 'class-validator';
 import { WsValidationException } from '../../exceptions/ws-validation.expcetion';
 import { WsExceptionsFilter } from '../../filters/ws-exceptions.filter';
 import { WsValidationExceptionFilter } from '../../filters/ws-validation-exception.filter';
+import { TMultiDecorators } from '../types/multipleDecorator';
 
-type MultiDecorators = <TFunction extends Function, Y>(
-  target: object | TFunction,
-  propertyKey?: string | symbol,
-  descriptor?: TypedPropertyDescriptor<Y>,
-) => void;
-
-export const InjectWsErrorHandler = (): MultiDecorators =>
+export const InjectWsErrorHandler = (): TMultiDecorators =>
   applyDecorators(
     UsePipes(
       new ValidationPipe({
