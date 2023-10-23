@@ -211,3 +211,12 @@
   line-height: 15px;
   margin: 4px;
 }
+
+.tooltipField {
+  display: flex;
+  max-width: 200px;
+  height: max-content;
+  white-space: initial;
+  border-radius: 8px;
+  padding: 12px;
+}

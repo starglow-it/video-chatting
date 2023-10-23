@@ -55,7 +55,7 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
                 MenuProps={{
                     classes: {
                         paper: styles.paper,
-                        root: styles.paperRoot
+                        root: styles.paperRoot,
                     },
                     PopoverClasses: {
                         root: styles.popover,

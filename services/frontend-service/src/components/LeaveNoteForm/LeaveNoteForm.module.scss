@@ -55,4 +55,26 @@
     background: rgba($primary-white, 0.25);
   }
 
+  &.disabled {
+    color: rgba($primary-white, 0.25);
+  }
+
+}
+
+.fieldNoLogin {
+  height: 35px;
+  border-radius: 8px;
+  border: 1px solid rgba($primary-white, 0.25);
+  padding-left: 10px;
+  font-size: 13px;
+
+  span {
+    color: rgba($primary-white, 0.25);
+  }
+
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: $primary-white;
+  }
 }
