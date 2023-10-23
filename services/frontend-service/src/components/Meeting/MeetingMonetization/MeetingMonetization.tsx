@@ -85,7 +85,7 @@ const tabs: ValuesSwitcherAlias[] = [
             </CustomGrid>
         ),
         tooltipClassName: styles.tooltipSwitch,
-        tooltipPlacement: 'top'
+        tooltipPlacement: 'top',
     },
     {
         id: 2,
@@ -122,7 +122,7 @@ const tabs: ValuesSwitcherAlias[] = [
             </CustomGrid>
         ),
         tooltipClassName: styles.tooltipSwitch,
-        tooltipPlacement: 'top'
+        tooltipPlacement: 'top',
     },
 ];
 

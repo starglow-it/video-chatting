@@ -27,7 +27,7 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
-import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
+import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
@@ -187,7 +187,7 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={handleToggleSchedulePanel}
                             className={clsx(styles.actionButton)}
-                            Icon={<ScheduleIcon width="22px" height="22px" />}
+                            Icon={<PersonPlusIcon width="18px" height="18px" />}
                         />
                     </CustomPaper>
                 </CustomTooltip>

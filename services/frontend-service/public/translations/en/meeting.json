@@ -127,12 +127,14 @@
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
     "monetization": "Monetization",
-    "inMeeting": "In Meeting Free/Donation",
+    "inMeeting": "In Meeting Fee/Donation",
+    "tooltipInMeeting": "Once saved, Participants can send you this fee by clicking the dollar icon [$] on the bottom right",
     "payWall": "Entry Fee",
+    "tooltipPaywall": "Once saved, Audience members will be prompted to pay this fee to join meeting",
     "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",
-      "input": "Type here",
+      "input": "Post a Sticky Note",
       "unpin": "Unpin"
     },
     "getPaid": "Get Paid",

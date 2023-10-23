@@ -33,7 +33,7 @@ const CustomTooltip = memo(
                         [styles.blackGlass]: variant === 'black-glass',
                         [styles.white]: variant === 'white',
                     }),
-                    tooltip: clsx(styles.tooltip, tooltipClassName),
+                    tooltip: clsx(tooltipClassName, styles.tooltip),
                     arrow: styles.arrow,
                 }}
                 title={title ?? t(translation ?? '', options)}

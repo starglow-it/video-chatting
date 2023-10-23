@@ -26,6 +26,8 @@ import { currencyValues } from 'src/const/profile/subscriptions';
 import { $isConnectedStripe } from 'src/store';
 import { useStore } from 'effector-react';
 import { PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './MeetingMonetization.module.scss';
 import { FormDataPayment } from './type';
 
@@ -96,7 +98,11 @@ export const MeetingMonezationForm = forwardRef(
 
         const renderTimeList = useMemo(() => {
             return currencyValues.map(time => (
-                <MenuItem key={time.id} value={time.value} className={styles.menuItem}>
+                <MenuItem
+                    key={time.id}
+                    value={time.value}
+                    className={styles.menuItem}
+                >
                     {time.label}
                 </MenuItem>
             ));
@@ -156,12 +162,118 @@ export const MeetingMonezationForm = forwardRef(
                             flexDirection="column"
                         >
                             <CustomGrid container flex={1} gap={1}>
-                                <CustomTypography
-                                    translation="features.inMeeting"
-                                    nameSpace="meeting"
-                                    fontSize={13}
-                                    flex={1}
+                                <CustomTooltip
+                                    title={
+                                        <Translation
+                                            nameSpace="meeting"
+                                            translation="features.tooltipPaywall"
+                                        />
+                                    }
+                                    tooltipClassName={styles.tooltipField}
+                                    placement="left"
+                                >
+                                    <CustomTypography
+                                        translation="features.payWall"
+                                        nameSpace="meeting"
+                                        fontSize={13}
+                                    />
+                                </CustomTooltip>
+                                <CustomBox flex={1} />
+                                <CustomBox>
+                                    <Controller
+                                        control={control}
+                                        name="enabledPaywall"
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref: refPaywall,
+                                            },
+                                        }) => (
+                                            <CustomSwitch
+                                                name={name}
+                                                onChange={onChange}
+                                                checked={value}
+                                                inputRef={refPaywall}
+                                                disabled={!isConnectedStripe}
+                                            />
+                                        )}
+                                    />
+                                </CustomBox>
+                            </CustomGrid>
+                            <CustomGrid>
+                                <CustomGrid
+                                    container
+                                    className={styles.amountInput}
+                                    wrap="nowrap"
+                                    justifyContent="space-between"
+                                >
+                                    <InputBase
+                                        type="number"
+                                        placeholder="Amount"
+                                        inputProps={{
+                                            'aria-label': 'amount',
+                                        }}
+                                        classes={{
+                                            root: styles.inputWrapper,
+                                            input: styles.input,
+                                        }}
+                                        {...registerPaywallData}
+                                        onFocus={onFocusInput}
+                                        disabled={
+                                            !enabledPaywall ||
+                                            !isConnectedStripe
+                                        }
+                                    />
+                                    <CustomGrid>
+                                        <CustomDropdown
+                                            selectId="currencyPaywallSelect"
+                                            labelId="currencyPaywall"
+                                            value={[paywallCurrency]}
+                                            className={styles.switcher}
+                                            renderValue={renderTimeValue}
+                                            list={renderTimeList}
+                                            onChange={(event: any) =>
+                                                handleValueChanged(
+                                                    event.target.value,
+                                                    'paywallCurrency',
+                                                )
+                                            }
+                                        />
+                                    </CustomGrid>
+                                </CustomGrid>
+                                <ErrorMessage
+                                    error={paywallPriceMessage}
+                                    className={styles.error}
                                 />
+                            </CustomGrid>
+                        </CustomGrid>
+                        <CustomGrid
+                            container
+                            wrap="nowrap"
+                            className={styles.monetization}
+                            gap={1}
+                            flexDirection="column"
+                        >
+                            <CustomGrid container flex={1} gap={1}>
+                                <CustomTooltip
+                                    tooltipClassName={styles.tooltipField}
+                                    placement="left"
+                                    title={
+                                        <Translation
+                                            nameSpace="meeting"
+                                            translation="features.tooltipInMeeting"
+                                        />
+                                    }
+                                >
+                                    <CustomTypography
+                                        translation="features.inMeeting"
+                                        nameSpace="meeting"
+                                        fontSize={13}
+                                    />
+                                </CustomTooltip>
+                                <CustomBox flex={1} />
                                 <CustomBox>
                                     <Controller
                                         control={control}
@@ -229,90 +341,6 @@ export const MeetingMonezationForm = forwardRef(
 
                                 <ErrorMessage
                                     error={templatePriceMessage}
-                                    className={styles.error}
-                                />
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid
-                            container
-                            wrap="nowrap"
-                            className={styles.monetization}
-                            gap={1}
-                            flexDirection="column"
-                        >
-                            <CustomGrid container flex={1} gap={1}>
-                                <CustomTypography
-                                    translation="features.payWall"
-                                    nameSpace="meeting"
-                                    fontSize={13}
-                                    flex={1}
-                                />
-                                <CustomBox>
-                                    <Controller
-                                        control={control}
-                                        name="enabledPaywall"
-                                        render={({
-                                            field: {
-                                                onChange,
-                                                value,
-                                                name,
-                                                ref: refPaywall,
-                                            },
-                                        }) => (
-                                            <CustomSwitch
-                                                name={name}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={refPaywall}
-                                                disabled={!isConnectedStripe}
-                                            />
-                                        )}
-                                    />
-                                </CustomBox>
-                            </CustomGrid>
-                            <CustomGrid>
-                                <CustomGrid
-                                    container
-                                    className={styles.amountInput}
-                                    wrap="nowrap"
-                                    justifyContent="space-between"
-                                >
-                                    <InputBase
-                                        type="number"
-                                        placeholder="Amount"
-                                        inputProps={{
-                                            'aria-label': 'amount',
-                                        }}
-                                        classes={{
-                                            root: styles.inputWrapper,
-                                            input: styles.input,
-                                        }}
-                                        {...registerPaywallData}
-                                        onFocus={onFocusInput}
-                                        disabled={
-                                            !enabledPaywall ||
-                                            !isConnectedStripe
-                                        }
-                                    />
-                                    <CustomGrid>
-                                        <CustomDropdown
-                                            selectId="currencyPaywallSelect"
-                                            labelId="currencyPaywall"
-                                            value={[paywallCurrency]}
-                                            className={styles.switcher}
-                                            renderValue={renderTimeValue}
-                                            list={renderTimeList}
-                                            onChange={(event: any) =>
-                                                handleValueChanged(
-                                                    event.target.value,
-                                                    'paywallCurrency',
-                                                )
-                                            }
-                                        />
-                                    </CustomGrid>
-                                </CustomGrid>
-                                <ErrorMessage
-                                    error={paywallPriceMessage}
                                     className={styles.error}
                                 />
                             </CustomGrid>
