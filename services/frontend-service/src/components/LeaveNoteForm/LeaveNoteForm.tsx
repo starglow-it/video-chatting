@@ -108,7 +108,7 @@ const Component = () => {
                 reset();
             } else {
                 addNotificationEvent({
-                    message: 'Notes is limitted 3 on screen',
+                    message: 'Notes is limited to 3 on screen',
                     type: NotificationType.validationError,
                 });
             }
