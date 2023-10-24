@@ -29,7 +29,7 @@ import { PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import styles from './MeetingMonetization.module.scss';
-import { FormDataPayment } from './type';
+import { FormDataPayment, TabsValues } from './type';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -42,6 +42,7 @@ type MonezationFormProps = {
     paymentMeeting: PaymentItem;
     paymentPaywall: PaymentItem;
     enableForm: boolean;
+    activeValue: TabsValues;
 };
 
 export const MeetingMonezationForm = forwardRef(
@@ -51,6 +52,7 @@ export const MeetingMonezationForm = forwardRef(
             paymentMeeting,
             paymentPaywall,
             enableForm,
+            activeValue,
         }: MonezationFormProps,
         ref,
     ) => {
@@ -95,6 +97,8 @@ export const MeetingMonezationForm = forwardRef(
             : '';
 
         const renderTimeValue = useCallback((selected: any) => selected, []);
+
+        const isTabParticipant = activeValue === TabsValues.Participants;
 
         const renderTimeList = useMemo(() => {
             return currencyValues.map(time => (
@@ -166,7 +170,11 @@ export const MeetingMonezationForm = forwardRef(
                                     title={
                                         <Translation
                                             nameSpace="meeting"
-                                            translation="features.tooltipPaywall"
+                                            translation={`features.${
+                                                isTabParticipant
+                                                    ? 'tooltipParticipantPaywall'
+                                                    : 'tooltipAudiencePaywall'
+                                            }`}
                                         />
                                     }
                                     tooltipClassName={styles.tooltipField}
@@ -263,7 +271,11 @@ export const MeetingMonezationForm = forwardRef(
                                     title={
                                         <Translation
                                             nameSpace="meeting"
-                                            translation="features.tooltipInMeeting"
+                                            translation={`features.${
+                                                isTabParticipant
+                                                    ? 'tooltipParticipantInMeeting'
+                                                    : 'tooltipAudienceInMeeting'
+                                            }`}
                                         />
                                     }
                                 >

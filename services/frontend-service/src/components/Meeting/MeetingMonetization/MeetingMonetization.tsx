@@ -35,12 +35,7 @@ import {
 import { $isConnectedStripe } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
 import { MeetingMonezationForm } from './MeetingMonezationForm';
-import { FormDataPayment } from './type';
-
-enum TabsValues {
-    Participants = 1,
-    Audience = 2,
-}
+import { FormDataPayment, TabsValues } from './type';
 
 enum TabsLabels {
     Participants = 'Participants',
@@ -241,6 +236,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     paymentMeeting={paymentMeetingParticipant}
                     paymentPaywall={paymentPaywallParticipant}
                     onFocusInput={handleFocusInput}
+                    activeValue={activeItem.value}
                     ref={formParticipantsRef}
                 />
                 <MeetingMonezationForm
@@ -248,6 +244,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     paymentMeeting={paymentMeetingLurker}
                     paymentPaywall={paymentPaywallLurker}
                     onFocusInput={handleFocusInput}
+                    activeValue={activeItem.value}
                     ref={formAudienceRef}
                 />
                 <CustomButton
