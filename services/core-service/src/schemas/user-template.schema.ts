@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { ICommonUser, RoomType } from 'shared-types';
+import { ICommonUser, RoomType, TemplateType } from 'shared-types';
 
 import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
@@ -223,7 +223,7 @@ export class UserTemplate {
     required: true,
     default: 'video',
   })
-  templateType: 'video' | 'image';
+  templateType: TemplateType;
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
