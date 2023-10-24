@@ -9,6 +9,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // types
 import { isMobile } from 'shared-utils';
 import CustomVideoPlayer from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
+import { CustomYoutubePlayer } from '@library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
@@ -16,11 +17,11 @@ import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
     $isScreenSharingStore,
+    $meetingYoutubeStore,
 } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingBackgroundVideo.module.scss';
-import { CustomYoutubePlayer } from '@library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 
 const Component = ({
     children,
@@ -31,6 +32,8 @@ const Component = ({
     const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const { url, volume } = useStore($meetingYoutubeStore);
+    console.log('#Duy Phan console', url);
 
     return (
         <ConditionalRender condition={Boolean(src)}>
@@ -48,11 +51,12 @@ const Component = ({
                         className={styles.player}
                     />
                 </ConditionalRender>
-                <ConditionalRender
-                    condition={templateType === 'link' && !isMobile()}
-                >
-                    <CustomYoutubePlayer url={src} className={styles.player} />
-                </ConditionalRender>
+
+                <CustomYoutubePlayer
+                    url={url}
+                    className={styles.player}
+                    volume={volume}
+                />
 
                 {children}
             </CustomGrid>

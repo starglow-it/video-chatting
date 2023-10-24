@@ -199,5 +199,7 @@
   },
   "chat": {
     "tooltip": "Chat"
-  }
+  },
+  "youtubeVideo": "Youtube Video",
+  "originalVideoSound": "Original video sound"
 }

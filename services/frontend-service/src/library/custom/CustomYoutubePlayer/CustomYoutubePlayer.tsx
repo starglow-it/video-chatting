@@ -8,7 +8,8 @@ import config from '../../../const/config';
 export const CustomYoutubePlayer = ({
     url,
     className,
-}: PropsWithClassName<{ url: string; className?: string }>) => {
+    volume,
+}: PropsWithClassName<{ url: string; className?: string; volume: number }>) => {
     const videoRef = useRef<any>(null);
     const playerRef = useRef<any>(null);
 
@@ -27,18 +28,23 @@ export const CustomYoutubePlayer = ({
         } catch (error) {
             // Handle invalid URLs
             console.error(error);
+            return null;
         }
 
         // Return null if no match is found
         return null;
     }
 
+    const yId = getYouTubeVideoId(url);
+
     useEffect(() => {
-        const youtubeId = getYouTubeVideoId(url);
-       
-        if (youtubeId) {
+        playerRef.current?.setVolume(volume);
+    }, [volume]);
+
+    useEffect(() => {
+        if (yId) {
             playerRef.current = YouTubePlayer(videoRef.current, {
-                videoId: youtubeId,
+                videoId: yId,
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
@@ -51,14 +57,22 @@ export const CustomYoutubePlayer = ({
             });
 
             playerRef.current.on('ready', () => {
-                console.log('#Duy Phan console', playerRef.current);
-                playerRef.current.playVideo();
+                playerRef.current?.playVideo();
+                playerRef.current?.setVolume(0);
             });
         }
         return () => {
             playerRef.current?.destroy();
+            playerRef.current = null;
         };
-    }, []);
+    }, [yId]);
 
-    return <div ref={videoRef} className={clsx(styles.player, className)} />;
+    return (
+        <div
+            ref={videoRef}
+            className={clsx(styles.player, className, {
+                [styles.none]: !url,
+            })}
+        />
+    );
 };
