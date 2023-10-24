@@ -13,6 +13,8 @@ export enum RoomType {
   Featured = 'featured',
 }
 
+export type TemplateType = 'video' | 'image' | 'link';
+
 interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
@@ -45,7 +47,7 @@ export interface ICommonTemplate extends ITemplate {
   draft: boolean;
   isPublic: boolean;
   isDeleted?: boolean;
-  templateType: 'image' | 'video';
+  templateType: TemplateType;
   isTemplatePurchased?: boolean;
   isAcceptNoLogin?: boolean;
 }
