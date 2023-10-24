@@ -46,11 +46,33 @@ const Component = <TemplateType extends { id: string }>({
                         container
                         justifyContent="center"
                         alignItems="center"
+                        flexDirection="column"
                         onClick={onCreate}
                         key="create-a-template"
+                        gap={1}
                     >
-                        <PlusIcon width="22px" height="22px" />
-                        <CustomTypography>Create room</CustomTypography>
+                        <CustomGrid
+                            display="flex"
+                            flexDirection="row"
+                            alignItems="center"
+                        >
+                            <PlusIcon width="22px" height="22px" />
+                            <CustomTypography
+                                nameSpace="templates"
+                                translation="createRoom"
+                            />
+                        </CustomGrid>
+                        <CustomTypography
+                            nameSpace="templates"
+                            translation="descCreateRoom"
+                            textAlign="center"
+                            fontSize={12}
+                        />
+                        <CustomTypography
+                            nameSpace="templates"
+                            translation="embedLinks"
+                            textAlign="center"
+                        />
                     </CustomGrid>
                 ),
             });

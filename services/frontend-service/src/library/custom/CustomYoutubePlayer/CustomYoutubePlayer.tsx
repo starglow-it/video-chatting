@@ -10,6 +10,7 @@ export const CustomYoutubePlayer = ({
     className,
 }: PropsWithClassName<{ url: string; className?: string }>) => {
     const videoRef = useRef<any>(null);
+    const playerRef = useRef<any>(null);
 
     function getYouTubeVideoId(videoUrl: string) {
         try {
@@ -34,28 +35,28 @@ export const CustomYoutubePlayer = ({
 
     useEffect(() => {
         const youtubeId = getYouTubeVideoId(url);
-        let player: any = null;
+       
         if (youtubeId) {
-            player = YouTubePlayer(videoRef.current, {
+            playerRef.current = YouTubePlayer(videoRef.current, {
                 videoId: youtubeId,
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
-                    loop: 1,
                     origin: config.frontendUrl,
+                    loop: 1,
                     rel: 0,
                     showinfo: 0,
                     modestbranding: 1,
                 },
             });
 
-            player.on('ready', () => {
-                console.log('#Duy Phan console', player);
-                player.playVideo();
+            playerRef.current.on('ready', () => {
+                console.log('#Duy Phan console', playerRef.current);
+                playerRef.current.playVideo();
             });
         }
         return () => {
-            player?.destroy();
+            playerRef.current?.destroy();
         };
     }, []);
 

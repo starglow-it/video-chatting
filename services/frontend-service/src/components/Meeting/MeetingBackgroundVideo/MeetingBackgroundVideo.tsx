@@ -20,6 +20,7 @@ import {
 
 // styles
 import styles from './MeetingBackgroundVideo.module.scss';
+import { CustomYoutubePlayer } from '@library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 
 const Component = ({
     children,
@@ -47,6 +48,12 @@ const Component = ({
                         className={styles.player}
                     />
                 </ConditionalRender>
+                <ConditionalRender
+                    condition={templateType === 'link' && !isMobile()}
+                >
+                    <CustomYoutubePlayer url={src} className={styles.player} />
+                </ConditionalRender>
+
                 {children}
             </CustomGrid>
         </ConditionalRender>
