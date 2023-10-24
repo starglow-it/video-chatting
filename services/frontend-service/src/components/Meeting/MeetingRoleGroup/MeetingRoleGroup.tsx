@@ -74,7 +74,7 @@ export const MeetingRoleGroup = forwardRef(
                 />
                 <FormControlLabel
                     onClick={() => changeValue(MeetingRole.Lurker)}
-                    label="Lurkers"
+                    label="Audience"
                     classes={{
                         root: clsx(styles.label, {
                             [styles.active]: value === MeetingRole.Lurker,

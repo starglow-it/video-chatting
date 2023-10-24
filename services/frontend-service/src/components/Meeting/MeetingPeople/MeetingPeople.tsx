@@ -102,7 +102,7 @@ export const MeetingPeople = () => {
               !participants.length
                   ? 'Participants'
                   : `Participants(${participants.length})`,
-              !lurkers.length ? 'Lurkers' : `Lurkers(${lurkers.length})`,
+              !lurkers.length ? 'Audience' : `Audience(${lurkers.length})`,
               'Chat',
           ]
         : ['Chat'];
