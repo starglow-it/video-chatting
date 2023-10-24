@@ -15,3 +15,8 @@ export type ChargeButtonProps = {
     onClose?(): void;
     onToggle?: (isToggle: boolean) => void;
 };
+
+export enum TabsValues {
+    Participants = 1,
+    Audience = 2,
+}
