@@ -43,6 +43,9 @@ export const CustomYoutubePlayer = ({
                     controls: 0,
                     loop: 1,
                     origin: config.frontendUrl,
+                    rel: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
                 },
             });
 
