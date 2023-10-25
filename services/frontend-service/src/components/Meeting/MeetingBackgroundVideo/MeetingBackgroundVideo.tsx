@@ -28,19 +28,22 @@ const Component = ({
     src,
     templateType,
     videoClassName = '',
+    mediaLink,
 }: MeetingBackgroundVideoProps) => {
     const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    const { volume } = useStore($meetingStore);
+    const { volume, isMute } = useStore($meetingStore);
 
     return (
-        <ConditionalRender condition={Boolean(src) || templateType === 'link'}>
+        <ConditionalRender condition={!!src || !mediaLink}>
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
                 <ConditionalRender
-                    condition={templateType === 'video' && !isMobile()}
+                    condition={
+                        templateType === 'video' && !mediaLink && !isMobile()
+                    }
                 >
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
@@ -52,9 +55,10 @@ const Component = ({
                 </ConditionalRender>
 
                 <CustomYoutubePlayer
-                    url={src}
+                    url={mediaLink?.src ?? ''}
                     className={styles.player}
                     volume={volume}
+                    isMute={isMute}
                 />
 
                 {children}

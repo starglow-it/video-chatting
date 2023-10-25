@@ -59,7 +59,6 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
         clearErrors,
         formState: { errors },
     } = useFormContext<IUploadTemplateFormData>();
-    console.log('#Duy Phan console errors', errors);
 
     const background = useWatch<IUploadTemplateFormData>({
         control,
@@ -74,7 +73,6 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
         control,
         name: 'youtubeUrl',
     });
-    console.log('#Duy Phan console yutu', youtubeUrl);
 
     const isUploadTemplateFilePending = useStore(
         $isUploadTemplateBackgroundInProgress,
@@ -181,7 +179,6 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
 
     const handleChangeYoutubeUrl = (e: any) => {
         const newValue = e.target.value;
-        console.log('#Duy Phan console new', newValue);
         if (!hasYoutubeUrlRegex.test(newValue)) {
             setError('youtubeUrl', {
                 type: 'valid',
@@ -227,94 +224,97 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 </CustomGrid>
             </ConditionalRender>
 
-            <ConditionalRender condition={!isDragActive && !url && !background}>
+            <ConditionalRender condition={!isDragActive}>
                 <CustomGrid
                     container
                     direction="row"
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <CustomGrid
-                        flex={1}
-                        display="flex"
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        className={styles.uploadDescription}
-                    >
-                        <CustomTypography
-                            variant="h2bold"
-                            nameSpace="createRoom"
-                            translation="uploadBackground.title"
-                            className={styles.title}
-                        />
-                        <CustomTypography
-                            color="colors.grayscale.semidark"
-                            nameSpace="createRoom"
-                            translation="uploadBackground.description"
-                            className={styles.description}
-                        />
-                        <CustomTooltip
-                            arrow
-                            open
-                            placement="bottom"
-                            variant="black-glass"
-                            title={
-                                <CustomGrid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                    gap={1}
-                                >
-                                    <CustomTypography
-                                        variant="body2bold"
-                                        nameSpace="createRoom"
-                                        translation="uploadBackground.tip.title"
-                                    />
+                    <ConditionalRender condition={!url && !background}>
+                        <CustomGrid
+                            flex={1}
+                            display="flex"
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            className={styles.uploadDescription}
+                        >
+                            <CustomTypography
+                                variant="h2bold"
+                                nameSpace="createRoom"
+                                translation="uploadBackground.title"
+                                className={styles.title}
+                            />
+                            <CustomTypography
+                                color="colors.grayscale.semidark"
+                                nameSpace="createRoom"
+                                translation="uploadBackground.description"
+                                className={styles.description}
+                            />
+                            <CustomTooltip
+                                arrow
+                                open
+                                placement="bottom"
+                                variant="black-glass"
+                                title={
                                     <CustomGrid
-                                        item
                                         container
                                         direction="column"
                                         alignItems="center"
+                                        gap={1}
                                     >
                                         <CustomTypography
-                                            variant="body2"
+                                            variant="body2bold"
                                             nameSpace="createRoom"
-                                            translation="uploadBackground.tip.resolution"
+                                            translation="uploadBackground.tip.title"
                                         />
-                                        <CustomTypography
-                                            variant="body2"
-                                            nameSpace="createRoom"
-                                            translation="uploadBackground.tip.imageRestricts"
-                                            options={{
-                                                maxSize: MAX_SIZE_IMAGE_MB,
-                                            }}
-                                        />
-                                        <CustomTypography
-                                            variant="body2"
-                                            nameSpace="createRoom"
-                                            translation="uploadBackground.tip.videoRestricts"
-                                            options={{
-                                                maxSize: MAX_SIZE_VIDEO_MB,
-                                            }}
-                                        />
+                                        <CustomGrid
+                                            item
+                                            container
+                                            direction="column"
+                                            alignItems="center"
+                                        >
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.resolution"
+                                            />
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.imageRestricts"
+                                                options={{
+                                                    maxSize: MAX_SIZE_IMAGE_MB,
+                                                }}
+                                            />
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.videoRestricts"
+                                                options={{
+                                                    maxSize: MAX_SIZE_VIDEO_MB,
+                                                }}
+                                            />
+                                        </CustomGrid>
                                     </CustomGrid>
-                                </CustomGrid>
-                            }
-                            popperClassName={styles.popper}
-                        >
-                            <CustomButton
-                                label={
-                                    <Translation
-                                        nameSpace="createRoom"
-                                        translation="uploadBackground.actions.upload"
-                                    />
                                 }
-                                className={styles.button}
-                                onClick={onClick}
-                            />
-                        </CustomTooltip>
-                    </CustomGrid>
+                                popperClassName={styles.popper}
+                            >
+                                <CustomButton
+                                    label={
+                                        <Translation
+                                            nameSpace="createRoom"
+                                            translation="uploadBackground.actions.upload"
+                                        />
+                                    }
+                                    className={styles.button}
+                                    onClick={onClick}
+                                />
+                            </CustomTooltip>
+                        </CustomGrid>
+                    </ConditionalRender>
+
                     <CustomGrid
                         flex={1}
                         display="flex"

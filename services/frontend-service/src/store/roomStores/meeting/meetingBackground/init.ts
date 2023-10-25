@@ -24,6 +24,7 @@ import {
 } from './model';
 import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
 import { ResultDeleteMedia } from './types';
+import { updateMeetingSocketEvent } from '../sockets/model';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);
@@ -108,6 +109,14 @@ sample({
 forward({
     from: updateBackgroundMeetingFx.doneData,
     to: sendUpdateMeetingTemplateSocketEvent,
+});
+
+sample({
+    clock: setMediaEvent,
+    source: $meetingTemplateStore,
+    filter: (source: any) => !!source?.mediaLink,
+    fn: source => ({ templateId: source.id, data: { mediaLink: null } }),
+    target: updateBackgroundMeetingFx,
 });
 
 sample({

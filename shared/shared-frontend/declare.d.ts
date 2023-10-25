@@ -1,3 +1,4 @@
+declare global {
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
         'custom-cancel': true;
@@ -10,3 +11,6 @@ declare module '@mui/material/Button' {
         'custom-gray': true;
     }
 }
+}
+
+declare module '*.scss';

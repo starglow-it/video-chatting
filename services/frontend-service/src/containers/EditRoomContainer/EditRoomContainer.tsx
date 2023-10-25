@@ -18,6 +18,7 @@ import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { IUserTemplate } from 'shared-types';
 import { adjustUserPositions } from 'shared-utils';
+import { mapToThumbYoutubeUrl } from 'src/utils/functions/mapToThumbYoutubeUrl';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
@@ -123,6 +124,13 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
+                mediaLink: data.youtubeUrl
+                    ? {
+                          src: data.youtubeUrl,
+                          thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                          platform: 'youtube',
+                      }
+                    : null,
             } as any;
 
             await editUserTemplateFx({

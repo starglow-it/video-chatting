@@ -11,8 +11,6 @@ import clsx from 'clsx';
 import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
 import {
     $meetingStore,
-    $meetingYoutubeStore,
-    toggleMuteYoutubeEvent,
     updateMeetingEvent,
     updateMeetingSocketEvent,
     updateMeetingTemplateFxWithData,
@@ -21,11 +19,11 @@ import { useStore } from 'effector-react';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
 import debounce from '@mui/utils/debounce';
+import { mapToThumbYoutubeUrl } from 'src/utils/functions/mapToThumbYoutubeUrl';
 import styles from './MeetingYoutubeControl.module.scss';
 
 export const MeetingYoutubeControl = () => {
-    const { muted } = useStore($meetingYoutubeStore);
-    const { volume } = useStore($meetingStore);
+    const { volume, isMute } = useStore($meetingStore);
     const [error, setError] = useState('');
 
     const handleSyncVolume = useCallback(
@@ -49,8 +47,13 @@ export const MeetingYoutubeControl = () => {
     const handleSyncUrl = useCallback(
         debounce(newUrl => {
             updateMeetingTemplateFxWithData({
-                url: newUrl,
-                templateType: 'link',
+                mediaLink: (newUrl
+                    ? {
+                          src: newUrl,
+                          thumb: mapToThumbYoutubeUrl(newUrl),
+                          platform: 'youtube',
+                      }
+                    : null) as any,
             });
         }, 300),
         [],
@@ -123,12 +126,14 @@ export const MeetingYoutubeControl = () => {
                     size="small"
                     Icon={
                         <SpeakerIcon
-                            isActive={!muted && volume > 0}
+                            isActive={!isMute && volume > 0}
                             isHalfVolume={volume < 50}
                             width="18px"
                             height="18px"
                             className={styles.icon}
-                            onClick={() => toggleMuteYoutubeEvent()}
+                            onClick={() =>
+                                updateMeetingSocketEvent({ isMute: !isMute })
+                            }
                         />
                     }
                     classes={{ thumb: styles.thumb, root: styles.thumbRoot }}

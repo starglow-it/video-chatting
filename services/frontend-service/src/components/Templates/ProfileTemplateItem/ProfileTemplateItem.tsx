@@ -111,6 +111,15 @@ const ProfileTemplateItem = memo(
         );
 
         const renderPreview = () => {
+            if (template?.mediaLink) {
+                return (
+                    <CustomImage
+                        src={template?.mediaLink?.thumb || ''}
+                        width="334px"
+                        height="190px"
+                    />
+                );
+            }
             switch (template?.templateType) {
                 case 'image':
                     return (

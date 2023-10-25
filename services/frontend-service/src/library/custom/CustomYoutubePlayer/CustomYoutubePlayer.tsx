@@ -8,7 +8,13 @@ export const CustomYoutubePlayer = ({
     url,
     className,
     volume,
-}: PropsWithClassName<{ url: string; className?: string; volume: number }>) => {
+    isMute = false,
+}: PropsWithClassName<{
+    url: string;
+    className?: string;
+    volume: number;
+    isMute?: boolean;
+}>) => {
     const videoRef = useRef<any>(null);
     const playerRef = useRef<any>(null);
 
@@ -33,8 +39,16 @@ export const CustomYoutubePlayer = ({
 
     const yId = getYouTubeVideoId(url);
 
+    const setVolume = (volumeData: number) => {
+        playerRef.current?.setVolume(volumeData);
+    };
+
     useEffect(() => {
-        playerRef.current?.setVolume(volume);
+        isMute ? setVolume(0) : setVolume(volume);
+    }, [isMute]);
+
+    useEffect(() => {
+        playerRef.current && setVolume(volume);
     }, [volume]);
 
     useEffect(() => {
@@ -54,7 +68,7 @@ export const CustomYoutubePlayer = ({
 
             playerRef.current.on('ready', () => {
                 playerRef.current?.playVideo();
-                playerRef.current?.setVolume(0);
+                playerRef.current?.setVolume(volume);
             });
         }
         return () => {

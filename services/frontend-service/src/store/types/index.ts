@@ -49,6 +49,7 @@ export type Meeting = {
     ownerProfileId: MeetingUser['profileId'];
     users: MeetingUser[];
     volume: number;
+    isMute: boolean;
 };
 
 export type MeetingChat = {

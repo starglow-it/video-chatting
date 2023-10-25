@@ -284,7 +284,7 @@ const Component = ({
                     top: link.position.top,
                     left: link.position.left,
                 })) || [],
-            youtubeUrl: '',
+            youtubeUrl: template.mediaLink ? template.mediaLink.src : '',
         });
         onSetTemplateData();
     }, [template, isTemplateDataWasSet]);
