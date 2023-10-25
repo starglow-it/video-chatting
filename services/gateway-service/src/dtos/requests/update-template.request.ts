@@ -8,9 +8,10 @@ import {
   ValidateNested,
   IsBoolean,
   IsNumber,
+  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate, IBusinessCategory } from 'shared-types';
+import { IUpdateTemplate, IBusinessCategory, IMediaLink } from 'shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
@@ -74,6 +75,38 @@ class BusinessCategoryDTO {
   value: string;
 }
 
+class MediaLinkReqDto implements IMediaLink {
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'src must be a string'
+  })
+  src: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'thumb must be a string'
+  })
+  thumb: string;
+
+  @ApiProperty({
+    type: String,
+    default: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'platform must be a string'
+  })
+  platform: string;
+}
+
 export class UpdateTemplateRequest implements IUpdateTemplate {
   @ApiProperty({
     required: false,
@@ -108,6 +141,21 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsOptional()
   @IsString({ message: 'Position must be string' })
   position: string;
+
+
+  @ApiProperty({
+    type: MediaLinkReqDto,
+    required: false,
+    example: {
+      src: 'https://123.youtube.com',
+      thumb: 'https://blabla.com',
+      platform: 'youtube'
+    }
+  })
+  @IsOptional()
+  @Type(() => MediaLinkReqDto)
+  mediaLink: IMediaLink;
+
 
   @ApiProperty({
     required: false,

@@ -5,6 +5,7 @@ import { BusinessCategoryDocument } from './business-category.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { UserDocument } from './user.schema';
 import { RoomType, TemplateType } from 'shared-types';
+import { MediaLink } from '../types/template';
 
 @Schema()
 export class CommonTemplate {
@@ -40,6 +41,12 @@ export class CommonTemplate {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'BusinessCategory' }],
   })
   businessCategories: BusinessCategoryDocument[];
+
+  @Prop({
+    type: MediaLink,
+    default: null,
+  })
+  mediaLink: MediaLink;
 
   @Prop({
     type: mongoose.Schema.Types.String,

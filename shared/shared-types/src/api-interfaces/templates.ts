@@ -20,6 +20,7 @@ interface ITemplate {
   authorRole?: string;
   authorName?: string;
   roomType: RoomType;
+  mediaLink: IMediaLink;
   subdomain: string;
 }
 
@@ -108,6 +109,7 @@ export interface IUpdateTemplate {
   languages?: string[];
   isPublic?: boolean;
   meetingInstance?: IMeetingInstance;
+  mediaLink?: IMediaLink;
   links?: { item: string; position: { top: number; left: number } }[];
   socials: {
     youtube?: string;
@@ -134,4 +136,10 @@ export interface ITemplatePayment {
   type: string;
   meetingRole: Exclude<MeetingRole, 'host'>;
   enabled: boolean;
+}
+
+export interface IMediaLink {
+  src: string;
+  thumb: string;
+  platform: string;
 }

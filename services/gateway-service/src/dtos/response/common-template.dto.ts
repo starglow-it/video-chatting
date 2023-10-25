@@ -1,10 +1,32 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   ICommonTemplate,
   IBusinessCategory,
   IPreviewImage,
+  IMediaLink,
 } from 'shared-types';
+
+class MediaLinkResDto implements IMediaLink {
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @Expose()
+  src: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  thumb: string;
+
+  @ApiProperty({
+    type: String,
+    default: true,
+  })
+  platform: string;
+}
 
 export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
@@ -26,6 +48,13 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   businessCategories: IBusinessCategory[];
+
+  @Expose()
+  @ApiProperty({
+    type: MediaLinkResDto,
+    required: false,
+  })
+  mediaLink: IMediaLink;
 
   @Expose()
   @ApiProperty()

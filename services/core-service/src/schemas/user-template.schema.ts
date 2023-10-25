@@ -9,6 +9,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
+import { MediaLink } from '../types/template';
 
 @Schema()
 export class UserTemplate {
@@ -61,6 +62,12 @@ export class UserTemplate {
     ],
   })
   businessCategories: BusinessCategoryDocument[];
+
+  @Prop({
+    type: MediaLink,
+    default: null,
+  })
+  mediaLink: MediaLink;
 
   @Prop({
     type: mongoose.Schema.Types.String,
