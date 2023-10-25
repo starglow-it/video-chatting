@@ -9,6 +9,7 @@ export interface ICommonMeetingDTO {
   ownerProfileId: string;
   endsAt: number;
   startAt: number;
+  volume: number;
   owner: ICommonMeetingUserDTO['id'];
   users: ICommonMeetingUserDTO[];
 }
