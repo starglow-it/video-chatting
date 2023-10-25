@@ -317,6 +317,7 @@ export class CommonTemplatesController {
               : targetTemplate.isAcceptNoLogin,
           roomType: targetTemplate.roomType,
           subdomain: targetTemplate.subdomain,
+          mediaLink: targetTemplate.mediaLink,
         };
 
         const userTemplate =
