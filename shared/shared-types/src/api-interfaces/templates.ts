@@ -13,13 +13,14 @@ export enum RoomType {
   Featured = 'featured',
 }
 
-export type TemplateType = 'video' | 'image' | 'link';
+export type TemplateType = 'video' | 'image';
 
 interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
   authorName?: string;
   roomType: RoomType;
+  templateType: TemplateType;
   mediaLink: IMediaLink;
   subdomain: string;
 }
@@ -48,7 +49,6 @@ export interface ICommonTemplate extends ITemplate {
   draft: boolean;
   isPublic: boolean;
   isDeleted?: boolean;
-  templateType: TemplateType;
   isTemplatePurchased?: boolean;
   isAcceptNoLogin?: boolean;
 }
@@ -86,7 +86,6 @@ export interface IUserTemplate extends ITemplate {
   isPublic: boolean;
   author?: string;
   isAcceptNoLogin?: boolean;
-  templateType: TemplateType;
 }
 
 export interface IUpdateTemplate {
