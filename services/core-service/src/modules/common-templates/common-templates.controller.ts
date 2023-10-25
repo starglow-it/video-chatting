@@ -369,13 +369,19 @@ export class CommonTemplatesController {
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
+        const url = userTemplate.mediaLink
+          ? userTemplate.mediaLink.src
+          : userTemplate.url;
 
         await this.mediaService.createMedia({
           data: {
             userTemplate,
-            url: userTemplate.url,
+            url,
             previewUrls: userTemplate.previewUrls,
             mediaCategory,
+            ...(userTemplate.mediaLink && {
+              thumb: userTemplate.mediaLink.thumb,
+            }),
             type: userTemplate.templateType,
           },
           session,
