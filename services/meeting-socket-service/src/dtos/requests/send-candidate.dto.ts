@@ -10,7 +10,6 @@ export class SendIceCandidateRequestDto {
   connectionId: string;
 
   @IsNotEmpty()
-  @IsString()
   candidate: unknown;
 
   @IsNotEmpty()
