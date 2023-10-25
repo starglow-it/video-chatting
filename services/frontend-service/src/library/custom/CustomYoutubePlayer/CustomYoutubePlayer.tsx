@@ -3,7 +3,6 @@ import YouTubePlayer from 'youtube-player';
 import clsx from 'clsx';
 import { PropsWithClassName } from 'shared-frontend/types';
 import styles from './CustomYoutubePlayer.module.scss';
-import config from '../../../const/config';
 
 export const CustomYoutubePlayer = ({
     url,
@@ -15,6 +14,7 @@ export const CustomYoutubePlayer = ({
 
     function getYouTubeVideoId(videoUrl: string) {
         try {
+            if (!videoUrl) return null;
             const parsedUrl = new URL(videoUrl);
             if (
                 parsedUrl.hostname === 'www.youtube.com' ||
@@ -26,12 +26,8 @@ export const CustomYoutubePlayer = ({
                 return parsedUrl.pathname.substr(1);
             }
         } catch (error) {
-            // Handle invalid URLs
             console.error(error);
-            return null;
         }
-
-        // Return null if no match is found
         return null;
     }
 
@@ -48,7 +44,7 @@ export const CustomYoutubePlayer = ({
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
-                    origin: config.frontendUrl,
+                    origin: '*',
                     loop: 1,
                     rel: 0,
                     showinfo: 0,

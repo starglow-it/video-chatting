@@ -17,7 +17,7 @@ import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
     $isScreenSharingStore,
-    $meetingYoutubeStore,
+    $meetingStore,
 } from '../../../store/roomStores';
 
 // styles
@@ -32,11 +32,10 @@ const Component = ({
     const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    const { url, volume } = useStore($meetingYoutubeStore);
-    console.log('#Duy Phan console', url);
+    const { volume } = useStore($meetingStore);
 
     return (
-        <ConditionalRender condition={Boolean(src)}>
+        <ConditionalRender condition={Boolean(src) || templateType === 'link'}>
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
@@ -53,7 +52,7 @@ const Component = ({
                 </ConditionalRender>
 
                 <CustomYoutubePlayer
-                    url={url}
+                    url={src}
                     className={styles.player}
                     volume={volume}
                 />

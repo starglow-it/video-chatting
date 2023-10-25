@@ -29,6 +29,10 @@
       "change": "Change"
     }
   },
+  "youtubeBackground": {
+    "title": "Use a Youtube url",
+    "description": "Copy & Paste a Youtube url here"
+  },
   "editDescription": {
     "form": {
       "roomName": "Room Name",

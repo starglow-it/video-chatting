@@ -86,7 +86,7 @@ export interface IUserTemplate extends ITemplate {
   isPublic: boolean;
   author?: string;
   isAcceptNoLogin?: boolean;
-  templateType: 'video' | 'image';
+  templateType: TemplateType;
 }
 
 export interface IUpdateTemplate {

@@ -48,6 +48,7 @@ export type Meeting = {
     owner: MeetingUser['id'];
     ownerProfileId: MeetingUser['profileId'];
     users: MeetingUser[];
+    volume: number;
 };
 
 export type MeetingChat = {

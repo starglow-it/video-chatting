@@ -10,39 +10,60 @@ import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 import clsx from 'clsx';
 import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
 import {
+    $meetingStore,
     $meetingYoutubeStore,
     toggleMuteYoutubeEvent,
-    updateUrlYoutubeEvent,
-    updateVolumeYoutubeEvent,
+    updateMeetingEvent,
+    updateMeetingSocketEvent,
+    updateMeetingTemplateFxWithData,
 } from 'src/store/roomStores';
 import { useStore } from 'effector-react';
-import styles from './MeetingYoutubeControl.module.scss';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
+import debounce from '@mui/utils/debounce';
+import styles from './MeetingYoutubeControl.module.scss';
 
 export const MeetingYoutubeControl = () => {
-    const { volume, muted } = useStore($meetingYoutubeStore);
-
+    const { muted } = useStore($meetingYoutubeStore);
+    const { volume } = useStore($meetingStore);
     const [error, setError] = useState('');
+
+    const handleSyncVolume = useCallback(
+        debounce(newVolume => {
+            updateMeetingSocketEvent({ volume: newVolume });
+        }, 300),
+        [],
+    );
 
     const handleChangeVolume = useCallback(
         (e: Event, value: number | number[]) => {
             const newVolume = typeof value === 'number' ? value : 0;
-
-            updateVolumeYoutubeEvent(newVolume);
+            updateMeetingEvent({
+                meeting: { volume: newVolume },
+            } as any);
+            handleSyncVolume(newVolume);
         },
+        [],
+    );
+
+    const handleSyncUrl = useCallback(
+        debounce(newUrl => {
+            updateMeetingTemplateFxWithData({
+                url: newUrl,
+                templateType: 'link',
+            });
+        }, 300),
         [],
     );
 
     const handleChangeUrl = useCallback((e: any) => {
         const newValue = e.target.value;
-
         if (!hasYoutubeUrlRegex.test(newValue)) {
             setError('This link is invalid, please try again');
         } else {
             error && setError('');
         }
-        updateUrlYoutubeEvent(newValue);
+        handleSyncUrl(newValue);
     }, []);
 
     return (

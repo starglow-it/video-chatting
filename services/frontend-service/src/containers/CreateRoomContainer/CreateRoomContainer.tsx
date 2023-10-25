@@ -81,7 +81,6 @@ const Component = () => {
                     onSetUpdateUrl(
                         `${getCreateRoomUrl(response?.id || '')}?step=privacy`,
                     );
-
                     setTemplate(response);
                 }
             }

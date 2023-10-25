@@ -23,19 +23,21 @@
 }
 
 .uploadDescription {
-  .title {
-    margin: rem(0 0 4px);
-  }
+  
+}
 
-  .description {
-    margin: rem(0 0 32px);
-  }
+.title {
+  margin: rem(0 0 4px);
+}
 
-  .button {
-    max-width: rem(106px);
-    width: 100%;
-    height: rem(46px);
-  }
+.description {
+  margin: rem(0 0 32px);
+}
+
+.button {
+  max-width: rem(106px);
+  width: 100%;
+  height: rem(46px);
 }
 
 .popper {
@@ -74,4 +76,15 @@
     border-radius: rem(12px);
     padding: rem(6px);
   }
+}
+
+.paper {
+  max-width: rem(290px);
+  width: 100%;
+  height: fit-content;
+  padding: rem(14px 12px);
+}
+
+.icon {
+  color: $primary-white;
 }
