@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { IUpdateCommonMeeting } from '../../interfaces/update-meeting.interface';
 
 export class UpdateMeetingRequestDTO implements IUpdateCommonMeeting {
@@ -9,4 +9,11 @@ export class UpdateMeetingRequestDTO implements IUpdateCommonMeeting {
   @IsOptional()
   @IsNumber()
   volume: number;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'invalid'
+  })
+  isMute: boolean;
+
 }

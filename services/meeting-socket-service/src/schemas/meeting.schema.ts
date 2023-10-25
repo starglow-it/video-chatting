@@ -69,6 +69,12 @@ export class Meeting {
   volume: number;
 
   @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isMute: boolean;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],
   })
   users: MeetingUserDocument[];

@@ -24,12 +24,6 @@ export class MeetingDto implements ICommonMeetingDTO {
   sharingUserId: string;
 
   @IsOptional()
-  @IsBoolean({
-    message: 'Invalid isMonetizationEnabled',
-  })
-  isMonetizationEnabled: boolean;
-
-  @IsOptional()
   @IsString({
     message: 'Invalid mode',
   })
@@ -60,6 +54,12 @@ export class MeetingDto implements ICommonMeetingDTO {
   @IsOptional()
   @IsNumber()
   volume: number;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'Invalid isMute'
+  })
+  isMute: boolean;
 
   @IsOptional()
   @IsString({

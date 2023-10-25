@@ -11,9 +11,6 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
   id: string;
 
   @Expose()
-  isMonetizationEnabled: boolean;
-
-  @Expose()
   mode: string;
 
   @Expose()
@@ -33,6 +30,9 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
 
   @Expose()
   volume: number;
+
+  @Expose()
+  isMute: boolean;
 
   @Expose()
   @Type(() => CommonUserDTO)
