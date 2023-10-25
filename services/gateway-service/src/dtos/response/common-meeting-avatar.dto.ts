@@ -1,10 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import {
-  IPreviewImage,
-  IMedia,
   IMeetingAvatar,
-  IResouce,
   MeetingAvatarStatus,
 } from 'shared-types';
 import { CommonResouceResDto } from './common-resouce.dto';
