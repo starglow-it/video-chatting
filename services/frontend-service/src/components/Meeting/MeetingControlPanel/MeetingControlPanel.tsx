@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -29,7 +29,6 @@ import {
     $isTogglePayment,
     $isToggleSchedulePanel,
     $isToggleUsersPanel,
-    $meetingTemplateStore,
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
@@ -48,21 +47,12 @@ import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 const Component = () => {
     const isOwner = useStore($isOwner);
     const paymentIntent = useStore($paymentIntent);
-    const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const users = useStore($meetingUsersStore);
     const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
-
-    useEffect(() => {
-        (async () => {
-            if (!meetingTemplate.isMonetizationEnabled && paymentIntent?.id) {
-                cancelPaymentIntentWithData();
-            }
-        })();
-    }, [meetingTemplate.isMonetizationEnabled]);
 
     const { isMobile } = useBrowserDetect();
 

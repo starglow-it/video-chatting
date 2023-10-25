@@ -5,7 +5,7 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { InputAdornment } from '@mui/material';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { CustomRange } from '@library/custom/CustomRange/CustomRange';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 import clsx from 'clsx';
 import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
@@ -17,9 +17,13 @@ import {
 } from 'src/store/roomStores';
 import { useStore } from 'effector-react';
 import styles from './MeetingYoutubeControl.module.scss';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
+import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
 
 export const MeetingYoutubeControl = () => {
     const { volume, muted } = useStore($meetingYoutubeStore);
+
+    const [error, setError] = useState('');
 
     const handleChangeVolume = useCallback(
         (e: Event, value: number | number[]) => {
@@ -31,7 +35,14 @@ export const MeetingYoutubeControl = () => {
     );
 
     const handleChangeUrl = useCallback((e: any) => {
-        updateUrlYoutubeEvent(e.target.value);
+        const newValue = e.target.value;
+
+        if (!hasYoutubeUrlRegex.test(newValue)) {
+            setError('This link is invalid, please try again');
+        } else {
+            error && setError('');
+        }
+        updateUrlYoutubeEvent(newValue);
     }, []);
 
     return (
@@ -54,22 +65,25 @@ export const MeetingYoutubeControl = () => {
                 />
             </CustomGrid>
 
-            <CustomInput
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <CopyLinkIcon
-                                width="23px"
-                                height="23px"
-                                className={styles.icon}
-                            />
-                        </InputAdornment>
-                    ),
-                    classes: { root: styles.textField },
-                }}
-                placeholder="Type a Youtube url"
-                onChange={handleChangeUrl}
-            />
+            <CustomGrid display="flex" flexDirection="column" gap={1}>
+                <CustomInput
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <CopyLinkIcon
+                                    width="23px"
+                                    height="23px"
+                                    className={styles.icon}
+                                />
+                            </InputAdornment>
+                        ),
+                        classes: { root: styles.textField },
+                    }}
+                    placeholder="Paste a Youtube link here"
+                    onChange={handleChangeUrl}
+                />
+                <ErrorMessage error={error} />
+            </CustomGrid>
 
             <CustomGrid display="flex" flexDirection="column" gap={1}>
                 <CustomTypography
