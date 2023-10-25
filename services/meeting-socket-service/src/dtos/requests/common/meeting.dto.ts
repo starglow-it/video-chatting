@@ -58,6 +58,10 @@ export class MeetingDto implements ICommonMeetingDTO {
   startAt: number;
 
   @IsOptional()
+  @IsNumber()
+  volume: number;
+
+  @IsOptional()
   @IsString({
       message: 'Invalid owner'
   })
