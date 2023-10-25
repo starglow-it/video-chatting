@@ -325,6 +325,7 @@ export class UserTemplatesController {
           templateType: targetTemplate.templateType,
           roomType: targetTemplate.roomType,
           subdomain: targetTemplate.subdomain,
+          mediaLink: targetTemplate.mediaLink
         };
 
         const [userTemplate] =
