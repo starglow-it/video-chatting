@@ -551,6 +551,7 @@ export class UserTemplatesController {
           name: data.name,
           isPublic: data.isPublic,
           maxParticipants: data.maxParticipants,
+          mediaLink: data.mediaLink,
           url: data.url,
           previewUrls: data.previewUrls,
           draftUrl: data.draftUrl,
