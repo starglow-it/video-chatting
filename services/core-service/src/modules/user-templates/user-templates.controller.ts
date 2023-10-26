@@ -566,20 +566,6 @@ export class UserTemplatesController {
           templateType: data.templateType,
         } as UpdateQuery<UserTemplateDocument>;
 
-        if (data.mediaLink) {
-          const myRoomCategory = await this.getMyRoomMediaCategory(session);
-          await this.mediaService.updateMedia({
-            query: {
-              mediaCategory: myRoomCategory._id,
-            },
-            data: {
-              url: data.mediaLink.src,
-              thumb: data.mediaLink.thumb,
-              previewUrl: [],
-            },
-          });
-        }
-
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
             const [existingCategory] =
@@ -655,6 +641,21 @@ export class UserTemplatesController {
             ...filteredData,
             isPublic: userTemplate.isPublic,
           };
+
+          const myRoomCategory = await this.getMyRoomMediaCategory(session);
+          await this.mediaService.updateMedia({
+            query: {
+              mediaCategory: myRoomCategory._id,
+            },
+            data: {
+              url: data.mediaLink ? data.mediaLink.src : data.url,
+              thumb: data.mediaLink
+                ? data.mediaLink.thumb
+                : data.mediaLink.thumb,
+              previewUrl: data.mediaLink ? [] : data.previewUrls,
+            },
+          });
+
           await this.commonTemplatesService.updateCommonTemplate({
             query: {
               templateId: userTemplate.templateId,
@@ -1000,7 +1001,7 @@ export class UserTemplatesController {
   })
   async uploadProfileTemplateFile(
     @Payload() data: { url: string; id: string; mimeType: string },
-  ): Promise<void> {
+  ) {
     return withTransaction(this.connection, async (session) => {
       const { url, id, mimeType } = data;
 
@@ -1023,6 +1024,8 @@ export class UserTemplatesController {
         },
         session,
       });
+
+      return {};
     });
   }
 
