@@ -79,9 +79,9 @@ export class TemplatesController {
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
           isDeleted: false,
-          ...(draft !== undefined ? { draft } : {}),
-          ...(isPublic !== undefined ? { isPublic } : {}),
-          ...(type ? { type } : {}),
+          ...(draft !== undefined && { draft }),
+          ...(isPublic !== undefined && { isPublic }),
+          ...(type && { type }),
           roomType,
           businessCategories,
           subdomain: isHaveSubdomain ? { $ne: '' } : '',
