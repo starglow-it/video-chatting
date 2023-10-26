@@ -651,9 +651,8 @@ export class UserTemplatesController {
             data: {
               url: data.mediaLink ? data.mediaLink.src : userTemplate.url,
               thumb: data.mediaLink ? data.mediaLink.thumb : null,
-              previewUrls: data.mediaLink
-                ? []
-                : userTemplate.previewUrls,
+              previewUrls: data.mediaLink ? [] : userTemplate.previewUrls,
+              type: userTemplate.templateType,
             },
             session,
           });
