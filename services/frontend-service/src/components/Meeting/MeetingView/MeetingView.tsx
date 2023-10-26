@@ -182,6 +182,7 @@ const Component = () => {
             <MeetingBackgroundVideo
                 templateType={meetingTemplate.templateType}
                 src={meetingTemplate.url}
+                mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>

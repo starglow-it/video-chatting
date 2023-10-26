@@ -56,7 +56,7 @@
         "general": "Please upload image of .jp(e)g, .heic or .png format - Up to {{max}} MB"
       },
       "manyFiles": "Please upload 1 file",
-      "shouldBeUploaded": "Background file should be uploaded at first",
+      "shouldBeUploaded": "Background file should be uploaded or have a Youtube url at first",
       "isPending": "Please wait until file is uploaded"
     }
   },

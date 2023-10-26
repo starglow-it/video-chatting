@@ -49,5 +49,7 @@
   "featuredRooms": {
     "title": "Featured Rooms",
     "description": "Black ethan and then he retueneum"
-  }
+  },
+  "descCreateRoom": "Upload your design or use a Youtube video as background",
+  "embedLinks": "Embed Links"
 }

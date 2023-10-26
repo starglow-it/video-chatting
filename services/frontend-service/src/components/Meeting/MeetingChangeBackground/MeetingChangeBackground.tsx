@@ -36,6 +36,7 @@ import {
     setQueryMediasEvent,
     uploadNewBackgroundFx,
 } from '../../../store/roomStores';
+import { MeetingYoutubeControl } from '../MeetingYoutubeControl/MeetingYoutubeControl';
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
@@ -194,7 +195,7 @@ const Component = () => {
 
                                 <CustomGrid
                                     container
-                                    flex={75}
+                                    flex={1}
                                     paddingTop={3}
                                     paddingLeft="6px"
                                 >
@@ -231,6 +232,7 @@ const Component = () => {
                                         </CustomScroll>
                                     </ConditionalRender>
                                 </CustomGrid>
+                                <MeetingYoutubeControl />
                             </AccordionDetails>
                         </Accordion>
                     </CustomPaper>

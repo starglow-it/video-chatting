@@ -57,6 +57,10 @@ export class UserTemplateDTO implements IUserTemplate {
   maxParticipants: IUserTemplate['maxParticipants'];
 
   @Expose()
+  @Transform((data) => data.obj?.mediaLink)
+  mediaLink: IUserTemplate['mediaLink'];
+
+  @Expose()
   @Type(() => PreviewImageDTO)
   previewUrls: IUserTemplate['previewUrls'];
 
@@ -153,4 +157,5 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   subdomain: IUserTemplate['subdomain'];
+
 }

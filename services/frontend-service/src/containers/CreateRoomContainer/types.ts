@@ -11,6 +11,7 @@ export interface IUploadTemplateFormData {
     name: string;
     description: string;
     url: string;
+    youtubeUrl: string;
     previewUrls: string[];
     customLink: string;
     tags: Omit<BusinessCategory, 'id'>[];

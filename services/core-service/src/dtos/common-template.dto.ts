@@ -44,6 +44,10 @@ export class CommonTemplateDTO implements ICommonTemplate {
   maxParticipants: ICommonTemplate['maxParticipants'];
 
   @Expose()
+  @Transform((data) => data.obj?.mediaLink)
+  mediaLink: ICommonTemplate['mediaLink'];
+
+  @Expose()
   @Type(() => PreviewImageDTO)
   previewUrls: ICommonTemplate['previewUrls'];
 
@@ -99,6 +103,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   authorThumbnail: ICommonTemplate['authorThumbnail'];
+
 
   @Expose()
   authorName: ICommonTemplate['authorName'];

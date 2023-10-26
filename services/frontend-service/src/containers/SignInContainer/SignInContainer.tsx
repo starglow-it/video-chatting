@@ -163,6 +163,11 @@ const Component = () => {
                 templateType={lastTemplate?.templateType}
                 src={lastTemplate?.templateUrl}
                 videoClassName={styles.bgContainer}
+                mediaLink={{
+                    src: lastTemplate.templateUrl,
+                    thumb: '',
+                    platform: 'youtube',
+                }}
             >
                 <CustomImage
                     className={styles.image}

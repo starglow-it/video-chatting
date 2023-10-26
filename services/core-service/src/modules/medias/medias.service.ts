@@ -7,6 +7,7 @@ import { IMedia, IMediaCategory } from 'shared-types';
 import {
   GetModelMultipleQuery,
   GetModelSingleQuery,
+  UpdateModelMultipleQuery,
   UpdateModelSingleQuery,
 } from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -224,6 +225,20 @@ export class MediaService {
     const existedDocument = await this.mediaCategory.exists(query).exec();
 
     return Boolean(existedDocument?._id);
+  }
+
+  async updateMedias({
+    query,
+    data,
+    session,
+    populatePaths,
+  }: UpdateModelMultipleQuery<MediaDocument>): Promise<any> {
+    return this.media
+      .updateMany(query, data, {
+        session: session?.session,
+        populate: populatePaths,
+      })
+      .exec();
   }
 
   async countCategories(

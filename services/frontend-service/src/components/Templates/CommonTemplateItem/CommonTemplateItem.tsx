@@ -57,6 +57,15 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         : undefined;
 
     const renderPreview = () => {
+        if (template?.mediaLink) {
+            return (
+                <CustomImage
+                    src={template?.mediaLink?.thumb || ''}
+                    width="334px"
+                    height="190px"
+                />
+            );
+        }
         switch (template?.templateType) {
             case 'image':
                 return (
@@ -77,6 +86,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                         />
                     </CustomGrid>
                 );
+
             default:
                 return null;
         }
@@ -91,7 +101,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <ConditionalRender condition={Boolean(previewImage?.url)}>
+            <ConditionalRender
+                condition={!!template?.mediaLink || !!previewImage?.url}
+            >
                 {renderPreview()}
             </ConditionalRender>
             <TemplateMainInfo

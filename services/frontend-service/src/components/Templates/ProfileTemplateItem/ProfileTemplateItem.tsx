@@ -111,6 +111,15 @@ const ProfileTemplateItem = memo(
         );
 
         const renderPreview = () => {
+            if (template?.mediaLink) {
+                return (
+                    <CustomImage
+                        src={template?.mediaLink?.thumb || ''}
+                        width="334px"
+                        height="190px"
+                    />
+                );
+            }
             switch (template?.templateType) {
                 case 'image':
                     return (
@@ -145,7 +154,9 @@ const ProfileTemplateItem = memo(
                 onMouseEnter={handleShowPreview}
                 onMouseLeave={handleHidePreview}
             >
-                <ConditionalRender condition={Boolean(previewImage?.url)}>
+                <ConditionalRender
+                    condition={!!template?.mediaLink || !!previewImage?.url}
+                >
                     {renderPreview()}
                 </ConditionalRender>
                 <TemplateMainInfo

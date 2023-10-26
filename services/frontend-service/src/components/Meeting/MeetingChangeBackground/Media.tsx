@@ -41,6 +41,36 @@ const Component = ({
         onDelete(item.id);
     };
 
+    const renderThumb = () => {
+        if (item.thumb) {
+            return (
+                <CustomImage
+                    src={item.thumb}
+                    width={63}
+                    height={63}
+                    className={styles.image}
+                    onLoad={handleLoadEnd}
+                />
+            );
+        }
+        return item.type === 'image' || isMobile() ? (
+            <CustomImage
+                src={url}
+                width={63}
+                height={63}
+                className={styles.image}
+                onLoad={handleLoadEnd}
+            />
+        ) : (
+            <CustomVideoPlayer
+                src={item.url}
+                volume={0}
+                isPlaying
+                isMuted={false}
+            />
+        );
+    };
+
     return (
         <CustomGrid
             className={clsx(styles.container, {
@@ -60,23 +90,8 @@ const Component = ({
                     variant="rectangular"
                 />
             )}
-            <ConditionalRender condition={url !== ''}>
-                {item.type === 'image' || isMobile() ? (
-                    <CustomImage
-                        src={url}
-                        width={63}
-                        height={63}
-                        className={styles.image}
-                        onLoad={handleLoadEnd}
-                    />
-                ) : (
-                    <CustomVideoPlayer
-                        src={item.url}
-                        volume={0}
-                        isPlaying
-                        isMuted={false}
-                    />
-                )}
+            <ConditionalRender condition={!!item.thumb || url !== ''}>
+                {renderThumb()}
                 <ConditionalRender
                     condition={Boolean(item.userTemplate && isShowDelete)}
                 >
