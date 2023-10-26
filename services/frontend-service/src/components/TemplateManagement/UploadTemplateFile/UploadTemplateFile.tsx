@@ -50,6 +50,7 @@ import {
     MAX_SIZE_VIDEO_MB,
 } from '../../../const/templates/file';
 import { Notification, NotificationType } from '../../../store/types';
+import { useToggle } from '@hooks/useToggle';
 
 const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     const {
@@ -82,11 +83,14 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
         uploadUserTemplateFileFx.pending,
     );
 
+    const { value: isShowBox, onSwitchOn, onSwitchOff } = useToggle(false);
+
     const generateFileUploadError = useCallback(
         (rejectedFiles: FileRejection[], total: number) => {
             if (!rejectedFiles.length) {
                 return;
             }
+            onSwitchOff()
 
             if (total > 1) {
                 addNotificationEvent({
@@ -160,7 +164,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 );
                 return;
             }
-
+            onSwitchOff();
             setValue('background', file);
             setValue('youtubeUrl', '');
         },
@@ -240,7 +244,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <ConditionalRender condition={!url && !background}>
+                    <ConditionalRender condition={(!url && !background && !isHasYoutubeUrl) || isShowBox}>
                         <CustomGrid
                             flex={1}
                             height={370}
@@ -326,8 +330,11 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     </ConditionalRender>
                     <ConditionalRender
                         condition={
-                            !isUploadTemplateFilePending &&
-                            !isUpdateMeetingTemplateFilePending
+                            (!isUploadTemplateFilePending &&
+                                !isUpdateMeetingTemplateFilePending &&
+                                !url &&
+                                !background) ||
+                            isShowBox
                         }
                     >
                         <CustomGrid
@@ -431,7 +438,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                                 />
                             }
                             className={styles.button}
-                            onClick={onClick}
+                            onClick={onSwitchOn}
                         />
                     </ConditionalRender>
                     <ActionButton
