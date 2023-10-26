@@ -158,7 +158,7 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
 
   private async syncDataLocal() {
     try {
-      const entities = ['User', 'CommonTemplate', 'UserTemplate'];
+      const entities = ['User', 'CommonTemplate', 'UserTemplate', 'Media'];
 
       const collections = await this.getRecords(entities);
       await this.handleUpdateData(collections);
@@ -170,7 +170,7 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
 
   private async syncDataDemo() {
     try {
-      const entities = ['User', 'CommonTemplate', 'UserTemplate'];
+      const entities = ['User', 'CommonTemplate', 'UserTemplate', 'Media'];
 
       const collections = await this.getRecords(entities);
       await this.handleUpdateData(collections);
@@ -182,7 +182,7 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
 
   private async syncDataProd() {
     try {
-      const entities = ['User', 'CommonTemplate', 'UserTemplate'];
+      const entities = ['User', 'CommonTemplate', 'UserTemplate', 'Media'];
 
       const collections = await this.getRecords(entities);
       await this.handleUpdateData(collections);

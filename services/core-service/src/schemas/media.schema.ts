@@ -16,6 +16,12 @@ export class Media {
   mediaCategory: MediaCategoryDocument;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: null
+  })
+  templateId: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
     default: '',
   })

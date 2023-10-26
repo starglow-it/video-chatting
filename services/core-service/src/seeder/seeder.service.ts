@@ -272,6 +272,42 @@ export class SeederService {
     return;
   }
 
+  async seedTemplateIdForMedia() {
+    return withTransaction(this.connection, async (session) => {
+      const media = await this.mediaService.aggregate([
+        {
+          $lookup: {
+            from: 'usertemplates',
+            localField: 'userTemplate',
+            foreignField: '_id',
+            as: 'userTemplate',
+          },
+        },
+        {
+          $match: {
+            userTemplate: {
+              $ne: []
+            },
+            templateId: null,
+          },
+        },
+      ]);
+
+      await Promise.all(
+        media.map(async (m) => {
+          return await this.mediaService.updateMedia({
+            query: {
+              _id: m._id,
+            },
+            data: {
+              templateId: m.userTemplate[0].templateId
+            },
+          });
+        }),
+      );
+    });
+  }
+
   async seedUpdateMaxMeetingTimeUser() {
     try {
       const plans = [PlanKeys.Business, PlanKeys.House, PlanKeys.Professional];

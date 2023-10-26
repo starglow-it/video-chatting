@@ -8,7 +8,11 @@ import { Types } from 'mongoose';
 const ObjectId = Types.ObjectId;
 
 //  const
-import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
+import {
+  MediaNativeErrorEnum,
+  TEMPLATES_SERVICE,
+  TemplateBrokerPatterns,
+} from 'shared-const';
 
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
@@ -48,6 +52,7 @@ import { EntityList } from 'shared-types';
 import { PriceValues } from 'shared-types';
 import { TemplatePaymentsService } from '../template-payments/template-payments.service';
 import { UserTemplatesComponent } from '../user-templates/user-templates.component';
+import { throwRpcError } from 'src/utils/common/throwRpcError';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -86,12 +91,10 @@ export class CommonTemplatesController {
         session,
       });
 
-      if (!mediaCategory) {
-        throw new RpcException({
-          message: 'Media category not found',
-          ctx: TEMPLATES_SERVICE,
-        });
-      }
+      throwRpcError(
+        !mediaCategory,
+        MediaNativeErrorEnum.MY_ROOM_CATEGORY_NOT_FOUND,
+      );
 
       return mediaCategory;
     } catch (err) {
@@ -607,7 +610,25 @@ export class CommonTemplatesController {
             previewUrls: updatedTemplate.previewUrls,
             businessCategories: updatedTemplate.businessCategories,
             url: updatedTemplate.url,
+            mediaLink: updatedTemplate.mediaLink,
             draft: updatedTemplate.draft,
+          },
+          session,
+        });
+
+        const myRoomCategory = await this.getMyRoomMediaCategory(session);
+
+        await this.mediaService.updateMedias({
+          query: {
+            templateId: updatedTemplate.templateId,
+            mediaCategory: myRoomCategory._id,
+          },
+          data: {
+            ...(updatedTemplate.mediaLink && {
+              thumb: updatedTemplate.mediaLink.thumb,
+            }),
+            previewUrls: updatedTemplate.previewUrls,
+            url: updatedTemplate.url,
           },
           session,
         });
