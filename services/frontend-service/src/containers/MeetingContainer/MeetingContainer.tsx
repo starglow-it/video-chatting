@@ -306,10 +306,14 @@ const MeetingContainer = memo(() => {
                     templateType={meetingTemplate.templateType}
                     src={meetingTemplate.url}
                     videoClassName={styles.wrapperBackgroundMedia}
-                    mediaLink={meetingTemplate.mediaLink}
+                    mediaLink={null}
                 >
                     <CustomImage
-                        src={previewImage?.url ?? ''}
+                        src={
+                            meetingTemplate.mediaLink?.thumb ??
+                            previewImage?.url ??
+                            ''
+                        }
                         className={styles.wrapperBackgroundMedia}
                         layout="fill"
                     />
