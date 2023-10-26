@@ -566,6 +566,20 @@ export class UserTemplatesController {
           templateType: data.templateType,
         } as UpdateQuery<UserTemplateDocument>;
 
+        if (data.mediaLink) {
+          const myRoomCategory = await this.getMyRoomMediaCategory(session);
+          await this.mediaService.updateMedia({
+            query: {
+              mediaCategory: myRoomCategory._id,
+            },
+            data: {
+              url: data.mediaLink.src,
+              thumb: data.mediaLink.thumb,
+              previewUrl: [],
+            },
+          });
+        }
+
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
             const [existingCategory] =
