@@ -93,13 +93,22 @@ sample({
         );
         return {
             templateId: meetingTemplateStore.id,
-            data: {
-                previewUrls: dataUpdate?.previewUrls.map(item => item.id),
-                url: dataUpdate?.url,
-                templateType: backgroundMeetingStore.medias.find(
-                    item => item.id === clock.mediaSelected,
-                )?.type,
-            },
+            data: dataUpdate?.thumb
+                ? {
+                      mediaLink: {
+                          src: dataUpdate?.url,
+                          thumb: dataUpdate?.thumb,
+                          platform: 'youtube',
+                      },
+                  }
+                : {
+                      previewUrls: dataUpdate?.previewUrls.map(item => item.id),
+                      url: dataUpdate?.url,
+                      templateType: backgroundMeetingStore.medias.find(
+                          item => item.id === clock.mediaSelected,
+                      )?.type,
+                      mediaLink: null,
+                  },
         };
     },
     target: updateBackgroundMeetingFx,
@@ -108,14 +117,6 @@ sample({
 forward({
     from: updateBackgroundMeetingFx.doneData,
     to: sendUpdateMeetingTemplateSocketEvent,
-});
-
-sample({
-    clock: setMediaEvent,
-    source: $meetingTemplateStore,
-    filter: (source: any) => !!source?.mediaLink,
-    fn: source => ({ templateId: source.id, data: { mediaLink: null } }),
-    target: updateBackgroundMeetingFx,
 });
 
 sample({

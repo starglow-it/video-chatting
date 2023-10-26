@@ -72,7 +72,7 @@ export const CustomYoutubePlayer = ({
 
                 playerRef.current.on('ready', () => {
                     playerRef.current?.playVideo();
-                    playerRef.current?.setVolume(volume);
+                    isMute ? setVolume(0) : setVolume(volume);
                 });
             }
             return () => {
