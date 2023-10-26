@@ -324,7 +324,12 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                             </CustomTooltip>
                         </CustomGrid>
                     </ConditionalRender>
-                    <ConditionalRender condition={!isUploadTemplateFilePending}>
+                    <ConditionalRender
+                        condition={
+                            !isUploadTemplateFilePending &&
+                            !isUpdateMeetingTemplateFilePending
+                        }
+                    >
                         <CustomGrid
                             flex={1}
                             height={370}

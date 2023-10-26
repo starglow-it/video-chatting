@@ -651,7 +651,7 @@ export class UserTemplatesController {
               url: data.mediaLink ? data.mediaLink.src : data.url,
               thumb: data.mediaLink
                 ? data.mediaLink.thumb
-                : data.mediaLink.thumb,
+                : null,
               previewUrl: data.mediaLink ? [] : data.previewUrls,
             },
           });
