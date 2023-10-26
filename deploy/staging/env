@@ -64,6 +64,6 @@ GOOGLE_SECRET=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
 BASE_ENV_DOMAIN=stg.theliveoffice.com
 BASE_DOMAIN=stg.chatruume.com
 LIVEKIT_IP=18.190.108.231
-IS_SYNC_DATA=false
+IS_SYNC_DATA=true
 IS_SEED=true
 FRONTEND_ADMIN_URL=https://stg-my.chatruume.com
