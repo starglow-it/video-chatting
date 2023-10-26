@@ -101,7 +101,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <ConditionalRender condition={Boolean(previewImage?.url)}>
+            <ConditionalRender
+                condition={!!template?.mediaLink || !!previewImage?.url}
+            >
                 {renderPreview()}
             </ConditionalRender>
             <TemplateMainInfo

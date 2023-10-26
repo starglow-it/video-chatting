@@ -36,7 +36,7 @@ const Component = ({
     const { volume, isMute } = useStore($meetingStore);
 
     return (
-        <ConditionalRender condition={!!src || !mediaLink}>
+        <ConditionalRender condition={!!src || !!mediaLink}>
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >

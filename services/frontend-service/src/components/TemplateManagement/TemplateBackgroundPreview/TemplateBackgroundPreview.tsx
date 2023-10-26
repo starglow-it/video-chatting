@@ -30,7 +30,9 @@ const Component = ({
 
     return (
         <CustomGrid className={styles.background}>
-            <ConditionalRender condition={Boolean(url) && isVideoFile(url)}>
+            <ConditionalRender
+                condition={Boolean(url) && isVideoFile(url) && !youtubeUrl}
+            >
                 <CustomVideoPlayer
                     src={url}
                     className={styles.player}
@@ -39,7 +41,9 @@ const Component = ({
                     isMuted={false}
                 />
             </ConditionalRender>
-            <ConditionalRender condition={Boolean(url) && !isVideoFile(url)}>
+            <ConditionalRender
+                condition={Boolean(url) && !isVideoFile(url) && !youtubeUrl}
+            >
                 <CustomImage
                     src={url ?? ''}
                     alt="background_preview"

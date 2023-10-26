@@ -33,6 +33,7 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { InputAdornment } from '@mui/material';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
+import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
 import styles from './UploadTemplateFile.module.scss';
 import {
     $isUploadTemplateBackgroundInProgress,
@@ -161,6 +162,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
             }
 
             setValue('background', file);
+            setValue('youtubeUrl', '');
         },
         [generateFileUploadError],
     );
@@ -177,6 +179,8 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
 
     const errorYoutubeUrl = errors?.youtubeUrl?.message ?? '';
 
+    const isHasYoutubeUrl = hasYoutubeUrlRegex.test(youtubeUrl);
+
     const handleChangeYoutubeUrl = (e: any) => {
         const newValue = e.target.value;
         if (!hasYoutubeUrlRegex.test(newValue)) {
@@ -185,6 +189,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 message: 'Youtube Link is invalid',
             });
         } else {
+            background && setValue('background', undefined);
             errorYoutubeUrl && clearErrors('youtubeUrl');
         }
         onChangeYoutubeUrl(e);
@@ -234,10 +239,11 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     <ConditionalRender condition={!url && !background}>
                         <CustomGrid
                             flex={1}
+                            height={370}
                             display="flex"
                             direction="column"
                             alignItems="center"
-                            justifyContent="center"
+                            justifyContent="flex-start"
                             className={styles.uploadDescription}
                         >
                             <CustomTypography
@@ -314,61 +320,84 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                             </CustomTooltip>
                         </CustomGrid>
                     </ConditionalRender>
-
-                    <CustomGrid
-                        flex={1}
-                        display="flex"
-                        direction="column"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <CustomTypography
-                            variant="h2bold"
-                            nameSpace="createRoom"
-                            translation="youtubeBackground.title"
-                            className={styles.title}
-                        />
-                        <CustomTypography
-                            color="colors.grayscale.semidark"
-                            nameSpace="createRoom"
-                            translation="youtubeBackground.description"
-                            className={styles.description}
-                        />
-                        <CustomPaper
-                            variant="black-glass"
-                            className={styles.paper}
+                    <ConditionalRender condition={!isUploadTemplateFilePending}>
+                        <CustomGrid
+                            flex={1}
+                            height={370}
+                            display="flex"
+                            direction="column"
+                            justifyContent="flex-start"
+                            alignItems="center"
                         >
-                            <CustomGrid container>
-                                <CustomInput
-                                    autoComplete="off"
-                                    color="secondary"
-                                    placeholder="Paste a Youtube link here"
-                                    error={errorYoutubeUrl}
-                                    {...youtubeUrlProps}
-                                    onChange={handleChangeYoutubeUrl}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <CopyLinkIcon
-                                                    width="23px"
-                                                    height="23px"
-                                                    className={styles.icon}
-                                                />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </CustomGrid>
-                        </CustomPaper>
-                    </CustomGrid>
+                            <CustomTypography
+                                variant="h2bold"
+                                nameSpace="createRoom"
+                                translation="youtubeBackground.title"
+                                className={styles.title}
+                            />
+                            <CustomTypography
+                                color="colors.grayscale.semidark"
+                                nameSpace="createRoom"
+                                translation="youtubeBackground.description"
+                                className={styles.description}
+                            />
+                            <CustomPaper
+                                variant="black-glass"
+                                className={styles.paper}
+                            >
+                                <CustomGrid
+                                    container
+                                    gap={3}
+                                    alignItems="center"
+                                    justifyContent="center"
+                                >
+                                    <CustomGrid
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={1}
+                                    >
+                                        <YoutubeIcon
+                                            width="27px"
+                                            height="27px"
+                                        />
+                                        <CustomTypography
+                                            nameSpace="meeting"
+                                            translation="youtubeVideo"
+                                            fontSize={15}
+                                            color="colors.white.primary"
+                                            fontWeight="bold"
+                                            textAlign="center"
+                                        />
+                                    </CustomGrid>
+                                    <CustomInput
+                                        autoComplete="off"
+                                        color="secondary"
+                                        placeholder="Paste a Youtube link here"
+                                        error={errorYoutubeUrl}
+                                        {...youtubeUrlProps}
+                                        onChange={handleChangeYoutubeUrl}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <CopyLinkIcon
+                                                        width="23px"
+                                                        height="23px"
+                                                        className={styles.icon}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </CustomGrid>
+                            </CustomPaper>
+                        </CustomGrid>
+                    </ConditionalRender>
                 </CustomGrid>
             </ConditionalRender>
 
             <ConditionalRender
                 condition={
-                    Boolean(background) ||
-                    Boolean(url) ||
-                    hasYoutubeUrlRegex.test(youtubeUrl)
+                    Boolean(background) || Boolean(url) || isHasYoutubeUrl
                 }
             >
                 <CustomGrid

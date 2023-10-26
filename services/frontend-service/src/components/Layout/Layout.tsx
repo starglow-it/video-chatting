@@ -78,6 +78,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
 ];
 
 const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
+const DASHBOARD_ROOM_HEADER: string[] = [createRoomRoute, editRoomRoute];
 
 const ScrollParent = ({
     children,
@@ -128,6 +129,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const scrollRef = useRef<HTMLElement | null>(null);
 
     const isDashboardRoute = ROUTES_MAIN_HEADER.some(route =>
+        new RegExp(route).test(router.pathname),
+    );
+    const isDashboardRoomRoute = DASHBOARD_ROOM_HEADER.some(route =>
         new RegExp(route).test(router.pathname),
     );
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
@@ -270,6 +274,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 className={clsx(styles.header, {
                                     [styles.dashboard]: isDashboardRoute,
                                     [styles.background]: isRegisterRoute,
+                                    [styles.dashboardRoom]:
+                                        isDashboardRoomRoute,
                                 })}
                             >
                                 <CustomGrid

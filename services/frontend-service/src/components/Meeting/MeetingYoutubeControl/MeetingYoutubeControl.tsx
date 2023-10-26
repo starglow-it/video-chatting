@@ -28,7 +28,7 @@ export const MeetingYoutubeControl = () => {
 
     const handleSyncVolume = useCallback(
         debounce(newVolume => {
-            updateMeetingSocketEvent({ volume: newVolume });
+            updateMeetingSocketEvent({ volume: newVolume, isMute: false });
         }, 300),
         [],
     );
@@ -37,7 +37,7 @@ export const MeetingYoutubeControl = () => {
         (e: Event, value: number | number[]) => {
             const newVolume = typeof value === 'number' ? value : 0;
             updateMeetingEvent({
-                meeting: { volume: newVolume },
+                meeting: { volume: newVolume, isMute: false },
             } as any);
             handleSyncVolume(newVolume);
         },

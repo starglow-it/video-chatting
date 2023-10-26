@@ -24,7 +24,6 @@ import {
 } from './model';
 import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
 import { ResultDeleteMedia } from './types';
-import { updateMeetingSocketEvent } from '../sockets/model';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);

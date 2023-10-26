@@ -52,29 +52,36 @@ export const CustomYoutubePlayer = ({
     }, [volume]);
 
     useEffect(() => {
-        if (yId) {
-            playerRef.current = YouTubePlayer(videoRef.current, {
-                videoId: yId,
-                playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    origin: '*',
-                    loop: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    modestbranding: 1,
-                },
-            });
+        try {
+            if (yId) {
+                playerRef.current = YouTubePlayer(videoRef.current, {
+                    videoId: yId,
+                    width: 1920,
+                    height: 1280,
+                    playerVars: {
+                        autoplay: 1,
+                        controls: 0,
+                        origin: '*',
+                        loop: 1,
+                        rel: 0,
+                        showinfo: 0,
+                        modestbranding: 1,
+                        fs: 1,
+                    },
+                });
 
-            playerRef.current.on('ready', () => {
-                playerRef.current?.playVideo();
-                playerRef.current?.setVolume(volume);
-            });
+                playerRef.current.on('ready', () => {
+                    playerRef.current?.playVideo();
+                    playerRef.current?.setVolume(volume);
+                });
+            }
+            return () => {
+                playerRef.current?.destroy();
+                playerRef.current = null;
+            };
+        } catch (e) {
+            console.log('#Duy Phan console error', e);
         }
-        return () => {
-            playerRef.current?.destroy();
-            playerRef.current = null;
-        };
     }, [yId]);
 
     return (

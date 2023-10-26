@@ -178,8 +178,7 @@ const Component = ({
     const background = useWatch({ control, name: 'background' });
     const previewUrl = useWatch({ control, name: 'url' });
     const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
-    console.log('#Duy Phan console yuuu', youtubeUrl);
-    console.log('#Duy Phan console tem', template);
+
     const templateLinks = useWatch({
         control,
         name: 'templateLinks',
@@ -370,7 +369,7 @@ const Component = ({
             if (item.value > TabsValues.Background) {
                 if (youtubeUrl) {
                     const response = await trigger(['youtubeUrl']);
-                    if (response) {
+                    if (!response) {
                         addNotificationEvent({
                             type: NotificationType.BackgroundFileShouldBeUploaded,
                             message: 'errors.invalidUrl',
@@ -378,9 +377,7 @@ const Component = ({
                         });
                         return;
                     }
-                }
-
-                if (!(background || previewUrl)) {
+                } else if (!(background || previewUrl)) {
                     addNotificationEvent({
                         type: NotificationType.BackgroundFileShouldBeUploaded,
                         message: 'createRoom.uploadBackground.shouldBeUploaded',
