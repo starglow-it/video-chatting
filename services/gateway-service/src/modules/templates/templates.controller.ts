@@ -33,7 +33,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
