@@ -24,6 +24,7 @@ import {
 } from './model';
 import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
 import { ResultDeleteMedia } from './types';
+import { resetRoomStores } from 'src/store/root';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);
@@ -53,7 +54,8 @@ $backgroundMeetingStore
         ...state,
         medias: [...state.medias, data.media],
         count: state.count + 1,
-    }));
+    }))
+    .reset(resetRoomStores);
 
 $queryMediasBackgroundStore
     .on([setQueryMediasEvent], state => ({
@@ -61,11 +63,12 @@ $queryMediasBackgroundStore
         skip: state.skip + 1,
     }))
     .on(reloadMediasEvent, state => ({ ...state, skip: 0 }))
-    .reset(setCategoryEvent, deleteMediaMeetingFx.doneData);
+    .reset(setCategoryEvent, deleteMediaMeetingFx.doneData, resetRoomStores);
 
 $isLoadMoreMediasStore
     .on(setQueryMediasEvent, () => true)
-    .on(getBackgroundMeetingFx, () => false);
+    .on(getBackgroundMeetingFx, () => false)
+    .reset(resetRoomStores);
 
 sample({
     clock: setCategoryEvent,

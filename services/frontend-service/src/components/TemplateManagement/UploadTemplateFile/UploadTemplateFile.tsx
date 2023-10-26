@@ -189,7 +189,11 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 message: 'Youtube Link is invalid',
             });
         } else {
-            background && setValue('background', undefined);
+            if (url && background) {
+                setValue('background', undefined);
+                setValue('url', '');
+            }
+
             errorYoutubeUrl && clearErrors('youtubeUrl');
         }
         onChangeYoutubeUrl(e);
