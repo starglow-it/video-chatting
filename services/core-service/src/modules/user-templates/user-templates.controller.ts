@@ -646,14 +646,16 @@ export class UserTemplatesController {
           await this.mediaService.updateMedia({
             query: {
               mediaCategory: myRoomCategory._id,
+              userTemplate: userTemplate._id,
             },
             data: {
-              url: data.mediaLink ? data.mediaLink.src : data.url,
-              thumb: data.mediaLink
-                ? data.mediaLink.thumb
-                : null,
-              previewUrl: data.mediaLink ? [] : data.previewUrls,
+              url: data.mediaLink ? data.mediaLink.src : userTemplate.url,
+              thumb: data.mediaLink ? data.mediaLink.thumb : null,
+              previewUrls: data.mediaLink
+                ? []
+                : userTemplate.previewUrls,
             },
+            session,
           });
 
           await this.commonTemplatesService.updateCommonTemplate({
