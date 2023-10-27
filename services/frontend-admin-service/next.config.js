@@ -37,6 +37,14 @@ module.exports = withTM(
             domains: [
                 process.env.VULTR_STORAGE_HOSTNAME || '',
                 'lh3.googleusercontent.com',
+                'img.youtube.com'
+            ],
+            remotePatterns: [
+                {
+                    protocol: 'https',
+                    hostname: 'img.youtube.com',
+                    port: '',
+                },
             ],
         },
         webpack(config, options) {
