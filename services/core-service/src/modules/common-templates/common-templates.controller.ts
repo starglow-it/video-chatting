@@ -381,6 +381,7 @@ export class CommonTemplatesController {
             userTemplate,
             url,
             previewUrls: userTemplate.previewUrls,
+            templateId: userTemplate.templateId,
             mediaCategory,
             ...(userTemplate.mediaLink && {
               thumb: userTemplate.mediaLink.thumb,
@@ -618,20 +619,27 @@ export class CommonTemplatesController {
 
         const myRoomCategory = await this.getMyRoomMediaCategory(session);
 
+
         await this.mediaService.updateMedias({
           query: {
             templateId: updatedTemplate.templateId,
             mediaCategory: myRoomCategory._id,
           },
           data: {
-            ...(updatedTemplate.mediaLink && {
-              thumb: updatedTemplate.mediaLink.thumb,
-            }),
-            previewUrls: updatedTemplate.previewUrls,
-            url: updatedTemplate.url,
+            thumb: updatedTemplate.mediaLink
+              ? updatedTemplate.mediaLink.thumb
+              : null,
+            previewUrls: updatedTemplate.mediaLink
+              ? []
+              : updatedTemplate.previewUrls,
+            url: updatedTemplate.mediaLink
+              ? updatedTemplate.mediaLink.src
+              : updatedTemplate.url,
+            type: updatedTemplate.templateType,
           },
           session,
         });
+
 
         return plainToInstance(CommonTemplateDTO, template, {
           excludeExtraneousValues: true,

@@ -54,12 +54,14 @@ const Component = ({
                     />
                 </ConditionalRender>
 
-                <CustomYoutubePlayer
-                    url={mediaLink?.src ?? ''}
-                    className={styles.player}
-                    volume={volume}
-                    isMute={isMute}
-                />
+                <ConditionalRender condition={!isMobile()}>
+                    <CustomYoutubePlayer
+                        url={mediaLink?.src ?? ''}
+                        className={styles.player}
+                        volume={volume}
+                        isMute={isMute}
+                    />
+                </ConditionalRender>
 
                 {children}
             </CustomGrid>

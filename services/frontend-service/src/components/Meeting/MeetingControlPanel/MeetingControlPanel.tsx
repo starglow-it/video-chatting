@@ -120,6 +120,7 @@ const Component = () => {
             handleClosePayment,
             handleCloseMobilePanel,
             isPaymentOpen,
+            isScheduleOpen,
         ],
     );
 
@@ -151,7 +152,9 @@ const Component = () => {
                 {!isMobile ? (
                     <> {commonContent}</>
                 ) : (
-                    <ConditionalRender condition={isUsersOpen}>
+                    <ConditionalRender
+                        condition={isUsersOpen || isScheduleOpen}
+                    >
                         <CustomGrid className={styles.mobilePanelsWrapper}>
                             <CustomScroll>
                                 <CustomGrid

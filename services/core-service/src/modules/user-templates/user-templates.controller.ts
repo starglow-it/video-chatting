@@ -386,6 +386,7 @@ export class UserTemplatesController {
             userTemplate,
             url,
             previewUrls: userTemplate.previewUrls,
+            templateId: userTemplate.templateId,
             mediaCategory,
             ...(userTemplate.mediaLink && {
               thumb: userTemplate.mediaLink.thumb,
