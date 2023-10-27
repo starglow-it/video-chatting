@@ -18,7 +18,6 @@ import * as meetingBackground from './meeting/meetingBackground/init';
 import * as meetingAudio from './meeting/meetingAudio/init';
 import * as meetingRole from './meeting/meetingRole/init';
 import * as meetingChat from './meeting/meetingChat/init';
-import * as meetingYoutube from './meeting/meetingYoutube/init';
 
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
@@ -48,7 +47,6 @@ export * from './videoChat/p2p/init';
 export * from './videoChat/localMedia/init';
 export * from './users/init';
 export * from './meeting/sockets/init';
-export * from './meeting/meetingYoutube/model';
 
 export default {
     meetingSocket,
@@ -71,5 +69,4 @@ export default {
     meetingAudio,
     meetingRole,
     meetingChat,
-    meetingYoutube,
 };
