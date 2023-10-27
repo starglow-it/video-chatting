@@ -60,7 +60,6 @@ export const CustomYoutubePlayer = ({
     return (
         <YouTube
             videoId={yId ?? ''}
-            ref={playerRef}
             iframeClassName={className}
             opts={{
                 width: 1920,
