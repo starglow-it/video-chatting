@@ -59,15 +59,18 @@ export const MeetingYoutubeControl = () => {
         [],
     );
 
-    const handleChangeUrl = useCallback((e: any) => {
-        const newValue = e.target.value;
-        if (!hasYoutubeUrlRegex.test(newValue) && !!newValue) {
-            setError('This link is invalid, please try again');
-        } else {
-            if (!!error) setError('');
-            if (newValue) handleSyncUrl(newValue);
-        }
-    }, [error]);
+    const handleChangeUrl = useCallback(
+        (e: any) => {
+            const newValue = e.target.value;
+            if (!hasYoutubeUrlRegex.test(newValue) && !!newValue) {
+                setError('This link is invalid, please try again');
+            } else {
+                if (!!error) setError('');
+                if (newValue) handleSyncUrl(newValue);
+            }
+        },
+        [error],
+    );
 
     return (
         <CustomGrid

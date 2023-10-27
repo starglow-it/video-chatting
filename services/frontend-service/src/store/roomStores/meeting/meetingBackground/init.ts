@@ -1,6 +1,7 @@
 import { combine, forward, sample } from 'effector';
 import { addNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
+import { resetRoomStores } from 'src/store/root';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
 import { handleGetBackgroundMeeting } from './handlers/handleGetBackground';
@@ -24,7 +25,6 @@ import {
 } from './model';
 import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
 import { ResultDeleteMedia } from './types';
-import { resetRoomStores } from 'src/store/root';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);
