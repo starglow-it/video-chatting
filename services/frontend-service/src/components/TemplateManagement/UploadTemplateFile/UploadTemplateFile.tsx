@@ -34,6 +34,7 @@ import { InputAdornment } from '@mui/material';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
 import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
+import { useToggle } from '@hooks/useToggle';
 import styles from './UploadTemplateFile.module.scss';
 import {
     $isUploadTemplateBackgroundInProgress,
@@ -50,7 +51,6 @@ import {
     MAX_SIZE_VIDEO_MB,
 } from '../../../const/templates/file';
 import { Notification, NotificationType } from '../../../store/types';
-import { useToggle } from '@hooks/useToggle';
 
 const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     const {
@@ -90,7 +90,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
             if (!rejectedFiles.length) {
                 return;
             }
-            onSwitchOff()
+            onSwitchOff();
 
             if (total > 1) {
                 addNotificationEvent({
@@ -244,7 +244,12 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <ConditionalRender condition={(!url && !background && !isHasYoutubeUrl) || isShowBox}>
+                    <ConditionalRender
+                        condition={
+                            (!url && !background && !isHasYoutubeUrl) ||
+                            isShowBox
+                        }
+                    >
                         <CustomGrid
                             flex={1}
                             height={370}

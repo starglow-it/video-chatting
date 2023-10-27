@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
-import YouTubePlayer from 'youtube-player';
-import clsx from 'clsx';
 import { PropsWithClassName } from 'shared-frontend/types';
-import styles from './CustomYoutubePlayer.module.scss';
+import YouTube from 'react-youtube';
 
 export const CustomYoutubePlayer = ({
     url,
@@ -15,7 +13,6 @@ export const CustomYoutubePlayer = ({
     volume: number;
     isMute?: boolean;
 }>) => {
-    const videoRef = useRef<any>(null);
     const playerRef = useRef<any>(null);
 
     function getYouTubeVideoId(videoUrl: string) {
@@ -40,22 +37,32 @@ export const CustomYoutubePlayer = ({
     const yId = getYouTubeVideoId(url);
 
     const setVolume = (volumeData: number) => {
-        playerRef.current?.setVolume(volumeData);
+        if (playerRef.current) playerRef.current?.setVolume?.(volumeData);
     };
-
     useEffect(() => {
         isMute ? setVolume(0) : setVolume(volume);
     }, [isMute]);
 
     useEffect(() => {
-        playerRef.current && setVolume(volume);
+        setVolume(volume);
     }, [volume]);
 
-    useEffect(() => {
+    if (!yId) return null;
 
-        if (yId) {
-            playerRef.current = YouTubePlayer(videoRef.current, {
-                videoId: yId,
+    const onReady = (event: any) => {
+        if (event?.target) {
+            event.target.playVideo();
+            event.target.setVolume(isMute ? 0 : volume);
+            playerRef.current = event.target;
+        }
+    };
+
+    return (
+        <YouTube
+            videoId={yId ?? ''}
+            ref={playerRef}
+            iframeClassName={className}
+            opts={{
                 width: 1920,
                 height: 1280,
                 playerVars: {
@@ -68,28 +75,8 @@ export const CustomYoutubePlayer = ({
                     modestbranding: 1,
                     fs: 1,
                 },
-            });
-
-            playerRef.current.on('ready', () => {
-                playerRef.current?.playVideo();
-                isMute ? setVolume(0) : setVolume(volume);
-            });
-        } else {
-            playerRef.current?.destroy?.();
-            playerRef.current = null;
-        }
-        return () => {
-            playerRef.current?.destroy?.();
-            playerRef.current = null;
-        };
-    }, [yId]);
-
-    return (
-        <div
-            ref={videoRef}
-            className={clsx(styles.player, className, {
-                [styles.none]: !url,
-            })}
+            }}
+            onReady={onReady}
         />
     );
 };
