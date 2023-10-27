@@ -47,6 +47,8 @@ export const MeetingYoutubeControl = () => {
     const handleSyncUrl = useCallback(
         debounce(newUrl => {
             updateMeetingTemplateFxWithData({
+                url: '',
+                previewUrls: [],
                 mediaLink: (newUrl
                     ? {
                           src: newUrl,

@@ -65,7 +65,8 @@ export const CustomYoutubePlayer = ({
                 width: 1920,
                 height: 1280,
                 playerVars: {
-                    autoplay: 1,
+                    autoplay: 0,
+                    playsinline: 1,
                     controls: 0,
                     origin: '*',
                     loop: 1,

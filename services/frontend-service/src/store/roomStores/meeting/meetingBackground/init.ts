@@ -103,6 +103,8 @@ sample({
                           thumb: dataUpdate?.thumb,
                           platform: 'youtube',
                       },
+                      url: '',
+                      previewUrls: []
                   }
                 : {
                       previewUrls: dataUpdate?.previewUrls.map(item => item.id),

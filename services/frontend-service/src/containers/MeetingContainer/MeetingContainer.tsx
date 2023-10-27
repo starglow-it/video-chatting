@@ -300,11 +300,18 @@ const MeetingContainer = memo(() => {
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender
-                condition={!!meetingTemplate.url && isSettingsChecked}
+                condition={
+                    (!!meetingTemplate.url || !!meetingTemplate.mediaLink) &&
+                    isSettingsChecked
+                }
             >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
-                    src={meetingTemplate.url}
+                    src={
+                        meetingTemplate.mediaLink?.src ??
+                        meetingTemplate.url ??
+                        ''
+                    }
                     videoClassName={styles.wrapperBackgroundMedia}
                     mediaLink={null}
                 >
