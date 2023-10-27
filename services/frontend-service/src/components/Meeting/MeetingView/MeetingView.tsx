@@ -176,7 +176,7 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-
+    
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
@@ -185,10 +185,26 @@ const Component = () => {
                 mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                    <ConditionalRender
+                        condition={!!previewImage?.url && !isMobile}
+                    >
                         <CustomImage
                             className={styles.image}
                             src={previewImage?.url || ''}
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={
+                            isMobile && !!meetingTemplate?.mediaLink?.thumb
+                        }
+                    >
+                        <CustomImage
+                            className={styles.image}
+                            src={meetingTemplate?.mediaLink?.thumb || ''}
                             width="100%"
                             height="100%"
                             layout="fill"
