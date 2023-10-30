@@ -13,8 +13,8 @@ export const handleConnectSocket = async ({
         !['localhost', frontendConfig.defaultServerIp].includes(serverIp) &&
         serverIp
             ? getMeetingInstanceSocketUrl(serverIp)
-            : frontendConfig.meetingSocketUrl;
-
+            : 'ws://192.168.110.65:8081';
+    console.log('#Duy Phan console', socketUrl)
     const socketInstance = io(socketUrl, {
         transports: ['websocket'],
     });

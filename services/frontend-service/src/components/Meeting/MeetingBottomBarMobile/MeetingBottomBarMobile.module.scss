@@ -1,0 +1,63 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/rem.scss';
+
+.container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    // background: #ffb6b6;
+}
+
+.main {
+    display: flex;
+    height: 70px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+%base-wrapper-icon-button {
+    width: rem(38px);
+    height: rem(38px);
+    border-radius: 50%;
+}
+
+.deviceButton {
+    @extend %base-wrapper-icon-button;
+
+    &.inactive {
+        color: rgba($primary-white, 0.25);
+    }
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.newRequests {
+        background: rgba($primary-orange, 0.1);
+    
+        &:hover {
+          background: rgba($primary-orange, 0.25);
+        }
+    
+        &:after {
+          content: "";
+          width: rem(11px);
+          height: rem(11px);
+          border-radius: 50%;
+          background: $primary-orange;
+          position: absolute;
+          top: -1px;
+          right: -1px;
+        }
+      }
+}
+
+.endButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: rem(45px);
+    height: rem(45px);
+    border-radius: 30px;
+}

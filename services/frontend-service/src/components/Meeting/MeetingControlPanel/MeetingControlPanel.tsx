@@ -43,6 +43,7 @@ import styles from './MeetingControlPanel.module.scss';
 // types
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
+import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -81,6 +82,11 @@ const Component = () => {
         toggleSchedulePanelEvent(false);
     };
 
+    const toggleOutsidePaymentPanel = (e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        togglePaymentFormEvent(false);
+    };
+
     const commonContent = useMemo(
         () => (
             <>
@@ -107,6 +113,22 @@ const Component = () => {
                             <CustomScroll>
                                 <MeetingInviteParticipants />
                             </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={toggleOutsidePaymentPanel}>
+                    <Fade in={isPaymentOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                            })}
+                        >
+                            <CustomGrid>
+                                <MeetingMonetization
+                                    onUpdate={handleUpdateMonetization}
+                                />
+                            </CustomGrid>
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
@@ -153,7 +175,9 @@ const Component = () => {
                     <> {commonContent}</>
                 ) : (
                     <ConditionalRender
-                        condition={isUsersOpen || isScheduleOpen}
+                        condition={
+                            isUsersOpen || isScheduleOpen || isPaymentOpen
+                        }
                     >
                         <CustomGrid className={styles.mobilePanelsWrapper}>
                             <CustomScroll>

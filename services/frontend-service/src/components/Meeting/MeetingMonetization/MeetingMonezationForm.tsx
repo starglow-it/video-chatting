@@ -164,6 +164,9 @@ export const MeetingMonezationForm = forwardRef(
                             className={styles.monetization}
                             gap={1}
                             flexDirection="column"
+                            sx={{
+                                width: { xs: 300, sm: 300, md: 340, xl: 340 },
+                            }}
                         >
                             <CustomGrid container flex={1} gap={1}>
                                 <CustomTooltip
@@ -263,6 +266,9 @@ export const MeetingMonezationForm = forwardRef(
                             className={styles.monetization}
                             gap={1}
                             flexDirection="column"
+                            sx={{
+                                width: { xs: 300, sm: 300, md: 340, xl: 340 },
+                            }}
                         >
                             <CustomGrid container flex={1} gap={1}>
                                 <CustomTooltip
