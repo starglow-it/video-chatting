@@ -9,7 +9,6 @@ import {
   UserBrokerPatterns,
   MeetingBrokerPatterns,
   UserTemplatesBrokerPatterns,
-  CoreBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -47,6 +46,10 @@ import {
   DeleteCommonUserPayload,
   FilterQuery,
   IResouce,
+  UpdateTemplatePaymentPayload,
+  ITemplatePayment,
+  GetTemplatePaymentsPayload,
+  GetTemplatePaymentPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -173,6 +176,24 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
+  async getTemplatePayments(
+    payload: GetTemplatePaymentsPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
+    };
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async getEnabledTemplatePayment(
+    payload: GetTemplatePaymentPayload,
+  ): Promise<ITemplatePayment> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
+    };
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
   async manageUserRights(
     payload: ManageUserRightsPayload,
   ): Promise<ICommonUser> {
@@ -216,6 +237,15 @@ export class CoreService {
   ): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
 
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async updateTemplatePayment(
+    payload: UpdateTemplatePaymentPayload,
+  ): Promise<EntityList<ITemplatePayment>> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.UpdateTemplatePayments,
+    };
     return firstValueFrom(this.client.send(pattern, payload));
   }
 

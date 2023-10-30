@@ -13,6 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigClientService);
   const config: IConfig = await configService.getAll();
+  const port = 5000;
 
   app.use('/payments/webhook', express.raw({ type: 'application/json' }));
   app.use(
@@ -42,10 +43,12 @@ async function bootstrap() {
 
   await paymentsController.createSubscriptionsIfNotExists();
 
-  await app.listen(5000);
+  await app.listen(port, () =>
+    console.log(`Payment service started at port ${port}`),
+  );
 }
 
 bootstrap();
 
-process.on('uncaughtException', err => console.log(err));
-process.on('unhandledRejection', reason => console.log(reason));
+process.on('uncaughtException', (err) => console.log(err));
+process.on('unhandledRejection', (reason) => console.log(reason));

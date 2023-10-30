@@ -21,8 +21,13 @@ VULTR_SNAPSHOT_ID=ee0246a5-6d61-4469-bdad-19807a97df41
 MEETING_SOCKET_URL=wss://stg-socket.chatruume.com
 LIVEKIT_API_KEY=APIGZAoRvLhzuaE
 LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
-LIVEKIT_HOST=http://livekit-service:7880
-LIVEKIT_WSS=wss://stg-livekit.chatruume.com
+# This is env Livekit Server
+# LIVEKIT_HOST=http://livekit-service:7880
+# LIVEKIT_WSS=wss://stg-livekit.chatruume.com
+
+# This is env Livekit Cloud
+LIVEKIT_HOST=https://ruume-psl3vadv.livekit.cloud
+LIVEKIT_WSS=wss://ruume-psl3vadv.livekit.cloud
 STRIPE_API_KEY=sk_test_51Lfm3wEZHTtCzRsJDr9uVYazNZqqZuzyrxS9DVNEnHtv8aeBsaGk5aovtmBRyxmJZhjXho5sq78fUZLvsXfQ0mUq00usEu6toJ
 STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_fz6IXEoSwrFcrJVn2G1rO9rjnKCZXltg
 STRIPE_PUBLIC_API_KEY=pk_test_51Lfm3wEZHTtCzRsJB6lEgBCnvU1S4UNnaIQ2sDmYRN4olRKSF7IjPn5NF81yDxwhRCMfqNW4I4UK4HOGFDYctKLv00Cv9txG6J
@@ -59,6 +64,6 @@ GOOGLE_SECRET=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
 BASE_ENV_DOMAIN=stg.theliveoffice.com
 BASE_DOMAIN=stg.chatruume.com
 LIVEKIT_IP=18.190.108.231
-IS_SYNC_DATA=false
-IS_SEED=false
+IS_SYNC_DATA=true
+IS_SEED=true
 FRONTEND_ADMIN_URL=https://stg-my.chatruume.com

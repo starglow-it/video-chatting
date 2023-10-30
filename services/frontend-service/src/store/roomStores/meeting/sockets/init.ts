@@ -1,13 +1,14 @@
 import { attach, combine, sample, Store } from 'effector-next';
 import { isMobile } from 'shared-utils';
 import {
+    AnswerSwitchRoleAction,
     ICommonUser,
     IUserTemplate,
     MeetingAccessStatusEnum,
+    MeetingRole,
 } from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
-    $isOwner,
     $isUserSendEnterRequest,
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
@@ -31,6 +32,7 @@ import {
     updateMeetingTemplateSocketEvent,
     enterWaitingRoomSocketEvent,
     sendReconnectMeetingEvent,
+    joinMeetingLurkerEvent,
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -46,11 +48,19 @@ import {
 } from '../../../types';
 import { SendAnswerMeetingRequestParams } from './types';
 
-import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
-import { getMeetingSocketSubscribeHandler } from './handlers';
+import {
+    MeetingSubscribeEvents,
+    TemplateSubscribeEvents,
+} from '../../../../const/socketEvents/subscribers';
+import {
+    getMeetingSocketSubscribeHandler,
+    getMeetingTemplateSocketSubscribeHandler,
+} from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
+import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
+import { answerRequestByHostEvent } from '../../users/init';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -79,12 +89,32 @@ export const sendReconnectMeetingSocketEvent = attach<
     }),
 });
 
+export const joinLurkerMeetingSocketEvent = attach<
+    void,
+    Store<{
+        meeting: Meeting;
+        localUser: MeetingUser;
+    }>,
+    typeof joinMeetingLurkerEvent
+>({
+    effect: joinMeetingLurkerEvent,
+    source: combine({
+        meeting: $meetingStore,
+        localUser: $localUserStore,
+    }),
+    mapParams: (_, { meeting, localUser }) => ({
+        meetingId: meeting.id,
+        username: localUser.username,
+    }),
+});
+
 export const sendJoinWaitingRoomSocketEvent = attach<
     void,
     Store<{
         profile: ICommonUser;
         template: IUserTemplate;
         localUser: MeetingUser;
+        meetingRole: MeetingRole;
     }>,
     typeof joinWaitingRoomSocketEvent
 >({
@@ -93,6 +123,7 @@ export const sendJoinWaitingRoomSocketEvent = attach<
         profile: $profileStore,
         template: $meetingTemplateStore,
         localUser: $localUserStore,
+        meetingRole: $meetingRoleStore,
     }),
     mapParams: (
         data,
@@ -100,13 +131,14 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             profile: Profile;
             template: IUserTemplate;
             localUser: MeetingUser;
+            meetingRole: MeetingRole;
         },
     ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
         profileAvatar: source?.profile?.profileAvatar?.url,
         templateId: source.template?.id,
-        isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
+        meetingRole: source.meetingRole,
         accessStatus: source.localUser.accessStatus,
         isAuraActive: source.localUser.isAuraActive,
         cameraStatus: source.localUser.cameraStatus,
@@ -192,6 +224,20 @@ export const sendCancelAccessMeetingRequestEvent = attach<
     }),
 });
 
+export const sendAnswerRequestByHostEvent = attach<
+    { action: AnswerSwitchRoleAction; userId: string },
+    Store<{ meeting: Meeting }>,
+    typeof answerRequestByHostEvent
+>({
+    effect: answerRequestByHostEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: ({ action, userId }, { meeting }) => ({
+        meetingId: meeting?.id,
+        action,
+        meetingUserId: userId,
+    }),
+});
+
 export const sendUpdateMeetingTemplateSocketEvent = attach<
     void,
     Store<{ template: IUserTemplate }>,
@@ -261,6 +307,10 @@ updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.failData.watch((error: any) => {
     console.log('console reconnect error', error);
+});
+joinMeetingLurkerEvent.doneData.watch(handleUpdateMeetingEntities);
+joinMeetingLurkerEvent.failData.watch((error: any) => {
+    console.log('lurker join fail', error);
 });
 
 sample({
@@ -357,6 +407,30 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         MeetingSubscribeEvents.OnMeetingTimeLimit,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnMeetingTimeLimit,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveMessage,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveMessage,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiceUnReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiceUnReaction,
+        ),
+    );
+    socketInstance?.on(
+        TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
+        getMeetingTemplateSocketSubscribeHandler(
+            TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         ),
     );
 });

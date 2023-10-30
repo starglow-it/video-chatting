@@ -3,7 +3,11 @@ import { combine } from 'effector-next';
 import { Meeting } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
-import { JoinMeetingEventPayload, JoinMeetingFxPayload } from './types';
+import {
+    JoinMeetingEventPayload,
+    JoinMeetingFxPayload,
+    JoinMeetingWithLurkerFxPayload,
+} from './types';
 
 const initialMeetingState: Meeting = {
     id: '',
@@ -28,6 +32,12 @@ export const $isScreenSharingStore = $meetingStore.map(meeting =>
     Boolean(meeting.sharingUserId),
 );
 
+export const $activeTabPanel = meetingDomain.createStore<number>(0);
+
+export const setActiveTabPanelEvent = meetingDomain.createEvent<number>(
+    'setActiveTabPanelEvent',
+);
+
 export const updateMeetingEvent = meetingDomain.createEvent<{
     meeting?: Meeting;
 }>('updateMeetingEvent');
@@ -47,3 +57,12 @@ export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
 >('joinMeetingInWaitingRoomFx');
 export const joinMeetingEvent =
     meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');
+
+export const joinMeetingWithLurkerEvent = meetingDomain.createEvent(
+    'joinMeetingWithLurkerEvent',
+);
+
+export const joinMeetingWithLurkerFx = meetingDomain.createEffect<
+    JoinMeetingWithLurkerFxPayload,
+    void
+>('joinMeetingWithLurkerFx');

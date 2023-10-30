@@ -114,6 +114,7 @@ const businessUserTabs: ValuesSwitcherItem<number>[] = [
 const defaultValues: IUploadTemplateFormData = {
     name: '',
     url: '',
+    youtubeUrl: '',
     previewUrls: [],
     description: '',
     customLink: '',
@@ -176,6 +177,8 @@ const Component = ({
     const isPublic = useWatch({ control, name: 'isPublic' });
     const background = useWatch({ control, name: 'background' });
     const previewUrl = useWatch({ control, name: 'url' });
+    const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
+
     const templateLinks = useWatch({
         control,
         name: 'templateLinks',
@@ -280,6 +283,7 @@ const Component = ({
                     top: link.position.top,
                     left: link.position.left,
                 })) || [],
+            youtubeUrl: template.mediaLink ? template.mediaLink.src : '',
         });
         onSetTemplateData();
     }, [template, isTemplateDataWasSet]);
@@ -312,6 +316,7 @@ const Component = ({
         }
 
         const savedProgress = savedTemplateProgress.current;
+        console.log('#Duy Phan console save', savedProgress);
         reset({
             name: savedProgress.name,
             url: savedProgress.url,
@@ -361,16 +366,25 @@ const Component = ({
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherItem<number>) => {
-            if (
-                item.value > TabsValues.Background &&
-                !(background || previewUrl)
-            ) {
-                addNotificationEvent({
-                    type: NotificationType.BackgroundFileShouldBeUploaded,
-                    message: 'uploadBackground.shouldBeUploaded',
-                    withErrorIcon: true,
-                });
-                return;
+            if (item.value > TabsValues.Background) {
+                if (youtubeUrl) {
+                    const response = await trigger(['youtubeUrl']);
+                    if (!response) {
+                        addNotificationEvent({
+                            type: NotificationType.BackgroundFileShouldBeUploaded,
+                            message: 'errors.invalidUrl',
+                            withErrorIcon: true,
+                        });
+                        return;
+                    }
+                } else if (!(background || previewUrl)) {
+                    addNotificationEvent({
+                        type: NotificationType.BackgroundFileShouldBeUploaded,
+                        message: 'createRoom.uploadBackground.shouldBeUploaded',
+                        withErrorIcon: true,
+                    });
+                    return;
+                }
             }
 
             if (item.value > TabsValues.Settings) {
@@ -397,7 +411,7 @@ const Component = ({
 
             onValueChange(item);
         },
-        [activeItem, onValueChange, background, previewUrl],
+        [activeItem, onValueChange, background, previewUrl, youtubeUrl],
     );
 
     const handleOpenCancelConfirmationDialog = useCallback(() => {

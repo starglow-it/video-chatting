@@ -9,6 +9,10 @@ import {
     joinMeetingFx,
     joinMeetingEvent,
     joinMeetingInWaitingRoomFx,
+    joinMeetingWithLurkerFx,
+    joinMeetingWithLurkerEvent,
+    $activeTabPanel,
+    setActiveTabPanelEvent,
 } from './model';
 import {
     $changeStreamStore,
@@ -20,13 +24,14 @@ import {
 } from '../../videoChat/localMedia/model';
 import {
     $isMeetingInstanceExists,
-    $isOwner,
     $isOwnerInMeeting,
     $meetingTemplateStore,
 } from '../meetingTemplate/model';
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
+import { $meetingRoleStore } from '../meetingRole/model';
+import { handleJoinMeetingWithLurker } from './handlers/handleJoinMeetingWithLurker';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -36,27 +41,44 @@ $meetingConnectedStore
     .on(setMeetingConnectedEvent, (state, data) => data)
     .reset(resetRoomStores);
 
+$activeTabPanel
+    .on(setActiveTabPanelEvent, (_, tab) => tab)
+    .reset(resetRoomStores);
+
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
+joinMeetingWithLurkerFx.use(handleJoinMeetingWithLurker);
 
 sample({
     clock: joinMeetingEvent,
     source: combine({
         isMicActive: $isMicActiveStore,
         isCameraActive: $isCameraActiveStore,
-        isOwner: $isOwner,
+        // isOwner: $isOwner,
         isOwnerInMeeting: $isOwnerInMeeting,
         isMeetingInstanceExists: $isMeetingInstanceExists,
         changeStream: $changeStreamStore,
         isAuraActive: $isAuraActive,
         currentVideoDevice: $currentVideoDeviceStore,
         currentAudioDevice: $currentAudioDeviceStore,
+        meetingRole: $meetingRoleStore,
     }),
     fn: (store, params) => ({
         ...store,
         ...params,
     }),
     target: joinMeetingFx,
+});
+
+sample({
+    clock: joinMeetingWithLurkerEvent,
+    source: combine({
+        isMicActive: $isMicActiveStore,
+        isCameraActive: $isCameraActiveStore,
+        changeStream: $changeStreamStore,
+        isAuraActive: $isAuraActive,
+    }),
+    target: joinMeetingWithLurkerFx,
 });
 
 /**

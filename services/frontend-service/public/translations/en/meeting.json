@@ -55,7 +55,8 @@
     "continue": "Continue",
     "kick": "Kick",
     "stay": "Stay",
-    "lockUp": "Lock Up"
+    "lockUp": "Lock Up",
+    "yes": "Yes"
   },
   "devices": {
     "turnOn":"Turn on",
@@ -107,6 +108,10 @@
     "cancelChanges": {
       "title": "Cancel changes?",
       "text": "If you leave now all the changes be lost"
+    },
+    "becomeParticipant": {
+      "title": "Become a Participant",
+      "text": "The Host is inviting you to be seen & heard by all"
     }
   },
   "modes": {
@@ -122,12 +127,16 @@
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
     "monetization": "Monetization",
-    "inMeeting": "In-meeting",
-    "payWall": "Paywall",
+    "inMeeting": "In Meeting Fee/Donation",
+    "tooltipParticipantInMeeting": "Once saved, Participants can send you this fee by clicking the dollar icon [$] on the bottom right",
+    "tooltipAudienceInMeeting": "Once saved, Audience can send you this fee by clicking the dollar icon [$] on the bottom right",
+    "payWall": "Entry Fee",
+    "tooltipParticipantPaywall": "Once saved, Participants members will be prompted to pay this fee to join meeting",
+    "tooltipAudiencePaywall": "Once saved, Audience members will be prompted to pay this fee to join meeting",
     "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",
-      "input": "Type here",
+      "input": "Post a Sticky Note",
       "unpin": "Unpin"
     },
     "getPaid": "Get Paid",
@@ -181,5 +190,18 @@
     "cancel": "Cancel",
     "save": "Save",
     "tooltip": "Please Save when done"
-  }
+  },
+  "people": {
+    "tooltip": "People"
+  },
+  "lurker": {
+    "buttons" : {
+      "requestBecomeParticipant": "Become a Participant"
+    }
+  },
+  "chat": {
+    "tooltip": "Chat"
+  },
+  "youtubeVideo": "Youtube Video",
+  "originalVideoSound": "Original video sound"
 }

@@ -10,6 +10,7 @@ import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // types
+import { CustomYoutubePlayer } from '@library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 import { TemplateBackgroundPreviewProps } from './TemplateBackgroundPreview.types';
 
 // utils
@@ -25,10 +26,13 @@ const Component = ({
     const { control } = useFormContext();
 
     const url = useWatch({ control, name: 'url' });
+    const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
 
     return (
         <CustomGrid className={styles.background}>
-            <ConditionalRender condition={Boolean(url) && isVideoFile(url)}>
+            <ConditionalRender
+                condition={Boolean(url) && isVideoFile(url) && !youtubeUrl}
+            >
                 <CustomVideoPlayer
                     src={url}
                     className={styles.player}
@@ -37,7 +41,9 @@ const Component = ({
                     isMuted={false}
                 />
             </ConditionalRender>
-            <ConditionalRender condition={Boolean(url) && !isVideoFile(url)}>
+            <ConditionalRender
+                condition={Boolean(url) && !isVideoFile(url) && !youtubeUrl}
+            >
                 <CustomImage
                     src={url ?? ''}
                     alt="background_preview"
@@ -46,6 +52,11 @@ const Component = ({
                     objectPosition="center"
                 />
             </ConditionalRender>
+            <CustomYoutubePlayer
+                url={youtubeUrl}
+                volume={0}
+                className={styles.player}
+            />
             <ConditionalRender condition={isFileUploading}>
                 <CustomPaper variant="black-glass" className={styles.loader}>
                     <CustomLoader />

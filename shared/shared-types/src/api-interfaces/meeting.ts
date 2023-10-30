@@ -46,7 +46,13 @@ export enum MeetingAvatarStatus {
 
 export enum MeetingAvatarRole {
   LoggedIn = 'logged_in',
-  NoLogin = 'no_login'
+  NoLogin = 'no_login',
+}
+
+export enum MeetingRole {
+  Host = 'host',
+  Participant = 'participant',
+  Lurker = 'lurker',
 }
 
 export enum MeetingAccessStatusEnum {
@@ -57,13 +63,28 @@ export enum MeetingAccessStatusEnum {
   RequestSent = 'requestSent',
   InMeeting = 'inMeeting',
   Rejected = 'rejected',
+  SwitchRoleSent = 'switchRoleSend',
   Kicked = 'Kicked',
   Left = 'Left',
-  Disconnected = 'disconnected'
+  Disconnected = 'disconnected',
+}
+
+export enum AnswerSwitchRoleAction {
+  Accept = 'accept',
+  Rejected = 'rejected',
 }
 export interface IMeetingAvatar {
   id?: string;
   resouce: IResouce;
   status: MeetingAvatarStatus;
   roles: MeetingAvatarRole[];
+}
+
+export enum MeetingReactionKind {
+  RollingEyes = 'RollingEyes',
+  Crying = 'Crying',
+  Smiling = 'Smiling',
+  Heart = 'Heart',
+  TearsOfJoy = 'TearsOfJoy',
+  Like = 'Like',
 }

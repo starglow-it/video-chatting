@@ -5,8 +5,8 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MediasController } from './medias.controller';
 import { MediasService } from './medias.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from 'src/services/config/config.module';
-import { ConfigClientService } from 'src/services/config/config.service';
+import { ConfigModule } from '../../services/config/config.module';
+import { ConfigClientService } from '../../services/config/config.service';
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
 import { AdminMediasController } from './admin-medias.controller';
 

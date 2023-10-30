@@ -14,6 +14,7 @@ export enum UserActionInMeeting {
 export type UserActionInMeetingParams = {
   [K in UserActionInMeeting]?: {
     condition: string | null;
+    errMessage: string;
     replaceItem: string | null;
   };
 };

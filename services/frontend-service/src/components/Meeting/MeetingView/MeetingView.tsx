@@ -39,6 +39,8 @@ import {
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
+import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -174,18 +176,35 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-
+    
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
                 templateType={meetingTemplate.templateType}
                 src={meetingTemplate.url}
+                mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                    <ConditionalRender
+                        condition={!!previewImage?.url && !isMobile}
+                    >
                         <CustomImage
                             className={styles.image}
                             src={previewImage?.url || ''}
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={
+                            isMobile && !!meetingTemplate?.mediaLink?.thumb
+                        }
+                    >
+                        <CustomImage
+                            className={styles.image}
+                            src={meetingTemplate?.mediaLink?.thumb || ''}
                             width="100%"
                             height="100%"
                             layout="fill"
@@ -223,6 +242,7 @@ const Component = () => {
                     <ConditionalRender condition={!isMobile}>
                         <MeetingManageAudio />
                     </ConditionalRender>
+
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
@@ -236,6 +256,8 @@ const Component = () => {
             <ScheduleMeetingDialog />
             <MobilePortraitStub />
             <InviteGuestsDialog />
+            <ConfirmBecomeParticipantDialog />
+            <DownloadIcsEventDialog />
         </CustomGrid>
     );
 };

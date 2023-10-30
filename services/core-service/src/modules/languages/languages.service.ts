@@ -5,7 +5,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Language, LanguageDocument } from '../../schemas/language.schema';
 
 import { ILanguage } from 'shared-types';
-import { GetModelQuery } from '../../types/custom';
+import { GetModelMultipleQuery } from '../../types/custom';
 
 @Injectable()
 export class LanguagesService {
@@ -21,7 +21,7 @@ export class LanguagesService {
   async find({
     query,
     session,
-  }: GetModelQuery<LanguageDocument>): Promise<LanguageDocument[]> {
+  }: GetModelMultipleQuery<LanguageDocument>): Promise<LanguageDocument[]> {
     return this.language.find(query, {}, { session: session?.session }).exec();
   }
 

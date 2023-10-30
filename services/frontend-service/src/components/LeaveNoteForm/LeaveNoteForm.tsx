@@ -27,10 +27,19 @@ import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { useStore } from 'effector-react';
+import { $profileStore, addNotificationEvent } from 'src/store';
+import { NotificationType } from 'src/store/types';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import styles from './LeaveNoteForm.module.scss';
-import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
+import {
+    $isLurker,
+    $meetingNotesStore,
+    sendMeetingNoteSocketEvent,
+} from '../../store/roomStores';
 import { simpleStringSchemaWithLength } from '../../validation/common';
 import { MAX_NOTE_CONTENT } from '../../const/general';
+import config from '../../const/config';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
@@ -78,7 +87,9 @@ type FormType = { note: string };
 const Component = () => {
     const { isMobile } = useBrowserDetect();
     const materialStyles = useStyles();
-
+    const meetingNotes = useStore($meetingNotesStore);
+    const isLurker = useStore($isLurker);
+    const profile = useStore($profileStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const methods = useForm({
@@ -92,8 +103,15 @@ const Component = () => {
 
     const handleKeyDown = (e: any) => {
         if (e.key === 'Enter' || e.keyCode === '13') {
-            sendMeetingNoteSocketEvent(getValues());
-            reset();
+            if (meetingNotes.length < 3) {
+                sendMeetingNoteSocketEvent(getValues());
+                reset();
+            } else {
+                addNotificationEvent({
+                    message: 'Notes is limited to 3 on screen',
+                    type: NotificationType.validationError,
+                });
+            }
         }
     };
 
@@ -131,24 +149,50 @@ const Component = () => {
                         justifyContent="center"
                     >
                         <ActionButton
-                            className={clsx(styles.actionButton)}
+                            className={clsx(styles.actionButton, {
+                                [styles.disabled]: isLurker && !!!profile.id,
+                            })}
                             Icon={<NotesIcon width="32px" height="32px" />}
                             onClick={changeExpand}
                         />
 
                         <CustomGrid flex={1}>
-                            <CustomInput
-                                nameSpace="meeting"
-                                translation="features.notes.input"
-                                className={clsx(
-                                    materialStyles.textField,
-                                    styles.textField,
-                                    { [styles.expanded]: isExpand },
-                                )}
-                                onKeyDown={handleKeyDown}
-                                {...restRegisterData}
-                                onChange={handleChange}
-                            />
+                            <ConditionalRender
+                                condition={!isLurker || !!profile.id}
+                            >
+                                <CustomInput
+                                    nameSpace="meeting"
+                                    translation="features.notes.input"
+                                    className={clsx(
+                                        materialStyles.textField,
+                                        styles.textField,
+                                        { [styles.expanded]: isExpand },
+                                    )}
+                                    onKeyDown={handleKeyDown}
+                                    {...restRegisterData}
+                                    onChange={handleChange}
+                                />
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={isLurker && !!!profile.id}
+                            >
+                                <CustomGrid
+                                    className={styles.fieldNoLogin}
+                                    display="flex"
+                                    alignItems="center"
+                                >
+                                    <span>
+                                        <a
+                                            href={`${config.frontendUrl}/register`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Join
+                                        </a>{' '}
+                                        to Post a Sticky Note
+                                    </span>
+                                </CustomGrid>
+                            </ConditionalRender>
                         </CustomGrid>
                     </CustomGrid>
                 </CustomPaper>

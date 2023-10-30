@@ -1,3 +1,4 @@
+import { MeetingRole } from 'shared-types';
 import { CustomMediaStream } from '../../../../types';
 
 export type JoinMeetingEventPayload = {
@@ -9,11 +10,20 @@ export type JoinMeetingEventPayload = {
 export type JoinMeetingFxPayload = JoinMeetingEventPayload & {
     isMicActive: boolean;
     isCameraActive: boolean;
-    isOwner: boolean;
+    meetingRole: MeetingRole;
     isOwnerInMeeting: boolean;
     isMeetingInstanceExists: boolean;
     changeStream: CustomMediaStream;
     isAuraActive: boolean;
+    currentVideoDevice: string;
+    currentAudioDevice: string;
+};
+
+export type JoinMeetingWithLurkerFxPayload = {
+    isMicActive: boolean;
+    isCameraActive: boolean;
+    changeStream: CustomMediaStream;
+    isAuraActive?: boolean;
     currentVideoDevice: string;
     currentAudioDevice: string;
 };

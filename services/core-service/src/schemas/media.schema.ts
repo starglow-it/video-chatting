@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose';
 import { PreviewImageDocument } from './preview-image.schema';
 import { MediaCategory, MediaCategoryDocument } from './media-category.schema';
 import { UserTemplate, UserTemplateDocument } from './user-template.schema';
+import { IMediaLink } from 'shared-types';
 
 @Schema()
 export class Media {
@@ -13,6 +14,12 @@ export class Media {
     ref: MediaCategory.name,
   })
   mediaCategory: MediaCategoryDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: null
+  })
+  templateId: number;
 
   @Prop({
     type: mongoose.Schema.Types.String,
@@ -30,6 +37,12 @@ export class Media {
     required: true,
   })
   previewUrls: PreviewImageDocument[];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: null,
+  })
+  thumb: IMediaLink['thumb'];
 
   @Prop({
     type: mongoose.Schema.Types.String,

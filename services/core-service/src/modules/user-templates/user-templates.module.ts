@@ -27,6 +27,8 @@ import { UserTemplatesService } from './user-templates.service';
 import { UserTemplatesController } from './user-templates.controller';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
 import { MediasModule } from '../medias/medias.module';
+import { UserTemplatesComponent } from './user-templates.component';
+import { TemplatePaymentsModule } from '../template-payments/template-payments.module';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { MediasModule } from '../medias/medias.module';
     MediasModule,
     AwsConnectorModule,
     RoomsStatisticsModule,
+    TemplatePaymentsModule,
     UserProfileStatisticModule,
     MongooseModule.forFeature([
       { name: UserTemplate.name, schema: UserTemplateSchema },
@@ -45,7 +48,7 @@ import { MediasModule } from '../medias/medias.module';
     ]),
   ],
   controllers: [UserTemplatesController],
-  providers: [UserTemplatesService],
-  exports: [UserTemplatesService],
+  providers: [UserTemplatesService, UserTemplatesComponent],
+  exports: [UserTemplatesService, UserTemplatesComponent],
 })
 export class UserTemplatesModule {}

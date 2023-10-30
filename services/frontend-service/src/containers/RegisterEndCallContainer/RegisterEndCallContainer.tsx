@@ -140,6 +140,11 @@ const Component = () => {
             <MeetingBackgroundVideo
                 templateType={lastTemplate?.templateType}
                 src={lastTemplate?.templateUrl}
+                mediaLink={{
+                    src: lastTemplate.templateUrl,
+                    thumb: '',
+                    platform: 'youtube',
+                }}
             >
                 <CustomImage
                     className={styles.image}

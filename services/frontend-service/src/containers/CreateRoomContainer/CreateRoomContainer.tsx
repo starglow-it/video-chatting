@@ -23,6 +23,7 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 
 // store
 import { adjustUserPositions } from 'shared-utils';
+import { mapToThumbYoutubeUrl } from 'src/utils/functions/mapToThumbYoutubeUrl';
 import {
     $isUploadTemplateBackgroundInProgress,
     $profileStore,
@@ -81,7 +82,6 @@ const Component = () => {
                     onSetUpdateUrl(
                         `${getCreateRoomUrl(response?.id || '')}?step=privacy`,
                     );
-
                     setTemplate(response);
                 }
             }
@@ -131,6 +131,13 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
+                mediaLink: data.youtubeUrl
+                    ? {
+                          src: data.youtubeUrl,
+                          thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                          platform: 'youtube',
+                      }
+                    : null,
             } as any;
 
             await editTemplateFx({

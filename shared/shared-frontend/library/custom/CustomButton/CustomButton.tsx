@@ -10,7 +10,7 @@ import { CustomButtonProps } from "./CustomButton.types";
 
 import styles from "./CustomButton.module.scss";
 
-type ComponentType = ButtonProps & CustomButtonProps & {variant?: ButtonProps['variant'] | "custom-cancel"};
+type ComponentType = ButtonProps & CustomButtonProps;
 
 const Component = (
   {

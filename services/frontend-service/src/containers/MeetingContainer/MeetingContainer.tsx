@@ -24,7 +24,7 @@ import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 // stores
 import { useToggle } from '@hooks/useToggle';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { Typography } from '@mui/material';
@@ -44,12 +44,14 @@ import {
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
+    $isLurker,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
     $localUserStore,
     $meetingTemplateStore,
     getMeetingTemplateFx,
+    getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
     initiateMeetingSocketConnectionEvent,
     joinMeetingEvent,
@@ -64,6 +66,7 @@ import {
     setIsAudioActiveEvent,
     setIsAuraActive,
     setIsCameraActiveEvent,
+    setRoleQueryUrlEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -112,6 +115,7 @@ const MeetingContainer = memo(() => {
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
@@ -120,8 +124,20 @@ const MeetingContainer = memo(() => {
 
     const { isMobile } = useBrowserDetect();
 
+    const roleUrl = router.query?.role as string;
+    const queryToken = router.query.token as string;
+
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
+
+    useEffect(() => {
+        if (roleUrl) {
+            setRoleQueryUrlEvent(roleUrl);
+        }
+        if (!!roleUrl && roleUrl !== MeetingRole.Lurker) {
+            router.push(NotFoundRoute);
+        }
+    }, [roleUrl]);
 
     useEffect(() => {
         initWindowListeners();
@@ -139,9 +155,7 @@ const MeetingContainer = memo(() => {
         },
     });
 
-    useSubscriptionNotification(
-        getClientMeetingUrl(router.query.token as string),
-    );
+    useSubscriptionNotification(getClientMeetingUrl(queryToken));
 
     useEffect(() => {
         (async () => {
@@ -150,7 +164,7 @@ const MeetingContainer = memo(() => {
             getSubscriptionWithDataFx({ subscriptionId: '' });
 
             const data: any = await getMeetingTemplateFx({
-                templateId: router.query.token as string,
+                templateId: queryToken,
                 subdomain: isSubdomain() ? window.location.origin : undefined,
             });
 
@@ -172,6 +186,7 @@ const MeetingContainer = memo(() => {
 
     useEffect(() => {
         getAvatarsMeetingEvent();
+        getPaymentMeetingEvent(queryToken);
     }, []);
 
     useEffect(() => {
@@ -214,7 +229,9 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                await initDevicesEventFxWithStore();
+                if (!isLurker) {
+                    await initDevicesEventFxWithStore();
+                }
                 await sendJoinWaitingRoomSocketEvent();
                 if (isOwner) {
                     if (isHasSettings) {
@@ -283,15 +300,27 @@ const MeetingContainer = memo(() => {
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender
-                condition={!!meetingTemplate.url && isSettingsChecked}
+                condition={
+                    (!!meetingTemplate.url || !!meetingTemplate.mediaLink) &&
+                    isSettingsChecked
+                }
             >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
-                    src={meetingTemplate.url}
+                    src={
+                        meetingTemplate.mediaLink?.src ??
+                        meetingTemplate.url ??
+                        ''
+                    }
                     videoClassName={styles.wrapperBackgroundMedia}
+                    mediaLink={null}
                 >
                     <CustomImage
-                        src={previewImage?.url ?? ''}
+                        src={
+                            meetingTemplate.mediaLink?.thumb ??
+                            previewImage?.url ??
+                            ''
+                        }
                         className={styles.wrapperBackgroundMedia}
                         layout="fill"
                     />

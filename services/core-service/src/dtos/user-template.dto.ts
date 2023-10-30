@@ -57,6 +57,10 @@ export class UserTemplateDTO implements IUserTemplate {
   maxParticipants: IUserTemplate['maxParticipants'];
 
   @Expose()
+  @Transform((data) => data.obj?.mediaLink)
+  mediaLink: IUserTemplate['mediaLink'];
+
+  @Expose()
   @Type(() => PreviewImageDTO)
   previewUrls: IUserTemplate['previewUrls'];
 
@@ -96,21 +100,6 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   customLink: IUserTemplate['customLink'];
-
-  @Expose()
-  isMonetizationEnabled: IUserTemplate['isMonetizationEnabled'];
-
-  @Expose()
-  templatePrice: IUserTemplate['templatePrice'];
-
-  @Expose()
-  templateCurrency: IUserTemplate['templateCurrency'];
-
-  @Expose()
-  paywallCurrency: IUserTemplate['paywallCurrency'];
-
-  @Expose()
-  paywallPrice: IUserTemplate['paywallPrice'];
 
   @Expose()
   isAudioAvailable: IUserTemplate['isAudioAvailable'];
@@ -168,4 +157,5 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   subdomain: IUserTemplate['subdomain'];
+
 }

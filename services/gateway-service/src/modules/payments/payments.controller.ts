@@ -28,12 +28,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { CreatePaymentRequest } from 'src/dtos/requests/create-payment.request';
+import { CreatePaymentRequest } from '../../dtos/requests/create-payment.request';
+import { PaymentIntentRestDto } from '../../dtos/response/payment-intent.dto';
 
 @ApiTags('Payments')
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(PaymentsController.name);
 
   constructor(
     private paymentsService: PaymentsService,
@@ -206,6 +207,7 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Payment Intent' })
   @ApiOkResponse({
+    type: PaymentIntentRestDto,
     description: 'Create Payment Intent',
   })
   @ApiForbiddenResponse({
@@ -227,22 +229,26 @@ export class PaymentsController {
         };
       }
 
+      const templatePayment = await this.coreService.getEnabledTemplatePayment({
+        userTemplateId: userTemplate.id,
+        paymentType: body.paymentType,
+        meetingRole: body.meetingRole,
+      });
+
+      const price = templatePayment.price;
+      const currency = templatePayment.currency;
+
       const user = await this.coreService.findUserById({
         userId: userTemplate.user.id,
       });
-
-      const price = body.isPaymentPaywall
-        ? userTemplate.paywallPrice
-        : userTemplate.templatePrice;
-      const currency = body.isPaymentPaywall
-        ? userTemplate.paywallCurrency
-        : userTemplate.templateCurrency;
 
       const paymentIntent = await this.paymentsService.createPaymentIntent({
         templatePrice: price,
         templateCurrency: currency?.toLowerCase(),
         stripeAccountId: user.stripeAccountId,
+        stripeSubscriptionId: user.stripeSubscriptionId,
         templateId: userTemplate.id,
+        meetingRole: body.meetingRole,
       });
 
       return {

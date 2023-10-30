@@ -12,5 +12,6 @@ export interface IMedia {
     name: string;
     previewUrls: IPreviewImage[];
     type: string;
-    userTemplate: IUserTemplate
+    userTemplate: IUserTemplate;
+    thumb: string;
 }

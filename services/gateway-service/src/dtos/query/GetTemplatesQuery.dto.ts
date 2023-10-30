@@ -20,7 +20,7 @@ export class GetTemplatesQueryDto {
   @Transform(({ value }) => toNumber(value, 0))
   @IsOptional()
   @IsNumber()
-  public skip;
+  public skip: number;
 
   @ApiProperty({
     type: Number,
@@ -29,14 +29,14 @@ export class GetTemplatesQueryDto {
   @Transform(({ value }) => toNumber(value, 0))
   @IsOptional()
   @IsNumber()
-  public limit;
+  public limit: number;
 
   @ApiProperty({
     type: String,
     required: false,
   })
   @IsOptional()
-  public userId;
+  public userId: string;
 
   @ApiProperty({
     type: Boolean,
@@ -45,7 +45,7 @@ export class GetTemplatesQueryDto {
   @Transform(({ value }) => toBoolean(value))
   @IsOptional()
   @IsBoolean()
-  public draft;
+  public draft: boolean;
 
   @ApiProperty({
     type: Boolean,
@@ -54,7 +54,7 @@ export class GetTemplatesQueryDto {
   @Transform(({ value }) => toBoolean(value))
   @IsOptional()
   @IsBoolean()
-  public isPublic;
+  public isPublic: boolean;
 
   @ApiProperty({
     type: String,
@@ -62,7 +62,7 @@ export class GetTemplatesQueryDto {
   })
   @IsOptional()
   @IsString()
-  public type;
+  public type: string;
 
   @ApiProperty({
     type: [String],
@@ -97,7 +97,7 @@ export class GetTemplatesQueryDto {
   })
   @IsOptional()
   @IsString()
-  public sort;
+  public sort: string;
 
   @ApiProperty({
     type: Number,
@@ -106,5 +106,5 @@ export class GetTemplatesQueryDto {
   @Transform(({ value }) => toNumber(value, 1))
   @IsOptional()
   @IsNumber()
-  public direction;
+  public direction: number;
 }

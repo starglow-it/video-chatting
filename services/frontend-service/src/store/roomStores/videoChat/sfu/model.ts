@@ -32,6 +32,9 @@ export const publishTracksFx = videoChatDomain.createEffect<
     PublishTracksPayload,
     void
 >('publishTracksFx');
+
+export const publishTracksEvent =
+    videoChatDomain.createEvent('publishTracksEvent');
 export const setSFUPermissionsFx = videoChatDomain.createEffect<
     ToggleDevicePayload & {
         userId: MeetingUser['id'];

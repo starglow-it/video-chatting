@@ -389,6 +389,9 @@ const Component = () => {
                               frontendConfig.baseDomain
                           }`
                         : '',
+                    mediaLink: commonTemplate?.draftUrl
+                        ? null
+                        : (undefined as any),
                 } as any;
 
                 if (dirtyFields.background) {

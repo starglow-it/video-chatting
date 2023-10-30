@@ -1,0 +1,43 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/rem.scss';
+
+.container {
+    height: auto;
+}
+
+.textField {
+    padding: 5px 10px;
+    height: 40px;
+    background-color: transparent;
+    border: 1px solid $primary-white;
+    color: $primary-white;
+    font-size: 12px;
+    border-radius: 8px;
+
+    :focus {
+        color: $primary-white;
+    }
+}
+
+.icon {
+    color: $primary-white;
+}
+
+.audioRange {
+    &.inactive {
+        color: $normal-gray-scale;
+    }
+
+    .icon {
+        color: #ffffff;
+        cursor: pointer;
+    }
+}
+
+.thumb {
+    width: rem(12px) !important;
+    height: rem(12px) !important;
+}
+.thumbRoot {
+    padding: 0;
+}

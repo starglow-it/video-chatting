@@ -1,12 +1,24 @@
-import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
-import { Meeting, MeetingUser, Profile } from '../../../types';
+import {
+    IUserTemplate,
+    MeetingAccessStatusEnum,
+    MeetingReactionKind,
+    MeetingRole,
+} from 'shared-types';
+import {
+    Meeting,
+    MeetingChat,
+    MeetingChatReaction,
+    MeetingUser,
+    Profile,
+} from '../../../types';
+import { MeetingPayment } from '../meetingPayment/type';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
     profileUserName: Profile['fullName'];
     profileAvatar: Profile['profileAvatar']['url'];
     templateId: IUserTemplate['id'];
-    isOwner: boolean;
+    meetingRole: MeetingRole;
     accessStatus: MeetingAccessStatusEnum;
     isAuraActive: boolean;
     maxParticipants: number;
@@ -50,6 +62,10 @@ export type EnterMeetingRequestResponse = {
     users?: MeetingUser[];
 };
 
+export type SendMessageChatResponse = {
+    message: MeetingChat;
+};
+
 export type CancelAccessMeetingRequestResponse = {
     user?: MeetingUser;
     meeting?: Meeting;
@@ -70,3 +86,35 @@ export type EnterWaitingRoomPayload = {
 export type SendReconnectMeetingPayload = {
     meetingUserId: string;
 };
+
+export type JoinLurkerMeetingPayload = {
+    meetingId: string;
+    username: string;
+    meetingAvatarId?: string;
+};
+
+export type SendMessageChatPayload = {
+    body: string;
+};
+
+export type SendReactionMessagePayload = {
+    meetingChatId: string;
+    kind: MeetingReactionKind;
+};
+
+export type SendReactionMessageReponse = {
+    reaction: MeetingChatReaction;
+};
+
+export type SendUnReactionMessagePayload = {
+    meetingChatId: string;
+    kind: MeetingReactionKind;
+};
+
+export type SendUnReactionMessageResponse = {
+    message: MeetingChat;
+};
+
+export type SendUpdatePaymentsMeetingPayload = MeetingPayment;
+
+export type SendUpdatePaymentsMeetingRespone = MeetingPayment;

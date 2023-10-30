@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingChatDocument } from './meeting-chat.schema';
 
 @Schema()
 export class MeetingUser {
@@ -84,15 +85,27 @@ export class MeetingUser {
   userPosition: { bottom: number; left: number };
 
   @Prop({
-    type: mongoose.Schema.Types.String
+    type: mongoose.Schema.Types.String,
   })
   avatarRole: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  meetingRole: string;
 
   @Prop({
     type: mongoose.Schema.Types.Number,
     default: 0,
   })
   userSize: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MeetingChat',
+    required: false,
+  })
+  lastOldMessage: MeetingChatDocument;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

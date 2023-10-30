@@ -8,8 +8,11 @@ import {
     TokenPair,
     IUserTemplate,
     ICommonUser,
+    MeetingRole,
+    MeetingReactionKind,
 } from 'shared-types';
 import { NextPageContext } from 'next';
+import { PaymentType } from 'shared-const';
 
 export type Profile = ICommonUser;
 
@@ -31,6 +34,7 @@ export type MeetingUser = {
     };
     userSize?: number;
     meetingAvatarId?: string;
+    meetingRole: MeetingRole;
 };
 
 export type Meeting = {
@@ -44,6 +48,24 @@ export type Meeting = {
     owner: MeetingUser['id'];
     ownerProfileId: MeetingUser['profileId'];
     users: MeetingUser[];
+    volume: number;
+    isMute: boolean;
+};
+
+export type MeetingChat = {
+    id: string;
+    sender: MeetingUser;
+    body: string;
+    meeting: Meeting;
+    createdAt: Date;
+    reactions: { [K in MeetingReactionKind]: string[] };
+};
+
+export type MeetingChatReaction = {
+    id: string;
+    meetingChat: MeetingChat;
+    user: MeetingUser;
+    kind: MeetingReactionKind;
 };
 
 export type AuthUserState = {
@@ -138,6 +160,7 @@ export type AppDialogsState = {
     downgradedSubscriptionDialog: boolean;
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
+    confirmBecomeParticipantDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -166,6 +189,7 @@ export enum AppDialogsEnum {
     downgradedSubscriptionDialog = 'downgradedSubscriptionDialog',
     meetingFinishedDialog = 'meetingFinishedDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
+    confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
 }
 
 export type DialogActionPayload = {
@@ -192,6 +216,7 @@ export enum HttpMethods {
     Get = 'GET',
     Delete = 'DELETE',
     Put = 'PUT',
+    Patch = 'PATCH',
 }
 
 export type ApiError = {
@@ -244,6 +269,7 @@ export enum NotificationType {
     validationError = 'validationError',
     UploadBackgroundSuccess = 'upload_background_success',
     DeleteMedia = 'DeleteMedia',
+    RequestBecomeParticipantSuccess = 'request_become_participant_success',
 }
 
 export type Notification = {
@@ -257,7 +283,7 @@ export type Notification = {
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
 export type PaymentIntentParams = {
-    isPaymentPaywall?: boolean;
+    paymentType: PaymentType;
 };
 export enum SocialLinkKeysEnum {
     Youtube = 'youtube',

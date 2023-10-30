@@ -11,10 +11,17 @@ import {
   UserActionInMeeting,
   UserActionInMeetingParams,
 } from '../../types';
-import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
+import {
+  IUserTemplate,
+  MeetingAccessStatusEnum,
+  MeetingRole,
+} from 'shared-types';
 import { Socket } from 'socket.io';
-import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
-import { CoreService } from 'src/services/core/core.service';
+import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
+import { CoreService } from '../../services/core/core.service';
+import { replaceItemInArray } from '../../utils/replaceItemInArray';
+import { UpdateModelSingleQuery } from '../../types/mongoose';
+import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 
 @Injectable()
 export class UsersService {
@@ -55,7 +62,7 @@ export class UsersService {
     populatePaths,
   }: {
     query: FilterQuery<MeetingUserDocument>;
-    session: ITransactionSession;
+    session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }): Promise<MeetingUserDocument> {
     return this.meetingUser
@@ -67,7 +74,7 @@ export class UsersService {
       .exec();
   }
 
-  async countMany(query) {
+  async countMany(query: FilterQuery<MeetingUserDocument>) {
     return this.meetingUser.find(query).count().exec();
   }
 
@@ -78,14 +85,16 @@ export class UsersService {
     return this.meetingUser.findById(id, {}, { session: session?.session });
   }
 
-  async findOneAndUpdate(
+  async findOneAndUpdate({
     query,
-    data: Partial<MeetingUserDocument>,
-    { session }: ITransactionSession,
-  ): Promise<MeetingUserDocument> {
+    data,
+    populatePaths,
+    session: { session },
+  }: UpdateModelSingleQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
     return this.meetingUser.findOneAndUpdate(query, data, {
       new: true,
       session,
+      populate: populatePaths,
     });
   }
 
@@ -114,65 +123,47 @@ export class UsersService {
     return this.meetingUser.find(query, {}, { session }).exec();
   }
 
-  async updateIndexUsers({
+  async updateSizeAndPositionForUser({
     userTemplate,
-    user,
+    userId,
     event,
-    session,
   }: {
     userTemplate: IUserTemplate;
-    user: MeetingUserDocument;
-    session: ITransactionSession;
+    userId: string;
     event: UserActionInMeeting;
   }) {
-    try {
-      console.log('update index user');
-      
-      const userId = user._id.toString();
-      const updateIndexParams: UserActionInMeetingParams = {
-        [UserActionInMeeting.Join]: {
-          condition: null,
-          replaceItem: userId,
-        },
-        [UserActionInMeeting.Leave]: {
-          condition: userId,
-          replaceItem: null,
-        },
-      };
+    const updateIndexParams: UserActionInMeetingParams = {
+      [UserActionInMeeting.Join]: {
+        condition: null,
+        errMessage: MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+        replaceItem: userId,
+      },
+      [UserActionInMeeting.Leave]: {
+        condition: userId,
+        errMessage: MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED,
+        replaceItem: null,
+      },
+    };
 
-      const params = updateIndexParams[event];
+    const index = replaceItemInArray(
+      userTemplate.indexUsers,
+      updateIndexParams[event].condition,
+      updateIndexParams[event].replaceItem,
+    );
 
-      const index = userTemplate.indexUsers.indexOf(params.condition);
-      if (index === -1) return;
+    if (!index && typeof index !== 'number') return;
 
-      userTemplate.indexUsers[index] = params.replaceItem;
+    await this.coreService.updateUserTemplate({
+      templateId: userTemplate.id,
+      userId,
+      data: {
+        indexUsers: userTemplate.indexUsers,
+      },
+    });
 
-      await this.coreService.updateUserTemplate({
-        templateId: userTemplate.id,
-        userId,
-        data: {
-          indexUsers: userTemplate.indexUsers,
-        },
-      });
-
-      if (event === UserActionInMeeting.Join) {
-        await this.updateOne(
-          {
-            _id: user._id,
-          },
-          {
-            userPosition: userTemplate.usersPosition[index],
-            userSize: userTemplate.usersSize[index],
-          },
-          session,
-        );
-      }
-    } catch (err) {
-      console.log({
-        message: err.message,
-        event,
-      });
-      return;
-    }
+    return {
+      position: userTemplate.usersPosition[index],
+      size: userTemplate.usersSize[index],
+    };
   }
 }

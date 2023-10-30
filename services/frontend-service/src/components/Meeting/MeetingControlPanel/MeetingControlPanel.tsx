@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -17,8 +17,6 @@ import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // components
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
-import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -26,16 +24,16 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // stores
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
-    $isMeetingHostStore,
     $isOwner,
     $isScreenSharingStore,
     $isTogglePayment,
+    $isToggleSchedulePanel,
     $isToggleUsersPanel,
-    $meetingTemplateStore,
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
     togglePaymentFormEvent,
+    toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
 } from '../../../store/roomStores';
 
@@ -44,25 +42,17 @@ import styles from './MeetingControlPanel.module.scss';
 
 // types
 import { MeetingUser } from '../../../store/types';
+import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
-    const isMeetingHost = useStore($isMeetingHostStore);
     const paymentIntent = useStore($paymentIntent);
-    const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const users = useStore($meetingUsersStore);
     const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isPortraitLayout = useStore($isPortraitLayout);
-
-    useEffect(() => {
-        (async () => {
-            if (!meetingTemplate.isMonetizationEnabled && paymentIntent?.id) {
-                cancelPaymentIntentWithData();
-            }
-        })();
-    }, [meetingTemplate.isMonetizationEnabled]);
+    const isScheduleOpen = useStore($isToggleSchedulePanel);
 
     const { isMobile } = useBrowserDetect();
 
@@ -86,30 +76,41 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
+    const toggleOutsideSchedulePanel = (e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleSchedulePanelEvent(false);
+    };
+
     const commonContent = useMemo(
         () => (
-            <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
-                <Fade in={isUsersOpen}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.mobile]: isMobile && isPortraitLayout,
-                        })}
-                    >
-                        <CustomScroll>
-                            {isMeetingHost && <MeetingAccessRequests />}
-                            <MeetingUsersList />
-                            <MeetingInviteParticipants
-                                onAction={
-                                    isMobile
-                                        ? handleCloseMobilePanel
-                                        : undefined
-                                }
-                            />
-                        </CustomScroll>
-                    </CustomPaper>
-                </Fade>
-            </ClickAwayListener>
+            <>
+                <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
+                    <Fade in={isUsersOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                            })}
+                        >
+                            <MeetingPeople />
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
+                    <Fade in={isScheduleOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.scheduleOpenPanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                            })}
+                        >
+                            <CustomScroll>
+                                <MeetingInviteParticipants />
+                            </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+            </>
         ),
         [
             isOwner,
@@ -119,6 +120,7 @@ const Component = () => {
             handleClosePayment,
             handleCloseMobilePanel,
             isPaymentOpen,
+            isScheduleOpen,
         ],
     );
 
@@ -150,7 +152,9 @@ const Component = () => {
                 {!isMobile ? (
                     <> {commonContent}</>
                 ) : (
-                    <ConditionalRender condition={isUsersOpen}>
+                    <ConditionalRender
+                        condition={isUsersOpen || isScheduleOpen}
+                    >
                         <CustomGrid className={styles.mobilePanelsWrapper}>
                             <CustomScroll>
                                 <CustomGrid

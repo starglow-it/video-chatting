@@ -1,8 +1,10 @@
 import {
   ICommonTemplate,
   ICommonUser,
+  ITemplatePayment,
   IUpdateTemplate,
   IUserTemplate,
+  MeetingRole,
 } from '../api-interfaces';
 import { FilterQuery, QueryParams } from '../common';
 
@@ -35,6 +37,31 @@ export type UpdateUserTemplatePayload = {
   templateId: IUserTemplate['id'];
   userId: ICommonUser['id'];
   data: Partial<IUpdateTemplate>;
+};
+
+export type UpdateTemplatePaymentsData = {
+  [K in ITemplatePayment['type']]?: {
+    [K in Exclude<MeetingRole, 'host'>]: Pick<
+      ITemplatePayment,
+      'currency' | 'enabled' | 'price'
+    >;
+  };
+};
+
+export type GetTemplatePaymentsPayload = {
+  userTemplateId: string;
+};
+
+export type GetTemplatePaymentPayload = {
+  paymentType: string;
+  userTemplateId: string;
+  meetingRole: MeetingRole
+};
+
+export type UpdateTemplatePaymentPayload = {
+  userTemplateId: IUserTemplate['id'];
+  userId: ICommonUser['id'];
+  data: UpdateTemplatePaymentsData;
 };
 
 export type CreateUserTemplateByIdPayload = {

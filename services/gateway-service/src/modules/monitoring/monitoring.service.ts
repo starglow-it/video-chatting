@@ -11,7 +11,7 @@ import {
 } from 'shared-types';
 // import { CoreBrokerPatterns } from 'shared-const';
 // import { GetMonitoringPayload } from 'shared-types';
-import { CoreService } from 'src/services/core/core.service';
+import { CoreService } from '../../services/core/core.service';
 
 @Injectable()
 export class MonitoringService {

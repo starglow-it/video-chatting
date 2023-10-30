@@ -45,12 +45,7 @@ export class PaymentsService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createPaymentIntent(
-    payload: Omit<
-      CreatePaymentIntentPayload,
-      'stripeSubscriptionId' | 'platformFee'
-    >,
-  ) {
+  async createPaymentIntent(payload: CreatePaymentIntentPayload) {
     const pattern = { cmd: PaymentsBrokerPatterns.CreatePaymentIntent };
 
     return this.client.send(pattern, payload).toPromise();

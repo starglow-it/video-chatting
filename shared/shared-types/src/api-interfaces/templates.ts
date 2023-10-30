@@ -6,18 +6,22 @@ import {
   TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
-import { IMeetingInstance } from './meeting';
+import { IMeetingInstance, MeetingRole } from './meeting';
 
 export enum RoomType {
   Normal = 'normal',
-  Featured = 'featured'
+  Featured = 'featured',
 }
 
-interface ITemplate{
+export type TemplateType = 'video' | 'image';
+
+interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
   authorName?: string;
   roomType: RoomType;
+  templateType: TemplateType;
+  mediaLink: IMediaLink;
   subdomain: string;
 }
 
@@ -45,7 +49,6 @@ export interface ICommonTemplate extends ITemplate {
   draft: boolean;
   isPublic: boolean;
   isDeleted?: boolean;
-  templateType: 'image' | 'video';
   isTemplatePurchased?: boolean;
   isAcceptNoLogin?: boolean;
 }
@@ -68,12 +71,7 @@ export interface IUserTemplate extends ITemplate {
   companyName: string;
   position: string;
   contactEmail: string;
-  isMonetizationEnabled: boolean;
   isAudioAvailable: boolean;
-  templatePrice: number;
-  templateCurrency: string;  
-  paywallPrice: number | null,
-  paywallCurrency: string,
   customLink: string;
   businessCategories: IBusinessCategory[];
   languages: ILanguage[];
@@ -88,7 +86,6 @@ export interface IUserTemplate extends ITemplate {
   isPublic: boolean;
   author?: string;
   isAcceptNoLogin?: boolean;
-  templateType: 'video' | 'image';
 }
 
 export interface IUpdateTemplate {
@@ -109,13 +106,9 @@ export interface IUpdateTemplate {
   indexUsers?: string[];
   maxParticipants?: number;
   languages?: string[];
-  isMonetizationEnabled?: boolean;
   isPublic?: boolean;
-  templatePrice?: number;
-  templateCurrency?: string;
-  paywallCurrency?: string;
-  paywallPrice?: number;
   meetingInstance?: IMeetingInstance;
+  mediaLink?: IMediaLink;
   links?: { item: string; position: { top: number; left: number } }[];
   socials: {
     youtube?: string;
@@ -133,4 +126,19 @@ export interface IUploadTemplateFile {
   url: string;
   mimeType: string;
   previewUrls: IPreviewImage[];
+}
+
+export interface ITemplatePayment {
+  userTemplate?: string;
+  currency: string;
+  price: number;
+  type: string;
+  meetingRole: Exclude<MeetingRole, 'host'>;
+  enabled: boolean;
+}
+
+export interface IMediaLink {
+  src: string;
+  thumb: string;
+  platform: string;
 }

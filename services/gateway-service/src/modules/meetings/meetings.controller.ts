@@ -46,8 +46,8 @@ import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { GetMeetingDetailParams } from '../../dtos/params/get-meeting-detail.param';
 import { GetMeetingDetailQuery } from '../../dtos/query/GetMeetingDetailQuery';
 import { GetMeetingAvatarsQueryDto } from '../../dtos/query/GetMeetingAvatarsQuery.dto';
-import { CommonMeetingAvatarResDto } from 'src/dtos/response/common-meeting-avatar.dto';
-import { CreateMeetingAvatarSwaggerProperty } from 'src/dtos/swagger-properties/meeting.swagger-properties';
+import { CommonMeetingAvatarResDto } from '../../dtos/response/common-meeting-avatar.dto';
+import { CreateMeetingAvatarSwaggerProperty } from '../../dtos/swagger-properties/meeting.swagger-properties';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { ResouceService } from '../../services/resouces/resouces.service';
 import { CreateMeetingAvatarRequest } from '../../dtos/requests/create-meeting-avatar.request';
@@ -171,18 +171,17 @@ export class MeetingsController {
   })
   @ApiFile(CreateMeetingAvatarSwaggerProperty)
   async createMeetingAvatar(
-    @Body() {roles}: CreateMeetingAvatarRequest,
+    @Body() { roles }: CreateMeetingAvatarRequest,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IMeetingAvatar>> {
     try {
-      
       const resouce = await this.resouceService.handleCreateResouce({ file });
       if (!resouce) {
         throw new BadRequestException('Resouce not found');
       }
       const meetingAvatar = await this.meetingService.createMeetingAvatar({
         resouceId: resouce.id,
-        roles
+        roles,
       });
       return {
         success: true,

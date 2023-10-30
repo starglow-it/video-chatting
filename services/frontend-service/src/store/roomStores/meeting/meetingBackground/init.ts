@@ -1,6 +1,7 @@
 import { combine, forward, sample } from 'effector';
 import { addNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
+import { resetRoomStores } from 'src/store/root';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
 import { handleGetBackgroundMeeting } from './handlers/handleGetBackground';
@@ -53,7 +54,8 @@ $backgroundMeetingStore
         ...state,
         medias: [...state.medias, data.media],
         count: state.count + 1,
-    }));
+    }))
+    .reset(resetRoomStores);
 
 $queryMediasBackgroundStore
     .on([setQueryMediasEvent], state => ({
@@ -61,11 +63,12 @@ $queryMediasBackgroundStore
         skip: state.skip + 1,
     }))
     .on(reloadMediasEvent, state => ({ ...state, skip: 0 }))
-    .reset(setCategoryEvent, deleteMediaMeetingFx.doneData);
+    .reset(setCategoryEvent, deleteMediaMeetingFx.doneData, resetRoomStores);
 
 $isLoadMoreMediasStore
     .on(setQueryMediasEvent, () => true)
-    .on(getBackgroundMeetingFx, () => false);
+    .on(getBackgroundMeetingFx, () => false)
+    .reset(resetRoomStores);
 
 sample({
     clock: setCategoryEvent,
@@ -93,13 +96,24 @@ sample({
         );
         return {
             templateId: meetingTemplateStore.id,
-            data: {
-                previewUrls: dataUpdate?.previewUrls.map(item => item.id),
-                url: dataUpdate?.url,
-                templateType: backgroundMeetingStore.medias.find(
-                    item => item.id === clock.mediaSelected,
-                )?.type,
-            },
+            data: dataUpdate?.thumb
+                ? {
+                      mediaLink: {
+                          src: dataUpdate?.url,
+                          thumb: dataUpdate?.thumb,
+                          platform: 'youtube',
+                      },
+                      url: '',
+                      previewUrls: []
+                  }
+                : {
+                      previewUrls: dataUpdate?.previewUrls.map(item => item.id),
+                      url: dataUpdate?.url,
+                      templateType: backgroundMeetingStore.medias.find(
+                          item => item.id === clock.mediaSelected,
+                      )?.type,
+                      mediaLink: null,
+                  },
         };
     },
     target: updateBackgroundMeetingFx,

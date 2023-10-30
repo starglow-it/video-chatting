@@ -19,8 +19,13 @@ export const $profileStore =
 export const $isBusinessSubscription = $profileStore.map(
     profile => profile.subscriptionPlanKey === PlanKeys.Business,
 );
+
 export const $isProfessionalSubscription = $profileStore.map(
     profile => profile.subscriptionPlanKey === PlanKeys.Professional,
+);
+
+export const $isConnectedStripe = $profileStore.map(
+    profile => profile.isStripeEnabled && profile.stripeAccountId,
 );
 
 export const setProfileEvent = profileDomain.createEvent<{ user?: Profile }>(

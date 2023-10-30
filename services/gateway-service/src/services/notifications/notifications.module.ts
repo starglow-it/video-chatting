@@ -13,7 +13,7 @@ import { ConfigModule } from '../config/config.module';
 // services
 import { ConfigClientService } from '../config/config.service';
 import { NotificationsService } from './notifications.service';
-import { MonitoringModule } from 'src/modules/monitoring/monitoring.module';
+import { MonitoringModule } from '../../modules/monitoring/monitoring.module';
 
 @Module({
   imports: [

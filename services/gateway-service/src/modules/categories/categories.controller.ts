@@ -28,7 +28,7 @@ import { CommonResponseDto } from '../../dtos/response/common-response.dto';
 import { UpdateBusinessCategoryParam } from '../../dtos/params/update-business-category.param';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { DeleteBusinessCategoriesRequest } from '../../dtos/requests/delete-business-categories.request';
-import { CreateBusinessCategoryRequest } from 'src/dtos/requests/create-business-category.request';
+import { CreateBusinessCategoryRequest } from '../../dtos/requests/create-business-category.request';
 
 @ApiTags('Bussiness Categories')
 @Controller('categories')

@@ -1,7 +1,8 @@
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { isMobile } from 'shared-utils';
 import { updateLocalUserEvent } from '../../../users/localUser/model';
 import {
+    joinLurkerMeetingSocketEvent,
     sendEnterMeetingRequestSocketEvent,
     sendStartMeetingSocketEvent,
 } from '../../sockets/init';
@@ -27,7 +28,7 @@ export const handleJoinMeting = async ({
     isAuraActive,
     isMicActive,
     isCameraActive,
-    isOwner,
+    meetingRole,
     isOwnerInMeeting,
     isMeetingInstanceExists,
     changeStream,
@@ -37,10 +38,14 @@ export const handleJoinMeting = async ({
         cameraStatus: isCameraActive ? 'active' : 'inactive',
     });
 
-    if (isOwner) {
+    if (meetingRole === MeetingRole.Host) {
         await sendStartMeetingSocketEvent();
     } else if (isMeetingInstanceExists && isOwnerInMeeting) {
-        await sendEnterMeetingRequestSocketEvent();
+        if (meetingRole === MeetingRole.Participant) {
+            await sendEnterMeetingRequestSocketEvent();
+        } else {
+            await joinLurkerMeetingSocketEvent();
+        }
     } else {
         updateLocalUserEvent({
             accessStatus: MeetingAccessStatusEnum.Waiting,
@@ -69,7 +74,7 @@ export const handleJoinMeting = async ({
 
     const clonedStream = changeStream?.clone();
 
-    if (!isMobile()) {
+    if (!isMobile() && meetingRole !== MeetingRole.Lurker) {
         BackgroundManager.applyBlur(clonedStream);
 
         BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {

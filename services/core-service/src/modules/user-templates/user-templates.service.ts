@@ -26,8 +26,11 @@ import { IUserTemplate, ICommonTemplate } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   CustomPopulateOptions,
-  GetModelQuery,
-  UpdateModelQuery,
+  GetModelByIdQuery,
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import {
@@ -75,15 +78,11 @@ export class UserTemplatesService {
     return this.userTemplate.create([data], { session });
   }
 
-  async findUserTemplateById({
+  async findById({
     id,
     session,
     populatePaths,
-  }: {
-    id: string;
-    session: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }): Promise<UserTemplateDocument> {
+  }: GetModelByIdQuery<UserTemplateDocument>): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findById(id, {}, { session: session?.session, populate: populatePaths })
       .exec();
@@ -108,7 +107,7 @@ export class UserTemplatesService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<UserTemplateDocument>): Promise<UserTemplateDocument> {
+  }: GetModelSingleQuery<UserTemplateDocument>): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findOne(query, {}, { session: session.session, populate: populatePaths })
       .exec();
@@ -128,7 +127,9 @@ export class UserTemplatesService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<UserTemplateDocument>): Promise<UserTemplateDocument[]> {
+  }: GetModelMultipleQuery<UserTemplateDocument>): Promise<
+    UserTemplateDocument[]
+  > {
     return this.userTemplate
       .find(
         query,
@@ -164,10 +165,7 @@ export class UserTemplatesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    UserTemplateDocument,
-    UserTemplateDocument
-  >): Promise<UserTemplateDocument> {
+  }: UpdateModelSingleQuery<UserTemplateDocument>): Promise<UserTemplateDocument> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
@@ -180,10 +178,7 @@ export class UserTemplatesService {
     query,
     data,
     session,
-  }: UpdateModelQuery<
-    UserTemplateDocument,
-    UserTemplateDocument
-  >): Promise<any> {
+  }: UpdateModelMultipleQuery<UserTemplateDocument>): Promise<unknown> {
     const options: QueryOptions = {
       session: session?.session,
     };

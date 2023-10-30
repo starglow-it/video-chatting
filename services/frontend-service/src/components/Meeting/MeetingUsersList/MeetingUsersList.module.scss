@@ -20,9 +20,9 @@
 
 .deleteUser {
   color: $primary-white;
-  height: rem(32px);
-  width: rem(32px);
-  border-radius: rem(8px);
+  height: rem(26px);
+  width: rem(26px);
+  border-radius: 50%;
 }
 
 .btnGroup {
@@ -32,9 +32,9 @@
 }
 
 .acceptUser {
-  height: rem(32px);
-  width: rem(32px);
-  border-radius: rem(8px);
+  height: rem(26px);
+  width: rem(26px);
+  border-radius: 50%;
 }
 
 .userName {
@@ -42,4 +42,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 500;
 }

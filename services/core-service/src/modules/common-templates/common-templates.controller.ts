@@ -8,7 +8,11 @@ import { Types } from 'mongoose';
 const ObjectId = Types.ObjectId;
 
 //  const
-import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
+import {
+  MediaNativeErrorEnum,
+  TEMPLATES_SERVICE,
+  TemplateBrokerPatterns,
+} from 'shared-const';
 
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
@@ -46,6 +50,9 @@ import {
 import { ICommonTemplate } from 'shared-types';
 import { EntityList } from 'shared-types';
 import { PriceValues } from 'shared-types';
+import { TemplatePaymentsService } from '../template-payments/template-payments.service';
+import { UserTemplatesComponent } from '../user-templates/user-templates.component';
+import { throwRpcError } from 'src/utils/common/throwRpcError';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -63,6 +70,8 @@ export class CommonTemplatesController {
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
     private mediaService: MediaService,
+    private readonly userTemplatesComponent: UserTemplatesComponent,
+    private readonly templatePaymentsService: TemplatePaymentsService,
   ) {}
 
   async onModuleInit() {
@@ -82,12 +91,10 @@ export class CommonTemplatesController {
         session,
       });
 
-      if (!mediaCategory) {
-        throw new RpcException({
-          message: 'Media category not found',
-          ctx: TEMPLATES_SERVICE,
-        });
-      }
+      throwRpcError(
+        !mediaCategory,
+        MediaNativeErrorEnum.MY_ROOM_CATEGORY_NOT_FOUND,
+      );
 
       return mediaCategory;
     } catch (err) {
@@ -313,14 +320,14 @@ export class CommonTemplatesController {
               : targetTemplate.isAcceptNoLogin,
           roomType: targetTemplate.roomType,
           subdomain: targetTemplate.subdomain,
+          mediaLink: targetTemplate.mediaLink,
         };
 
-        const [userTemplate] =
-          await this.userTemplatesService.createUserTemplate(
+        const userTemplate =
+          await this.userTemplatesComponent.createUserTemplate(
             templateData,
             session,
           );
-
         targetUser.templates.push(userTemplate);
 
         await targetUser.save({ session: session?.session });
@@ -361,16 +368,24 @@ export class CommonTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+          session,
         });
 
         const mediaCategory = await this.getMyRoomMediaCategory(session);
+        const url = userTemplate.mediaLink
+          ? userTemplate.mediaLink.src
+          : userTemplate.url;
 
         await this.mediaService.createMedia({
           data: {
             userTemplate,
-            url: userTemplate.url,
+            url,
             previewUrls: userTemplate.previewUrls,
+            templateId: userTemplate.templateId,
             mediaCategory,
+            ...(userTemplate.mediaLink && {
+              thumb: userTemplate.mediaLink.thumb,
+            }),
             type: userTemplate.templateType,
           },
           session,
@@ -394,7 +409,7 @@ export class CommonTemplatesController {
     @Payload() payload: UploadTemplateFilePayload,
   ): Promise<void> {
     try {
-      return withTransaction(this.connection, async () => {
+      return withTransaction(this.connection, async (session) => {
         const { url, id, mimeType } = payload;
 
         const previewImages =
@@ -415,6 +430,7 @@ export class CommonTemplatesController {
             draftPreviewUrls: imageIds,
             draftUrl: url,
           },
+          session,
         });
 
         return;
@@ -555,11 +571,11 @@ export class CommonTemplatesController {
 
         if (updateData.subdomain) {
           if (
-            (await this.commonTemplatesService.exists({
+            await this.commonTemplatesService.exists({
               query: {
                 subdomain: updateData.subdomain,
               },
-            }))
+            })
           ) {
             throw new RpcException({
               message: 'Subdomain existed',
@@ -595,10 +611,35 @@ export class CommonTemplatesController {
             previewUrls: updatedTemplate.previewUrls,
             businessCategories: updatedTemplate.businessCategories,
             url: updatedTemplate.url,
+            mediaLink: updatedTemplate.mediaLink,
             draft: updatedTemplate.draft,
           },
           session,
         });
+
+        const myRoomCategory = await this.getMyRoomMediaCategory(session);
+
+
+        await this.mediaService.updateMedias({
+          query: {
+            templateId: updatedTemplate.templateId,
+            mediaCategory: myRoomCategory._id,
+          },
+          data: {
+            thumb: updatedTemplate.mediaLink
+              ? updatedTemplate.mediaLink.thumb
+              : null,
+            previewUrls: updatedTemplate.mediaLink
+              ? []
+              : updatedTemplate.previewUrls,
+            url: updatedTemplate.mediaLink
+              ? updatedTemplate.mediaLink.src
+              : updatedTemplate.url,
+            type: updatedTemplate.templateType,
+          },
+          session,
+        });
+
 
         return plainToInstance(CommonTemplateDTO, template, {
           excludeExtraneousValues: true,
@@ -616,7 +657,7 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteCommonTemplate })
   async deleteCommonTemplate(
     @Payload() { templateId }: DeleteCommonTemplatePayload,
-  ): Promise<undefined> {
+  ) {
     try {
       return withTransaction(this.connection, async (session) => {
         const template =
@@ -655,10 +696,7 @@ export class CommonTemplatesController {
           session,
         });
 
-        await this.userTemplatesService.deleteUserTemplates({
-          query,
-          session,
-        });
+        await this.userTemplatesComponent.deleteUserTemplates(query, session);
 
         await this.commonTemplatesService.deleteCommonTemplate({
           query: {

@@ -1,4 +1,5 @@
 import { combine, sample } from 'effector-next';
+import { MeetingRole } from 'shared-types';
 import {
     $SFURoom,
     connectToSFUFx,
@@ -15,6 +16,7 @@ import {
     initSFUVideoChat,
     changeSFUActiveStreamEvent,
     changeSFUActiveStreamFx,
+    publishTracksEvent,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
@@ -34,6 +36,7 @@ import { handleStartSFUSharing } from './handlers/handleStartSFUSharing';
 import { handleStopSFUSharing } from './handlers/handleStopSFUSharing';
 import { handleChangeSFUStream } from './handlers/handleChangeSFUStream';
 import { updateMeetingSocketEvent } from '../../meeting/sockets/model';
+import { $meetingRoleStore } from '../../meeting/meetingRole/model';
 
 getLiveKitTokenFx.use(handleGetLiveKitToken);
 publishTracksFx.use(handlePublishTracks);
@@ -63,14 +66,16 @@ sample({
 });
 
 sample({
-    clock: connectToSFUFx.doneData,
+    clock: [connectToSFUFx.doneData, publishTracksEvent],
     source: combine({
         stream: $activeStreamStore,
         room: $SFURoom,
         localUser: $localUserStore,
         isCameraActive: $isCameraActiveStore,
         isMicActive: $isMicActiveStore,
+        role: $meetingRoleStore,
     }),
+    filter: ({ role }) => role !== MeetingRole.Lurker,
     target: publishTracksFx,
 });
 

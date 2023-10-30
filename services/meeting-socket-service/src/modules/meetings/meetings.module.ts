@@ -3,12 +3,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { MeetingsService } from './meetings.service';
 import { Meeting, MeetingSchema } from '../../schemas/meeting.schema';
-import { MeetingsGateway } from './meetings.gateway';
 import { UsersModule } from '../users/users.module';
-import { TasksModule } from '../tasks/tasks.module';
-import { CoreModule } from '../../services/core/core.module';
 import { MeetingTimeModule } from '../meeting-time/meeting-time.module';
 import { MeetingsCommonService } from './meetings.common';
+import { MeetingChatsModule } from '../meeting-chats/meeting-chats.module';
 
 @Module({
   imports: [
@@ -18,13 +16,12 @@ import { MeetingsCommonService } from './meetings.common';
         schema: MeetingSchema,
       },
     ]),
-    forwardRef(() => UsersModule),
-    TasksModule,
-    CoreModule,
     MeetingTimeModule,
+    UsersModule,
+    MeetingChatsModule,
   ],
   controllers: [],
-  providers: [MeetingsService, MeetingsGateway, MeetingsCommonService],
+  providers: [MeetingsService, MeetingsCommonService],
   exports: [MeetingsService, MeetingsCommonService],
 })
 export class MeetingsModule {}

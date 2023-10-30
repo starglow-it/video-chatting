@@ -14,7 +14,6 @@ import {
   withTransaction,
 } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from './meetings.service';
-import { TasksService } from '../tasks/tasks.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { userSerialization } from '../../dtos/response/common-user.dto';
@@ -23,9 +22,10 @@ import { TEventEmitter } from '../../types/socket-events';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Socket } from 'socket.io';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { wsError } from '../../utils/ws/wsError';
+import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
+import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';
 
 @Injectable()
 export class MeetingsCommonService {
@@ -34,8 +34,9 @@ export class MeetingsCommonService {
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
     private coreService: CoreService,
-    private taskService: TasksService,
     private usersService: UsersService,
+    private readonly meetingChatsService: MeetingChatsService,
+    private readonly meetingChatReactionsService: MeetingChatReactionsService,
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
@@ -91,6 +92,15 @@ export class MeetingsCommonService {
     meetingId,
     session,
   }) {
+    await this.meetingChatReactionsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
+
+    await this.meetingChatsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
     await this.usersService.deleteMany({ meeting: meetingId }, session);
 
     await this.meetingsService.deleteById({ meetingId }, session);
@@ -109,88 +119,25 @@ export class MeetingsCommonService {
     });
   }
 
-  async changeUsersPositions({
-    meetingId,
-    templateId,
-    emitToRoom,
-  }: {
-    meetingId: string;
-    templateId: string;
-    emitToRoom: (...args: TEventEmitter) => void;
-  }): Promise<void> {
-    return withTransaction(this.connection, async (session) => {
-      try {
-        const template = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        const usersTemplate = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        usersTemplate.indexUsers.forEach(async (userId, i) => {
-          const user = await this.usersService.findById(userId);
-          if (!user) return;
-
-          const userPosition = template?.usersPosition?.[i];
-          const userSize = template?.usersSize?.[i];
-
-          user.userPosition = userPosition;
-          user.userSize = userSize;
-
-          user.save();
-        });
-
-        const meetingUsers = await this.usersService.findUsers(
-          {
-            meeting: meetingId,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-          },
-          session,
-        );
-
-        const updatedMeeting = await this.meetingsService.findById(
-          meetingId,
-          session,
-          ['owner', 'users'],
-        );
-
-        if (!updatedMeeting) return;
-        const plainUsers = userSerialization(meetingUsers);
-        const plainMeeting = meetingSerialization(updatedMeeting);
-
-        emitToRoom(
-          `waitingRoom:${templateId}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
-
-        emitToRoom(
-          `meeting:${plainMeeting.id}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
-      } catch (err) {
-        wsError(null, err);
-      }
-    });
-  }
-
-  compareActiveWithMaxParicipants = async (meeting: MeetingDocument) => {
+  compareActiveWithMaxParicipants = async (
+    meeting: MeetingDocument,
+    role: 'lurker' | 'participant',
+  ) => {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
       accessStatus: {
         $in: [MeetingAccessStatusEnum.InMeeting],
       },
+      meetingRole: role,
     });
 
-    if (c === meeting.maxParticipants) return;
+    if (role === 'participant') {
+      if (c === meeting.maxParticipants) return;
+    }
+    else if(role === 'lurker'){
+      if (c >= 1000) return;
+    }
+    
     return c;
   };
 
@@ -198,87 +145,6 @@ export class MeetingsCommonService {
     return ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional].includes(
       user.subscriptionPlanKey,
     );
-  };
-
-  acceptUserJoinRoom = async ({
-    userId,
-    session,
-    meeting,
-    template,
-  }: {
-    userId: string;
-    session: ITransactionSession;
-    meeting: MeetingDocument;
-    template: IUserTemplate;
-  }) => {
-    const user = await this.usersService.findById(userId, session);
-
-    if (!user) return;
-
-    const usersTemplate = await this.coreService.findMeetingTemplateById({
-      id: meeting.templateId,
-    });
-
-    const indexUser = usersTemplate.indexUsers.indexOf(null);
-    if (indexUser === -1) return;
-
-    const updatedUser = await this.usersService.findOneAndUpdate(
-      {
-        _id: userId,
-        accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
-      },
-      {
-        accessStatus: MeetingAccessStatusEnum.InMeeting,
-        joinedAt: Date.now(),
-        userPosition: template?.usersPosition?.[indexUser],
-        userSize: template?.usersSize?.[indexUser],
-      },
-      session,
-    );
-
-    usersTemplate.indexUsers[indexUser] = user.id.toString();
-
-    await this.coreService.updateUserTemplate({
-      templateId: usersTemplate.id,
-      userId: user.id.toString(),
-      data: {
-        indexUsers: usersTemplate.indexUsers,
-      },
-    });
-
-    return userSerialization(updatedUser);
-  };
-
-  rejectUserJoinRoom = async ({
-    userId,
-    session,
-    emitToSocketId,
-  }: {
-    userId: string;
-    emitToSocketId: (...args: TEventEmitter) => void;
-    session: ITransactionSession;
-  }) => {
-    const user = await this.usersService.findByIdAndUpdate(
-      userId,
-      {
-        accessStatus: MeetingAccessStatusEnum.Rejected,
-      },
-      session,
-    );
-
-    if (!user) return;
-
-    const r = userSerialization(user);
-
-    emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
-      user: r,
-    });
-
-    emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
-      message: 'meeting.requestDenied',
-    });
-
-    return r;
   };
 
   handleUserLoggedInDisconnect = async ({
@@ -296,29 +162,24 @@ export class MeetingsCommonService {
   }) => {
     let profileUser = null;
     if (!user.profileId) return;
-    try {
-      profileUser = await this.coreService.findUserById({
-        userId: user.profileId,
-      });
+    profileUser = await this.coreService.findUserById({
+      userId: user.profileId,
+    });
 
-      await this.coreService.updateUserProfileStatistic({
-        userId: profileUser.id,
-        statisticKey: 'minutesSpent',
-        value: timeToAdd,
-      });
+    await this.coreService.updateUserProfileStatistic({
+      userId: profileUser.id,
+      statisticKey: 'minutesSpent',
+      value: timeToAdd,
+    });
 
-      if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
-        await this.handleTimeLimit({
-          profileId: profileUser.id,
-          meetingId,
-          meetingUserId: user._id.toString(),
-          maxProfileTime: profileUser.maxMeetingTime,
-          session,
-        });
-      }
-    } catch (err) {
-      console.error('Update meeting user profile error', err);
-      return;
+    if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
+      await this.handleTimeLimit({
+        profileId: profileUser.id,
+        meetingId,
+        meetingUserId: user._id.toString(),
+        maxProfileTime: profileUser.maxMeetingTime,
+        session,
+      });
     }
   };
 }

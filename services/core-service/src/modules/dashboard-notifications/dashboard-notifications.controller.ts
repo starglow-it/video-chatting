@@ -47,7 +47,7 @@ export class DashboardNotificationsController {
   ) {
     try {
       return withTransaction(this.connection, async (session) => {
-        const template = await this.userTemplatesService.findUserTemplateById({
+        const template = await this.userTemplatesService.findById({
           id: templateId,
           session,
         });

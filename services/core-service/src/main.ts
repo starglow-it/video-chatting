@@ -63,6 +63,8 @@ async function bootstrap() {
     await seeder.seedCreateGlobalCommonTemplate();
     await seeder.seedMediaCategories();
     await seeder.seedMyRoomMediasByUserTemplateAmount();
+    await seeder.syncDataInUserTemplates();
+    await seeder.seedTemplateIdForMedia();
   }
 
   usersController.startCheckSubscriptions();

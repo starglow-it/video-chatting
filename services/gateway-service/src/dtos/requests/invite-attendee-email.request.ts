@@ -1,10 +1,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IInviteAttendeeEmail } from 'shared-types';
+import { IInviteAttendeeEmail, MeetingRole } from 'shared-types';
 
 export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
-  @ApiProperty()
+  @ApiProperty({
+    type: [String],
+  })
   @IsString({ message: '', each: true })
   readonly userEmails: string[];
 
@@ -14,6 +16,20 @@ export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
   @IsString({
     message: 'Invalid meetingId value',
   })
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   readonly meetingId: string;
+
+  @IsNotEmpty({
+    message: 'Role must be present',
+  })
+  @IsString({
+    message: 'Invalid role value',
+  })
+  @ApiProperty({
+    type: String,
+    example: 'participant',
+  })
+  readonly role: MeetingRole.Participant | MeetingRole.Lurker;
 }

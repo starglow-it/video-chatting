@@ -3,8 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { IMonitoring } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { Monitoring, MonitoringDocument } from '../../schemas/monitoring.schema';
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import {
+  Monitoring,
+  MonitoringDocument,
+} from '../../schemas/monitoring.schema';
+import {
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class MonitoringService {
@@ -12,7 +19,11 @@ export class MonitoringService {
     @InjectModel(Monitoring.name) private monitoring: Model<MonitoringDocument>,
   ) {}
 
-  async find({ query, options, session }: GetModelQuery<MonitoringDocument>) {
+  async find({
+    query,
+    options,
+    session,
+  }: GetModelMultipleQuery<MonitoringDocument>) {
     return this.monitoring
       .find(
         query,
@@ -31,7 +42,7 @@ export class MonitoringService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<MonitoringDocument>): Promise<MonitoringDocument> {
+  }: GetModelSingleQuery<MonitoringDocument>): Promise<MonitoringDocument> {
     return this.monitoring
       .findOne(
         query,
@@ -60,10 +71,7 @@ export class MonitoringService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    MonitoringDocument,
-    MonitoringDocument
-  >): Promise<MonitoringDocument> {
+  }: UpdateModelSingleQuery<MonitoringDocument>): Promise<MonitoringDocument> {
     return this.monitoring.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,

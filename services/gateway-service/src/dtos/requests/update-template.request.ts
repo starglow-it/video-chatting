@@ -8,9 +8,10 @@ import {
   ValidateNested,
   IsBoolean,
   IsNumber,
+  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate, IBusinessCategory } from 'shared-types';
+import { IUpdateTemplate, IBusinessCategory, IMediaLink } from 'shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
@@ -74,6 +75,38 @@ class BusinessCategoryDTO {
   value: string;
 }
 
+class MediaLinkReqDto implements IMediaLink {
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'src must be a string'
+  })
+  src: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'thumb must be a string'
+  })
+  thumb: string;
+
+  @ApiProperty({
+    type: String,
+    default: true,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'platform must be a string'
+  })
+  platform: string;
+}
+
 export class UpdateTemplateRequest implements IUpdateTemplate {
   @ApiProperty({
     required: false,
@@ -109,6 +142,21 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Position must be string' })
   position: string;
 
+
+  @ApiProperty({
+    type: MediaLinkReqDto,
+    required: false,
+    example: {
+      src: 'https://123.youtube.com',
+      thumb: 'https://blabla.com',
+      platform: 'youtube'
+    }
+  })
+  @IsOptional()
+  @Type(() => MediaLinkReqDto)
+  mediaLink: IMediaLink;
+
+
   @ApiProperty({
     required: false,
     type: String,
@@ -132,46 +180,6 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsOptional()
   @IsString({ message: 'Custom link must be string' })
   customLink: string;
-
-  @ApiProperty({
-    required: false,
-    type: Boolean,
-  })
-  @IsOptional()
-  @IsBoolean({ message: 'isMonetizationEnabled must be boolean' })
-  isMonetizationEnabled: boolean;
-
-  @ApiProperty({
-    required: false,
-    type: Number,
-  })
-  @IsOptional()
-  @IsNumber({}, { message: 'templatePrice must be number' })
-  templatePrice: number;
-
-  @ApiProperty({
-    type: String,
-    required: false,
-  })
-  @IsOptional()
-  @IsString({ message: 'Currency must be string' })
-  templateCurrency: string;
-
-  @ApiProperty({
-    type: String,
-    required: false,
-  })
-  @IsOptional()
-  @IsString({ message: 'Paywall Currency must be string' })
-  paywallCurrency: string;
-
-  @ApiProperty({
-    required: false,
-    type: Number,
-  })
-  @IsOptional()
-  @IsNumber({}, { message: 'Paywall Price must be number' })
-  paywallPrice: number;
 
   @ApiProperty({
     required: false,

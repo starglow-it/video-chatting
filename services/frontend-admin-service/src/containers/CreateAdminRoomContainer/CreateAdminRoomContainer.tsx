@@ -302,13 +302,16 @@ const Component = () => {
                                   frontendConfig.baseDomain
                               }`
                             : '',
+                        mediaLink: commonTemplate?.draftUrl
+                            ? null
+                            : (undefined as any),
                     },
                 });
                 if (error) {
                     addNotificationEvent({
                         type: NotificationType.validationError,
                         message: error.message ?? '',
-                        withErrorIcon: true
+                        withErrorIcon: true,
                     });
                     return;
                 }
@@ -502,7 +505,7 @@ const Component = () => {
                         </CustomGrid>
 
                         <CustomPaper
-                            variant="black-glass"
+                            variant="elevation"
                             className={styles.paper}
                         >
                             <ValuesSwitcher<TabsValues, TabsLabels>

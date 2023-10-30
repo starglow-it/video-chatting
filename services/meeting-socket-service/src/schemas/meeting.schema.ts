@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingUserDocument } from './meeting-user.schema';
+import { DEFAULT_MEETING_VOLUME } from 'shared-const';
 
 @Schema()
 export class Meeting {
@@ -60,6 +61,18 @@ export class Meeting {
     ref: 'MeetingUser',
   })
   hostUserId: MeetingUserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: DEFAULT_MEETING_VOLUME,
+  })
+  volume: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isMute: boolean;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],

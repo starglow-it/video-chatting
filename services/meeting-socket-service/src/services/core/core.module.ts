@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import {
   Transport,
   ClientsModule,
@@ -11,6 +11,7 @@ import { ConfigClientService } from '../config/config.service';
 import { CORE_PROVIDER } from 'shared-const';
 import { ConfigModule } from '../config/config.module';
 
+@Global()
 @Module({
   imports: [
     ClientsModule.registerAsync([

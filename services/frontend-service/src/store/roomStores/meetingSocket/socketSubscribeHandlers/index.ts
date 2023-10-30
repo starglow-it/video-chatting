@@ -9,6 +9,10 @@ import { handleRemoveUsers } from './handleRemoveUsers';
 
 // utils
 import { emptyFunction } from '../../../../utils/functions/emptyFunction';
+import { handleReceiveAnswerSwitchRoleFromHost } from './handleReceiveAnswerSwitchRoleFromHost';
+import { handleReceiveAnswerSwitchRoleFromLurker } from './handleReceiveAnswerSwitchRoleFromLurker';
+import { handleReceiveRequestSwitchRoleByHost } from './handleReceiveRequestSwitchRoleByHost';
+import { handleReceiveRequestSwitchRoleByLurker } from './handleReceiveRequestSwitchRoleByLurker';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -21,6 +25,22 @@ const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
     [UsersSubscribeEvents.OnUpdateUsers, { handler: handleUpdateUsers }],
     [UsersSubscribeEvents.OnKickUser, { handler: handleKickUser }],
     [UsersSubscribeEvents.OnUpdateUser, { handler: handleUpdateUser }],
+    [
+        UsersSubscribeEvents.OnAnswerSwitchRoleByHost,
+        { handler: handleReceiveAnswerSwitchRoleFromHost },
+    ],
+    [
+        UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
+        { handler: handleReceiveAnswerSwitchRoleFromLurker },
+    ],
+    [
+        UsersSubscribeEvents.OnRequestSwitchRoleByHost,
+        { handler: handleReceiveRequestSwitchRoleByHost },
+    ],
+    [
+        UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
+        { handler: handleReceiveRequestSwitchRoleByLurker },
+    ],
 ]);
 
 export const getUsersSocketSubscribeHandler = (

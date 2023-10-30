@@ -20,6 +20,15 @@ import {
     UpdateMeetingTemplatePayload,
     EnterWaitingRoomPayload,
     SendReconnectMeetingPayload,
+    JoinLurkerMeetingPayload,
+    SendMessageChatPayload,
+    SendMessageChatResponse,
+    SendReactionMessagePayload,
+    SendReactionMessageReponse,
+    SendUnReactionMessagePayload,
+    SendUnReactionMessageResponse,
+    SendUpdatePaymentsMeetingPayload,
+    SendUpdatePaymentsMeetingRespone,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -77,3 +86,27 @@ export const sendReconnectMeetingEvent = createMeetingSocketEvent<
     SendReconnectMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.SendReconnectMeeting);
+export const joinMeetingLurkerEvent = createMeetingSocketEvent<
+    JoinLurkerMeetingPayload,
+    EnterMeetingRequestResponse
+>(MeetingSocketEmitters.JoinWithLurker);
+
+export const sendMeetingChatEvent = createMeetingSocketEvent<
+    SendMessageChatPayload,
+    SendMessageChatResponse
+>(MeetingSocketEmitters.SendMessage);
+
+export const sendMeetingReactionEvent = createMeetingSocketEvent<
+    SendReactionMessagePayload,
+    SendReactionMessageReponse
+>(MeetingSocketEmitters.SendReactionMessage);
+
+export const sendMeetingUnReactionEvent = createMeetingSocketEvent<
+    SendUnReactionMessagePayload,
+    SendUnReactionMessageResponse
+>(MeetingSocketEmitters.SendUnReactionMessage);
+
+export const sendUpdatePaymentsMeetingEvent = createMeetingSocketEvent<
+    SendUpdatePaymentsMeetingPayload,
+    SendUpdatePaymentsMeetingRespone
+>(TemplatesSocketEmitters.UpdatePaymentTemplate);

@@ -28,7 +28,7 @@ import {
 } from 'src/store';
 
 // styles
-import { ISocialLink } from 'shared-types';
+import { ISocialLink, MeetingRole } from 'shared-types';
 import { customTemplateLinkSchema } from 'shared-frontend/validation';
 import styles from './MeetingSettingsPanel.module.scss';
 
@@ -62,6 +62,7 @@ import {
     $isEditTemplateOpenStore,
     $isMeetingInfoOpenStore,
     $isOwner,
+    $roleQueryUrlStore,
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
@@ -89,6 +90,7 @@ const Component = ({
     const businessCategories = useStore($businessCategoriesStore);
 
     const isOwner = useStore($isOwner);
+    const role = useStore($roleQueryUrlStore);
 
     const router = useRouter();
 
@@ -143,13 +145,17 @@ const Component = ({
 
     useEffect(() => {
         (async () => {
-            const roomUrl = getClientMeetingUrlWithDomain(
+            let roomUrl = getClientMeetingUrlWithDomain(
                 template.customLink || template.id,
             );
 
+            if (role === MeetingRole.Lurker && !isOwner) {
+                roomUrl = `${roomUrl}?role=${role}`;
+            }
+
             await Router.push(roomUrl, roomUrl, { shallow: true });
         })();
-    }, [template.customLink, template.id]);
+    }, [template.customLink, template.id, isOwner, role]);
 
     const dirtyFieldsCount = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

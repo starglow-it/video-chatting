@@ -9,6 +9,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // types
 import { isMobile } from 'shared-utils';
 import CustomVideoPlayer from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
+import { CustomYoutubePlayer } from '@library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
@@ -16,6 +17,7 @@ import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
     $isScreenSharingStore,
+    $meetingStore,
 } from '../../../store/roomStores';
 
 // styles
@@ -26,18 +28,22 @@ const Component = ({
     src,
     templateType,
     videoClassName = '',
+    mediaLink,
 }: MeetingBackgroundVideoProps) => {
     const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const { volume, isMute } = useStore($meetingStore);
 
     return (
-        <ConditionalRender condition={Boolean(src)}>
+        <ConditionalRender condition={!!src || !!mediaLink}>
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
                 <ConditionalRender
-                    condition={templateType === 'video' && !isMobile()}
+                    condition={
+                        templateType === 'video' && !mediaLink && !isMobile()
+                    }
                 >
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
@@ -47,6 +53,16 @@ const Component = ({
                         className={styles.player}
                     />
                 </ConditionalRender>
+
+                <ConditionalRender condition={!isMobile()}>
+                    <CustomYoutubePlayer
+                        url={mediaLink?.src ?? ''}
+                        className={styles.player}
+                        volume={volume}
+                        isMute={isMute}
+                    />
+                </ConditionalRender>
+
                 {children}
             </CustomGrid>
         </ConditionalRender>

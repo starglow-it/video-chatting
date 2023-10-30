@@ -22,9 +22,25 @@ import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon'
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { UploadTemplateFileProps } from '@components/TemplateManagement/UploadTemplateFile/types';
 import { Translation } from '@library/common/Translation/Translation';
-import { Notification, NotificationType } from '../../../store/types';
 
 // const
+
+// store
+
+// style
+import { CustomInput } from '@library/custom/CustomInput/CustomInput';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { InputAdornment } from '@mui/material';
+import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
+import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
+import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
+import { useToggle } from '@hooks/useToggle';
+import styles from './UploadTemplateFile.module.scss';
+import {
+    $isUploadTemplateBackgroundInProgress,
+    addNotificationEvent,
+    uploadUserTemplateFileFx,
+} from '../../../store';
 import {
     ACCEPT_MIMES,
     ACCEPT_MIMES_IMAGE,
@@ -34,25 +50,31 @@ import {
     MAX_SIZE_VIDEO,
     MAX_SIZE_VIDEO_MB,
 } from '../../../const/templates/file';
-
-// store
-import {
-    $isUploadTemplateBackgroundInProgress,
-    addNotificationEvent,
-    uploadUserTemplateFileFx,
-} from '../../../store';
-
-// style
-import styles from './UploadTemplateFile.module.scss';
+import { Notification, NotificationType } from '../../../store/types';
 
 const Component = ({ onNextStep }: UploadTemplateFileProps) => {
-    const { setValue, control } = useFormContext<IUploadTemplateFormData>();
+    const {
+        setValue,
+        control,
+        register,
+        setError,
+        clearErrors,
+        formState: { errors },
+    } = useFormContext<IUploadTemplateFormData>();
 
     const background = useWatch<IUploadTemplateFormData>({
         control,
         name: 'background',
     });
     const url = useWatch<IUploadTemplateFormData>({ control, name: 'url' });
+
+    const { onChange: onChangeYoutubeUrl, ...youtubeUrlProps } =
+        register('youtubeUrl');
+
+    const youtubeUrl = useWatch<IUploadTemplateFormData>({
+        control,
+        name: 'youtubeUrl',
+    });
 
     const isUploadTemplateFilePending = useStore(
         $isUploadTemplateBackgroundInProgress,
@@ -61,11 +83,14 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
         uploadUserTemplateFileFx.pending,
     );
 
+    const { value: isShowBox, onSwitchOn, onSwitchOff } = useToggle(false);
+
     const generateFileUploadError = useCallback(
         (rejectedFiles: FileRejection[], total: number) => {
             if (!rejectedFiles.length) {
                 return;
             }
+            onSwitchOff();
 
             if (total > 1) {
                 addNotificationEvent({
@@ -139,8 +164,9 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 );
                 return;
             }
-
+            onSwitchOff();
             setValue('background', file);
+            setValue('youtubeUrl', '');
         },
         [generateFileUploadError],
     );
@@ -154,6 +180,28 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     });
 
     const { onClick, ...rootProps } = getRootProps();
+
+    const errorYoutubeUrl = errors?.youtubeUrl?.message ?? '';
+
+    const isHasYoutubeUrl = hasYoutubeUrlRegex.test(youtubeUrl);
+
+    const handleChangeYoutubeUrl = (e: any) => {
+        const newValue = e.target.value;
+        if (!hasYoutubeUrlRegex.test(newValue)) {
+            setError('youtubeUrl', {
+                type: 'valid',
+                message: 'Youtube Link is invalid',
+            });
+        } else {
+            if (url && background) {
+                setValue('background', undefined);
+                setValue('url', '');
+            }
+
+            errorYoutubeUrl && clearErrors('youtubeUrl');
+        }
+        onChangeYoutubeUrl(e);
+    };
 
     return (
         <CustomGrid
@@ -189,86 +237,190 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 </CustomGrid>
             </ConditionalRender>
 
-            <ConditionalRender condition={!isDragActive && !url && !background}>
+            <ConditionalRender condition={!isDragActive}>
                 <CustomGrid
                     container
-                    direction="column"
+                    direction="row"
                     alignItems="center"
                     justifyContent="center"
-                    className={styles.uploadDescription}
                 >
-                    <CustomTypography
-                        variant="h2bold"
-                        nameSpace="createRoom"
-                        translation="uploadBackground.title"
-                        className={styles.title}
-                    />
-                    <CustomTypography
-                        color="colors.grayscale.semidark"
-                        nameSpace="createRoom"
-                        translation="uploadBackground.description"
-                        className={styles.description}
-                    />
-                    <CustomTooltip
-                        arrow
-                        open
-                        placement="bottom"
-                        variant="black-glass"
-                        title={
-                            <CustomGrid
-                                container
-                                direction="column"
-                                alignItems="center"
-                                gap={1}
+                    <ConditionalRender
+                        condition={
+                            (!url && !background && !isHasYoutubeUrl) ||
+                            isShowBox
+                        }
+                    >
+                        <CustomGrid
+                            flex={1}
+                            height={370}
+                            display="flex"
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                            className={styles.uploadDescription}
+                        >
+                            <CustomTypography
+                                variant="h2bold"
+                                nameSpace="createRoom"
+                                translation="uploadBackground.title"
+                                className={styles.title}
+                            />
+                            <CustomTypography
+                                color="colors.grayscale.semidark"
+                                nameSpace="createRoom"
+                                translation="uploadBackground.description"
+                                className={styles.description}
+                            />
+                            <CustomTooltip
+                                arrow
+                                open
+                                placement="bottom"
+                                variant="black-glass"
+                                title={
+                                    <CustomGrid
+                                        container
+                                        direction="column"
+                                        alignItems="center"
+                                        gap={1}
+                                    >
+                                        <CustomTypography
+                                            variant="body2bold"
+                                            nameSpace="createRoom"
+                                            translation="uploadBackground.tip.title"
+                                        />
+                                        <CustomGrid
+                                            item
+                                            container
+                                            direction="column"
+                                            alignItems="center"
+                                        >
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.resolution"
+                                            />
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.imageRestricts"
+                                                options={{
+                                                    maxSize: MAX_SIZE_IMAGE_MB,
+                                                }}
+                                            />
+                                            <CustomTypography
+                                                variant="body2"
+                                                nameSpace="createRoom"
+                                                translation="uploadBackground.tip.videoRestricts"
+                                                options={{
+                                                    maxSize: MAX_SIZE_VIDEO_MB,
+                                                }}
+                                            />
+                                        </CustomGrid>
+                                    </CustomGrid>
+                                }
+                                popperClassName={styles.popper}
                             >
-                                <CustomTypography
-                                    variant="body2bold"
-                                    nameSpace="createRoom"
-                                    translation="uploadBackground.tip.title"
+                                <CustomButton
+                                    label={
+                                        <Translation
+                                            nameSpace="createRoom"
+                                            translation="uploadBackground.actions.upload"
+                                        />
+                                    }
+                                    className={styles.button}
+                                    onClick={onClick}
                                 />
+                            </CustomTooltip>
+                        </CustomGrid>
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={
+                            (!isUploadTemplateFilePending &&
+                                !isUpdateMeetingTemplateFilePending &&
+                                !url &&
+                                !background) ||
+                            isShowBox
+                        }
+                    >
+                        <CustomGrid
+                            flex={1}
+                            height={370}
+                            display="flex"
+                            direction="column"
+                            justifyContent="flex-start"
+                            alignItems="center"
+                        >
+                            <CustomTypography
+                                variant="h2bold"
+                                nameSpace="createRoom"
+                                translation="youtubeBackground.title"
+                                className={styles.title}
+                            />
+                            <CustomTypography
+                                color="colors.grayscale.semidark"
+                                nameSpace="createRoom"
+                                translation="youtubeBackground.description"
+                                className={styles.description}
+                            />
+                            <CustomPaper
+                                variant="black-glass"
+                                className={styles.paper}
+                            >
                                 <CustomGrid
-                                    item
                                     container
-                                    direction="column"
+                                    gap={3}
                                     alignItems="center"
+                                    justifyContent="center"
                                 >
-                                    <CustomTypography
-                                        variant="body2"
-                                        nameSpace="createRoom"
-                                        translation="uploadBackground.tip.resolution"
-                                    />
-                                    <CustomTypography
-                                        variant="body2"
-                                        nameSpace="createRoom"
-                                        translation="uploadBackground.tip.imageRestricts"
-                                        options={{ maxSize: MAX_SIZE_IMAGE_MB }}
-                                    />
-                                    <CustomTypography
-                                        variant="body2"
-                                        nameSpace="createRoom"
-                                        translation="uploadBackground.tip.videoRestricts"
-                                        options={{ maxSize: MAX_SIZE_VIDEO_MB }}
+                                    <CustomGrid
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={1}
+                                    >
+                                        <YoutubeIcon
+                                            width="27px"
+                                            height="27px"
+                                        />
+                                        <CustomTypography
+                                            nameSpace="meeting"
+                                            translation="youtubeVideo"
+                                            fontSize={15}
+                                            color="colors.white.primary"
+                                            fontWeight="bold"
+                                            textAlign="center"
+                                        />
+                                    </CustomGrid>
+                                    <CustomInput
+                                        autoComplete="off"
+                                        color="secondary"
+                                        placeholder="Paste a Youtube link here"
+                                        error={errorYoutubeUrl}
+                                        {...youtubeUrlProps}
+                                        onChange={handleChangeYoutubeUrl}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <CopyLinkIcon
+                                                        width="23px"
+                                                        height="23px"
+                                                        className={styles.icon}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        }}
                                     />
                                 </CustomGrid>
-                            </CustomGrid>
-                        }
-                        popperClassName={styles.popper}
-                    >
-                        <CustomButton
-                            label={
-                                <Translation
-                                    nameSpace="createRoom"
-                                    translation="uploadBackground.actions.upload"
-                                />
-                            }
-                            className={styles.button}
-                            onClick={onClick}
-                        />
-                    </CustomTooltip>
+                            </CustomPaper>
+                        </CustomGrid>
+                    </ConditionalRender>
                 </CustomGrid>
             </ConditionalRender>
 
-            <ConditionalRender condition={Boolean(background) || Boolean(url)}>
+            <ConditionalRender
+                condition={
+                    Boolean(background) || Boolean(url) || isHasYoutubeUrl
+                }
+            >
                 <CustomGrid
                     container
                     gap={1.5}
@@ -291,7 +443,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                                 />
                             }
                             className={styles.button}
-                            onClick={onClick}
+                            onClick={onSwitchOn}
                         />
                     </ConditionalRender>
                     <ActionButton

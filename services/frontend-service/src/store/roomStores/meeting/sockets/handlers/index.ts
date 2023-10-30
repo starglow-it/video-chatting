@@ -1,4 +1,7 @@
-import { MeetingSubscribeEvents } from '../../../../../const/socketEvents/subscribers';
+import {
+    MeetingSubscribeEvents,
+    TemplateSubscribeEvents,
+} from '../../../../../const/socketEvents/subscribers';
 import { handleMeetingEnterRequest } from './handleMeetingEnterRequest';
 import { handleMeetingUserAccepted } from './handleMeetingUserAccepted';
 import { handleUpdateMeeting } from './handleUpdateMeeting';
@@ -11,6 +14,10 @@ import { handlePlaySound } from './handlePlaySound';
 import { handleMeetingFinished } from './handleMeetingFinished';
 import { handleMeetingTimeLimit } from './handleMeetingTimeLimit';
 import { emptyFunction } from '../../../../../utils/functions/emptyFunction';
+import { handleReceiveMessage } from './handleReceiveMessage';
+import { handleReceiveReaction } from './handleReceiveReaction';
+import { handleReceiveUnReaction } from './handleReceiveUnReaction';
+import { handleReceiveUpdatePaymentMeeting } from './handleReceiveUpdatePaymentMeeting';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -85,10 +92,44 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
                 handler: handleMeetingTimeLimit,
             },
         ],
+        [
+            MeetingSubscribeEvents.OnReceiveMessage,
+            {
+                handler: handleReceiveMessage,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveReaction,
+            {
+                handler: handleReceiveReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiceUnReaction,
+            {
+                handler: handleReceiveUnReaction,
+            },
+        ],
     ]);
+
+const MEETING_TEMPLATE_SUBSCRIBE_HANDLERS_REGISTRY: Map<
+    TemplateSubscribeEvents,
+    SocketHandlerData
+> = new Map([
+    [
+        TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
+        { handler: handleReceiveUpdatePaymentMeeting },
+    ],
+]);
 
 export const getMeetingSocketSubscribeHandler = (
     eventName: MeetingSubscribeEvents,
 ): SocketHandlerData['handler'] =>
     MEETING_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler ||
+    emptyFunction;
+
+export const getMeetingTemplateSocketSubscribeHandler = (
+    eventName: TemplateSubscribeEvents,
+): SocketHandlerData['handler'] =>
+    MEETING_TEMPLATE_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler ||
     emptyFunction;

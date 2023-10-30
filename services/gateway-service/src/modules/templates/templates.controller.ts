@@ -33,10 +33,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
+import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
 
 @ApiTags('Common Templates')
 @Controller('templates')
@@ -58,7 +58,6 @@ export class TemplatesController {
     description: 'Forbidden',
   })
   async getCommonTemplates(
-    @Request() req,
     @Query() query: GetTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
@@ -79,9 +78,9 @@ export class TemplatesController {
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
           isDeleted: false,
-          ...(draft !== undefined ? { draft } : {}),
-          ...(isPublic !== undefined ? { isPublic } : {}),
-          ...(type ? { type } : {}),
+          ...(draft !== undefined && { draft }),
+          ...(isPublic !== undefined && { isPublic }),
+          ...(type && { type }),
           roomType,
           businessCategories,
           subdomain: isHaveSubdomain ? { $ne: '' } : '',
@@ -192,11 +191,10 @@ export class TemplatesController {
     }),
   )
   async editTemplate(
-    @Request() req,
     @Param('templateId') templateId: string,
-    @Body() templateData: Partial<IUpdateTemplate>,
+    @Body() templateData: UpdateTemplateRequest,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<ResponseSumType<any>> {
+  ): Promise<ResponseSumType<ICommonTemplate>> {
     try {
       if (!templateId) {
         return {

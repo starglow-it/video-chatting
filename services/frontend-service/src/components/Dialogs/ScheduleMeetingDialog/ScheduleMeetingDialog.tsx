@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -21,6 +21,8 @@ import CustomDivider from 'shared-frontend/library/custom/CustomDivider/CustomDi
 import CustomFade from 'shared-frontend/library/custom/CustomFade/CustomFade';
 import CustomButton from 'shared-frontend/library/custom/CustomButton/CustomButton';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -92,6 +94,8 @@ const Component = () => {
     );
     const [userEmails, setUserEmails] = useState<string[]>([]);
 
+    const refRole = useRef<any>(null);
+
     const {
         values: { isSettingsOpen, isInviteOpen },
         onSwitchOn: handleOpenOption,
@@ -155,6 +159,7 @@ const Component = () => {
                     comment: data.comment,
                     timeZone: data.timeZone,
                     userEmails,
+                    role: refRole.current?.getValue(),
                 });
 
                 handleClose();
@@ -267,6 +272,12 @@ const Component = () => {
                                     />
                                 </CustomFade>
                             </CustomGrid>
+                            <ConditionalRender condition={isInviteOpen}>
+                                <MeetingRoleGroup
+                                    className={styles.roleGroup}
+                                    ref={refRole}
+                                />
+                            </ConditionalRender>
                             <CustomGrid
                                 container
                                 wrap="nowrap"

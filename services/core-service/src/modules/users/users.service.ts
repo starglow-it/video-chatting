@@ -17,8 +17,10 @@ import {
 
 import {
   CustomPopulateOptions,
-  GetModelQuery,
-  UpdateModelQuery,
+  GetModelMultipleQuery,
+  GetModelSingleQuery,
+  UpdateModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/custom';
 import {
   ProfileAvatar,
@@ -66,7 +68,7 @@ export class UsersService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<UserDocument>) {
+  }: GetModelSingleQuery<UserDocument>) {
     return this.user
       .findOne(
         query,
@@ -81,7 +83,7 @@ export class UsersService {
     data,
     populatePaths,
     session,
-  }: UpdateModelQuery<UserDocument, User>): Promise<any> {
+  }: UpdateModelMultipleQuery<UserDocument>): Promise<any> {
     return this.user
       .updateMany(query, data, {
         session: session?.session,
@@ -95,7 +97,7 @@ export class UsersService {
     options,
     populatePaths,
     session,
-  }: GetModelQuery<UserDocument>) {
+  }: GetModelMultipleQuery<UserDocument>) {
     return this.user
       .find(
         query,
@@ -115,7 +117,7 @@ export class UsersService {
     query,
     data,
     session,
-  }: UpdateModelQuery<UserDocument, User>) {
+  }: UpdateModelSingleQuery<UserDocument>) {
     return this.user.findOneAndUpdate(
       query,
       { $set: data },
@@ -189,7 +191,7 @@ export class UsersService {
   async count({
     query,
     session,
-  }: GetModelQuery<UserDocument>): Promise<number> {
+  }: GetModelSingleQuery<UserDocument>): Promise<number> {
     return this.user
       .countDocuments(query, { session: session?.session })
       .exec();

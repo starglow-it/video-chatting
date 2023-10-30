@@ -30,6 +30,7 @@ import { UserProfileStatisticModule } from '../user-profile-statistic/user-profi
 import { PaymentsModule } from '../../services/payments/payments.module';
 import { TranscodeModule } from '../transcode/transcode.module';
 import { MediasModule } from '../medias/medias.module';
+import { TemplatePaymentsModule } from '../template-payments/template-payments.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MediasModule } from '../medias/medias.module';
     UserProfileStatisticModule,
     PaymentsModule,
     TranscodeModule,
+    TemplatePaymentsModule,
     forwardRef(() => UserTemplatesModule),
     forwardRef(() => MeetingsModule),
     MongooseModule.forFeature([

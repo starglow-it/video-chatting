@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { ICommonUser, RoomType } from 'shared-types';
+import { ICommonUser, RoomType, TemplateType } from 'shared-types';
 
 import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
@@ -9,6 +9,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
+import { MediaLink } from '../types/template';
 
 @Schema()
 export class UserTemplate {
@@ -61,6 +62,12 @@ export class UserTemplate {
     ],
   })
   businessCategories: BusinessCategoryDocument[];
+
+  @Prop({
+    type: MediaLink,
+    default: null,
+  })
+  mediaLink: MediaLink;
 
   @Prop({
     type: mongoose.Schema.Types.String,
@@ -157,36 +164,6 @@ export class UserTemplate {
   customLink: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
-    default: 'USD',
-  })
-  templateCurrency: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: '',
-  })
-  templatePrice: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: 'USD',
-  })
-  paywallCurrency: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-    default: '',
-  })
-  paywallPrice: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.Boolean,
-    default: false,
-  })
-  isMonetizationEnabled: boolean;
-
-  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
@@ -253,7 +230,7 @@ export class UserTemplate {
     required: true,
     default: 'video',
   })
-  templateType: 'video' | 'image';
+  templateType: TemplateType;
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

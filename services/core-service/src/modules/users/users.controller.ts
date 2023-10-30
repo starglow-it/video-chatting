@@ -519,15 +519,28 @@ export class UsersController {
 
   @MessagePattern({ cmd: UserBrokerPatterns.ComparePasswords })
   async comparePasswords(@Payload() payload: ComparePasswordsPayload) {
-    const user = await this.usersService.findUser({
-      query: { _id: payload.userId },
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const user = await this.usersService.findUser({
+          query: { _id: payload.userId },
+          session,
+        });
+
+        if (!user) {
+          throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+        }
+
+        return this.usersService.verifyPassword(
+          payload.password,
+          user.password,
+        );
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: USERS_SERVICE,
+        });
+      }
     });
-
-    if (!user) {
-      throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
-    }
-
-    return this.usersService.verifyPassword(payload.password, user.password);
   }
 
   @MessagePattern({ cmd: UserBrokerPatterns.UpdatePassword })
@@ -647,17 +660,24 @@ export class UsersController {
 
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUserByEmail })
   async loginUserByEmail(@Payload() loginData: LoginUserByEmailPayload) {
-    const user = await this.usersService.findUser({
-      query: { email: loginData.email },
-    });
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const user = await this.usersService.findUser({
+          query: { email: loginData.email },
+          session,
+        });
 
-    if (!user) {
-      throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
-    }
+        if (!user) {
+          throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+        }
 
-    return plainToInstance(CommonUserDTO, user, {
-      excludeExtraneousValues: true,
-      enableImplicitConversion: true,
+        return plainToInstance(CommonUserDTO, user, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      } catch (err) {
+        throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
+      }
     });
   }
 
