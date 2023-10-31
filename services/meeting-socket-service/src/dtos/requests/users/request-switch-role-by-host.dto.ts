@@ -9,4 +9,4 @@ export class SwitchRoleByHostRequestDto {
   @IsNotEmpty()
   @IsString()
   meetingUserId: ICommonMeetingUserDTO['id'];
-} 
+}

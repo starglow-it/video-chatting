@@ -286,7 +286,7 @@ export class SeederService {
         {
           $match: {
             userTemplate: {
-              $ne: []
+              $ne: [],
             },
             templateId: null,
           },
@@ -300,7 +300,7 @@ export class SeederService {
               _id: m._id,
             },
             data: {
-              templateId: m.userTemplate[0].templateId
+              templateId: m.userTemplate[0].templateId,
             },
           });
         }),

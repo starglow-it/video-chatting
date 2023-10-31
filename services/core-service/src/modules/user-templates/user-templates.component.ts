@@ -134,7 +134,6 @@ export class UserTemplatesComponent {
     query: FilterQuery<UserTemplateDocument>,
     session: ITransactionSession,
   ) {
-
     await this.userTemplatesService.deleteUserTemplate(query, session);
     await this.templatePaymentsService.deleteMany({
       query: {

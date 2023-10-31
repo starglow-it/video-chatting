@@ -619,10 +619,7 @@ export class CommonTemplatesController {
 
         const myRoomCategory = await this.getMyRoomMediaCategory(session);
 
-        console.log(updatedTemplate);
-        
-
-        const r = await this.mediaService.updateMedias({
+        await this.mediaService.updateMedias({
           query: {
             templateId: updatedTemplate.templateId,
             mediaCategory: myRoomCategory._id,
@@ -637,12 +634,10 @@ export class CommonTemplatesController {
             url: updatedTemplate.mediaLink
               ? updatedTemplate.mediaLink.src
               : updatedTemplate.url,
+            type: updatedTemplate.templateType,
           },
           session,
         });
-
-        console.log(r);
-        
 
         return plainToInstance(CommonTemplateDTO, template, {
           excludeExtraneousValues: true,

@@ -47,7 +47,7 @@ export class CommonMediaRestDto implements IMedia {
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   thumb: IMedia['thumb'];
 }

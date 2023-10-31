@@ -1,8 +1,3 @@
+export type SendIceCandidatePayload = {};
 
-export type SendIceCandidatePayload = {
- 
-};
-
-export type SendDevicesPermissionsPayload = {
-  
-};
+export type SendDevicesPermissionsPayload = {};
