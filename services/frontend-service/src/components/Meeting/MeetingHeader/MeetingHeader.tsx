@@ -63,7 +63,7 @@ export const MeetingHeader = () => {
                 </CustomTypography>
                 <CustomPaper
                     variant="black-glass"
-                    borderRadius={20}
+                    borderRadius={10}
                     className={styles.button}
                 >
                     <ActionButton
@@ -86,26 +86,6 @@ export const MeetingHeader = () => {
                                     className={styles.icon}
                                 />
                             )
-                        }
-                    />
-                </CustomPaper>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={20}
-                    className={styles.button}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        // onAction={handleToggleMic}
-                        className={clsx(styles.button, {
-                            [styles.inactive]: true,
-                        })}
-                        Icon={
-                            <ImageIcon
-                                width="20px"
-                                height="20px"
-                                className={styles.icon}
-                            />
                         }
                     />
                 </CustomPaper>

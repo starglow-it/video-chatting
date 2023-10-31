@@ -3,9 +3,10 @@
 
 .container {
     backdrop-filter: blur(28px);
-    z-index: -1;
-    background: rgba(15, 15, 16, 0.6);
+    z-index: 12;
+    background: transparent;
     border-radius: 0px;
+    padding: 5px 10px;
 }
 
 .icon {

@@ -1,9 +1,42 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/rem.scss';
+
 .container {
     position: absolute;
-    top: 40%;
+    top: 35%;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
+.controlsWrapper {
+    margin: rem(24px 0 0 0);
+  
+    .controlBtn {
+      border-radius: rem(10px);
+      border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+      color: $primary-black;
+      padding: rem(8px);
+      width: rem(42px);
+      height: rem(42px);
+      background: #FFFFFF;
+      box-sizing: border-box;
+      box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  
+      &:first-child {
+        margin: rem(0 12px 0 0);
+      }
+      &.withError {
+        color: $primary-red;
+      }
+      &.disabled {
+        color: $normal-gray-scale;
+      }
+      &.mobile {
+        width: rem(40px);
+        height: rem(40px);
+      }
+    }
+  }

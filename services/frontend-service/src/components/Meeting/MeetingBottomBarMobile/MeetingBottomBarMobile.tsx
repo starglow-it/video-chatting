@@ -22,6 +22,7 @@ import {
 import { useStore, useStoreMap } from 'effector-react';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 
 export const MeetingBottomBarMobile = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
@@ -67,9 +68,9 @@ export const MeetingBottomBarMobile = () => {
                         variant="transparentBlack"
                         // onAction={handleToggleMic}
                         className={clsx(styles.deviceButton, {
-                            [styles.inactive]: true,
+                            [styles.inactive]: false,
                         })}
-                        Icon={<MicIcon isActive width="22px" height="22px" />}
+                        Icon={<ImageIcon width="20px" height="20px" />}
                     />
                 </CustomPaper>
                 <CustomPaper

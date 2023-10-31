@@ -26,11 +26,11 @@ export const MeetingCarousel = () => {
             navButtonsAlwaysVisible
             autoPlay={false}
         >
-            <CustomGrid width="100%" height="100%">
+            <CustomGrid width="100%" height="100%" bgcolor="beige">
                 <MeetingSelfView />
             </CustomGrid>
-            <CustomGrid width="100%" height="100%" display="flex" justifyContent="center" alignItems="flex-start">
-               <CustomGrid display="flex" flexWrap="wrap" gap={1} justifyContent="space-around" width="100%" marginTop={3}>
+            <CustomGrid width="100%" height="100%" display="flex" justifyContent="center" alignItems="flex-start" position="relative">
+               <CustomGrid display="flex" flexWrap="wrap" gap={1} justifyContent="space-around" width="100%" marginTop={3} position="absolute" top="100px">
                {[1, 2, 3, 4, 5].map(item => (
                     <CustomBox
                         className={clsx(styles.videoItem)}
