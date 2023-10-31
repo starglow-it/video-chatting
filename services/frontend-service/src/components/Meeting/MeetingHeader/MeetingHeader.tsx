@@ -11,15 +11,12 @@ import {
 } from 'src/store/roomStores';
 
 import { useFormContext, useWatch } from 'react-hook-form';
-import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
-import styles from './MeetingHeader.module.scss';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
-import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useCallback } from 'react';
+import styles from './MeetingHeader.module.scss';
 
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);

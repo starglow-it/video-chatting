@@ -1,3 +1,6 @@
+@import '../../../styles/rem.scss';
+@import '../../../styles/variables.scss';
+
 .container {
     position: absolute;
     bottom: 0;
@@ -6,5 +9,52 @@
 }
 
 .videoItem {
-    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    gap: 16px;
 }
+
+.usernameWrapper {
+    max-width: rem(146px);
+    min-width: rem(32px);
+    max-height: rem(34px);
+    min-height: rem(24px);
+    padding: rem(4px 8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // margin: rem(8px) 0 0 0;
+  
+    &.forSharing {
+      padding: rem(4px 8px);
+    }
+  
+    .micIcon {
+      color: $primary-white;
+  
+      &.noAudio {
+        color: $primary-red;
+      }
+  
+      &.withAction {
+        cursor: pointer;
+      }
+    }
+  
+    .username {
+      max-width: 100%;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  
+  .paper {
+    padding: 10px;
+    &::after {
+      background-color: transparent !important;
+    }
+  }

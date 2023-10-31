@@ -30,6 +30,7 @@ import {
 // styles
 import { ISocialLink, MeetingRole } from 'shared-types';
 import { customTemplateLinkSchema } from 'shared-frontend/validation';
+import { isMobile } from 'shared-utils';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
@@ -66,7 +67,6 @@ import {
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
-import { isMobile } from 'shared-utils';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -329,7 +329,7 @@ const Component = ({
                     className={clsx(styles.settingsWrapper, {
                         [styles.open]:
                             isEditTemplateOpened || isMeetingInfoOpened,
-                        [styles.mobile]: isMobile(),
+                        [styles.mobile]: isMobile() && ( isEditTemplateOpened || isMeetingInfoOpened),
                     })}
                 >
                     <RoundCloseIcon
