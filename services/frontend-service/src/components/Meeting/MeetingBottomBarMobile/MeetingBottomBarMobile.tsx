@@ -3,18 +3,19 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import clsx from 'clsx';
-import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
-import styles from './MeetingBottomBarMobile.module.scss';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useCallback } from 'react';
 import {
     $isHaveNewMessage,
     $isMeetingHostStore,
     $isToggleUsersPanel,
+    $localUserStore,
     $meetingUsersStore,
+    disconnectFromVideoChatEvent,
+    sendLeaveMeetingSocketEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
@@ -23,6 +24,13 @@ import { useStore, useStoreMap } from 'effector-react';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
+import { isSubdomain } from 'src/utils/functions/isSubdomain';
+import { $authStore, deleteDraftUsers } from 'src/store';
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
+import { clientRoutes } from 'src/const/client-routes';
+import { useRouter } from 'next/router';
+import config from '../../../const/config';
+import styles from './MeetingBottomBarMobile.module.scss';
 
 export const MeetingBottomBarMobile = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
@@ -39,22 +47,45 @@ export const MeetingBottomBarMobile = () => {
     });
     const isThereNewMessage = useStore($isHaveNewMessage);
     const isMeetingHost = useStore($isMeetingHostStore);
+    const { isWithoutAuthen } = useStore($authStore);
+    const localUser = useStore($localUserStore);
 
     const { isMobile } = useBrowserDetect();
 
-    const handleToggleSchedulePanel = (e: SyntheticEvent) => {
+    const router = useRouter();
+
+    const handleToggleSchedulePanel = useCallback((e: SyntheticEvent) => {
         e.stopPropagation();
         toggleSchedulePanelEvent();
-    };
+    }, []);
 
-    const handleToggleUsersPanel = (e: SyntheticEvent) => {
+    const handleToggleUsersPanel = useCallback((e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
-    };
+    }, []);
 
-    const handleTogglePaymentPanel = (e: SyntheticEvent) => {
+    const handleTogglePaymentPanel = useCallback((e: SyntheticEvent) => {
         e.stopPropagation();
         togglePaymentFormEvent();
+    }, []);
+
+    const handleEndVideoChat = async () => {
+        disconnectFromVideoChatEvent();
+        if (isSubdomain()) {
+            await deleteDraftUsers();
+            deleteUserAnonymousCookies();
+            sendLeaveMeetingSocketEvent();
+            window.location.href =
+                config.frontendUrl + clientRoutes.registerEndCallRoute;
+            return;
+        }
+        await router.push(
+            !isWithoutAuthen
+                ? localUser.isGenerated
+                    ? clientRoutes.welcomeRoute
+                    : clientRoutes.dashboardRoute
+                : clientRoutes.registerEndCallRoute,
+        );
     };
     return (
         <CustomGrid className={styles.container}>
@@ -87,7 +118,7 @@ export const MeetingBottomBarMobile = () => {
                 </CustomPaper>
                 <ActionButton
                     variant="danger"
-                    // onAction={handleEndVideoChat}
+                    onAction={handleEndVideoChat}
                     className={styles.endButton}
                     Icon={<HangUpIcon width="22px" height="22px" />}
                 />

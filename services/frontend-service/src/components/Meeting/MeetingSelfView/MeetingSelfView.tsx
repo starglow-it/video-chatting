@@ -1,18 +1,22 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 import styles from './MeetingSelfView.module.scss';
-import { MeetingUserVideoItem } from '../MeetingUserVideoItem/MeetingUserVideoItem';
 import { useStore } from 'effector-react';
 import {
     $activeStreamStore,
     $isOwner,
     $localUserStore,
+    $meetingConnectedStore,
+    setDevicesPermission,
+    setIsAudioActiveEvent,
+    setIsCameraActiveEvent,
+    updateLocalUserEvent,
 } from 'src/store/roomStores';
 import { $profileStore } from 'src/store';
 import clsx from 'clsx';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
@@ -23,9 +27,13 @@ export const MeetingSelfView = () => {
     const activeStream = useStore($activeStreamStore);
     const profile = useStore($profileStore);
     const isOwner = useStore($isOwner);
+    const isMeetingConnected = useStore($meetingConnectedStore);
 
     const container = useRef<HTMLVideoElement | null>(null);
     const mediaStreamRef = useRef(new MediaStream());
+
+    const isMicActive = localUser.micStatus === 'active';
+    const isCamActive = localUser.cameraStatus === 'active';
 
     useEffect(() => {
         let videoTrack = null;
@@ -52,11 +60,33 @@ export const MeetingSelfView = () => {
         }
     }, []);
 
+    const handleToggleMic = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isMicEnabled: !isMicActive,
+            });
+            setIsAudioActiveEvent(!isMicActive);
+        }
+    }, [isMeetingConnected, isMicActive]);
+
+    const handleToggleCam = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                cameraStatus: isCamActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isCamEnabled: !isCamActive,
+            });
+            setIsCameraActiveEvent(!isCamActive);
+        }
+    }, [isMeetingConnected, isCamActive]);
+
     return (
         <CustomGrid className={clsx(styles.container)}>
-            <CustomTypography fontSize="18px">
-                Self View
-            </CustomTypography>
+            <CustomTypography fontSize="18px">Self View</CustomTypography>
             <CustomBox
                 sx={{
                     width: `170px`,
@@ -65,35 +95,41 @@ export const MeetingSelfView = () => {
             >
                 <RoundedVideo
                     isLocal
-                    isCameraActive
+                    isCameraActive={isCamActive}
                     isVideoAvailable
                     userName={profile.fullName}
                     userProfilePhoto={profile.profileAvatar.url ?? ''}
                     videoRef={container}
                     size={170}
-                    isSelfView
-                    isVideoSelfView
+                    isSelfView={false}
+                    isVideoSelfView={false}
                 />
             </CustomBox>
-            <CustomGrid container className={styles.controlsWrapper} justifyContent="center">
+            <CustomGrid
+                container
+                className={styles.controlsWrapper}
+                justifyContent="center"
+            >
                 <ActionButton
                     className={clsx(styles.controlBtn)}
+                    onAction={handleToggleMic}
                     Icon={
                         <MicIcon
                             width="24px"
                             height="24px"
-                            // isActive={isMicActive}
+                            isActive={isMicActive}
                         />
                     }
                 />
 
                 <ActionButton
                     className={clsx(styles.controlBtn)}
+                    onAction={handleToggleCam}
                     Icon={
                         <CameraIcon
                             width="24px"
                             height="24px"
-                            // isActive={isCameraActive}
+                            isActive={isCamActive}
                         />
                     }
                 />
