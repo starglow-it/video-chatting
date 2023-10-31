@@ -14,12 +14,14 @@ import { TemplatePaymentsService } from '../template-payments/template-payments.
 import { FilterQuery } from 'mongoose';
 import { MeetingRole } from 'shared-types';
 import { TemplatePaymentDocument } from '../../schemas/template-payment.schema';
+import { MediaService } from '../medias/medias.service';
 
 @Injectable()
 export class UserTemplatesComponent {
   constructor(
     private readonly userTemplatesService: UserTemplatesService,
     private readonly templatePaymentsService: TemplatePaymentsService,
+    private readonly mediaService: MediaService,
   ) {}
 
   async findById(
@@ -127,6 +129,14 @@ export class UserTemplatesComponent {
         },
       },
       session,
+    });
+
+    await this.mediaService.deleteMedias({
+      query: {
+        userTemplate: {
+          $nin: [...templatesIds, null],
+        },
+      },
     });
   }
 
