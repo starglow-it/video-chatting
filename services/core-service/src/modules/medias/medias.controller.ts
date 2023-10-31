@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Connection } from 'mongoose';
+import { Connection, FilterQuery } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -18,6 +18,7 @@ import {
   GetMediasPayload,
   IMedia,
   IMediaCategory,
+  MediaStatus,
   UpdateMediaCategoryPayload,
   UpdateMediaPayload,
   UploadMediaCategoryFile,
@@ -37,6 +38,7 @@ import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import { retry } from '../../utils/common/retry';
 import { PreviewImageDocument } from '../../schemas/preview-image.schema';
 import { PreviewUrls } from '../../types/media';
+import { MediaDocument } from '../../schemas/media.schema';
 
 @Controller('medias')
 export class MediaController {
@@ -111,6 +113,7 @@ export class MediaController {
   }: {
     userTemplateId: string;
     mediaCategory: MediaCategoryDocument;
+
     session: ITransactionSession;
   }) {
     let userTemplateQuery = null;
@@ -234,11 +237,14 @@ export class MediaController {
           });
         }
 
-        const query = await this.getMediaQuery({
-          userTemplateId,
-          mediaCategory,
-          session,
-        });
+        const query: FilterQuery<MediaDocument> = {
+          ...(await this.getMediaQuery({
+            userTemplateId,
+            mediaCategory,
+            session,
+          })),
+          status: MediaStatus.ACTIVE,
+        };
 
         const mediasCount = await this.mediaService.countMedias(query);
 
@@ -558,13 +564,16 @@ export class MediaController {
             ctx: MEDIA_SERVICE,
           });
 
-        await this.mediaService.deleteMedias({
+        await this.mediaService.updateMedias({
           query: {
             mediaCategory,
             userTemplate,
             _id: {
               $in: ids,
             },
+          },
+          data: {
+            status: MediaStatus.DELETED,
           },
           session,
         });
