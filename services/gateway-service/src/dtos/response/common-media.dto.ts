@@ -54,7 +54,7 @@ export class CommonMediaRestDto implements IMedia {
   @Expose()
   @ApiProperty({
     type: String,
-    enum: Object.values(MediaStatus)
+    enum: Object.values(MediaStatus),
   })
   status: IMedia['status'];
 }
