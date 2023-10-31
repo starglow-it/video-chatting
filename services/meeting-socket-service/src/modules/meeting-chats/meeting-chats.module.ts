@@ -26,10 +26,7 @@ import {
       },
     ]),
   ],
-  providers: [
-    MeetingChatsService,
-    MeetingChatReactionsService,
-  ],
+  providers: [MeetingChatsService, MeetingChatReactionsService],
   exports: [MeetingChatsService, MeetingChatReactionsService],
 })
 export class MeetingChatsModule {}

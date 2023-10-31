@@ -17,7 +17,7 @@ export class Media {
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: null
+    default: null,
   })
   templateId: number;
 
