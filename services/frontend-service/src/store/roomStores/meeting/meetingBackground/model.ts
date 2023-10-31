@@ -29,6 +29,8 @@ export const $queryMediasBackgroundStore = meetingDomain.createStore<{
 
 export const $isLoadMoreMediasStore = meetingDomain.createStore<boolean>(false);
 
+export const $isToggleBackgroundPanel = meetingDomain.createStore(false);
+
 export const setCategoryEvent = meetingDomain.createEvent<{
     categorySelected: string;
 }>('setCategoryEvent');
@@ -71,3 +73,7 @@ export const deleteMediaMeetingFx = meetingDomain.createEffect<
     ParamsDeleteMedia,
     ResultDeleteMedia
 >('deleteMediaMeeting');
+
+export const toggleBackgroundManageEvent = meetingDomain.event<
+    boolean | undefined
+>('toggleBackgroundManageEvent');

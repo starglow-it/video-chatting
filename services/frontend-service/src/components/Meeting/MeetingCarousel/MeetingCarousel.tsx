@@ -9,16 +9,6 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 
 export const MeetingCarousel = () => {
-    const items = [
-        {
-            name: 'Random Name #1',
-            description: 'Probably the most random thing you have ever seen!',
-        },
-        {
-            name: 'Random Name #2',
-            description: 'Hello World!',
-        },
-    ];
     return (
         <Carousel
             className={styles.container}

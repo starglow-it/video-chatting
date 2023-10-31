@@ -16,6 +16,7 @@ import {
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
+    toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
@@ -69,6 +70,11 @@ export const MeetingBottomBarMobile = () => {
         togglePaymentFormEvent();
     }, []);
 
+    const handleToggleChangeBackground = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleBackgroundManageEvent();
+    }, []);
+
     const handleEndVideoChat = async () => {
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
@@ -97,7 +103,7 @@ export const MeetingBottomBarMobile = () => {
                 >
                     <ActionButton
                         variant="transparentBlack"
-                        // onAction={handleToggleMic}
+                        onAction={handleToggleChangeBackground}
                         className={clsx(styles.deviceButton, {
                             [styles.inactive]: false,
                         })}

@@ -25,6 +25,7 @@ import { Barge } from './Barge';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
+    $isToggleBackgroundPanel,
     $meetingTemplateStore,
     deleteMediaMeetingFx,
     setCategoryEvent,
@@ -39,7 +40,9 @@ const Component = () => {
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
-    const [isExpand, setIsExpand] = useState<boolean>(true);
+    const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+
+    const [isExpand, setIsExpand] = useState<boolean>(isChangeBackgroundOpen);
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
     const isHideUpload = categories.some(
@@ -102,7 +105,7 @@ const Component = () => {
         >
             <CustomPaper
                 className={clsx(styles.commonOpenPanel, {
-                    [styles.expanded]: isExpand && !isMobile,
+                    [styles.expanded]: isExpand,
                     [styles.mobile]: isExpand && isMobile,
                 })}
                 variant="black-glass"
@@ -151,12 +154,14 @@ const Component = () => {
                                     fontSize="15px"
                                 />
 
-                                <RoundCloseIcon
-                                    className={styles.closeIcon}
-                                    isActive
-                                    width="22px"
-                                    height="22px"
-                                />
+                                <ConditionalRender condition={!isMobile}>
+                                    <RoundCloseIcon
+                                        className={styles.closeIcon}
+                                        isActive
+                                        width="22px"
+                                        height="22px"
+                                    />
+                                </ConditionalRender>
                             </ConditionalRender>
                         </CustomBox>
                     </AccordionSummary>
@@ -210,7 +215,9 @@ const Component = () => {
                                 </CustomScroll>
                             </ConditionalRender>
                         </CustomGrid>
-                        <MeetingYoutubeControl />
+                        <ConditionalRender condition={!isMobile}>
+                            <MeetingYoutubeControl />
+                        </ConditionalRender>
                     </AccordionDetails>
                 </Accordion>
             </CustomPaper>

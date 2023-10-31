@@ -66,6 +66,7 @@ import {
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
+import { isMobile } from 'shared-utils';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -328,6 +329,7 @@ const Component = ({
                     className={clsx(styles.settingsWrapper, {
                         [styles.open]:
                             isEditTemplateOpened || isMeetingInfoOpened,
+                        [styles.mobile]: isMobile(),
                     })}
                 >
                     <RoundCloseIcon

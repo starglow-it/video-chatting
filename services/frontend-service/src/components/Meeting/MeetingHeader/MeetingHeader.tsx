@@ -50,7 +50,7 @@ export const MeetingHeader = () => {
                     isAcceptNoLogin={meetingTemplate.isAcceptNoLogin}
                 />
                 <CustomTypography
-                    color="colors.white.primary"
+                    color="colors.black.primary"
                     className={clsx(
                         styles.companyNameTitle,
                         styles.withoutBoard,

@@ -26,12 +26,14 @@ import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isOwner,
     $isScreenSharingStore,
+    $isToggleBackgroundPanel,
     $isTogglePayment,
     $isToggleSchedulePanel,
     $isToggleUsersPanel,
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
+    toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
@@ -44,6 +46,7 @@ import styles from './MeetingControlPanel.module.scss';
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
+import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -54,6 +57,8 @@ const Component = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
+    const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+    console.log('#Duy Phan console', isChangeBackgroundOpen);
 
     const { isMobile } = useBrowserDetect();
 
@@ -72,20 +77,34 @@ const Component = () => {
         toggleUsersPanelEvent();
     };
 
-    const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
+    const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent(false);
-    };
+    }, []);
 
-    const toggleOutsideSchedulePanel = (e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        toggleSchedulePanelEvent(false);
-    };
+    const toggleOutsideSchedulePanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            toggleSchedulePanelEvent(false);
+        },
+        [],
+    );
 
-    const toggleOutsidePaymentPanel = (e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        togglePaymentFormEvent(false);
-    };
+    const toggleOutsidePaymentPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            togglePaymentFormEvent(false);
+        },
+        [],
+    );
+
+    const toggleOutsideBackgroundPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            toggleBackgroundManageEvent(false);
+        },
+        [],
+    );
 
     const commonContent = useMemo(
         () => (
@@ -132,6 +151,18 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
+                <ClickAwayListener onClickAway={toggleOutsideBackgroundPanel}>
+                    <Fade in={isChangeBackgroundOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                            })}
+                        >
+                            <MeetingChangeBackground />
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
             </>
         ),
         [
@@ -143,6 +174,7 @@ const Component = () => {
             handleCloseMobilePanel,
             isPaymentOpen,
             isScheduleOpen,
+            isChangeBackgroundOpen,
         ],
     );
 
@@ -176,7 +208,10 @@ const Component = () => {
                 ) : (
                     <ConditionalRender
                         condition={
-                            isUsersOpen || isScheduleOpen || isPaymentOpen
+                            isUsersOpen ||
+                            isScheduleOpen ||
+                            isPaymentOpen ||
+                            isChangeBackgroundOpen
                         }
                     >
                         <CustomGrid className={styles.mobilePanelsWrapper}>
