@@ -1,24 +1,27 @@
 import Carousel from 'react-material-ui-carousel';
 
-import styles from './MeetingCarousel.module.scss';
-import { MeetingSelfView } from '../MeetingSelfView/MeetingSelfView';
-import { MeetingUsersVideos } from '../MeetingUsersVideos/MeetingUsersVideos';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import clsx from 'clsx';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
-import { MeetingVideosCarousel } from './MeetingVideosCarousel';
-import { useEffect, useState } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useStoreMap } from 'effector-react';
+import { $meetingUsersStore } from 'src/store/roomStores';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { MeetingVideosCarousel } from './MeetingVideosCarousel';
+import { MeetingSelfView } from '../MeetingSelfView/MeetingSelfView';
+import styles from './MeetingCarousel.module.scss';
 
 export const MeetingCarousel = () => {
-    const [time, setTime] = useState(0);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setTime(Date.now());
-        }, 3000);
-    }, []);
+    const users = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Lurker,
+            ),
+    });
+    const users1 = users.length < 7 ? users.slice(0, 7) : users;
+    const users2 = users.length < 7 ? [] : users.slice(-4);
 
     return (
         <Carousel
@@ -38,9 +41,9 @@ export const MeetingCarousel = () => {
                 alignItems="flex-start"
                 position="relative"
             >
-                <MeetingVideosCarousel />
+                <MeetingVideosCarousel users={users1} />
             </CustomGrid>
-            <ConditionalRender condition={!!time}>
+            <ConditionalRender condition={!!users2.length}>
                 <CustomGrid
                     width="100%"
                     height="100%"
@@ -49,8 +52,7 @@ export const MeetingCarousel = () => {
                     alignItems="flex-start"
                     position="relative"
                 >
-                   
-                    <MeetingVideosCarousel />
+                    <MeetingVideosCarousel users={users2} />
                 </CustomGrid>
             </ConditionalRender>
         </Carousel>

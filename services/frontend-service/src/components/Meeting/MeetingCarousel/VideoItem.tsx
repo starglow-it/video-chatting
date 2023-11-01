@@ -10,7 +10,6 @@ import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 
 type VideoItemProps = {
-    stream: MediaStream;
     isCameraEnabled: boolean;
     userName: string;
     userProfilePhoto: string;
@@ -20,7 +19,6 @@ type VideoItemProps = {
 };
 
 export const VideoItem = ({
-    stream,
     isCameraEnabled,
     userName,
     userProfilePhoto,
@@ -32,15 +30,7 @@ export const VideoItem = ({
     const mediaStreamRef = useRef(new MediaStream());
 
     useEffect(() => {
-        let videoTrack = null;
-        const localStreamTrack = stream?.getVideoTracks?.()?.[0];
-        if (localStreamTrack) {
-            const cloneLocalStream = localStreamTrack.clone();
-            cloneLocalStream.enabled = isCameraEnabled;
-            videoTrack = cloneLocalStream;
-        }
-
-        if (videoTrack) {
+        if (userTracks?.videoTrack) {
             const videoTracks = mediaStreamRef.current.getVideoTracks();
 
             if (videoTracks.length) {
@@ -49,12 +39,12 @@ export const VideoItem = ({
                 });
             }
 
-            mediaStreamRef.current.addTrack(videoTrack);
+            mediaStreamRef.current.addTrack(userTracks?.videoTrack);
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }
-    }, [stream]);
+    }, [userTracks?.videoTrack]);
 
     return (
         <CustomBox
@@ -71,7 +61,7 @@ export const VideoItem = ({
             />
             <RoundedVideo
                 isLocal
-                isCameraActive
+                isCameraActive={isCameraEnabled}
                 isVideoAvailable
                 userName={userName}
                 userProfilePhoto={userProfilePhoto}

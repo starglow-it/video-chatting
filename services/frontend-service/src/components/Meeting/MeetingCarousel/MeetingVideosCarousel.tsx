@@ -1,13 +1,23 @@
-import clsx from 'clsx';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { MeetingUser } from 'src/store/types';
 import styles from './MeetingCarousel.module.scss';
+import { VideoItem } from './VideoItem';
+import { useStore } from 'effector-react';
+import { $tracksStore } from 'src/store/roomStores';
+import { getConnectionKey } from 'src/helpers/media/getConnectionKey';
+import { ConnectionType, StreamType } from 'src/const/webrtc';
+import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 
-export const MeetingVideosCarousel = () => {
+export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
+    const tracksStore = useStore($tracksStore);
+    const {
+        avatar: { list },
+    } = useStore($avatarsMeetingStore);
+
+    if(!users.length) return null;
     return (
         <CustomGrid
             display="flex"
@@ -24,42 +34,33 @@ export const MeetingVideosCarousel = () => {
                 <CustomGrid
                     display="flex"
                     flexWrap="wrap"
-                    gap={1}
+                    gap={2}
                     justifyContent="space-around"
                     padding="10px"
                 >
-                    {[1, 2].map(item => (
-                        <CustomBox
-                            className={clsx(styles.videoItem)}
-                            sx={{
-                                width: `120px`,
-                            }}
-                            key={item}
-                        >
-                            <RoundedVideo
-                                isLocal
-                                isCameraActive
-                                isVideoAvailable
-                                userName="Duy"
-                                userProfilePhoto=""
-                                // videoRef={container}
-                                size={120}
-                                isSelfView={false}
-                                isVideoSelfView={false}
-                            />
-                            <CustomPaper
-                                className={clsx(styles.usernameWrapper)}
-                                variant="black-glass"
-                            >
-                                <CustomTypography
-                                    color="common.white"
-                                    variant="body3"
-                                    className={styles.username}
-                                >
-                                    Duy
-                                </CustomTypography>
-                            </CustomPaper>
-                        </CustomBox>
+                    {users.map(item => (
+                        <VideoItem
+                            key={item.id}
+                            userTracks={
+                                tracksStore[
+                                    `${getConnectionKey({
+                                        userId: item.id,
+                                        connectionType: ConnectionType.VIEW,
+                                        streamType: StreamType.VIDEO_CHAT,
+                                    })}`
+                                ]
+                            }
+                            isAuraActive={item.isAuraActive}
+                            isCameraEnabled={item.cameraStatus === 'active'}
+                            isMicEnabled={item.micStatus === 'active'}
+                            userName={item.username}
+                            userProfilePhoto={
+                                getAvatarUrlMeeting(
+                                    item.meetingAvatarId ?? '',
+                                    list,
+                                ) ?? item.profileAvatar
+                            }
+                        />
                     ))}
                 </CustomGrid>
             </CustomPaper>
