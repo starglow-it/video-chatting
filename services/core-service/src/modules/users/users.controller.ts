@@ -807,9 +807,6 @@ export class UsersController {
       const vultrStorageHostname = await this.configService.get(
         'vultrStorageHostname',
       );
-      const vultrUploadBucket = await this.configService.get(
-        'vultrUploadBucket',
-      );
 
       const uploadKey = data.profileAvatar.replace(
         `https://${vultrStorageHostname}/`,

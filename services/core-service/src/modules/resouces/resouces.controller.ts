@@ -1,7 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { ResoucesService } from './resouces.service';
-import { Connection, UpdateQuery } from 'mongoose';
+import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { CoreBrokerPatterns, RESOUCE_SERVICE } from 'shared-const';
 import {
