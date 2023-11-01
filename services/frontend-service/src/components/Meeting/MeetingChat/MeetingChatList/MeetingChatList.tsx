@@ -16,6 +16,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
+import { isMobile } from 'shared-utils';
 
 export const MeetingChatList = () => {
     const { list } = useStore($meetingChat);
@@ -68,8 +69,8 @@ export const MeetingChatList = () => {
                 >
                     <CustomImage
                         src="/images/empty-chat.png"
-                        width={130}
-                        height={150}
+                        width={isMobile() ? 90 : 130}
+                        height={isMobile() ? 100 : 150}
                         className={styles.imageEmpty}
                         loading="eager"
                         alt="media-item"

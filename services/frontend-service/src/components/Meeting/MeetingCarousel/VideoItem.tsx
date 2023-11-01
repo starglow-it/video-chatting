@@ -6,6 +6,8 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { useEffect, useRef } from 'react';
 import { TrackItem } from 'src/store/roomStores/videoChat/types';
+import { $isPortraitLayout } from 'src/store';
+import { useStore } from 'effector-react';
 import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 
@@ -28,6 +30,8 @@ export const VideoItem = ({
 }: VideoItemProps) => {
     const container = useRef<HTMLVideoElement | null>(null);
     const mediaStreamRef = useRef(new MediaStream());
+    const isPortraitLayout = useStore($isPortraitLayout);
+    console.log('#Duy Phan console isPortraitLayout', isPortraitLayout);
 
     useEffect(() => {
         if (userTracks?.videoTrack) {
@@ -50,7 +54,7 @@ export const VideoItem = ({
         <CustomBox
             className={clsx(styles.videoItem)}
             sx={{
-                width: `120px`,
+                width: isPortraitLayout ? '120px' : '100px',
             }}
         >
             <MeetingUserAudioItem
@@ -66,7 +70,7 @@ export const VideoItem = ({
                 userName={userName}
                 userProfilePhoto={userProfilePhoto}
                 videoRef={container}
-                size={120}
+                size={isPortraitLayout ? 120 : 100}
                 isSelfView={false}
                 isVideoSelfView={false}
             />

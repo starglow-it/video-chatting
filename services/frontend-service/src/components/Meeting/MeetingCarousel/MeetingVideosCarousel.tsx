@@ -17,7 +17,7 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
 
-    if(!users.length) return null;
+    if (!users.length) return null;
     return (
         <CustomGrid
             display="flex"
@@ -25,18 +25,21 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
             gap={1}
             justifyContent="space-around"
             width="100%"
-            marginTop={3}
+            sx={{
+                marginTop: { xs: 3, sm: 1, md: 1, xl: 1 },
+                top: { xs: '100px', sm: '26%', md: '26%', xl: '26%' },
+            }}
             position="absolute"
             top="100px"
             padding="18px"
         >
-            <CustomPaper variant="black-glass" className={styles.paper}>
+            <CustomGrid className={styles.paper}>
                 <CustomGrid
                     display="flex"
                     flexWrap="wrap"
-                    gap={2}
                     justifyContent="space-around"
                     padding="10px"
+                    sx={{gap: {xs: 2, sm: 4, md: 4, xl: 4}}}
                 >
                     {users.map(item => (
                         <VideoItem
@@ -63,7 +66,7 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                         />
                     ))}
                 </CustomGrid>
-            </CustomPaper>
+            </CustomGrid>
         </CustomGrid>
     );
 };

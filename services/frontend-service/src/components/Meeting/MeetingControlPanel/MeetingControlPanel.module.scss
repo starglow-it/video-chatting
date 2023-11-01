@@ -88,6 +88,13 @@
     width: 100%;
     min-width: 100%;
   }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
 }
 
 .scheduleOpenPanel {

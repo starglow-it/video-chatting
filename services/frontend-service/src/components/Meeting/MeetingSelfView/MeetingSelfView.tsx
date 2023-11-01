@@ -1,6 +1,5 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import styles from './MeetingSelfView.module.scss';
 import { useStore } from 'effector-react';
 import {
     $activeStreamStore,
@@ -21,6 +20,7 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import styles from './MeetingSelfView.module.scss';
 
 export const MeetingSelfView = () => {
     const localUser = useStore($localUserStore);
@@ -85,7 +85,11 @@ export const MeetingSelfView = () => {
     }, [isMeetingConnected, isCamActive]);
 
     return (
-        <CustomGrid className={clsx(styles.container)}>
+        <CustomGrid
+            className={clsx(styles.container)}
+            sx={{ top: { xs: '35%', sm: '28%', md: '28%', xl: '28%' } }}
+            gap="10px"
+        >
             <CustomTypography fontSize="18px">Self View</CustomTypography>
             <CustomBox
                 sx={{
@@ -109,6 +113,9 @@ export const MeetingSelfView = () => {
                 container
                 className={styles.controlsWrapper}
                 justifyContent="center"
+                sx={{
+                    display: { xs: 'flex', sm: 'none', md: 'none', xl: 'none' },
+                }}
             >
                 <ActionButton
                     className={clsx(styles.controlBtn)}

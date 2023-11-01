@@ -58,7 +58,6 @@ const Component = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
-    console.log('#Duy Phan console', isChangeBackgroundOpen);
 
     const { isMobile } = useBrowserDetect();
 
@@ -115,6 +114,7 @@ const Component = () => {
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
                                 [styles.mobile]: isMobile && isPortraitLayout,
+                                [styles.landscape]:isMobile && !isPortraitLayout
                             })}
                         >
                             <MeetingPeople />
@@ -157,6 +157,7 @@ const Component = () => {
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
                                 [styles.mobile]: isMobile && isPortraitLayout,
+                                [styles.landscape]:isMobile && !isPortraitLayout
                             })}
                         >
                             <MeetingChangeBackground />

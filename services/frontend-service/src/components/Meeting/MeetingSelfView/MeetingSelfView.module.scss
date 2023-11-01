@@ -3,7 +3,6 @@
 
 .container {
     position: absolute;
-    top: 35%;
     display: flex;
     width: 100%;
     justify-content: center;
@@ -12,8 +11,6 @@
 }
 
 .controlsWrapper {
-    margin: rem(24px 0 0 0);
-  
     .controlBtn {
       border-radius: rem(10px);
       border: rem(1px) solid rgba($normal-gray-scale, 0.4);

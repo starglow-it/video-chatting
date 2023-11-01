@@ -20,8 +20,10 @@ export const MeetingCarousel = () => {
                     user.meetingRole !== MeetingRole.Lurker,
             ),
     });
-    const users1 = users.length < 7 ? users.slice(0, 7) : users;
-    const users2 = users.length < 7 ? [] : users.slice(-4);
+    // const users1 = users.length < 7 ? users.slice(0, 7) : users;
+    // const users2 = users.length < 7 ? [] : users.slice(-4);
+    const users1 = [...users, ...users, ...users, ...users, ...users];
+    const users2 = [...users, ...users, ...users, ...users, ...users];
 
     return (
         <Carousel

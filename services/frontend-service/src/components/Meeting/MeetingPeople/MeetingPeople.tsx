@@ -20,6 +20,9 @@ import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessReq
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
+import { $isPortraitLayout } from 'src/store';
+import { isMobile } from 'shared-utils';
+
 
 interface TabPanelProps {
     children: ReactNode;
@@ -55,6 +58,7 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 export const MeetingPeople = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const isLurker = useStore($isLurker);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const participants = useStoreMap({
         store: $meetingUsersStore,
@@ -108,7 +112,11 @@ export const MeetingPeople = () => {
         : ['Chat'];
 
     return (
-        <CustomGrid display="flex" flexDirection="column" height="400px">
+        <CustomGrid
+            display="flex"
+            flexDirection="column"
+            height={isMobile() && !isPortraitLayout ? '250px' : '400px'}
+        >
             <Tabs
                 value={value}
                 onChange={handleChange}
