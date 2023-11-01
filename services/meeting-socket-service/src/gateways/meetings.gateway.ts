@@ -1248,6 +1248,7 @@ export class MeetingsGateway
     });
   }
 
+  @PassAuth()
   @SubscribeMessage(MeetingSubscribeEvents.OnReconnect)
   async reconnect(
     @MessageBody() msg: ReconnectDto,
