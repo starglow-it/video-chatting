@@ -1,6 +1,7 @@
 export SERVICE_NAME?="gateway-service"
+export SHELL_COMMAND?=${SHELL}
 exec-service:
-	docker exec -it ${SERVICE_NAME} ${SHELL}
+	docker exec -it ${SERVICE_NAME} ${SHELL_COMMAND}
 
 log-service:
 	docker logs -f ${SERVICE_NAME}
