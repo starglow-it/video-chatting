@@ -17,7 +17,6 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import {
@@ -27,7 +26,6 @@ import {
   ResponseSumType,
 } from 'shared-types';
 import { MediasService } from './medias.service';
-import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { CreateMediaCategoryRequest } from '../../dtos/requests/create-media-category.request';

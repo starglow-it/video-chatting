@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsLowercase,
-  IsNotEmpty,
-  IsString,
-  Matches,
-} from 'class-validator';
-import { IMediaCategory, IUserTemplate, MediaCategoryType } from 'shared-types';
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IMediaCategory, MediaCategoryType } from 'shared-types';
 
 export class CreateMediaCategoryRequest {
   @ApiProperty({

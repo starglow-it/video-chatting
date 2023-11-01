@@ -30,7 +30,6 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
-  USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
@@ -64,7 +63,6 @@ import { google, Auth } from 'googleapis';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { CommonCreateFreeUserDto } from '../../dtos/response/common-create-free-user.dto';
-import { UsersService } from '../users/users.service';
 import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
 import { CreateUserFreeRequest } from '../../dtos/requests/create-user-free.request';
 import { PaymentsService } from '../payments/payments.service';

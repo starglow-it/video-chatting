@@ -13,11 +13,7 @@ type Currency = {
   old_amount: number;
 };
 
-const convertCurrency = async (
-  have: string,
-  amount: number,
-  want: string = 'USD',
-) =>
+const convertCurrency = async (have: string, amount: number, want = 'USD') =>
   (
     await (sendHttpRequest({
       url: `https://api.api-ninjas.com/v1/convertcurrency?have=${have.toUpperCase()}&want=${want}&amount=${amount}`,

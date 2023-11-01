@@ -4,39 +4,12 @@ import {
   Get,
   Logger,
   OnModuleInit,
-  Param,
-  Post,
-  Query,
-  Req,
-  Res,
 } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
-import { CoreBrokerPatterns } from 'shared-const';
 import { ConfigClientService } from './services/config/config.service';
-import { CoreService } from './services/core/core.service';
-import { Response } from 'express';
-
-enum Collection {
-  MediaCategory = 'mediaCategory',
-  Media = 'media',
-  UserTemplateMedia = 'userTemplateMedia',
-}
-class TestingStagingRequest {
-  @ApiProperty({
-    type: String,
-    enum: Collection,
-  })
-  @IsEnum(Collection)
-  collection: string;
-}
 
 @Controller()
 export class AppController implements OnModuleInit {
-  constructor(
-    private readonly configService: ConfigClientService,
-    private coreService: CoreService,
-  ) {}
+  constructor(private readonly configService: ConfigClientService) {}
 
   private readonly logger = new Logger();
   private apiVersion: string;

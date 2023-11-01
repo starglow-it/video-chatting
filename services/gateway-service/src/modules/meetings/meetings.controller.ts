@@ -19,8 +19,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '../../guards/jwt.guard';
-
 import { MEETINGS_SCOPE } from 'shared-const';
 import {
   ResponseSumType,

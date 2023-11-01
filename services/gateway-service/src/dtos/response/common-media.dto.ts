@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { IPreviewImage, IMedia, MediaStatus } from 'shared-types';
 import { MediaCategoryRestDTO } from './common-media-category.dto';
 import { PreviewImageDTO } from './common.dto';

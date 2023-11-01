@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { IPreviewImage, IResouce } from 'shared-types';
 import { PreviewImageDTO } from './common.dto';
 
