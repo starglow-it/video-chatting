@@ -264,6 +264,7 @@ export const MeetingBottomBarMobile = () => {
                 </CustomPaper>
                 <ConditionalRender
                     condition={
+                        isOwner ||
                         enabledPaymentMeetingParticipant ||
                         enabledPaymentMeetingLurker
                     }

@@ -85,7 +85,7 @@ export const MeetingSelfView = () => {
     return (
         <CustomGrid
             className={clsx(styles.container)}
-            sx={{ top: { xs: '35%', sm: '28%', md: '28%', xl: '28%' } }}
+            sx={{ top: { xs: '35%', sm: '82px', md: '82px', xl: '82px' } }}
             gap="10px"
         >
             <CustomTypography fontSize="18px">Self View</CustomTypography>
