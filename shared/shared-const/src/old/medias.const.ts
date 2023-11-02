@@ -1,59 +1,5 @@
 export const MEDIA_CATEGORIES = [
   {
-    key: 'breathing',
-    value: 'Breathing',
-    emojiUrl: '1f497',
-    type: 'background',
-  },
-  {
-    key: 'teen',
-    value: 'Teen',
-    emojiUrl: '1f60e',
-    type: 'background',
-  },
-  {
-    key: 'movies',
-    value: 'Movies',
-    emojiUrl: '1f3a5',
-    type: 'background',
-  },
-  {
-    key: 'calming',
-    value: 'Calming',
-    emojiUrl: '2728',
-    type: 'background',
-  },
-  {
-    key: 'energizing',
-    value: 'Energizing',
-    emojiUrl: '1f525',
-    type: 'background',
-  },
-  {
-    key: 'office',
-    value: 'Office',
-    emojiUrl: '1f6cb',
-    type: 'background',
-  },
-  {
-    key: 'lgbtq',
-    value: 'LGBTQ',
-    emojiUrl: '1f3f3-fe0f-200d-1f308',
-    type: 'background',
-  },
-  {
-    key: 'colors',
-    value: 'Colors',
-    emojiUrl: '1f308',
-    type: 'background',
-  },
-  {
-    key: 'more',
-    value: 'More',
-    emojiUrl: '1f440',
-    type: 'background',
-  },
-  {
     key: 'jazz',
     value: 'Jazz',
     emojiUrl:

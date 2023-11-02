@@ -15,6 +15,7 @@ import {
   ICommonUser,
   CreateUserFromGoogleAccountPayload,
   LoginTypes,
+  RegisterType,
 } from 'shared-types';
 
 // services
@@ -67,7 +68,7 @@ export class AuthController {
   ): Promise<ICommonUser> {
     try {
       let user = null;
-      if (payload.templateId) {
+      if (payload.registerType === RegisterType.Default) {
         const token = await this.authService.generateToken({
           email: payload.email,
           type: TokenTypes.Confirm,
