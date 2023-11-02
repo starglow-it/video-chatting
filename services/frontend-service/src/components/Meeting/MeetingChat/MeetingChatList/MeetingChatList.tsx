@@ -13,10 +13,10 @@ import {
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { isMobile } from 'shared-utils';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
-import { isMobile } from 'shared-utils';
 
 export const MeetingChatList = () => {
     const { list } = useStore($meetingChat);

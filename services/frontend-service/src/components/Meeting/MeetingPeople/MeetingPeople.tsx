@@ -14,15 +14,14 @@ import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { $isPortraitLayout } from 'src/store';
+import { isMobile } from 'shared-utils';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
-import { $isPortraitLayout } from 'src/store';
-import { isMobile } from 'shared-utils';
-
 
 interface TabPanelProps {
     children: ReactNode;

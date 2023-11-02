@@ -39,12 +39,12 @@ import { $authStore, $isPortraitLayout, deleteDraftUsers } from 'src/store';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { clientRoutes } from 'src/const/client-routes';
 import { useRouter } from 'next/router';
-import config from '../../../const/config';
-import styles from './MeetingBottomBarMobile.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import styles from './MeetingBottomBarMobile.module.scss';
+import config from '../../../const/config';
 
 export const MeetingBottomBarMobile = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);

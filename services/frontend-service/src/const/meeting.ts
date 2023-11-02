@@ -19,7 +19,7 @@ export const POSITION_USERS_MOBILE = [
         left: 0.6,
         bottom: 0.52,
     },
-   
+
     {
         left: 0,
         bottom: 0,

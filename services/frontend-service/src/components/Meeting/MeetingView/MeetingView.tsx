@@ -249,7 +249,7 @@ const Component = () => {
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
-            {Boolean(meetingTemplate?.id) && isMobile && (
+            {/* {Boolean(meetingTemplate?.id) && isMobile && (
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
@@ -259,7 +259,7 @@ const Component = () => {
                     <MeetingBottomBarMobile />
                     <MeetingControlPanel />
                 </MeetingSettingsPanel>
-            )}
+            )} */}
 
             <DevicesSettingsDialog />
             <EndMeetingDialog />

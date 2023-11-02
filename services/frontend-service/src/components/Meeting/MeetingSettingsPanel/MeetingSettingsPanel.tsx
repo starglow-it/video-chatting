@@ -329,7 +329,9 @@ const Component = ({
                     className={clsx(styles.settingsWrapper, {
                         [styles.open]:
                             isEditTemplateOpened || isMeetingInfoOpened,
-                        [styles.mobile]: isMobile() && ( isEditTemplateOpened || isMeetingInfoOpened),
+                        [styles.mobile]:
+                            isMobile() &&
+                            (isEditTemplateOpened || isMeetingInfoOpened),
                     })}
                 >
                     <RoundCloseIcon

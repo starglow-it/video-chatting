@@ -22,6 +22,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
+import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $enabledPaymentMeetingLurker,
@@ -51,7 +52,6 @@ import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 const Component = () => {
     const isOwner = useStore($isOwner);

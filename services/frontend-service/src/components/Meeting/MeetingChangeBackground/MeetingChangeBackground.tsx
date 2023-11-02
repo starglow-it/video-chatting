@@ -77,7 +77,7 @@ const Component = () => {
     };
 
     const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
-       setIsExpand(expanded);
+        setIsExpand(expanded);
     };
 
     const handleDeleteMedia = (mediaId: string) => {
@@ -192,7 +192,9 @@ const Component = () => {
                         >
                             <ConditionalRender condition={medias.length > 0}>
                                 <CustomScroll
-                                    className={clsx(styles.scroll, {[styles.mobile]: isMobile})}
+                                    className={clsx(styles.scroll, {
+                                        [styles.mobile]: isMobile,
+                                    })}
                                     onYReachEnd={handleScrollEnd}
                                     containerRef={el =>
                                         (refScroll.current = el)

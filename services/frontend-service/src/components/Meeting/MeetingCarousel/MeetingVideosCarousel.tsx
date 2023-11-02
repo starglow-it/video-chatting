@@ -1,15 +1,13 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { MeetingUser } from 'src/store/types';
-import styles from './MeetingCarousel.module.scss';
-import { VideoItem } from './VideoItem';
 import { useStore } from 'effector-react';
 import { $tracksStore } from 'src/store/roomStores';
 import { getConnectionKey } from 'src/helpers/media/getConnectionKey';
 import { ConnectionType, StreamType } from 'src/const/webrtc';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
+import { VideoItem } from './VideoItem';
+import styles from './MeetingCarousel.module.scss';
 
 export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
     const tracksStore = useStore($tracksStore);
@@ -39,7 +37,7 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                     flexWrap="wrap"
                     justifyContent="space-around"
                     padding="10px"
-                    sx={{gap: {xs: 2, sm: 4, md: 4, xl: 4}}}
+                    sx={{ gap: { xs: 2, sm: 4, md: 4, xl: 4 } }}
                 >
                     {users.map(item => (
                         <VideoItem
