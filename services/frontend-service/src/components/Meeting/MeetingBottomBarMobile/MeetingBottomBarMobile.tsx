@@ -9,6 +9,8 @@ import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import { SyntheticEvent, useCallback } from 'react';
 import {
+    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingParticipant,
     $isHaveNewMessage,
     $isLurker,
     $isMeetingHostStore,
@@ -18,6 +20,8 @@ import {
     $meetingConnectedStore,
     $meetingStore,
     $meetingUsersStore,
+    $paymentIntent,
+    createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
@@ -43,6 +47,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { PaymentType } from 'shared-const';
 import styles from './MeetingBottomBarMobile.module.scss';
 import config from '../../../const/config';
 
@@ -67,6 +72,15 @@ export const MeetingBottomBarMobile = () => {
     const isLurker = useStore($isLurker);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const enabledPaymentMeetingParticipant = useStore(
+        $enabledPaymentMeetingParticipant,
+    );
+    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const paymentIntent = useStore($paymentIntent);
+    const intentId = paymentIntent?.id;
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
 
     const { isMobile } = useBrowserDetect();
     const isPortraitLayout = useStore($isPortraitLayout);
@@ -86,10 +100,20 @@ export const MeetingBottomBarMobile = () => {
         toggleUsersPanelEvent();
     }, []);
 
-    const handleTogglePaymentPanel = useCallback((e: SyntheticEvent) => {
-        e.stopPropagation();
-        togglePaymentFormEvent();
-    }, []);
+    const handleTogglePaymentPanel = useCallback(
+        (e: SyntheticEvent) => {
+            e.stopPropagation();
+            togglePaymentFormEvent();
+            if (!isCreatePaymentIntentPending && !isOwner) {
+                if (!intentId) {
+                    createPaymentIntentWithData({
+                        paymentType: PaymentType.Meeting,
+                    });
+                }
+            }
+        },
+        [isCreatePaymentIntentPending, isOwner, intentId],
+    );
 
     const handleToggleChangeBackground = useCallback((e: SyntheticEvent) => {
         e.stopPropagation();
@@ -238,18 +262,27 @@ export const MeetingBottomBarMobile = () => {
                         Icon={<ChatIcon width="18px" height="18px" />}
                     />
                 </CustomPaper>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={28}
-                    className={styles.deviceButton}
+                <ConditionalRender
+                    condition={
+                        enabledPaymentMeetingParticipant ||
+                        enabledPaymentMeetingLurker
+                    }
                 >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleTogglePaymentPanel}
-                        className={clsx(styles.deviceButton)}
-                        Icon={<MonetizationIcon width="24px" height="24px" />}
-                    />
-                </CustomPaper>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleTogglePaymentPanel}
+                            className={clsx(styles.deviceButton)}
+                            Icon={
+                                <MonetizationIcon width="24px" height="24px" />
+                            }
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
                 <ConditionalRender
                     condition={isMobile && !isPortraitLayout && !isLurker}
                 >

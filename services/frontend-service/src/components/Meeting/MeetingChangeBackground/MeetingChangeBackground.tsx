@@ -40,16 +40,18 @@ const Component = () => {
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
+    const { isMobile } = useBrowserDetect();
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
 
-    const [isExpand, setIsExpand] = useState<boolean>(isChangeBackgroundOpen);
+    const [isExpand, setIsExpand] = useState<boolean>(
+        isMobile ? isChangeBackgroundOpen : true,
+    );
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
     const isHideUpload = categories.some(
         item => item.key === 'myrooms' && item.id === categorySelected,
     );
     const meetingTemplate = useStore($meetingTemplateStore);
-    const { isMobile } = useBrowserDetect();
 
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
