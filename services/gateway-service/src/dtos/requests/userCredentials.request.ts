@@ -7,7 +7,7 @@ import {
   IsMongoId,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IUserCredentials } from 'shared-types';
+import { IUserCredentials, RegisterType } from 'shared-types';
 
 export class UserCredentialsRequest implements IUserCredentials {
   @IsEmail({}, { message: 'Invalid email' })
@@ -32,11 +32,14 @@ export class UserCredentialsRequest implements IUserCredentials {
   @ApiProperty()
   readonly password: string;
 
-  @IsMongoId()
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  readonly templateId: string;
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  @IsString({
+    message: 'user.registerType.invalid',
+  })
+  registerType: RegisterType;
 
   @IsString({
     message: 'user.country.invalid',
