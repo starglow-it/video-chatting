@@ -19,9 +19,12 @@ import clsx from 'clsx';
 // styles
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { PaymentType } from 'shared-const';
-import { CardDataFormProps } from './types';
 
+import { useStore } from 'effector-react';
+import { $isPortraitLayout } from 'src/store';
+import { isMobile } from 'shared-utils';
 import styles from './CardDataForm.module.scss';
+import { CardDataFormProps } from './types';
 
 // types
 
@@ -35,6 +38,7 @@ const Component = ({
     const stripe = useStripe();
     const elements = useElements();
     const [isLoading, setIsLoading] = useState(false);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const handleSubmit = useCallback(
         async (event: { preventDefault: () => void }) => {
@@ -53,7 +57,6 @@ const Component = ({
                         },
                     },
                 );
-                console.log('#Duy Phan console', result);
 
                 if (result.error) {
                     onError();
@@ -71,12 +74,16 @@ const Component = ({
 
     const renderFormMeeting = () => {
         return (
-            <CustomGrid container gap={2} flexDirection="column">
+            <CustomGrid
+                container
+                gap={isMobile() ? 1 : 2}
+                flexDirection="column"
+            >
                 <CustomGrid
                     display="flex"
                     flexDirection="column"
                     flex={1}
-                    width={300}
+                    width={isMobile() && !isPortraitLayout ? '100%' : '300px'}
                 >
                     <CustomTypography className={styles.textField}>
                         Card number
@@ -87,6 +94,10 @@ const Component = ({
                         })}
                         colorForm={colorForm}
                         styleBase={{
+                            width:
+                                isMobile() && !isPortraitLayout
+                                    ? '100%'
+                                    : '300px',
                             height: '42px',
                             fontSize: '13px',
                             lineHeight: '42px',
@@ -169,6 +180,7 @@ const Component = ({
                 Icon={<StripeIcon width="24px" height="24px" />}
                 className={clsx(styles.button, {
                     [styles.paddingButton]: paymentType === PaymentType.Meeting,
+                    [styles.mobile]: isMobile() && !isPortraitLayout,
                 })}
                 isLoading={isLoading}
             >

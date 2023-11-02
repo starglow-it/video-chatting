@@ -41,6 +41,7 @@ import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortrai
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
+import { isMobile as isMobileShared } from 'shared-utils';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -72,7 +73,9 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
-
+import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
+import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
+import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
 // helpers
 
 const Component = () => {
@@ -176,7 +179,7 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-    
+
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
@@ -217,7 +220,7 @@ const Component = () => {
                 </ConditionalRender>
             </MeetingBackgroundVideo>
 
-            {Boolean(meetingTemplate?.id) && (
+            {Boolean(meetingTemplate?.id) && !isMobileShared() && (
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
@@ -244,6 +247,17 @@ const Component = () => {
                     </ConditionalRender>
 
                     <LeaveNoteForm />
+                </MeetingSettingsPanel>
+            )}
+            {Boolean(meetingTemplate?.id) && isMobileShared() && (
+                <MeetingSettingsPanel
+                    template={meetingTemplate}
+                    onTemplateUpdate={handleUpdateMeetingTemplate}
+                >
+                    <MeetingHeader />
+                    <MeetingCarousel />
+                    <MeetingBottomBarMobile />
+                    <MeetingControlPanel />
                 </MeetingSettingsPanel>
             )}
 

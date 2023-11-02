@@ -17,8 +17,11 @@
     }
 
     &.mobile {
-        width: 50%;
-        padding: rem(14px 16px);
+        width: 100%;
+        padding: 0;
+        position: relative;
+        right: 0;
+        min-height: 280px;
     }
 
     .headers:not(.expanded) {
@@ -88,15 +91,19 @@
             padding-left: 2px;
         }
     }
+}
 
-    .scroll {
-        display: flex;
-        width: 100%;
-        max-height: 223px;
-        background: rgba(0, 0, 0, 0.3882352941);
-        flex-wrap: wrap;
-        border-radius: 9px;
-        padding: 10px 0px 10px 10px;
+.scroll {
+    display: flex;
+    width: 100%;
+    max-height: 223px;
+    background: rgba(0, 0, 0, 0.3882352941);
+    flex-wrap: wrap;
+    border-radius: 9px;
+    padding: 10px 0px 10px 10px;
+
+    &.mobile {
+        max-height: 160px;
     }
 }
 
@@ -151,126 +158,5 @@
 
     .icon {
         color: $primary-white;
-    }
-}
-
-.mainDrawer {
-    background: transparent;
-}
-
-.drawer {
-    width: rem(250px);
-    position: relative;
-    height: 100%;
-    padding: rem(10px);
-    display: flex;
-    flex-direction: column;
-
-    &.portrait {
-        width: 100%;
-        padding: rem(20px);
-    }
-
-    &.mobileD {
-        height: auto;
-    }
-
-    .headers {
-        padding-left: rem(10px);
-        width: 100%;
-    }
-
-    .closeIcon {
-        cursor: pointer;
-    }
-
-    .detail {
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        padding: rem(10px);
-    }
-
-    .barge {
-        margin-left: rem(5px);
-        margin-top: rem(5px);
-        background-color: black;
-        border-radius: rem(20px);
-        padding: rem(2px 6px);
-        height: rem(22px);
-        cursor: pointer;
-
-        &.active {
-            background-color: $primary-white;
-        }
-
-        .button {
-            text-transform: unset;
-            font-weight: bold;
-            margin-left: rem(3px);
-        }
-
-    }
-
-    .container {
-        width: rem(53px);
-        height: rem(53px);
-        background-color: #FFFFFF;
-        margin: rem(4px);
-        border-radius: rem(10px);
-        position: relative;
-        border: rem(2px) solid #807e7e;
-
-
-        &:hover {
-            border: rem(2px) solid $light-white;
-        }
-
-        &.active {
-            border: rem(3px) solid #71abe6;
-        }
-
-        .image {
-            border-radius: (7px);
-            object-fit: cover;
-            object-position: left;
-        }
-
-        .skeleton {
-            position: absolute;
-            border-radius: rem(12px);
-        }
-
-        &.upload {
-            display: flex;
-            background-color: #4b4747;
-            justify-content: center;
-            align-items: center;
-            padding-left: rem(2px);
-        }
-    }
-
-    .scroll {
-        display: flex;
-        width: 100%;
-        max-height: rem(197px);
-        background: rgba(0, 0, 0, 0.3882352941);
-        flex-wrap: wrap;
-        border-radius: rem(9px);
-        padding: rem(10px 0px 10px 10px);
-    }
-}
-
-.buttonBgMobile {
-    position: absolute;
-    width: rem(34px);
-    height: rem(34px);
-    right: rem(20px);
-    top: rem(16px);
-    padding: rem(4px);
-
-    .deviceButton {
-        width: rem(26px);
-        height: rem(26px);
     }
 }
