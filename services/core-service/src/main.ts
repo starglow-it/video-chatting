@@ -58,13 +58,8 @@ async function bootstrap() {
     await seeder.seedMonetizationStatistic();
     await seeder.seedRoomStatistic();
     await seeder.seedLinks();
-    await seeder.seedUpdateMaxMeetingTimeUser();
-    await seeder.seedIndexsDataByUserTemplates();
     await seeder.seedCreateGlobalCommonTemplate();
     await seeder.seedMediaCategories();
-    await seeder.seedMyRoomMediasByUserTemplateAmount();
-    await seeder.syncDataInUserTemplates();
-    await seeder.seedTemplateIdForMedia();
   }
 
   usersController.startCheckSubscriptions();

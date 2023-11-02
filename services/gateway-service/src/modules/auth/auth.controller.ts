@@ -30,7 +30,6 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
-  USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
@@ -39,6 +38,7 @@ import {
   LoginTypes,
   HttpMethods,
   ICommonTemplate,
+  RegisterType,
 } from 'shared-types';
 
 // dtos
@@ -64,12 +64,12 @@ import { google, Auth } from 'googleapis';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { CommonCreateFreeUserDto } from '../../dtos/response/common-create-free-user.dto';
-import { UsersService } from '../users/users.service';
 import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
 import { CreateUserFreeRequest } from '../../dtos/requests/create-user-free.request';
 import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { Request as Req } from 'express';
+import { LoginRequest } from '../../dtos/requests/login.request.dto';
 
 @ApiTags('Auth')
 @Controller(AUTH_SCOPE)
@@ -374,7 +374,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async login(
     @Request() req: Req,
-    @Body() body: UserCredentialsRequest,
+    @Body() body: LoginRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     await this.delGlobalUser(req);
     const isUserExists = await this.coreService.checkIfUserExists({

@@ -45,7 +45,6 @@ import {
   ICommonTemplate,
   DeleteCommonUserPayload,
   FilterQuery,
-  IResouce,
   UpdateTemplatePaymentPayload,
   ITemplatePayment,
   GetTemplatePaymentsPayload,

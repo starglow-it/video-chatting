@@ -7,7 +7,7 @@ type Options = {
   isOptionalAllProperties: boolean;
 };
 
-type MultiDecorators = <TFunction extends Function, Y>(
+type MultiDecorators = <TFunction, Y>(
   target: object | TFunction,
   propertyKey?: string | symbol,
   descriptor?: TypedPropertyDescriptor<Y>,

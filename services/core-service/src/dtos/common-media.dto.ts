@@ -32,4 +32,7 @@ export class CommonMediaDTO implements IMedia {
 
   @Expose()
   thumb: IMedia['thumb'];
+
+  @Expose()
+  status: IMedia['status'];
 }

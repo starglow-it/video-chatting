@@ -4,7 +4,6 @@ import { CoreService } from '../../services/core/core.service';
 import {
   EntityList,
   ICommonTemplate,
-  IUserTemplate,
   GetCommonTemplatePayload,
   GetCommonTemplatesPayload,
   DeleteCommonTemplatePayload,

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IUserTemplate } from 'shared-types';
+import { ICommonUser, IUserTemplate } from 'shared-types';
 import { CommonUserRestDTO } from './common-user.dto';
 
 export class CommonCreateFreeUserDto {
@@ -8,7 +8,7 @@ export class CommonCreateFreeUserDto {
   @ApiProperty({
     type: CommonUserRestDTO,
   })
-  readonly user: Object;
+  readonly user: ICommonUser;
 
   @Expose()
   @ApiProperty({

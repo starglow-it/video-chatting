@@ -1,11 +1,4 @@
-import {
-  Document,
-  FilterQuery,
-  HydratedDocument,
-  PipelineStage,
-  QueryWithHelpers,
-  UpdateWriteOpResult,
-} from 'mongoose';
+import { Document, FilterQuery, PipelineStage } from 'mongoose';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
 import {
   DeleteModelByIdQuery,

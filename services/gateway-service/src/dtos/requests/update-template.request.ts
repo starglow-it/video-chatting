@@ -6,8 +6,6 @@ import {
   IsUrl,
   ValidateIf,
   ValidateNested,
-  IsBoolean,
-  IsNumber,
   IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';

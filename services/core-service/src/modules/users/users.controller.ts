@@ -204,7 +204,7 @@ export class UsersController {
               session,
             );
             newUser.tokens.push(token);
-            newUser.registerTemplate = createUserPayload.user.templateId;
+            newUser.registerTemplate = null;
           }
 
           await newUser.save();
@@ -806,9 +806,6 @@ export class UsersController {
     return withTransaction(this.connection, async (session) => {
       const vultrStorageHostname = await this.configService.get(
         'vultrStorageHostname',
-      );
-      const vultrUploadBucket = await this.configService.get(
-        'vultrUploadBucket',
       );
 
       const uploadKey = data.profileAvatar.replace(
