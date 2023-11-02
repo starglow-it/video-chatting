@@ -173,7 +173,7 @@ export const MeetingMonezationForm = forwardRef(
                             gap={1}
                             sx={{
                                 width: {
-                                    xs: 300,
+                                    xs: '100%',
                                     sm: '100%',
                                     md: 340,
                                     xl: 340,
@@ -290,7 +290,7 @@ export const MeetingMonezationForm = forwardRef(
                             gap={1}
                             sx={{
                                 width: {
-                                    xs: 300,
+                                    xs: '100%',
                                     sm: '100%',
                                     md: 340,
                                     xl: 340,
