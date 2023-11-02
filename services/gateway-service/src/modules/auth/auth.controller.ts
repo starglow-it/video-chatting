@@ -71,6 +71,7 @@ import { CreateUserFreeRequest } from '../../dtos/requests/create-user-free.requ
 import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { Request as Req } from 'express';
+import { LoginRequest } from '../../dtos/requests/login.request.dto';
 
 @ApiTags('Auth')
 @Controller(AUTH_SCOPE)
@@ -375,7 +376,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async login(
     @Request() req: Req,
-    @Body() body: UserCredentialsRequest,
+    @Body() body: LoginRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     await this.delGlobalUser(req);
     const isUserExists = await this.coreService.checkIfUserExists({
