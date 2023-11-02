@@ -72,8 +72,8 @@ const Component = () => {
         togglePaymentFormEvent();
     }, []);
 
-    const handleCloseMobilePanel = () => {
-        toggleUsersPanelEvent();
+    const handleCloseMobilePanel = (e: MouseEvent | TouchEvent) => {
+        console.log('#Duy Phan console', e);
     };
 
     const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
@@ -114,7 +114,8 @@ const Component = () => {
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
                                 [styles.mobile]: isMobile && isPortraitLayout,
-                                [styles.landscape]:isMobile && !isPortraitLayout
+                                [styles.landscape]:
+                                    isMobile && !isPortraitLayout,
                             })}
                         >
                             <MeetingPeople />
@@ -135,35 +136,42 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <ClickAwayListener onClickAway={toggleOutsidePaymentPanel}>
-                    <Fade in={isPaymentOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                            })}
-                        >
-                            <CustomGrid>
+                <ConditionalRender condition={isMobile}>
+                    <ClickAwayListener onClickAway={toggleOutsidePaymentPanel}>
+                        <Fade in={isPaymentOpen}>
+                            <CustomPaper
+                                variant="black-glass"
+                                className={clsx(styles.monetizationPanel, {
+                                    [styles.mobile]:
+                                        isMobile && isPortraitLayout,
+                                    [styles.landscape]:
+                                        isMobile && !isPortraitLayout,
+                                })}
+                            >
                                 <MeetingMonetization
                                     onUpdate={handleUpdateMonetization}
                                 />
-                            </CustomGrid>
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener>
-                <ClickAwayListener onClickAway={toggleOutsideBackgroundPanel}>
-                    <Fade in={isChangeBackgroundOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                                [styles.landscape]:isMobile && !isPortraitLayout
-                            })}
-                        >
-                            <MeetingChangeBackground />
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener>
+                            </CustomPaper>
+                        </Fade>
+                    </ClickAwayListener>
+                    <ClickAwayListener
+                        onClickAway={toggleOutsideBackgroundPanel}
+                    >
+                        <Fade in={isChangeBackgroundOpen}>
+                            <CustomPaper
+                                variant="black-glass"
+                                className={clsx(styles.commonOpenPanel, {
+                                    [styles.mobile]:
+                                        isMobile && isPortraitLayout,
+                                    [styles.landscape]:
+                                        isMobile && !isPortraitLayout,
+                                })}
+                            >
+                                <MeetingChangeBackground />
+                            </CustomPaper>
+                        </Fade>
+                    </ClickAwayListener>
+                </ConditionalRender>
             </>
         ),
         [

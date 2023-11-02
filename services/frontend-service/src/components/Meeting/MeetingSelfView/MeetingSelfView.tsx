@@ -3,7 +3,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { useStore } from 'effector-react';
 import {
     $activeStreamStore,
-    $isOwner,
     $localUserStore,
     $meetingConnectedStore,
     setDevicesPermission,
@@ -26,7 +25,6 @@ export const MeetingSelfView = () => {
     const localUser = useStore($localUserStore);
     const activeStream = useStore($activeStreamStore);
     const profile = useStore($profileStore);
-    const isOwner = useStore($isOwner);
     const isMeetingConnected = useStore($meetingConnectedStore);
 
     const container = useRef<HTMLVideoElement | null>(null);

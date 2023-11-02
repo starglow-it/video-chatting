@@ -13,25 +13,33 @@ import {
     $isMeetingHostStore,
     $isToggleUsersPanel,
     $localUserStore,
+    $meetingConnectedStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
+    setDevicesPermission,
+    setIsAudioActiveEvent,
+    setIsCameraActiveEvent,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
+    updateLocalUserEvent,
 } from 'src/store/roomStores';
 import { useStore, useStoreMap } from 'effector-react';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
-import { $authStore, deleteDraftUsers } from 'src/store';
+import { $authStore, $isPortraitLayout, deleteDraftUsers } from 'src/store';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { clientRoutes } from 'src/const/client-routes';
 import { useRouter } from 'next/router';
 import config from '../../../const/config';
 import styles from './MeetingBottomBarMobile.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
+import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 export const MeetingBottomBarMobile = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
@@ -50,8 +58,13 @@ export const MeetingBottomBarMobile = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const { isWithoutAuthen } = useStore($authStore);
     const localUser = useStore($localUserStore);
+    const isMeetingConnected = useStore($meetingConnectedStore);
 
     const { isMobile } = useBrowserDetect();
+    const isPortraitLayout = useStore($isPortraitLayout);
+
+    const isMicActive = localUser.micStatus === 'active';
+    const isCamActive = localUser.cameraStatus === 'active';
 
     const router = useRouter();
 
@@ -75,6 +88,30 @@ export const MeetingBottomBarMobile = () => {
         toggleBackgroundManageEvent();
     }, []);
 
+    const handleToggleCam = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                cameraStatus: isCamActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isCamEnabled: !isCamActive,
+            });
+            setIsCameraActiveEvent(!isCamActive);
+        }
+    }, [isMeetingConnected, isCamActive]);
+
+    const handleToggleMic = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isMicEnabled: !isMicActive,
+            });
+            setIsAudioActiveEvent(!isMicActive);
+        }
+    }, [isMeetingConnected, isMicActive]);
+
     const handleEndVideoChat = async () => {
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
@@ -96,6 +133,26 @@ export const MeetingBottomBarMobile = () => {
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.main}>
+                <ConditionalRender condition={isMobile && !isPortraitLayout}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleMic}
+                            className={clsx(styles.deviceButton)}
+                            Icon={
+                                <MicIcon
+                                    width="24px"
+                                    height="24px"
+                                    isActive={isMicActive}
+                                />
+                            }
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={28}
@@ -158,6 +215,26 @@ export const MeetingBottomBarMobile = () => {
                         Icon={<MonetizationIcon width="24px" height="24px" />}
                     />
                 </CustomPaper>
+                <ConditionalRender condition={isMobile && !isPortraitLayout}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleCam}
+                            className={clsx(styles.deviceButton)}
+                            Icon={
+                                <CameraIcon
+                                    width="24px"
+                                    height="24px"
+                                    isActive={isCamActive}
+                                />
+                            }
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
             </CustomGrid>
         </CustomGrid>
     );
