@@ -52,6 +52,7 @@ import {
     registerUserFx,
     resetRegisterErrorEvent,
 } from '../../store';
+import { RegisterType } from 'shared-types';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -99,6 +100,7 @@ const Component = () => {
             email: data.email.trim().toLowerCase(),
             password: data.password,
             templateId: initialTemplateData.templateId,
+            registerType: RegisterType.Default,
         });
     });
 
