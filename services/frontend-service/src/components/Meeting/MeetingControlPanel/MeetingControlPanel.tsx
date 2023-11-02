@@ -24,6 +24,8 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // stores
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
+    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingParticipant,
     $isOwner,
     $isScreenSharingStore,
     $isToggleBackgroundPanel,
@@ -32,6 +34,8 @@ import {
     $isToggleUsersPanel,
     $meetingUsersStore,
     $paymentIntent,
+    $paymentMeetingLurker,
+    $paymentMeetingParticipant,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
@@ -47,6 +51,7 @@ import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
+import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -58,6 +63,12 @@ const Component = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+    const enabledPaymentMeetingParticipant = useStore(
+        $enabledPaymentMeetingParticipant,
+    );
+    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
+    const paymentMeetingLurker = useStore($paymentMeetingLurker);
 
     const { isMobile } = useBrowserDetect();
 
@@ -105,6 +116,13 @@ const Component = () => {
         [],
     );
 
+    const handleCloseForm = useCallback(() => {
+        togglePaymentFormEvent(false);
+        if (!isOwner) {
+            cancelPaymentIntentWithData();
+        }
+    }, [isOwner]);
+
     const commonContent = useMemo(
         () => (
             <>
@@ -148,9 +166,27 @@ const Component = () => {
                                         isMobile && !isPortraitLayout,
                                 })}
                             >
-                                <MeetingMonetization
-                                    onUpdate={handleUpdateMonetization}
-                                />
+                                <ConditionalRender condition={isOwner}>
+                                    <MeetingMonetization
+                                        onUpdate={handleUpdateMonetization}
+                                    />
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={enabledPaymentMeetingParticipant}
+                                >
+                                    <PaymentForm
+                                        onClose={handleCloseForm}
+                                        payment={paymentMeetingParticipant}
+                                    />
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={enabledPaymentMeetingLurker}
+                                >
+                                    <PaymentForm
+                                        onClose={handleCloseForm}
+                                        payment={paymentMeetingLurker}
+                                    />
+                                </ConditionalRender>
                             </CustomPaper>
                         </Fade>
                     </ClickAwayListener>

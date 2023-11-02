@@ -31,7 +31,6 @@ export const VideoItem = ({
     const container = useRef<HTMLVideoElement | null>(null);
     const mediaStreamRef = useRef(new MediaStream());
     const isPortraitLayout = useStore($isPortraitLayout);
-    console.log('#Duy Phan console isPortraitLayout', isPortraitLayout);
 
     useEffect(() => {
         if (userTracks?.videoTrack) {

@@ -316,7 +316,6 @@ const Component = ({
         }
 
         const savedProgress = savedTemplateProgress.current;
-        console.log('#Duy Phan console save', savedProgress);
         reset({
             name: savedProgress.name,
             url: savedProgress.url,

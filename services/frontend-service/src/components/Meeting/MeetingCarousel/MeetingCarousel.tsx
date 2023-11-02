@@ -1,9 +1,8 @@
 import Carousel from 'react-material-ui-carousel';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { useStoreMap } from 'effector-react';
-import { $meetingUsersStore } from 'src/store/roomStores';
+import { useStore, useStoreMap } from 'effector-react';
+import { $isLurker, $meetingUsersStore } from 'src/store/roomStores';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingVideosCarousel } from './MeetingVideosCarousel';
 import { MeetingSelfView } from '../MeetingSelfView/MeetingSelfView';
@@ -20,32 +19,33 @@ export const MeetingCarousel = () => {
                     user.meetingRole !== MeetingRole.Lurker,
             ),
     });
-    // const users1 = users.length < 7 ? users.slice(0, 7) : users;
-    // const users2 = users.length < 7 ? [] : users.slice(-4);
-    const users1 = [...users, ...users, ...users, ...users, ...users];
-    const users2 = [...users, ...users, ...users, ...users, ...users];
+    const isLurker = useStore($isLurker);
+    const users1 = users.length < 6 ? users : users.slice(0, 5);
+    const users2 = users.length < 6 ? [] : users.slice(6, 11);
 
-    return (
-        <Carousel
-            className={styles.container}
-            height="100%"
-            navButtonsAlwaysVisible
-            autoPlay={false}
-        >
-            <CustomGrid width="100%" height="100%" bgcolor="beige">
-                <MeetingSelfView />
-            </CustomGrid>
-            <CustomGrid
-                width="100%"
-                height="100%"
-                display="flex"
-                justifyContent="center"
-                alignItems="flex-start"
-                position="relative"
-            >
-                <MeetingVideosCarousel users={users1} />
-            </CustomGrid>
-            <ConditionalRender condition={!!users2.length}>
+    const renderMain = () => {
+        const elements: any = [];
+        if (!isLurker)
+            elements.push(
+                <CustomGrid width="100%" height="100%" bgcolor="beige">
+                    <MeetingSelfView />
+                </CustomGrid>,
+            );
+        if (users1.length)
+            elements.push(
+                <CustomGrid
+                    width="100%"
+                    height="100%"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="flex-start"
+                    position="relative"
+                >
+                    <MeetingVideosCarousel users={users1} />
+                </CustomGrid>,
+            );
+        if (users2.length)
+            elements.push(
                 <CustomGrid
                     width="100%"
                     height="100%"
@@ -55,8 +55,19 @@ export const MeetingCarousel = () => {
                     position="relative"
                 >
                     <MeetingVideosCarousel users={users2} />
-                </CustomGrid>
-            </ConditionalRender>
+                </CustomGrid>,
+            );
+        return elements;
+    };
+
+    return (
+        <Carousel
+            className={styles.container}
+            height="100%"
+            navButtonsAlwaysVisible
+            autoPlay={false}
+        >
+            {renderMain()}
         </Carousel>
     );
 };

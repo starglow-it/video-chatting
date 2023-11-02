@@ -10,12 +10,16 @@ import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationI
 import { SyntheticEvent, useCallback } from 'react';
 import {
     $isHaveNewMessage,
+    $isLurker,
     $isMeetingHostStore,
+    $isOwner,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
+    $meetingStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
+    requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     setIsAudioActiveEvent,
@@ -40,6 +44,7 @@ import styles from './MeetingBottomBarMobile.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
+import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 
 export const MeetingBottomBarMobile = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
@@ -59,6 +64,9 @@ export const MeetingBottomBarMobile = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const localUser = useStore($localUserStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
+    const isLurker = useStore($isLurker);
+    const isOwner = useStore($isOwner);
+    const meeting = useStore($meetingStore);
 
     const { isMobile } = useBrowserDetect();
     const isPortraitLayout = useStore($isPortraitLayout);
@@ -130,10 +138,17 @@ export const MeetingBottomBarMobile = () => {
                 : clientRoutes.registerEndCallRoute,
         );
     };
+
+    const handleRequestToBecomeParticipant = () => {
+        requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
+    };
+
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.main}>
-                <ConditionalRender condition={isMobile && !isPortraitLayout}>
+                <ConditionalRender
+                    condition={isMobile && !isPortraitLayout && !isLurker}
+                >
                     <CustomPaper
                         variant="black-glass"
                         borderRadius={28}
@@ -145,46 +160,66 @@ export const MeetingBottomBarMobile = () => {
                             className={clsx(styles.deviceButton)}
                             Icon={
                                 <MicIcon
-                                    width="24px"
-                                    height="24px"
+                                    width="22px"
+                                    height="22px"
                                     isActive={isMicActive}
                                 />
                             }
                         />
                     </CustomPaper>
                 </ConditionalRender>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={28}
-                    className={styles.deviceButton}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleChangeBackground}
-                        className={clsx(styles.deviceButton, {
-                            [styles.inactive]: false,
-                        })}
-                        Icon={<ImageIcon width="20px" height="20px" />}
-                    />
-                </CustomPaper>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={28}
-                    className={styles.deviceButton}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleSchedulePanel}
-                        className={clsx(styles.deviceButton)}
-                        Icon={<PersonPlusIcon width="18px" height="18px" />}
-                    />
-                </CustomPaper>
+                <ConditionalRender condition={isOwner}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleChangeBackground}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: false,
+                            })}
+                            Icon={<ImageIcon width="20px" height="20px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+                <ConditionalRender condition={!isLurker}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleSchedulePanel}
+                            className={clsx(styles.deviceButton)}
+                            Icon={<PersonPlusIcon width="18px" height="18px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+                <ConditionalRender condition={isLurker}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleRequestToBecomeParticipant}
+                            className={styles.deviceButton}
+                            Icon={<ArrowUp width="15px" height="15px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+
                 <ActionButton
                     variant="danger"
                     onAction={handleEndVideoChat}
                     className={styles.endButton}
                     Icon={<HangUpIcon width="22px" height="22px" />}
                 />
+
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={28}
@@ -215,7 +250,9 @@ export const MeetingBottomBarMobile = () => {
                         Icon={<MonetizationIcon width="24px" height="24px" />}
                     />
                 </CustomPaper>
-                <ConditionalRender condition={isMobile && !isPortraitLayout}>
+                <ConditionalRender
+                    condition={isMobile && !isPortraitLayout && !isLurker}
+                >
                     <CustomPaper
                         variant="black-glass"
                         borderRadius={28}
@@ -227,8 +264,8 @@ export const MeetingBottomBarMobile = () => {
                             className={clsx(styles.deviceButton)}
                             Icon={
                                 <CameraIcon
-                                    width="24px"
-                                    height="24px"
+                                    width="22px"
+                                    height="22px"
                                     isActive={isCamActive}
                                 />
                             }

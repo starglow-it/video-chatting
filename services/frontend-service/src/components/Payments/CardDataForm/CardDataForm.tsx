@@ -53,7 +53,6 @@ const Component = ({
                         },
                     },
                 );
-                console.log('#Duy Phan console', result);
 
                 if (result.error) {
                     onError();
