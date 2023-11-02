@@ -46,6 +46,7 @@ import { AuthService } from './auth.service';
 // exception
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
+import { LoginRequest } from 'src/dtos/requests/login.request.dto';
 
 @ApiTags('Auth/Admin')
 @Controller('auth/admin')
@@ -65,7 +66,7 @@ export class AdminAuthController {
     description: 'Admin logged in',
   })
   async loginAdmin(
-    @Body() body: UserCredentialsRequest,
+    @Body() body: LoginRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     const isUserExists = await this.coreService.checkIfUserExists({
       email: body.email,
