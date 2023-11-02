@@ -204,6 +204,7 @@ export class UsersController {
               session,
             );
             newUser.tokens.push(token);
+            newUser.registerTemplate = null;
           }
 
           await newUser.save();
