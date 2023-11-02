@@ -46,7 +46,7 @@ import { AuthService } from './auth.service';
 // exception
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
-import { LoginRequest } from 'src/dtos/requests/login.request.dto';
+import { LoginRequest } from '../../dtos/requests/login.request.dto';
 
 @ApiTags('Auth/Admin')
 @Controller('auth/admin')
