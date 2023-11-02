@@ -204,7 +204,7 @@ export class UsersController {
               session,
             );
             newUser.tokens.push(token);
-            newUser.registerTemplate = createUserPayload.user.templateId;
+            newUser.registerTemplate = null;
           }
 
           await newUser.save();

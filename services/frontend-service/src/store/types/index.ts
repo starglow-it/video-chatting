@@ -10,6 +10,7 @@ import {
     ICommonUser,
     MeetingRole,
     MeetingReactionKind,
+    RegisterType,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 import { PaymentType } from 'shared-const';
@@ -97,6 +98,7 @@ export type RegisterUserParams = {
     email: string;
     password: string;
     templateId?: ICommonTemplate['id'];
+    registerType?: RegisterType;
 };
 
 export type LoginUserResponse = { user: Profile } & TokenPair & {

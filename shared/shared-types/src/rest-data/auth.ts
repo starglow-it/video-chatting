@@ -1,10 +1,15 @@
 import { ICommonTemplate, ICommonUser } from '../api-interfaces';
 
+export enum RegisterType {
+  EndCall = 'end-call',
+  Default = 'default',
+}
+
 export interface IUserCredentials {
   email?: ICommonUser['email'];
   userId?: ICommonUser['id'];
   password: ICommonUser['password'];
-  templateId?: ICommonTemplate['id'];
   country?: ICommonUser['country'];
+  registerType?: RegisterType;
   loginType?: ICommonUser['loginType'];
 }

@@ -43,6 +43,7 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
+    required: false,
   })
   registerTemplate: string;
 
