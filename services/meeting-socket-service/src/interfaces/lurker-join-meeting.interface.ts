@@ -1,8 +1,7 @@
-import { ICommonMeetingUserDTO } from "./common-user.interface";
+import { ICommonMeetingUserDTO } from './common-user.interface';
 
 export interface ILurkerJoinMeeting {
-    meetingId: string;
-    username: string;
-    meetingAvatarId: string;
-
+  meetingId: string;
+  username: string;
+  meetingAvatarId: string;
 }

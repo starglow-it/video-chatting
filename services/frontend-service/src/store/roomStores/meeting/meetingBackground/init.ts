@@ -22,6 +22,8 @@ import {
     addBackgroundToCategoryEvent,
     reloadMediasEvent,
     deleteMediaMeetingFx,
+    $isToggleBackgroundPanel,
+    toggleBackgroundManageEvent,
 } from './model';
 import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
 import { ResultDeleteMedia } from './types';
@@ -70,6 +72,12 @@ $isLoadMoreMediasStore
     .on(getBackgroundMeetingFx, () => false)
     .reset(resetRoomStores);
 
+$isToggleBackgroundPanel
+    .on(toggleBackgroundManageEvent, (toggle, newToggle) =>
+        newToggle !== undefined ? newToggle : !toggle,
+    )
+    .reset(resetRoomStores);
+
 sample({
     clock: setCategoryEvent,
     source: combine({
@@ -104,7 +112,7 @@ sample({
                           platform: 'youtube',
                       },
                       url: '',
-                      previewUrls: []
+                      previewUrls: [],
                   }
                 : {
                       previewUrls: dataUpdate?.previewUrls.map(item => item.id),

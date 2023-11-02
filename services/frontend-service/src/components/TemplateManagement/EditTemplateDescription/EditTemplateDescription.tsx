@@ -63,7 +63,6 @@ const Component = ({
     } = useFormContext();
 
     const description = useWatch({ control, name: 'description' });
-    console.log('#Duy Phan console des', description);
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
 

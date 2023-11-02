@@ -5,7 +5,6 @@ export const replaceItemInArray = <T extends unknown>(
   searchItem: T,
   replaceItem: T,
 ) => {
-
   let index = arr.indexOf(searchItem);
   if (!isPrimitive(searchItem, true)) {
     index = arr.findIndex(

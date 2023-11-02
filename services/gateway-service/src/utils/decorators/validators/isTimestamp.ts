@@ -1,11 +1,9 @@
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { type } from 'os';
 import { ITimestamp } from 'shared-types';
 
 export function IsTimestamp(validationOptions?: ValidationOptions) {
@@ -21,7 +19,7 @@ export function IsTimestamp(validationOptions?: ValidationOptions) {
 
 @ValidatorConstraint({ name: 'IsTimestamp' })
 export class IsTimestampConstraint implements ValidatorConstraintInterface {
-  validate(value: ITimestamp, args: ValidationArguments) {
+  validate(value: ITimestamp) {
     if (
       typeof value?.day === 'number' &&
       typeof value?.hours === 'number' &&
@@ -34,7 +32,7 @@ export class IsTimestampConstraint implements ValidatorConstraintInterface {
     return false;
   }
 
-  defaultMessage(validationArguments?: ValidationArguments): string {
+  defaultMessage(): string {
     return 'Invalid Timestamp';
   }
 }

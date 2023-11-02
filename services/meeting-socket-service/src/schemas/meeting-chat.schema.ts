@@ -33,10 +33,12 @@ export class MeetingChat {
   @Prop({
     type: mongoose.Schema.Types.Map,
     of: {
-      type: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'MeetingUser'
-      }],
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'MeetingUser',
+        },
+      ],
     },
     default: new Map<MeetingReactionKind, MeetingUserDocument[]>(),
   })

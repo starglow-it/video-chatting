@@ -1,0 +1,22 @@
+@import '../../../styles/variables.scss';
+@import '../../../styles/rem.scss';
+
+.container {
+    backdrop-filter: blur(28px);
+    z-index: 12;
+    background: transparent;
+    border-radius: 0px;
+}
+
+.icon {
+    color: $primary-white;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: rem(38px);
+    height: rem(38px);
+    border-radius: 30px;
+}

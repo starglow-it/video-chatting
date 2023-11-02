@@ -17,5 +17,5 @@ export enum MeetingSubscribeEvents {
   OnReactionMessage = 'meeting:chat:reaction:send',
   OnUnReactionMessage = 'meeting:chat:unreaction:send',
   OnLoadMoreMessages = 'meeting:chat:loadmore',
-  OnUpdateTemplatePayments = 'template:payments:update'
+  OnUpdateTemplatePayments = 'template:payments:update',
 }

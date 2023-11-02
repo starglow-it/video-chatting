@@ -157,5 +157,4 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   subdomain: IUserTemplate['subdomain'];
-
 }

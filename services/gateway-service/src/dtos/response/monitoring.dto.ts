@@ -1,6 +1,6 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IBusinessCategory, IMonitoring, MonitoringEvent } from 'shared-types';
+import { IMonitoring, MonitoringEvent } from 'shared-types';
 
 export class MonitoringDto implements IMonitoring {
   @Expose()

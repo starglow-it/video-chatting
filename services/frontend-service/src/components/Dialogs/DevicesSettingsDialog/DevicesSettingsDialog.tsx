@@ -155,7 +155,7 @@ const Component = () => {
     const handleToggleCamera = useCallback(() => {
         changeTracksState({
             enabled: !isNewCameraSettingActive,
-            tracks: changeStream?.getVideoTracks(),
+            tracks: changeStream?.getVideoTracks() ?? [],
         });
         handleToggleNewCameraSetting();
     }, [changeStream, isNewCameraSettingActive]);
@@ -163,7 +163,7 @@ const Component = () => {
     const handleToggleMic = useCallback(() => {
         changeTracksState({
             enabled: !isNewMicSettingActive,
-            tracks: changeStream?.getAudioTracks(),
+            tracks: changeStream?.getAudioTracks() ?? [],
         });
         handleToggleNewMicSetting();
     }, [isNewMicSettingActive, changeStream]);

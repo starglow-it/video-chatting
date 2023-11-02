@@ -5,7 +5,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRoles } from 'shared-types';
 import { CoreService } from '../services/core/core.service';
 
 type TokenDataDto = { userId: string; exp: number };

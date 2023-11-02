@@ -8,7 +8,6 @@ import {
   ISocialLink,
   UserRoles,
   PlanKeys,
-  LoginTypes,
 } from 'shared-types';
 
 export class UserFeaturedBackground {

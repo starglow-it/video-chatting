@@ -23,6 +23,10 @@
 
 .button {
   margin: rem(20px 0 0 0);
+
+  &.mobile {
+    margin: rem(8px 0 0 0);
+  }
 }
 
 .paddingButton {
@@ -31,7 +35,6 @@
 }
 
 .cardPaywallField {
-  width: rem(300px);
   height: 42px;
 
   &::placeholder {

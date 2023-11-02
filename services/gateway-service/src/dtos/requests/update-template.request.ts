@@ -6,8 +6,6 @@ import {
   IsUrl,
   ValidateIf,
   ValidateNested,
-  IsBoolean,
-  IsNumber,
   IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -82,7 +80,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'src must be a string'
+    message: 'src must be a string',
   })
   src: string;
 
@@ -92,7 +90,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'thumb must be a string'
+    message: 'thumb must be a string',
   })
   thumb: string;
 
@@ -102,7 +100,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'platform must be a string'
+    message: 'platform must be a string',
   })
   platform: string;
 }
@@ -142,20 +140,18 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Position must be string' })
   position: string;
 
-
   @ApiProperty({
     type: MediaLinkReqDto,
     required: false,
     example: {
       src: 'https://123.youtube.com',
       thumb: 'https://blabla.com',
-      platform: 'youtube'
-    }
+      platform: 'youtube',
+    },
   })
   @IsOptional()
   @Type(() => MediaLinkReqDto)
   mediaLink: IMediaLink;
-
 
   @ApiProperty({
     required: false,

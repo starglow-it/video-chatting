@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { FilterQuery, Model, QueryOptions } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 import {
   BusinessCategory,

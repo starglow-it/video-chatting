@@ -6,5 +6,5 @@ export enum UserEmitEvents {
   RequestSwitchRoleByHost = 'users:switchRole:host:request:receive',
   RequestSwitchRoleByLurker = 'users:switchRole:lurker:request:receive',
   AnswerSwitchRoleByHost = 'users:switchRole:host:answer:receive',
-  AnswerSwitchRoleByLurker = 'users:switchRole:lurker:answer:receive'
+  AnswerSwitchRoleByLurker = 'users:switchRole:lurker:answer:receive',
 }

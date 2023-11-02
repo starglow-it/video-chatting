@@ -6,10 +6,9 @@ import {
   EntityList,
   GetMeetingAvatarsPayload,
   IMeetingAvatar,
-  IResouce,
   IUserTemplate,
 } from 'shared-types';
-import { CoreBrokerPatterns, MeetingBrokerPatterns } from 'shared-const';
+import { MeetingBrokerPatterns } from 'shared-const';
 
 @Injectable()
 export class MeetingsService {

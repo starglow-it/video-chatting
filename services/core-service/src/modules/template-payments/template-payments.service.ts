@@ -27,10 +27,14 @@ export class TemplatePaymentsService
     @InjectModel(TemplatePayment.name)
     private templatePayment: Model<TemplatePaymentDocument>,
   ) {}
-  findById(
-    args: GetModelByIdQuery<TemplatePaymentDocument>,
-  ): Promise<TemplatePaymentDocument> {
-    throw new Error('Method not implemented.');
+  findById({
+    id,
+    populatePaths,
+    session,
+  }: GetModelByIdQuery<TemplatePaymentDocument>): Promise<TemplatePaymentDocument> {
+    return this.templatePayment
+      .findById(id, {}, { session: session?.session, populate: populatePaths })
+      .exec();
   }
   async findOne({
     query,
@@ -152,6 +156,7 @@ export class TemplatePaymentsService
       .updateMany(query, data, {
         ...options,
         session,
+        populate: populatePaths,
       })
       .exec();
   }

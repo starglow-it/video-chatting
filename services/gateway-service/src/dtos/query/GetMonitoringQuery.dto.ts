@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { IMonitoring } from 'shared-types';
 import { toNumber } from '../../utils/parsers/toNumber';
 

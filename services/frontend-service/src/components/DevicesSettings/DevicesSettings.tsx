@@ -90,7 +90,6 @@ const Component = () => {
     const enabledPaymentPaywallParticipant = useStore(
         $enabledPaymentPaywallParticipant,
     );
-    console.log('#Duy Phan console pay', enabledPaymentPaywallParticipant);
 
     const isCameraActiveRef = useRef(isCameraActive);
 

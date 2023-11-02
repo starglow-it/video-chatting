@@ -4,9 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import {
-  CustomPopulateOptions,
-} from '../../types';
+import { CustomPopulateOptions } from '../../types';
 @Injectable()
 export class MeetingsService {
   constructor(
@@ -111,5 +109,4 @@ export class MeetingsService {
       })
       .exec();
   }
-
 }

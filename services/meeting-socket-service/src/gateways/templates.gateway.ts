@@ -40,7 +40,7 @@ export class TemplatesGateway extends BaseGateway {
       this.emitToRoom(
         `meeting:${user.meeting.toString()}`,
         MeetingEmitEvents.UpdateTemplatePayments,
-        msg
+        msg,
       );
       return;
     });

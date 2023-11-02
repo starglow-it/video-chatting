@@ -17,7 +17,6 @@ import {
   GetModelSingleQuery,
   UpdateModelSingleQuery,
 } from '../../types/custom';
-import { IResouce } from 'shared-types';
 import { PipelineStage } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { RESOUCE_SERVICE } from 'shared-const';

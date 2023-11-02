@@ -70,7 +70,9 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async findMeetingAvatar(payload: GetMeetingAvatarPayload): Promise<IMeetingAvatar> {
+  async findMeetingAvatar(
+    payload: GetMeetingAvatarPayload,
+  ): Promise<IMeetingAvatar> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingAvatar };
     return firstValueFrom(this.client.send(pattern, payload));
   }

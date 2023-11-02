@@ -64,7 +64,19 @@ const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
 
     return (
         <CustomGrid container direction="column">
-            <CustomGrid container className={styles.title} alignItems="center">
+            <CustomGrid
+                container
+                alignItems="center"
+                sx={{
+                    marginBottom: {
+                        xs: '20px',
+                        sm: '10px',
+                        md: '20px',
+                        xl: '20px',
+                    },
+                }}
+                className={styles.title}
+            >
                 {subLabel ? <>{subLabel} </> : null}
                 <CustomTypography variant="h3bold" color={colorMain}>
                     {currencySigns[payment.currency]}
@@ -93,13 +105,29 @@ const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
                     container
                     direction="column"
                     className={styles.paymentForm}
+                    sx={{
+                        marginTop: {
+                            xs: '20px',
+                            sm: '10px',
+                            md: '20px',
+                            xl: '20px',
+                        },
+                    }}
                 >
                     <CustomTypography
                         variant="body1bold"
                         color={colorMain}
                         nameSpace="meeting"
                         translation="payments.yourCard"
-                        className={styles.title}
+                        className={styles.titleCard}
+                        sx={{
+                            marginBottom: {
+                                xs: '20px',
+                                sm: '10px',
+                                md: '20px',
+                                xl: '20px',
+                            },
+                        }}
                     />
                     <StripeElement secret={paymentIntent.clientSecret}>
                         <CardDataForm

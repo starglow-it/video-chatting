@@ -20,7 +20,10 @@ export class MeetingChatsService {
     private meetingChat: Model<MeetingChatDocument>,
   ) {}
 
-  async create({ data, session: { session } }: InsertModelSingleQuery<MeetingChat>) {
+  async create({
+    data,
+    session: { session },
+  }: InsertModelSingleQuery<MeetingChat>) {
     const [meetingChat] = await this.meetingChat.create([data], { session });
     return meetingChat;
   }

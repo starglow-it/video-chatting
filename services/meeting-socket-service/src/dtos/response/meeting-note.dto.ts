@@ -3,7 +3,7 @@ import { CommonUserDTO } from './common-user.dto';
 import { ICommonUser } from 'shared-types';
 import { IMeetingNote } from '../../interfaces/meeting-note.interface';
 import { MeetingNoteDocument } from '../../schemas/meeting-note.schema';
-import { serializeInstance} from '../serialization';
+import { serializeInstance } from '../serialization';
 
 export class MeetingNoteDTO implements IMeetingNote {
   @Expose()
@@ -22,4 +22,5 @@ export class MeetingNoteDTO implements IMeetingNote {
   createdAt: string;
 }
 
-export const meetingNoteSerialization = (meetingNote: MeetingNoteDocument) => serializeInstance(meetingNote, MeetingNoteDTO);
+export const meetingNoteSerialization = (meetingNote: MeetingNoteDocument) =>
+  serializeInstance(meetingNote, MeetingNoteDTO);

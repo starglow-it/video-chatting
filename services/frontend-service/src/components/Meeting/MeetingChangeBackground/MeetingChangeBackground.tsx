@@ -18,10 +18,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { useToggle } from '@hooks/useToggle';
-import { $isPortraitLayout } from 'src/store';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { UploadBackground } from './Upload';
 import styles from './MeetingChangeBackground.module.scss';
 import { Media } from './Media';
@@ -29,6 +25,7 @@ import { Barge } from './Barge';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
+    $isToggleBackgroundPanel,
     $meetingTemplateStore,
     deleteMediaMeetingFx,
     setCategoryEvent,
@@ -43,21 +40,18 @@ const Component = () => {
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
-    const isPortraitLayout = useStore($isPortraitLayout);
-    const [isExpand, setIsExpand] = useState<boolean>(true);
+    const { isMobile } = useBrowserDetect();
+    const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+
+    const [isExpand, setIsExpand] = useState<boolean>(
+        isMobile ? isChangeBackgroundOpen : true,
+    );
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
     const isHideUpload = categories.some(
         item => item.key === 'myrooms' && item.id === categorySelected,
     );
     const meetingTemplate = useStore($meetingTemplateStore);
-    const { isMobile } = useBrowserDetect();
-
-    const {
-        value: isOpenDrawer,
-        onSwitchOn: onDrawer,
-        onSwitchOff: offDrawer,
-    } = useToggle(false);
 
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
@@ -97,176 +91,51 @@ const Component = () => {
     };
 
     return (
-        <>
-            <CustomTooltip
-                title={
-                    !isExpand && isAnimation ? (
-                        <Translation
-                            nameSpace="meeting"
-                            translation="changeBackground.text"
-                        />
-                    ) : (
-                        ''
-                    )
-                }
-                placement="left"
-                disableHoverListener={isExpand}
-            >
-                <ConditionalRender condition={!isMobile}>
-                    <CustomPaper
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.expanded]: isExpand && !isMobile,
-                            [styles.mobile]: isExpand && isMobile,
-                        })}
-                        variant="black-glass"
-                    >
-                        <Accordion
-                            expanded={isExpand}
-                            onChange={changeExpand}
-                            className={clsx(styles.accordion)}
-                            TransitionProps={{
-                                timeout: {
-                                    appear: 600,
-                                    enter: 700,
-                                    exit: 0,
-                                },
-                                onExited: () => setIsAnimation(true),
-                                onEntered: () => setIsAnimation(false),
-                            }}
-                        >
-                            {isLoading && <LinearProgress color="secondary" />}
-                            <AccordionSummary
-                                className={styles.summary}
-                                classes={{
-                                    content: clsx(styles.content, {
-                                        [styles.expanded]: isExpand,
-                                    }),
-                                }}
-                            >
-                                <CustomBox
-                                    display="flex"
-                                    className={styles.headers}
-                                    flexDirection="row"
-                                    alignItems="center"
-                                    justifyContent="flex-start"
-                                >
-                                    <CustomBox color="white" height={18}>
-                                        <ImageIcon width="22px" height="20px" />
-                                    </CustomBox>
-                                    <ConditionalRender condition={isExpand}>
-                                        <CustomTypography
-                                            nameSpace="meeting"
-                                            translation="changeBackground.text"
-                                            color="colors.white.primary"
-                                            variant="h4bold"
-                                            flex={1}
-                                            paddingLeft={1}
-                                            fontSize="15px"
-                                        />
-
-                                        <RoundCloseIcon
-                                            className={styles.closeIcon}
-                                            isActive
-                                            width="22px"
-                                            height="22px"
-                                        />
-                                    </ConditionalRender>
-                                </CustomBox>
-                            </AccordionSummary>
-                            <AccordionDetails classes={{ root: styles.detail }}>
-                                <CustomBox
-                                    flex={25}
-                                    display="flex"
-                                    flexDirection="row"
-                                    flexWrap="wrap"
-                                    paddingTop={1}
-                                >
-                                    {categories.map(item => (
-                                        <Barge
-                                            key={item.key}
-                                            isActive={
-                                                item.id === categorySelected
-                                            }
-                                            onSelect={handleSelectType}
-                                            item={item}
-                                        />
-                                    ))}
-                                </CustomBox>
-
-                                <CustomGrid
-                                    container
-                                    flex={1}
-                                    paddingTop={3}
-                                    paddingLeft="6px"
-                                >
-                                    <ConditionalRender
-                                        condition={medias.length > 0}
-                                    >
-                                        <CustomScroll
-                                            className={styles.scroll}
-                                            onYReachEnd={handleScrollEnd}
-                                            containerRef={el =>
-                                                (refScroll.current = el)
-                                            }
-                                        >
-                                            <ConditionalRender
-                                                condition={!isHideUpload}
-                                            >
-                                                <UploadBackground />
-                                            </ConditionalRender>
-                                            {medias.map(item => (
-                                                <Media
-                                                    key={item.id}
-                                                    isActive={
-                                                        item.id ===
-                                                        mediaSelected
-                                                    }
-                                                    item={item}
-                                                    onSelect={
-                                                        handleSelectBackground
-                                                    }
-                                                    onDelete={handleDeleteMedia}
-                                                    isShowDelete={!isHideUpload}
-                                                />
-                                            ))}
-                                        </CustomScroll>
-                                    </ConditionalRender>
-                                </CustomGrid>
-                                <MeetingYoutubeControl />
-                            </AccordionDetails>
-                        </Accordion>
-                    </CustomPaper>
-                </ConditionalRender>
-            </CustomTooltip>
-            <ConditionalRender condition={isMobile}>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.buttonBgMobile}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={onDrawer}
-                        className={styles.deviceButton}
-                        Icon={<ImageIcon width="22px" height="20px" />}
+        <CustomTooltip
+            title={
+                !isExpand && isAnimation ? (
+                    <Translation
+                        nameSpace="meeting"
+                        translation="changeBackground.text"
                     />
-                </CustomPaper>
-                <SwipeableDrawer
-                    anchor="right"
-                    open={isOpenDrawer}
-                    onClose={offDrawer}
-                    onOpen={onDrawer}
-                    classes={{ paper: styles.mainDrawer }}
+                ) : (
+                    ''
+                )
+            }
+            placement="left"
+            disableHoverListener={isExpand}
+        >
+            <CustomPaper
+                className={clsx(styles.commonOpenPanel, {
+                    [styles.expanded]: isExpand,
+                    [styles.mobile]: isExpand && isMobile,
+                })}
+                variant="black-glass"
+            >
+                <Accordion
+                    expanded={isExpand}
+                    onChange={changeExpand}
+                    className={clsx(styles.accordion)}
+                    disabled={isMobile}
+                    TransitionProps={{
+                        timeout: {
+                            appear: 600,
+                            enter: 700,
+                            exit: 0,
+                        },
+                        onExited: () => setIsAnimation(true),
+                        onEntered: () => setIsAnimation(false),
+                    }}
                 >
-                    <CustomPaper
-                        className={clsx(styles.drawer, {
-                            [styles.portrait]: isPortraitLayout,
-                            [styles.mobileD]: isMobile && isPortraitLayout,
-                        })}
-                        variant="black-glass"
+                    {isLoading && <LinearProgress color="secondary" />}
+                    <AccordionSummary
+                        className={styles.summary}
+                        classes={{
+                            content: clsx(styles.content, {
+                                [styles.expanded]: isExpand,
+                            }),
+                        }}
                     >
-                        {isLoading && <LinearProgress color="secondary" />}
-
                         <CustomBox
                             display="flex"
                             className={styles.headers}
@@ -288,81 +157,76 @@ const Component = () => {
                                     fontSize="15px"
                                 />
 
-                                <RoundCloseIcon
-                                    className={styles.closeIcon}
-                                    onClick={offDrawer}
-                                    isActive
-                                    width="22px"
-                                    height="22px"
-                                />
+                                <ConditionalRender condition={!isMobile}>
+                                    <RoundCloseIcon
+                                        className={styles.closeIcon}
+                                        isActive
+                                        width="22px"
+                                        height="22px"
+                                    />
+                                </ConditionalRender>
                             </ConditionalRender>
                         </CustomBox>
+                    </AccordionSummary>
+                    <AccordionDetails classes={{ root: styles.detail }}>
                         <CustomBox
-                            className={clsx(styles.detail, {
-                                [styles.portrait]: isPortraitLayout,
-                            })}
+                            flex={25}
+                            display="flex"
+                            flexDirection="row"
+                            flexWrap="wrap"
+                            paddingTop={1}
                         >
-                            <CustomBox
-                                flex={30}
-                                display="flex"
-                                flexDirection="row"
-                                flexWrap="wrap"
-                                paddingTop={1}
-                            >
-                                {categories.map(item => (
-                                    <Barge
-                                        key={item.key}
-                                        isActive={item.id === categorySelected}
-                                        onSelect={handleSelectType}
-                                        item={item}
-                                    />
-                                ))}
-                            </CustomBox>
-
-                            <CustomGrid
-                                container
-                                flex={70}
-                                paddingTop={2}
-                                paddingLeft="6px"
-                            >
-                                <ConditionalRender
-                                    condition={medias.length > 0}
-                                >
-                                    <CustomScroll
-                                        className={styles.scroll}
-                                        onYReachEnd={handleScrollEnd}
-                                        containerRef={el =>
-                                            (refScroll.current = el)
-                                        }
-                                    >
-                                        <ConditionalRender
-                                            condition={!isHideUpload}
-                                        >
-                                            <UploadBackground />
-                                        </ConditionalRender>
-                                        {medias.map(item => (
-                                            <Media
-                                                key={item.id}
-                                                isActive={
-                                                    item.id === mediaSelected
-                                                }
-                                                item={item}
-                                                onSelect={
-                                                    handleSelectBackground
-                                                }
-                                                onDelete={handleDeleteMedia}
-                                                isShowDelete={!isHideUpload}
-                                            />
-                                        ))}
-                                    </CustomScroll>
-                                </ConditionalRender>
-                            </CustomGrid>
+                            {categories.map(item => (
+                                <Barge
+                                    key={item.key}
+                                    isActive={item.id === categorySelected}
+                                    onSelect={handleSelectType}
+                                    item={item}
+                                />
+                            ))}
                         </CustomBox>
-                    </CustomPaper>
-                </SwipeableDrawer>
-            </ConditionalRender>
-            ;
-        </>
+
+                        <CustomGrid
+                            container
+                            flex={1}
+                            paddingTop={3}
+                            paddingLeft="6px"
+                        >
+                            <ConditionalRender condition={medias.length > 0}>
+                                <CustomScroll
+                                    className={clsx(styles.scroll, {
+                                        [styles.mobile]: isMobile,
+                                    })}
+                                    onYReachEnd={handleScrollEnd}
+                                    containerRef={el =>
+                                        (refScroll.current = el)
+                                    }
+                                >
+                                    <ConditionalRender
+                                        condition={!isHideUpload}
+                                    >
+                                        <UploadBackground />
+                                    </ConditionalRender>
+                                    {medias.map(item => (
+                                        <Media
+                                            key={item.id}
+                                            isActive={item.id === mediaSelected}
+                                            item={item}
+                                            onSelect={handleSelectBackground}
+                                            onDelete={handleDeleteMedia}
+                                            isShowDelete={!isHideUpload}
+                                        />
+                                    ))}
+                                </CustomScroll>
+                            </ConditionalRender>
+                        </CustomGrid>
+                        <ConditionalRender condition={!isMobile}>
+                            <MeetingYoutubeControl />
+                        </ConditionalRender>
+                    </AccordionDetails>
+                </Accordion>
+            </CustomPaper>
+        </CustomTooltip>
     );
 };
 

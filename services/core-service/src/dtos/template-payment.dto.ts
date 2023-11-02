@@ -1,6 +1,5 @@
-import { Expose, Transform, Type } from 'class-transformer';
-import { ITemplatePayment, IUserTemplate, MeetingRole } from 'shared-types';
-import { UserTemplateDTO } from './user-template.dto';
+import { Expose } from 'class-transformer';
+import { ITemplatePayment, MeetingRole } from 'shared-types';
 import { TemplatePaymentDocument } from '../schemas/template-payment.schema';
 import { serializeInstance } from 'shared-utils';
 

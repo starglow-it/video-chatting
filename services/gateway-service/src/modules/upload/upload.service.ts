@@ -62,7 +62,7 @@ export class UploadService {
 
     await this.deleteFolder(folderKey);
 
-    let url = await this.uploadFile(file.buffer, uploadKey);
+    const url = await this.uploadFile(file.buffer, uploadKey);
 
     return url;
   }

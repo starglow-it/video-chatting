@@ -29,7 +29,6 @@ import {
   EntityList,
   ICommonUser,
   KickUserReasons,
-  MeetingRole,
   ResponseSumType,
   UserRoles,
 } from 'shared-types';
@@ -99,7 +98,6 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('search') search: string,
-    @Query('sort') sort: string,
   ): Promise<ResponseSumType<EntityList<ICommonUser>>> {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
@@ -148,7 +146,6 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('search') search: string,
-    @Query('sort') sort: string,
   ): Promise<ResponseSumType<EntityList<ICommonUser>>> {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };

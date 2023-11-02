@@ -1,4 +1,4 @@
-import { IMediaLink } from "shared-types";
+import { IMediaLink } from 'shared-types';
 
 export class MediaLink implements IMediaLink {
   src: string;
