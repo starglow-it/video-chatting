@@ -49,6 +49,7 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
+import { RegisterType } from 'shared-types';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -95,6 +96,7 @@ const Component = () => {
         registerWithoutTemplateFx({
             email: data.email.trim().toLowerCase(),
             password: data.password,
+            registerType: RegisterType.EndCall,
         });
     });
 
