@@ -17,9 +17,9 @@ import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useCallback } from 'react';
-import styles from './MeetingHeader.module.scss';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import styles from './MeetingHeader.module.scss';
 
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);

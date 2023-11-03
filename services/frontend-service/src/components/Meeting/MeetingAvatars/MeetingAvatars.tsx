@@ -141,10 +141,7 @@ export const MeetingAvatars = ({
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.header}>
-                <CustomTypography
-                    fontSize={16}
-                    fontWeight={600}
-                >
+                <CustomTypography fontSize={16} fontWeight={600}>
                     Replace with Avatar
                 </CustomTypography>
                 <ActionButton
