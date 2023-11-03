@@ -36,8 +36,9 @@ export const MeetingHeader = () => {
             toggleMeetingInfoOpen();
         }
     }, [isOwner]);
+
     return (
-        <AppBar position="absolute" className={styles.container}>
+        <AppBar className={styles.container}>
             <Toolbar style={{ borderRadius: 0 }}>
                 <ProfileAvatar
                     src={meetingTemplate?.user?.profileAvatar?.url}

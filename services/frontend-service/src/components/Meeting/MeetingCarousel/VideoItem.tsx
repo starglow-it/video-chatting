@@ -18,6 +18,7 @@ type VideoItemProps = {
     userTracks: TrackItem;
     isAuraActive: boolean;
     isMicEnabled: boolean;
+    videoSize: number;
 };
 
 export const VideoItem = ({
@@ -27,6 +28,7 @@ export const VideoItem = ({
     userTracks,
     isAuraActive,
     isMicEnabled,
+    videoSize,
 }: VideoItemProps) => {
     const container = useRef<HTMLVideoElement | null>(null);
     const mediaStreamRef = useRef(new MediaStream());
@@ -53,7 +55,7 @@ export const VideoItem = ({
         <CustomBox
             className={clsx(styles.videoItem)}
             sx={{
-                width: isPortraitLayout ? '120px' : '100px',
+                width: isPortraitLayout ? `${videoSize}px` : '100px',
             }}
         >
             <MeetingUserAudioItem
@@ -69,7 +71,7 @@ export const VideoItem = ({
                 userName={userName}
                 userProfilePhoto={userProfilePhoto}
                 videoRef={container}
-                size={isPortraitLayout ? 120 : 100}
+                size={isPortraitLayout ? videoSize : 100}
                 isSelfView={false}
                 isVideoSelfView={false}
             />

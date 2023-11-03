@@ -6,6 +6,7 @@ import { getConnectionKey } from 'src/helpers/media/getConnectionKey';
 import { ConnectionType, StreamType } from 'src/const/webrtc';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
+import { $isPortraitLayout, $windowSizeStore } from 'src/store';
 import { VideoItem } from './VideoItem';
 import styles from './MeetingCarousel.module.scss';
 
@@ -15,29 +16,40 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
 
+    const { width } = useStore($windowSizeStore);
+    const isPortraitLayout = useStore($isPortraitLayout);
+
+    const videoSize = Math.ceil((width - 36 - 120) / 2);
+
     if (!users.length) return null;
+
     return (
         <CustomGrid
             display="flex"
             flexWrap="wrap"
             gap={1}
-            justifyContent="space-around"
             width="100%"
             sx={{
-                marginTop: { xs: 3, sm: 1, md: 1, xl: 1 },
-                top: { xs: '100px', sm: '26%', md: '26%', xl: '26%' },
+                top: { xs: '80px', sm: '35%', md: '26%', xl: '26%' },
             }}
             position="absolute"
             top="100px"
-            padding="18px"
         >
             <CustomGrid className={styles.paper}>
                 <CustomGrid
-                    display="flex"
-                    flexWrap="wrap"
-                    justifyContent="space-around"
-                    padding="10px"
-                    sx={{ gap: { xs: 2, sm: 4, md: 4, xl: 4 } }}
+                    display="grid"
+                    padding={isPortraitLayout ? '0px 18px' : '0px 50px'}
+                    gridTemplateColumns="1fr 1fr"
+                    sx={{
+                        gridTemplateColumns: {
+                            xs: '1fr 1fr',
+                            sm: '1fr 1fr 1fr 1fr 1fr',
+                            md: '1fr 1fr 1fr 1fr 1fr',
+                            xl: '1fr 1fr 1fr 1fr 1fr',
+                        },
+                    }}
+                    gridAutoRows="auto"
+                    gap="14px"
                 >
                     {users.map(item => (
                         <VideoItem
@@ -61,6 +73,7 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                                     list,
                                 ) ?? item.profileAvatar
                             }
+                            videoSize={videoSize}
                         />
                     ))}
                 </CustomGrid>

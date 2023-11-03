@@ -2,12 +2,12 @@
 @import '../../../styles/rem.scss';
 
 .container {
-    position: absolute;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    height: 100%;
 }
 
 .controlsWrapper {

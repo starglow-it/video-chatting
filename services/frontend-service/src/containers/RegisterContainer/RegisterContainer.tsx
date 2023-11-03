@@ -37,6 +37,7 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
+import { RegisterType } from 'shared-types';
 import {
     StorageKeysEnum,
     WebStorage,
@@ -52,7 +53,6 @@ import {
     registerUserFx,
     resetRegisterErrorEvent,
 } from '../../store';
-import { RegisterType } from 'shared-types';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

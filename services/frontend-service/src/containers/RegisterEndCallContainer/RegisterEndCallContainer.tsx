@@ -32,6 +32,7 @@ import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVid
 import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
+import { RegisterType } from 'shared-types';
 import {
     $authStore,
     $registerStore,
@@ -49,7 +50,6 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
-import { RegisterType } from 'shared-types';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

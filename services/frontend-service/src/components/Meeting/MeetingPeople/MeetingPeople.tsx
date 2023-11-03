@@ -120,7 +120,15 @@ export const MeetingPeople = () => {
                 value={value}
                 onChange={handleChange}
                 aria-label="lab API tabs example"
-                classes={{ root: styles.tabs }}
+                variant={isMobile() ? 'scrollable' : undefined}
+                scrollButtons={isMobile()}
+                allowScrollButtonsMobile={isMobile()}
+                TabScrollButtonProps={{
+                    classes: { root: styles.buttonScroll },
+                }}
+                classes={{
+                    root: styles.tabs,
+                }}
             >
                 {tabs.map((tab, index) => (
                     <Tab
