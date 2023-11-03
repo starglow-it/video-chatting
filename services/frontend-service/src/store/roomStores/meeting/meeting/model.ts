@@ -34,6 +34,8 @@ export const $isScreenSharingStore = $meetingStore.map(meeting =>
 
 export const $activeTabPanel = meetingDomain.createStore<number>(0);
 
+export const $isToggleLinksDrawer = meetingDomain.createStore(false);
+
 export const setActiveTabPanelEvent = meetingDomain.createEvent<number>(
     'setActiveTabPanelEvent',
 );
@@ -66,3 +68,7 @@ export const joinMeetingWithLurkerFx = meetingDomain.createEffect<
     JoinMeetingWithLurkerFxPayload,
     void
 >('joinMeetingWithLurkerFx');
+
+export const toggleLinksDrawerEvent = meetingDomain.createEvent<
+    undefined | boolean
+>('toggleLinksDrawerEvent');

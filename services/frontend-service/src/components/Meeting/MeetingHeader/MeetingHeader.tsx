@@ -7,6 +7,7 @@ import {
     $isOwner,
     $meetingTemplateStore,
     toggleEditTemplateOpen,
+    toggleLinksDrawerEvent,
     toggleMeetingInfoOpen,
 } from 'src/store/roomStores';
 
@@ -17,6 +18,8 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useCallback } from 'react';
 import styles from './MeetingHeader.module.scss';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -59,6 +62,20 @@ export const MeetingHeader = () => {
                 >
                     {isOwner ? companyName : meetingTemplate.companyName}
                 </CustomTypography>
+                <ConditionalRender condition={!!meetingTemplate.links?.length}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={10}
+                        className={clsx(styles.button, { [styles.link]: true })}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={() => toggleLinksDrawerEvent(true)}
+                            className={clsx(styles.button)}
+                            Icon={<CustomLinkIcon width="25px" height="25px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={10}

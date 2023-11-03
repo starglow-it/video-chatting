@@ -13,6 +13,8 @@ import {
     joinMeetingWithLurkerEvent,
     $activeTabPanel,
     setActiveTabPanelEvent,
+    $isToggleLinksDrawer,
+    toggleLinksDrawerEvent,
 } from './model';
 import {
     $changeStreamStore,
@@ -43,6 +45,12 @@ $meetingConnectedStore
 
 $activeTabPanel
     .on(setActiveTabPanelEvent, (_, tab) => tab)
+    .reset(resetRoomStores);
+
+$isToggleLinksDrawer
+    .on(toggleLinksDrawerEvent, (toggle, newToggle) =>
+        newToggle !== undefined ? newToggle : !toggle,
+    )
     .reset(resetRoomStores);
 
 joinMeetingFx.use(handleJoinMeting);

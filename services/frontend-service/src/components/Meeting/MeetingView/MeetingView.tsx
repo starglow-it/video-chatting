@@ -75,6 +75,7 @@ import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
 import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
 import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
+import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 // helpers
 
 const Component = () => {
@@ -263,6 +264,7 @@ const Component = () => {
                         <MeetingCarousel />
                         <MeetingBottomBarMobile />
                         <MeetingControlPanel />
+                        <MeetingLinksDrawer />
                     </CustomGrid>
                 </MeetingSettingsPanel>
             )}
