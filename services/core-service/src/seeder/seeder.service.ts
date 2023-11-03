@@ -5,20 +5,13 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 // shared
 import {
   LANGUAGES_TAGS,
-  BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
-  FILES_SCOPE,
   MEDIA_CATEGORIES,
-  USERS_SERVICE,
-  PaymentType,
-  DEFAULT_PRICE,
 } from 'shared-const';
 import {
   Counters,
   MediaCategoryType,
-  MeetingRole,
-  PlanKeys,
   UserRoles,
 } from 'shared-types';
 
@@ -29,7 +22,6 @@ import { CommonTemplatesService } from '../modules/common-templates/common-templ
 import { LanguagesService } from '../modules/languages/languages.service';
 import { UserTemplatesService } from '../modules/user-templates/user-templates.service';
 import { AwsConnectorService } from '../services/aws-connector/aws-connector.service';
-import { PaymentsService } from '../services/payments/payments.service';
 import { CountersService } from '../modules/counters/counters.service';
 import { ConfigClientService } from '../services/config/config.service';
 import { MonetizationStatisticService } from '../modules/monetization-statistic/monetization-statistic.service';
@@ -42,7 +34,7 @@ import {
 } from '../schemas/preview-image.schema';
 import { TranscodeService } from '../modules/transcode/transcode.service';
 import { executePromiseQueue } from 'shared-utils';
-import { readdir, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
 import { CommonTemplateDTO } from '../dtos/common-template.dto';
@@ -52,15 +44,8 @@ import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
-import { MediaDocument } from '..//schemas/media.schema';
 import * as mime from 'mime';
-import { OldUserTemplate } from './old-schema';
 import { TemplatePaymentsService } from '../modules/template-payments/template-payments.service';
-import {
-  TemplatePayment,
-  TemplatePaymentDocument,
-} from '../schemas/template-payment.schema';
-import { InsertModelSingleQuery } from '../types/custom';
 
 // utils
 
@@ -143,22 +128,6 @@ export class SeederService {
       console.log(err);
       return;
     }
-  }
-
-  async seedBusinessCategories(): Promise<void> {
-    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
-      const isExists = await this.businessCategoriesService.exists({
-        key: categoryItem.key,
-      });
-
-      if (!isExists) {
-        await this.businessCategoriesService.create({ data: categoryItem });
-      }
-    });
-
-    await Promise.all(promises);
-
-    return;
   }
 
   async seedLanguages() {
