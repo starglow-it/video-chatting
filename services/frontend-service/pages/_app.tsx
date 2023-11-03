@@ -165,7 +165,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     );
     const isBaseRoute = pathName === indexRoute;
 
-    const { host } = context?.ctx?.req?.headers || {};
+    const { host } = context?.ctx?.req?.headers || window?.location || {};
 
     if (publicRuntimeConfig.frontendUrl.includes(host)) {
         if (isWithoutAuthen) {

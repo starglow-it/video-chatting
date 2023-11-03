@@ -5,13 +5,9 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 // shared
 import {
   LANGUAGES_TAGS,
-  BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
   MEDIA_CATEGORIES,
-  USERS_SERVICE,
-  PaymentType,
-  DEFAULT_PRICE,
 } from 'shared-const';
 import {
   Counters,
@@ -140,21 +136,6 @@ export class SeederService {
     }
   }
 
-  async seedBusinessCategories(): Promise<void> {
-    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
-      const isExists = await this.businessCategoriesService.exists({
-        key: categoryItem.key,
-      });
-
-      if (!isExists) {
-        await this.businessCategoriesService.create({ data: categoryItem });
-      }
-    });
-
-    await Promise.all(promises);
-
-    return;
-  }
 
   async seedLanguages() {
     const promises = LANGUAGES_TAGS.map(async (language) => {
