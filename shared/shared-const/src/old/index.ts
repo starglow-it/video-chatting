@@ -1,6 +1,5 @@
 export * from './errors';
 export * from './api-scopes.const';
-export * from './business-categories.const';
 export * from './email-templates.const';
 export * from './jwt.const';
 export * from './languages.const';
