@@ -141,8 +141,8 @@
     },
     "getPaid": "Get Paid",
     "sendMoney": "Send Money",
-    "peopleSeeMe": "People can see me",
-    "peopleHearMe": "People can hear me"
+    "peopleSeeMe": "People see me",
+    "peopleHearMe": "People hear me"
   },
   "payments": {
     "perSession": "per session",
