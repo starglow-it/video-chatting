@@ -84,7 +84,11 @@ const Component = ({
                         />
                     }
                     nameSpace="meeting"
-                    translation="features.peopleSeeMe"
+                    translation={
+                        isMobile
+                            ? 'features.peopleSeeMe'
+                            : 'features.peopleCanSeeMe'
+                    }
                     checked={isCamera}
                     onChange={onToggleCamera}
                     className={clsx(styles.switchWrapper, {
@@ -101,7 +105,9 @@ const Component = ({
                         />
                     }
                     nameSpace="meeting"
-                    translation="features.peopleHearMe"
+                    translation={
+                        isMobile ? 'features.peopleHearMe' : 'peopleCanHearMe'
+                    }
                     checked={isMicrophone}
                     onChange={onToggleMicrophone}
                     className={clsx(styles.switchWrapper, {

@@ -141,6 +141,8 @@
     },
     "getPaid": "Get Paid",
     "sendMoney": "Send Money",
+    "peopleCanSeeMe": "People can see me",
+    "peopleCanHearMe": "People can hear me",
     "peopleSeeMe": "People see me",
     "peopleHearMe": "People hear me"
   },
