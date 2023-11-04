@@ -85,6 +85,20 @@ const Component = ({
                 <ActionButton
                     onAction={onToggleSwitch}
                     className={styles.btnEdit}
+                    sx={{
+                        width: {
+                            xs: '100px',
+                            sm: '143px',
+                            md: '143px',
+                            xl: '143px',
+                        },
+                        height: {
+                            xs: '50px',
+                            sm: '32px',
+                            md: '32px',
+                            xl: '32px',
+                        },
+                    }}
                     Icon={
                         <>
                             <span className={styles.textAvatar}>
@@ -110,6 +124,7 @@ const Component = ({
                 >
                     <MeetingAvatars
                         devicesSettingsDialog={devicesSettingsDialog}
+                        onClose={onToggleSwitch}
                     />
                 </CustomPopover>
                 {/* <ConditionalRender condition={isUnlockAccess}>

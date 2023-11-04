@@ -83,11 +83,7 @@ export const MeetingSelfView = () => {
     }, [isMeetingConnected, isCamActive]);
 
     return (
-        <CustomGrid
-            className={clsx(styles.container)}
-            sx={{ top: { xs: '35%', sm: '82px', md: '82px', xl: '82px' } }}
-            gap="10px"
-        >
+        <CustomGrid className={clsx(styles.container)} gap="10px">
             <CustomTypography fontSize="18px">Self View</CustomTypography>
             <CustomBox
                 sx={{

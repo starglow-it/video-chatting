@@ -19,7 +19,6 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import { fullNameSchema } from '../../validation/users/fullName';
@@ -180,15 +179,6 @@ const Component = () => {
                             name={fullNameRegister.name}
                             error={fullNameError}
                         />
-                        <ConditionalRender condition={isMobile}>
-                            <CustomImage
-                                src="/images/banner-mobile.png"
-                                width={10}
-                                className={styles.banner}
-                                height={250}
-                                objectFit="fill"
-                            />
-                        </ConditionalRender>
                         <CustomButton
                             disabled={
                                 !isSocketConnected ||

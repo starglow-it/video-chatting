@@ -37,7 +37,7 @@ export const MeetingCarousel = () => {
                 height="100%"
                 display="flex"
                 justifyContent="center"
-                alignItems="flex-start"
+                alignItems="center"
                 position="relative"
             >
                 <MeetingVideosCarousel users={users1} />
@@ -50,7 +50,7 @@ export const MeetingCarousel = () => {
                 height="100%"
                 display="flex"
                 justifyContent="center"
-                alignItems="flex-start"
+                alignItems="center"
                 position="relative"
             >
                 <MeetingVideosCarousel users={users2} />
@@ -58,13 +58,15 @@ export const MeetingCarousel = () => {
         );
 
     return (
-        <Carousel
-            className={styles.container}
-            height="100%"
-            navButtonsAlwaysVisible
-            autoPlay={false}
-        >
-            {elements}
-        </Carousel>
+        <CustomGrid className={styles.container}>
+            <Carousel
+                navButtonsAlwaysVisible
+                autoPlay={false}
+                height="100%"
+                sx={{ height: '100%' }}
+            >
+                {elements}
+            </Carousel>
+        </CustomGrid>
     );
 };

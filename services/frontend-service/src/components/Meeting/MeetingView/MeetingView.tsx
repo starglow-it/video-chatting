@@ -37,7 +37,6 @@ import {
     WebStorage,
 } from 'src/controllers/WebStorageController';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
@@ -76,6 +75,7 @@ import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
 import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
 import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
+import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 // helpers
 
 const Component = () => {
@@ -254,10 +254,18 @@ const Component = () => {
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
-                    <MeetingHeader />
-                    <MeetingCarousel />
-                    <MeetingBottomBarMobile />
-                    <MeetingControlPanel />
+                    <CustomGrid
+                        width="100%"
+                        height="100%"
+                        display="flex"
+                        flexDirection="column"
+                    >
+                        <MeetingHeader />
+                        <MeetingCarousel />
+                        <MeetingBottomBarMobile />
+                        <MeetingControlPanel />
+                        <MeetingLinksDrawer />
+                    </CustomGrid>
                 </MeetingSettingsPanel>
             )}
 
@@ -268,7 +276,6 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
-            <MobilePortraitStub />
             <InviteGuestsDialog />
             <ConfirmBecomeParticipantDialog />
             <DownloadIcsEventDialog />

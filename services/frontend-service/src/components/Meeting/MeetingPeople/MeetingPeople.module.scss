@@ -9,3 +9,15 @@
 .tabs {
     min-height: 40px;
 }
+
+.tabContainer {
+    overflow-x: scroll;
+}
+
+.indicator {
+    display: none;
+}
+
+.buttonScroll {
+    color: white;
+}
