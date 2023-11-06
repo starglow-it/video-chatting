@@ -59,6 +59,7 @@ async function bootstrap() {
     await seeder.seedLinks();
     await seeder.seedCreateGlobalCommonTemplate();
     await seeder.seedMediaCategories();
+    await seeder.syncDataInUserTemplates();
   }
 
   usersController.startCheckSubscriptions();
