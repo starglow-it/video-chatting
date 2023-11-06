@@ -264,7 +264,6 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
     description: 'Links are array of object',
   })
   @IsOptional()
-  @IsObject()
   @Type(() => Array<TemplateLinkDto>)
   links?: IUpdateTemplate['links'];
 
