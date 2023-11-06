@@ -93,6 +93,7 @@ const Component = () => {
                     src="/images/agreements.webp"
                     width="40px"
                     height="40px"
+                    alt='agreements'
                 />
                 <CustomTypography
                     variant="h1"

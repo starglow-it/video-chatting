@@ -285,6 +285,7 @@ const Component = () => {
                         ),
                         links: data.templateLinks.map((link: any) => ({
                             item: link.value,
+                            title: link.title,
                             position: {
                                 top: link.top,
                                 left: link.left,

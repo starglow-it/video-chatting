@@ -65,7 +65,8 @@
 }
 
 .tooltipContent {
-  padding: 9px 12px;
+  width: rem(392px);
+  padding: rem(16px 12px);
 }
 
 .inputWrapper {
@@ -75,6 +76,25 @@
   .input::placeholder {
     color: rgba($primary-white, 0.6);
   }
+
+  .textArea {
+    padding: rem(0 10px 0 0);
+  }
+}
+
+.inputRoot {
+  padding: 12px 8px;
+  font-size: 13px;
+  border-radius: 8px;
+
+  &.disabled {
+    border: 1px solid $primary-white;
+  }
+}
+
+.inputDisabled {
+  color: $primary-white !important;
+  -webkit-text-fill-color: $primary-white !important;
 }
 
 .acceptIcon {
@@ -93,4 +113,11 @@
 
 .staticLink {
   @extend %text-ellips;
+}
+
+.actionButton {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
 }

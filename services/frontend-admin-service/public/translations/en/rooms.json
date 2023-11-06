@@ -34,7 +34,11 @@
   },
   "addLink": "Add Link",
   "templateLinks": {
-    "title": "Drag & Drop circles to the right places / Click on link to edit"
+    "title": "Drag & Drop circles to the right places / Click on link to edit",
+    "form" : {
+      "title": "Title",
+      "link": "Link"
+    }
   },
   "tooltips": {
     "cancel": "Cancel",
