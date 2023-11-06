@@ -350,6 +350,7 @@ const Component = ({
                             height={20}
                             src="/images/link.png"
                             style={{ pointerEvents: 'none' }}
+                            alt='template-link-item'
                         />
                     </CustomBox>
                 </CustomBox>

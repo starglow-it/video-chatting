@@ -208,6 +208,7 @@ const Component = () => {
                                 src="/images/magnifyingGlass.webp"
                                 width={40}
                                 height={40}
+                                alt='users-container'
                             />
                             <CustomTypography variant="body2">
                                 <Translation

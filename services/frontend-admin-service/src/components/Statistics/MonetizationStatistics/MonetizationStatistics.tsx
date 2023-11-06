@@ -76,6 +76,7 @@ const Component = ({
                         src="/images/eyes.webp"
                         width={40}
                         height={40}
+                        alt='monetization-statistics'
                     />
                     <CustomTypography>
                         <Translation
