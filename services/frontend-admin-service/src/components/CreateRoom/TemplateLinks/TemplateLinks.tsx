@@ -59,6 +59,7 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         append({
             value: '',
             key: getRandomNumber(100),
+            title: '',
             top: 0.5,
             left: 0.5,
         });

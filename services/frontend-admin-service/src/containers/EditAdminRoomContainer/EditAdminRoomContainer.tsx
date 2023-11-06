@@ -263,8 +263,9 @@ const Component = () => {
                 type: commonTemplate.type,
                 background: commonTemplate.url,
                 templateLinks: commonTemplate?.links?.map(
-                    ({ item, position }) => ({
+                    ({ item, position, title }) => ({
                         value: item,
+                        title,
                         top: position.top,
                         left: position.left,
                     }),

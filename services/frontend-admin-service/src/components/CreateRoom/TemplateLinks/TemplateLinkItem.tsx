@@ -26,6 +26,8 @@ import { RoundSuccessIcon } from 'shared-frontend/icons/RoundIcons/RoundSuccessI
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
+import { Translation } from '@components/Translation/Translation';
 import styles from './TemplateLinks.module.scss';
 
 import { $windowSizeStore, addNotificationEvent } from '../../../store';
@@ -51,8 +53,10 @@ const Component = ({
     } = useToggle(false);
 
     const inputKey = `templateLinks[${index}].value`;
+    const titleKey = `templateLinks[${index}].title`;
 
     const registerData = useMemo(() => register(inputKey), [inputKey]);
+    const registerTitleData = useMemo(() => register(titleKey), [titleKey]);
 
     const [draggablePosition, setDraggablePosition] = useState<ControlPosition>(
         {
@@ -153,50 +157,109 @@ const Component = ({
                 title={
                     <CustomGrid
                         container
+                        direction="column"
                         wrap="nowrap"
-                        gap={1}
+                        gap={2}
                         className={styles.tooltipContent}
                     >
-                        {isStatic ? (
+                        <CustomGrid container direction="column" gap={1}>
                             <CustomTypography
-                                className={styles.staticLink}
+                                variant="body3"
                                 color="colors.white.primary"
+                                className={styles.label}
                             >
-                                {linkData.value}
+                                <Translation
+                                    nameSpace="rooms"
+                                    translation="templateLinks.form.title"
+                                />
                             </CustomTypography>
-                        ) : (
-                            <InputBase
+                            <CustomInput
                                 multiline
-                                inputProps={{
-                                    cols: '25',
-                                }}
+                                autoComplete="off"
+                                color="secondary"
                                 minRows={1}
-                                maxRows={4}
                                 classes={{
                                     root: styles.inputWrapper,
-                                    input: styles.textArea,
                                 }}
-                                placeholder="Enter link & drag to place"
-                                onFocus={handleSetElementActive}
-                                {...registerData}
+                                InputProps={{
+                                    classes: {
+                                        input: styles.textArea,
+                                        root: styles.inputRoot,
+                                    },
+                                }}
+                                placeholder="Type a title for link"
+                                {...registerTitleData}
                             />
-                        )}
+                        </CustomGrid>
+
+                        <CustomGrid>
+                            {isStatic ? (
+                                <CustomTypography
+                                    className={styles.staticLink}
+                                    color="colors.white.primary"
+                                >
+                                    {linkData.value}
+                                </CustomTypography>
+                            ) : (
+                                <CustomGrid
+                                    container
+                                    flexDirection="column"
+                                    gap={1}
+                                >
+                                    <CustomTypography
+                                        variant="body3"
+                                        color="colors.white.primary"
+                                        className={styles.label}
+                                    >
+                                        <Translation
+                                            nameSpace="rooms"
+                                            translation="templateLinks.form.link"
+                                        />
+                                    </CustomTypography>
+                                    <CustomInput
+                                        multiline
+                                        autoComplete="off"
+                                        color="secondary"
+                                        inputProps={{
+                                            cols: '25',
+                                        }}
+                                        minRows={1}
+                                        maxRows={4}
+                                        classes={{
+                                            root: styles.inputWrapper,
+                                        }}
+                                        InputProps={{
+                                            classes: {
+                                                input: styles.textArea,
+                                                root: styles.inputRoot,
+                                            },
+                                        }}
+                                        placeholder="Enter link & drag to place"
+                                        onFocus={handleSetElementActive}
+                                        {...registerData}
+                                    />
+                                </CustomGrid>
+                            )}
+                            
+                        </CustomGrid>
+                        <CustomGrid container direction="row" justifyContent="center" gap={1}>
                         {isActive && !isStatic ? (
-                            <RoundSuccessIcon
-                                className={styles.acceptIcon}
-                                onClick={handleAcceptLink}
-                                width="24px"
-                                height="24px"
-                            />
-                        ) : null}
-                        {!isStatic && (
-                            <RoundErrorIcon
-                                className={styles.rejectIcon}
-                                onClick={handleRemoveLink}
-                                width="24px"
-                                height="24px"
-                            />
-                        )}
+                                <RoundSuccessIcon
+                                    className={styles.acceptIcon}
+                                    onClick={handleAcceptLink}
+                                    width="24px"
+                                    height="24px"
+                                />
+                            ) : null}
+                            {!isStatic && (
+                                <RoundErrorIcon
+                                    className={styles.rejectIcon}
+                                    onClick={handleRemoveLink}
+                                    width="24px"
+                                    height="24px"
+                                />
+                            )}
+                        </CustomGrid>
                     </CustomGrid>
                 }
             >
