@@ -140,12 +140,14 @@ export class UserTemplatesComponent {
     session: ITransactionSession,
   ) {
     await this.userTemplatesService.deleteUserTemplate(query, session);
-    await this.templatePaymentsService.deleteMany({
-      query: {
-        userTemplate: new Object(query._id),
-      },
-      session,
-    });
+    if (query._id) {
+      await this.templatePaymentsService.deleteMany({
+        query: {
+          userTemplate: new Object(query._id),
+        },
+        session,
+      });
+    }
   }
 
   async deleteUserTemplatesByUserId(
