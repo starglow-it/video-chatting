@@ -40,7 +40,7 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         () =>
             fields.map((link, index) => (
                 <TemplateLinkItem
-                    key={link?.key}
+                    key={link?.key ?? link?.id}
                     index={index}
                     onRemove={handleRemoveTemplateLink}
                     data={link}

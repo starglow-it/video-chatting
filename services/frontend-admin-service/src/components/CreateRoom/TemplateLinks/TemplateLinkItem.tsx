@@ -13,7 +13,6 @@ import Draggable, {
 } from 'react-draggable';
 import { useStore } from 'effector-react';
 import { useFormContext } from 'react-hook-form';
-import InputBase from '@mui/material/InputBase';
 
 import { roundNumberToPrecision } from 'shared-utils';
 
@@ -28,7 +27,6 @@ import { CustomTypography } from 'shared-frontend/library/custom/CustomTypograph
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { Translation } from '@components/Translation/Translation';
-import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
@@ -139,7 +137,7 @@ const Component = ({
             event.stopPropagation();
             onRemove?.(index);
         },
-        [onRemove],
+        [onRemove, index],
     );
 
     // const handleBlur = event => {

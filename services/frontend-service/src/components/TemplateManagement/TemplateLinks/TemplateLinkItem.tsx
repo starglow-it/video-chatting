@@ -136,7 +136,7 @@ const Component = ({
             event.stopPropagation();
             onRemove?.(index);
         },
-        [onRemove],
+        [onRemove, index],
     );
 
     const renderTooltip = () => {
