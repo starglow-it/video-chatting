@@ -15,6 +15,13 @@
     "addLinkDisabled": "Add Link disabled",
     "upgradeToBusiness": "Upgrade to Business"
   },
+  "templateLinks": {
+    "title": "Drag & Drop circles to the right places / Click on link to edit",
+    "form" : {
+      "title": "Title",
+      "link": "Link"
+    }
+  },
   "uploadBackground": {
     "title": "Upload your Room background",
     "description": "Drag & Drop file here or click button",

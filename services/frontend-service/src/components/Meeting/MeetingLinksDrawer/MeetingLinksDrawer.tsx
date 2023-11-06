@@ -43,7 +43,7 @@ export const MeetingLinksDrawer = () => {
                     {links.map((link, index) => (
                         <CustomChip
                             key={index}
-                            label={link.item}
+                            label={link.title || link.item}
                             className={styles.chip}
                             icon={
                                 <ActionButton

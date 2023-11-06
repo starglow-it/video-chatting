@@ -282,6 +282,7 @@ const Component = ({
                     value: link.item,
                     top: link.position.top,
                     left: link.position.left,
+                    title: link.title ?? '',
                 })) || [],
             youtubeUrl: template.mediaLink ? template.mediaLink.src : '',
         });
@@ -331,6 +332,7 @@ const Component = ({
                     value: link.item,
                     top: link.position.top,
                     left: link.position.left,
+                    title: link.title ?? '',
                 })) || [],
         });
     }, [isTemplateDataWasSet]);
