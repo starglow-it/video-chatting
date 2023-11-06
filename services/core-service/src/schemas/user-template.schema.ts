@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { ICommonUser, RoomType, TemplateType } from 'shared-types';
+import {
+  ICommonUser,
+  RoomType,
+  TemplateLink,
+  TemplateType,
+} from 'shared-types';
 
 import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
@@ -196,6 +201,7 @@ export class UserTemplate {
     type: [
       {
         item: mongoose.Schema.Types.String,
+        title: mongoose.Schema.Types.String,
         position: {
           top: mongoose.Schema.Types.Number,
           left: mongoose.Schema.Types.Number,
@@ -203,7 +209,7 @@ export class UserTemplate {
       },
     ],
   })
-  links: { item: string; position: { top: number; left: number } }[];
+  links: TemplateLink[];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

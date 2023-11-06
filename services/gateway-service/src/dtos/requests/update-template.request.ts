@@ -7,9 +7,15 @@ import {
   ValidateIf,
   ValidateNested,
   IsNotEmpty,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate, IBusinessCategory, IMediaLink } from 'shared-types';
+import {
+  IUpdateTemplate,
+  IBusinessCategory,
+  IMediaLink,
+  TemplateLink,
+} from 'shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
@@ -48,6 +54,44 @@ class SocialsDTO {
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   custom: string;
+}
+
+class LinkPosition {
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  top: number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  left: number;
+}
+
+class TemplateLinkDto implements TemplateLink {
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  @IsString({ message: 'item must be string' })
+  item: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @IsOptional()
+  @IsString({ message: 'title must be string' })
+  title: string;
+
+  @ApiProperty({
+    type: LinkPosition,
+  })
+  @IsNotEmpty()
+  position: { top: number; left: number };
 }
 
 class BusinessCategoryDTO {
@@ -213,6 +257,16 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsOptional()
   @IsString({ message: 'Preview Url must be string', each: true })
   previewUrls: string[];
+
+  @ApiProperty({
+    required: false,
+    type: Array<TemplateLinkDto>,
+    description: 'Links are array of object',
+  })
+  @IsOptional()
+  @IsObject()
+  @Type(() => Array<TemplateLinkDto>)
+  links?: IUpdateTemplate['links'];
 
   @ApiProperty({
     required: false,
