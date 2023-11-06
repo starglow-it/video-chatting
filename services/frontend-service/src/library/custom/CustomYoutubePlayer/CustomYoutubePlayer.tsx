@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { PropsWithClassName } from 'shared-frontend/types';
 import YouTube from 'react-youtube';
 
+import styles from './CustomYoutubePlayer.module.scss';
+
 export const CustomYoutubePlayer = ({
     url,
     className,
@@ -60,12 +62,13 @@ export const CustomYoutubePlayer = ({
     return (
         <YouTube
             videoId={yId ?? ''}
-            iframeClassName={className}
+            iframeClassName={styles.fullPlayer}
+            className={className}
             opts={{
                 width: 1920,
                 height: 1280,
                 playerVars: {
-                    autoplay: 0,
+                    autoplay: 1,
                     playsinline: 1,
                     controls: 0,
                     origin: '*',
