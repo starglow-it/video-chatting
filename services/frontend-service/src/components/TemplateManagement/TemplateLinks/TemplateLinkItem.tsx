@@ -26,8 +26,6 @@ import { CustomTypography } from 'shared-frontend/library/custom/CustomTypograph
 
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
-import { useRouter } from 'next/router';
-import { editRoomRoute } from 'src/const/client-routes';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
@@ -44,7 +42,6 @@ const Component = ({
     data: linkData,
     onRemove,
 }: TemplateLinkItemProps) => {
-    const router = useRouter();
     const { width, height } = useStore($windowSizeStore);
 
     const { register, setValue, trigger } = useFormContext();
@@ -55,7 +52,7 @@ const Component = ({
         onSwitchOff: handleSetElementInActive,
     } = useToggle(false);
     const { value: isEdit, onToggleSwitch: toggleEdit } = useToggle(
-        router.pathname.includes(editRoomRoute),
+        linkData.type === 'edit',
     );
 
     const inputKey = `templateLinks[${index}].value`;

@@ -268,6 +268,7 @@ const Component = () => {
                         title,
                         top: position.top,
                         left: position.left,
+                        type: 'edit'
                     }),
                 ),
                 templatePrice: commonTemplate.priceInCents
@@ -379,6 +380,7 @@ const Component = () => {
                     ),
                     links: data.templateLinks.map((link: any) => ({
                         item: link.value,
+                        title: link.title ?? '',
                         position: {
                             top: link.top,
                             left: link.left,

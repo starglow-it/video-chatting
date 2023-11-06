@@ -46,7 +46,6 @@ const Component = ({
     data: linkData,
     onRemove,
 }: TemplateLinkItemProps) => {
-    const router = useRouter();
     const { width, height } = useStore($windowSizeStore);
 
     const { register, setValue, trigger } = useFormContext();
@@ -57,7 +56,7 @@ const Component = ({
         onSwitchOff: handleSetElementInActive,
     } = useToggle(false);
     const { value: isEdit, onToggleSwitch: toggleEdit } = useToggle(
-        router.pathname.includes('rooms/edit'),
+       linkData.type === 'edit',
     );
 
     const inputKey = `templateLinks[${index}].value`;
@@ -149,7 +148,7 @@ const Component = ({
     // };
 
     const renderTooltip = () => {
-        if (isEdit) {
+        if (linkData.type === 'edit' && isEdit) {
             return (
                 <CustomGrid
                     container
