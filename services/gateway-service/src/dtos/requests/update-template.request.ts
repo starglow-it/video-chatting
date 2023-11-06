@@ -91,6 +91,7 @@ class TemplateLinkDto implements TemplateLink {
     type: LinkPosition,
   })
   @IsNotEmpty()
+  @Type(() => LinkPosition)
   position: { top: number; left: number };
 }
 
@@ -264,7 +265,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
     description: 'Links are array of object',
   })
   @IsOptional()
-  @Type(() => Array<TemplateLinkDto>)
+  @Type(() => TemplateLinkDto)
   links?: IUpdateTemplate['links'];
 
   @ApiProperty({
