@@ -8,10 +8,13 @@ import {
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
   MEDIA_CATEGORIES,
+  PaymentType,
+  DEFAULT_PRICE,
 } from 'shared-const';
 import {
   Counters,
   MediaCategoryType,
+  MeetingRole,
   UserRoles,
 } from 'shared-types';
 
@@ -46,8 +49,9 @@ import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import * as mime from 'mime';
 import { TemplatePaymentsService } from '../modules/template-payments/template-payments.service';
-import { TemplatePaymentDocument } from '../schemas/template-payment.schema';
-import { InsertModelSingleQuery } from '../types/custom';
+import { OldUserTemplate } from './old-schema';
+import { InsertModelSingleQuery } from 'src/types/custom';
+import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
 
 // utils
 
@@ -485,4 +489,76 @@ export class SeederService {
       }
     });
   }
+
+  async syncDataInUserTemplates() {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplates =
+          (await this.userTemplatesService.findUserTemplates({
+            query: {
+              isPublic: true,
+              draft: false,
+            },
+            session,
+          })) as unknown as OldUserTemplate[];
+        const templatePaymentsData = userTemplates.reduce<
+          Promise<InsertModelSingleQuery<TemplatePaymentDocument>['data'][]>
+        >(async (tps, ut) => {
+          const isExistTemplatePayment =
+            await this.templatePaymentsService.exists({
+              userTemplate: ut._id,
+            });
+
+          if (isExistTemplatePayment) return await tps;
+
+          const defaultPayment = {
+            user: ut.user,
+            // userTemplate: ut,
+            userTemplate: ut._id,
+            enabled: !!ut.templatePrice,
+            templateId: ut.templateId,
+          };
+          const defaultMeetingPayment = {
+            ...defaultPayment,
+            type: PaymentType.Meeting,
+          };
+          const defaultPaywallPayment = {
+            ...defaultMeetingPayment,
+            type: PaymentType.Paywall,
+          };
+          return [
+            ...(await tps),
+            {
+              ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.participant,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultMeetingPayment,
+              price: DEFAULT_PRICE.lurker,
+              meetingRole: MeetingRole.Lurker,
+            },
+            {
+              ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.participant,
+              meetingRole: MeetingRole.Participant,
+            },
+            {
+              ...defaultPaywallPayment,
+              price: DEFAULT_PRICE.lurker,
+              meetingRole: MeetingRole.Lurker,
+            },
+          ];
+        }, Promise.resolve([]));
+        await this.templatePaymentsService.createMany({
+          data: await templatePaymentsData,
+          session,
+        });
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+
 }
