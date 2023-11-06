@@ -60,10 +60,11 @@ export const MeetingCarousel = () => {
     return (
         <CustomGrid className={styles.container}>
             <Carousel
-                navButtonsAlwaysVisible
+                navButtonsAlwaysVisible={!isLurker}
                 autoPlay={false}
                 height="100%"
                 sx={{ height: '100%' }}
+                navButtonsAlwaysInvisible={isLurker && !users2.length}
             >
                 {elements}
             </Carousel>

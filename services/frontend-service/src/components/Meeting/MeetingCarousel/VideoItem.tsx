@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import { TrackItem } from 'src/store/roomStores/videoChat/types';
 import { $isPortraitLayout } from 'src/store';
 import { useStore } from 'effector-react';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 
@@ -52,29 +53,32 @@ export const VideoItem = ({
     }, [userTracks?.videoTrack]);
 
     return (
-        <CustomBox
-            className={clsx(styles.videoItem)}
-            sx={{
-                width: isPortraitLayout ? `${videoSize}px` : '100px',
-            }}
-        >
-            <MeetingUserAudioItem
-                isLocal={false}
-                audioTrack={userTracks?.audioTrack}
-                isMicEnabled={isMicEnabled}
-                isAuraActive={isAuraActive}
-            />
-            <RoundedVideo
-                isLocal
-                isCameraActive={isCameraEnabled}
-                isVideoAvailable
-                userName={userName}
-                userProfilePhoto={userProfilePhoto}
-                videoRef={container}
-                size={isPortraitLayout ? videoSize : 100}
-                isSelfView={false}
-                isVideoSelfView={false}
-            />
+        <CustomGrid container direction="column" alignItems="center" gap="6px">
+            <CustomBox
+                className={clsx(styles.videoItem)}
+                sx={{
+                    width: isPortraitLayout ? `${videoSize}px` : '100px',
+                    height: isPortraitLayout ? `${videoSize}px` : '100px',
+                }}
+            >
+                <MeetingUserAudioItem
+                    isLocal={false}
+                    audioTrack={userTracks?.audioTrack}
+                    isMicEnabled={isMicEnabled}
+                    isAuraActive={isAuraActive}
+                />
+                <RoundedVideo
+                    isLocal
+                    isCameraActive={isCameraEnabled}
+                    isVideoAvailable
+                    userName={userName}
+                    userProfilePhoto={userProfilePhoto}
+                    videoRef={container}
+                    size={isPortraitLayout ? videoSize : 100}
+                    isSelfView={false}
+                    isVideoSelfView={false}
+                />
+            </CustomBox>
             <CustomPaper
                 className={clsx(styles.usernameWrapper)}
                 variant="black-glass"
@@ -87,6 +91,6 @@ export const VideoItem = ({
                     {userName}
                 </CustomTypography>
             </CustomPaper>
-        </CustomBox>
+        </CustomGrid>
     );
 };
