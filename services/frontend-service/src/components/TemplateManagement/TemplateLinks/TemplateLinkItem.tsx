@@ -30,6 +30,7 @@ import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { Translation } from '@library/common/Translation/Translation';
+import clsx from 'clsx';
 import { NotificationType } from '../../../store/types';
 import { TemplateLinkItemProps } from './TemplateLinks.types';
 import { $windowSizeStore, addNotificationEvent } from '../../../store';
