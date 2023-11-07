@@ -5,6 +5,7 @@ import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPla
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomYoutubePlayer } from 'shared-frontend/library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 
 import { TemplateBackgroundProps } from './TemplateBackground.types';
 
@@ -35,7 +36,12 @@ const Component = ({
                     isMuted={false}
                 />
             )}
-           
+            <CustomYoutubePlayer
+                className={styles.player}
+                url={youtubeUrl}
+                muted
+                volume={0}
+            />
         </ConditionalRender>
     </CustomGrid>
 );

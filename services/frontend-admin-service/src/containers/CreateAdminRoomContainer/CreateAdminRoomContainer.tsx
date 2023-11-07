@@ -458,7 +458,6 @@ const Component = () => {
                         templateType={commonTemplate?.templateType ?? 'video'}
                         url={commonTemplate?.draftUrl || background}
                         youtubeUrl={youtubeUrl}
-
                     />
 
                     <CustomGrid

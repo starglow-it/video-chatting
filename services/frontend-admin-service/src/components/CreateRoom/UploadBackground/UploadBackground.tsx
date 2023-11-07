@@ -32,12 +32,8 @@ import { Translation } from '@components/Translation/Translation';
 
 import { UploadDragFileOverlay } from '@components/UploadDragFileOverlay/UploadDragFileOverlay';
 
-import { addNotificationEvent } from '../../../store';
-import { Notification, NotificationType } from '../../../store/types';
 
-import { UploadBackgroundProps } from './UploadBackground.types';
 
-import styles from './UploadBackground.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
@@ -45,6 +41,13 @@ import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { InputAdornment } from '@mui/material';
+import styles from './UploadBackground.module.scss';
+import { UploadBackgroundProps } from './UploadBackground.types';
+import { Notification, NotificationType } from '../../../store/types';
+import {
+    addNotificationEvent,
+    updateCommonTemplateDataEvent,
+} from '../../../store';
 
 export const MAX_SIZE_IMAGE = getFileSizeValue({
     sizeType: FileSizeTypesEnum.megabyte,
@@ -142,7 +145,6 @@ const Component = ({
     const isHasYoutubeUrl = hasYoutubeUrlRegex.test(youtubeUrl);
 
     const { value: isShowBox, onSwitchOn, onSwitchOff } = useToggle(false);
-    console.log('#Duy Phan console', isShowBox);
 
     const handleSetFileData = useCallback(
         async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -186,9 +188,14 @@ const Component = ({
                 message: 'Youtube Link is invalid',
             });
         } else {
+            onSwitchOff();
             if (isFileExists) {
                 setValue('background', undefined);
                 setValue('url', '');
+                updateCommonTemplateDataEvent({
+                    draftUrl: '',
+                    draftPreviewUrls: [],
+                } as any);
             }
 
             if (errorYoutubeUrl) clearErrors('youtubeUrl');
