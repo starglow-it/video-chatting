@@ -27,10 +27,9 @@ import { CustomTypography } from 'shared-frontend/library/custom/CustomTypograph
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { Translation } from '@library/common/Translation/Translation';
-import clsx from 'clsx';
+import { CustomAccordion } from 'shared-frontend/library/custom/CustomAccordion';
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
 import { NotificationType } from '../../../store/types';
 import { TemplateLinkItemProps } from './TemplateLinks.types';
 import { $windowSizeStore, addNotificationEvent } from '../../../store';
@@ -52,15 +51,16 @@ const Component = ({
         onSwitchOn: handleSetElementActive,
         onSwitchOff: handleSetElementInActive,
     } = useToggle(false);
-    const { value: isEdit, onToggleSwitch: toggleEdit } = useToggle(
-        linkData.type === 'edit',
-    );
 
     const inputKey = `templateLinks[${index}].value`;
     const titleKey = `templateLinks[${index}].title`;
 
     const registerData = useMemo(() => register(inputKey), [inputKey]);
-    const registerTitleData = useMemo(() => register(titleKey), [titleKey]);
+    const { ref: refTitleData, ...registerTitleData } = useMemo(
+        () => register(titleKey),
+        [titleKey],
+    );
+    const titleRef = useRef<any>(null);
 
     const [draggablePosition, setDraggablePosition] = useState<ControlPosition>(
         {
@@ -139,178 +139,157 @@ const Component = ({
         [onRemove, index],
     );
 
+    const [currentAccordionId, setCurrentAccordionId] = useState(
+        linkData.type === 'add'
+            ? `accord-tooltip-${linkData.key ?? linkData?.id}`
+            : '',
+    );
+
+    const handleChangeAccordion = useCallback((accordionId: string) => {
+        setCurrentAccordionId(prev =>
+            prev === accordionId ? '' : accordionId,
+        );
+    }, []);
+
     const renderTooltip = () => {
-        if (isEdit) {
-            return (
+        return (
+            <CustomAccordion
+                currentAccordionId={currentAccordionId}
+                accordionId={`accord-tooltip-${linkData.key ?? linkData?.id}`}
+                onChange={handleChangeAccordion}
+                label={titleRef.current?.value || ''}
+                typographyVariant="h5"
+                variant="base"
+                AccordionSummaryIcon={
+                    <RoundArrowIcon
+                        width="25px"
+                        height="25px"
+                        className={styles.arrowIcon}
+                    />
+                }
+                className={styles.accordion}
+                typographyProps={{
+                    fontSize: 18,
+                    color: 'colors.white.primary',
+                }}
+            >
                 <CustomGrid
                     container
                     direction="column"
                     wrap="nowrap"
-                    gap={1}
+                    gap={2}
                     className={styles.tooltipContent}
                 >
+                    <CustomGrid container direction="column" gap={1}>
+                        <CustomTypography
+                            variant="body3"
+                            color="colors.white.primary"
+                            className={styles.label}
+                        >
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="templateLinks.form.title"
+                            />
+                        </CustomTypography>
+                        <CustomInput
+                            multiline
+                            autoComplete="off"
+                            color="secondary"
+                            minRows={1}
+                            classes={{
+                                root: styles.inputWrapper,
+                            }}
+                            InputProps={{
+                                classes: {
+                                    input: styles.textArea,
+                                    root: styles.inputRoot,
+                                },
+                            }}
+                            placeholder="Type a title for link"
+                            onFocus={handleSetElementActive}
+                            {...registerTitleData}
+                            ref={e => {
+                                refTitleData(e);
+                                titleRef.current = e;
+                            }}
+                        />
+                    </CustomGrid>
+
+                    <CustomGrid>
+                        {isStatic ? (
+                            <CustomTypography
+                                className={styles.staticLink}
+                                color="colors.white.primary"
+                            >
+                                {linkData.value}
+                            </CustomTypography>
+                        ) : (
+                            <CustomGrid
+                                container
+                                flexDirection="column"
+                                gap={1}
+                            >
+                                <CustomTypography
+                                    variant="body3"
+                                    color="colors.white.primary"
+                                    className={styles.label}
+                                >
+                                    <Translation
+                                        nameSpace="createRoom"
+                                        translation="templateLinks.form.link"
+                                    />
+                                </CustomTypography>
+                                <CustomInput
+                                    multiline
+                                    autoComplete="off"
+                                    color="secondary"
+                                    inputProps={{
+                                        cols: '25',
+                                    }}
+                                    minRows={1}
+                                    maxRows={4}
+                                    classes={{
+                                        root: styles.inputWrapper,
+                                    }}
+                                    // eslint-disable-next-line react/jsx-no-duplicate-props
+                                    InputProps={{
+                                        classes: {
+                                            input: styles.textArea,
+                                            root: styles.inputRoot,
+                                        },
+                                    }}
+                                    placeholder="Enter link & drag to place"
+                                    onFocus={handleSetElementActive}
+                                    {...registerData}
+                                />
+                            </CustomGrid>
+                        )}
+                    </CustomGrid>
                     <CustomGrid
                         container
-                        direction="column"
-                        alignItems="center"
+                        direction="row"
+                        justifyContent="center"
                         gap={1}
                     >
-                        <CustomTypography color="colors.white.primary">
-                            {linkData.title}
-                        </CustomTypography>
-                        <CustomGrid
-                            container
-                            direction="row"
-                            alignItems="center"
-                            gap={1}
-                        >
-                            <CustomInput
-                                multiline
-                                autoComplete="off"
-                                color="secondary"
-                                style={{ flex: 1 }}
-                                inputProps={{
-                                    cols: '25',
-                                }}
-                                minRows={1}
-                                maxRows={4}
-                                classes={{
-                                    root: styles.inputWrapper,
-                                }}
-                                // eslint-disable-next-line react/jsx-no-duplicate-props
-                                InputProps={{
-                                    classes: {
-                                        input: styles.textArea,
-                                        root: clsx(
-                                            styles.inputRoot,
-                                            styles.disabled,
-                                        ),
-                                        disabled: styles.inputDisabled,
-                                    },
-                                }}
-                                disabled
-                                placeholder="Enter link & drag to place"
-                                {...registerData}
+                        {isActive && !isStatic ? (
+                            <RoundSuccessIcon
+                                className={styles.acceptIcon}
+                                onClick={handleAcceptLink}
+                                width="24px"
+                                height="24px"
                             />
-                            <ActionButton
-                                Icon={<EditIcon width="20px" height="20px" />}
-                                className={styles.actionButton}
-                                onAction={toggleEdit}
+                        ) : null}
+                        {!isStatic && (
+                            <RoundErrorIcon
+                                className={styles.rejectIcon}
+                                onClick={handleRemoveLink}
+                                width="24px"
+                                height="24px"
                             />
-                        </CustomGrid>
+                        )}
                     </CustomGrid>
                 </CustomGrid>
-            );
-        }
-        return (
-            <CustomGrid
-                container
-                direction="column"
-                wrap="nowrap"
-                gap={2}
-                className={styles.tooltipContent}
-            >
-                <CustomGrid container direction="column" gap={1}>
-                    <CustomTypography
-                        variant="body3"
-                        color="colors.white.primary"
-                        className={styles.label}
-                    >
-                        <Translation
-                            nameSpace="createRoom"
-                            translation="templateLinks.form.title"
-                        />
-                    </CustomTypography>
-                    <CustomInput
-                        multiline
-                        autoComplete="off"
-                        color="secondary"
-                        minRows={1}
-                        classes={{
-                            root: styles.inputWrapper,
-                        }}
-                        InputProps={{
-                            classes: {
-                                input: styles.textArea,
-                                root: styles.inputRoot,
-                            },
-                        }}
-                        placeholder="Type a title for link"
-                        onFocus={handleSetElementActive}
-                        {...registerTitleData}
-                    />
-                </CustomGrid>
-
-                <CustomGrid>
-                    {isStatic ? (
-                        <CustomTypography
-                            className={styles.staticLink}
-                            color="colors.white.primary"
-                        >
-                            {linkData.value}
-                        </CustomTypography>
-                    ) : (
-                        <CustomGrid container flexDirection="column" gap={1}>
-                            <CustomTypography
-                                variant="body3"
-                                color="colors.white.primary"
-                                className={styles.label}
-                            >
-                                <Translation
-                                    nameSpace="createRoom"
-                                    translation="templateLinks.form.link"
-                                />
-                            </CustomTypography>
-                            <CustomInput
-                                multiline
-                                autoComplete="off"
-                                color="secondary"
-                                inputProps={{
-                                    cols: '25',
-                                }}
-                                minRows={1}
-                                maxRows={4}
-                                classes={{
-                                    root: styles.inputWrapper,
-                                }}
-                                // eslint-disable-next-line react/jsx-no-duplicate-props
-                                InputProps={{
-                                    classes: {
-                                        input: styles.textArea,
-                                        root: styles.inputRoot,
-                                    },
-                                }}
-                                placeholder="Enter link & drag to place"
-                                onFocus={handleSetElementActive}
-                                {...registerData}
-                            />
-                        </CustomGrid>
-                    )}
-                </CustomGrid>
-                <CustomGrid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    gap={1}
-                >
-                    {isActive && !isStatic ? (
-                        <RoundSuccessIcon
-                            className={styles.acceptIcon}
-                            onClick={handleAcceptLink}
-                            width="24px"
-                            height="24px"
-                        />
-                    ) : null}
-                    {!isStatic && (
-                        <RoundErrorIcon
-                            className={styles.rejectIcon}
-                            onClick={handleRemoveLink}
-                            width="24px"
-                            height="24px"
-                        />
-                    )}
-                </CustomGrid>
-            </CustomGrid>
+            </CustomAccordion>
         );
     };
 

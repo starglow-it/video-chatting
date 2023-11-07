@@ -283,7 +283,7 @@ const Component = ({
                     top: link.position.top,
                     left: link.position.left,
                     title: link.title ?? '',
-                    type: 'edit'
+                    type: 'edit',
                 })) || [],
             youtubeUrl: template.mediaLink ? template.mediaLink.src : '',
         });
@@ -334,7 +334,7 @@ const Component = ({
                     top: link.position.top,
                     left: link.position.left,
                     title: link.title ?? '',
-                    type: 'edit'
+                    type: 'edit',
                 })) || [],
         });
     }, [isTemplateDataWasSet]);

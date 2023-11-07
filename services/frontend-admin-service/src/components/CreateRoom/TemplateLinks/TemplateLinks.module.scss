@@ -60,12 +60,12 @@
 }
 
 .tooltipContent {
-  width: rem(392px);
-  padding: rem(16px 12px);
+  // width: rem(392px);
+  // padding: rem(16px 12px);
 }
 
 .inputWrapper {
-  max-width: 450px;
+  // max-width: 450px;
   color: $primary-white;
 
   .input::placeholder {
@@ -115,4 +115,12 @@
   height: 30px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.accordion {
+  background: transparent;
+}
+
+.arrowIcon {
+  color: $primary-white;
 }

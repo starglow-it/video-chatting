@@ -67,7 +67,7 @@ const Component: React.FunctionComponent<ComponentPropsType> = (
                             src="/images/eyes.webp"
                             width={40}
                             height={40}
-                            alt='dashboard-notifications'
+                            alt="dashboard-notifications"
                         />
                         <CustomTypography
                             nameSpace="dashboard"
