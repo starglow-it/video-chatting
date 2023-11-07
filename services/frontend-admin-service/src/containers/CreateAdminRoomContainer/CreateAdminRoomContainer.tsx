@@ -277,7 +277,7 @@ const Component = () => {
 
             onValueChange(item);
         },
-        [activeItem, background, commonTemplate?.draftUrl],
+        [activeItem, background, commonTemplate?.draftUrl, youtubeUrl],
     );
 
     const onSubmit = useCallback(
@@ -373,6 +373,7 @@ const Component = () => {
             setValue('background', URL.createObjectURL(file), {
                 shouldDirty: true,
             });
+            setValue('youtubeUrl', '');
 
             if (commonTemplate?.id) {
                 const response = await uploadTemplateBackgroundFx({
@@ -456,6 +457,8 @@ const Component = () => {
                     <TemplateBackground
                         templateType={commonTemplate?.templateType ?? 'video'}
                         url={commonTemplate?.draftUrl || background}
+                        youtubeUrl={youtubeUrl}
+
                     />
 
                     <CustomGrid

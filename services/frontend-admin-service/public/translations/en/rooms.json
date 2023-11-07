@@ -32,6 +32,11 @@
     "tooltip": "Drag & Drop users to the right places",
     "user": "User {{index}}"
   },
+  "youtubeVideo": "Youtube Video",
+  "youtubeBackground": {
+    "title": "Use a Youtube url for your Room background",
+    "description": "Copy & Paste a Youtube url here"
+  },
   "addLink": "Add Link",
   "templateLinks": {
     "title": "Drag & Drop circles to the right places / Click on link to edit",
