@@ -364,7 +364,7 @@ const Component = () => {
                                             >
                                                 <CustomImage
                                                     src="/images/gmail.png"
-                                                    alt=''
+                                                    alt=""
                                                     width={52}
                                                     height={52}
                                                     objectFit="cover"
