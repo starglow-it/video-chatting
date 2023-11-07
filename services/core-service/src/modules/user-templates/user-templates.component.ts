@@ -102,12 +102,6 @@ export class UserTemplatesComponent {
       query,
       session,
     });
-    await this.templatePaymentsService.deleteMany({
-      query: {
-        templateId: query.templateId,
-      },
-      session,
-    });
   }
 
   async deleteLeastUserTemplates(
@@ -127,6 +121,7 @@ export class UserTemplatesComponent {
         userTemplate: {
           $nin: templatesIds,
         },
+        user: userId,
       },
       session,
     });
@@ -145,12 +140,14 @@ export class UserTemplatesComponent {
     session: ITransactionSession,
   ) {
     await this.userTemplatesService.deleteUserTemplate(query, session);
-    await this.templatePaymentsService.deleteMany({
-      query: {
-        userTemplate: new Object(query._id),
-      },
-      session,
-    });
+    if (query._id) {
+      await this.templatePaymentsService.deleteMany({
+        query: {
+          userTemplate: new Object(query._id),
+        },
+        session,
+      });
+    }
   }
 
   async deleteUserTemplatesByUserId(
