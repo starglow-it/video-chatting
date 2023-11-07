@@ -49,6 +49,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { PriceValues, RoomType } from 'shared-types';
 import { getProtocol } from 'src/helpers/http/getProtocol';
+import { mapToThumbYoutubeUrl } from 'src/helpers/func/mapToThumbYoutubeUrl';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -119,6 +120,7 @@ const defaultValues = {
     background: '',
     name: '',
     description: '',
+    youtubeUrl: '',
     participantsNumber: 10,
     participantsPositions: PARTICIPANT_POSITIONS.map(item => ({
         ...item,
@@ -211,6 +213,8 @@ const Component = () => {
         name: 'templatePrice',
     });
 
+    const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
+
     useEffect(() => {
         getCommonTemplateEvent({
             templateId: roomId as string,
@@ -227,16 +231,26 @@ const Component = () => {
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherAlias) => {
-            if (
-                item.value > TabsValues.Background &&
-                !(commonTemplate?.draftUrl || background)
-            ) {
-                addNotificationEvent({
-                    type: NotificationType.BackgroundFileShouldBeUploaded,
-                    message: 'uploadBackground.shouldBeUploaded',
-                    withErrorIcon: true,
-                });
-                return;
+            if (item.value > TabsValues.Background) {
+                if (youtubeUrl) {
+                    const response = await trigger(['youtubeUrl']);
+                    if (!response) {
+                        addNotificationEvent({
+                            type: NotificationType.BackgroundFileShouldBeUploaded,
+                            message: 'errors.invalidUrl',
+                            withErrorIcon: true,
+                        });
+                        return;
+                    }
+                }
+                if (!(commonTemplate?.draftUrl || background)) {
+                    addNotificationEvent({
+                        type: NotificationType.BackgroundFileShouldBeUploaded,
+                        message: 'uploadBackground.shouldBeUploaded',
+                        withErrorIcon: true,
+                    });
+                    return;
+                }
             }
 
             if (item.value > TabsValues.Settings) {
@@ -302,9 +316,13 @@ const Component = () => {
                                   frontendConfig.baseDomain
                               }`
                             : '',
-                        mediaLink: commonTemplate?.draftUrl
-                            ? null
-                            : (undefined as any),
+                        mediaLink: (data.youtubeUrl
+                            ? {
+                                  src: data.youtubeUrl,
+                                  thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                                  platform: 'youtube',
+                              }
+                            : null) as any,
                     },
                 });
                 if (error) {

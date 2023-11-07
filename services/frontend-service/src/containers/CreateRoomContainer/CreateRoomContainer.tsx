@@ -202,6 +202,13 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
+                mediaLink: data.youtubeUrl
+                ? {
+                      src: data.youtubeUrl,
+                      thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                      platform: 'youtube',
+                  }
+                : null
             };
 
             await editTemplateFx({
