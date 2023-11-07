@@ -17,6 +17,8 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles
+import { NotificationType } from 'src/store/types';
+import { addNotificationEvent } from 'src/store';
 import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
@@ -70,6 +72,12 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
 
         if (isNextClickValidation) {
             onNextStep();
+        } else {
+            addNotificationEvent({
+                message: 'errors.invalidUrl',
+                withErrorIcon: true,
+                type: NotificationType.validationError,
+            });
         }
     }, []);
 
