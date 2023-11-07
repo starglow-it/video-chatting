@@ -282,6 +282,8 @@ const Component = ({
                     value: link.item,
                     top: link.position.top,
                     left: link.position.left,
+                    title: link.title ?? '',
+                    type: 'edit',
                 })) || [],
             youtubeUrl: template.mediaLink ? template.mediaLink.src : '',
         });
@@ -316,7 +318,6 @@ const Component = ({
         }
 
         const savedProgress = savedTemplateProgress.current;
-        console.log('#Duy Phan console save', savedProgress);
         reset({
             name: savedProgress.name,
             url: savedProgress.url,
@@ -332,6 +333,8 @@ const Component = ({
                     value: link.item,
                     top: link.position.top,
                     left: link.position.left,
+                    title: link.title ?? '',
+                    type: 'edit',
                 })) || [],
         });
     }, [isTemplateDataWasSet]);

@@ -41,7 +41,7 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         () =>
             fields.map((link, index) => (
                 <TemplateLinkItem
-                    key={link?.key}
+                    key={link.key ?? link.id}
                     index={index}
                     onRemove={handleRemoveTemplateLink}
                     data={link}
@@ -59,8 +59,10 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         append({
             value: '',
             key: getRandomNumber(100),
+            title: '',
             top: 0.5,
             left: 0.5,
+            type: 'add'
         });
     }, [isAddLinkDisabled]);
 

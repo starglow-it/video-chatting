@@ -29,7 +29,7 @@ import { LayoutProps } from './types';
 // stores
 import {
     $authStore,
-    $isPortraitLayout,
+    // $isPortraitLayout,
     $isSocketConnected,
     $modeTemplateStore,
     $profileTemplatesStore,
@@ -123,7 +123,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const profileTemplates = useStore($profileTemplatesStore);
     const mode = useStore($modeTemplateStore);
     const { height } = useStore($windowSizeStore);
-    const isPortraitLayout = useStore($isPortraitLayout);
+    // const isPortraitLayout = useStore($isPortraitLayout);
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -222,11 +222,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
         }
     };
-
+    // console.log('#Duy Phan console pt', isPortraitLayout, height)
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
-    }, [height, isMobile, isPortraitLayout, isMeetingRoute]);
-
+    }, [height, isMobile, isMeetingRoute]);
+    console.log('#Duy Phan console', heightFull);
     return (
         <CustomBox
             className={clsx(styles.main, {

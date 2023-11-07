@@ -51,7 +51,6 @@ async function bootstrap() {
   await app.listen();
 
   if (config.isSeed) {
-    await seeder.seedBusinessCategories();
     await seeder.seedLanguages();
     await seeder.createCounter();
     await seeder.seedAdminUser();
@@ -60,6 +59,7 @@ async function bootstrap() {
     await seeder.seedLinks();
     await seeder.seedCreateGlobalCommonTemplate();
     await seeder.seedMediaCategories();
+    await seeder.syncDataInUserTemplates();
   }
 
   usersController.startCheckSubscriptions();

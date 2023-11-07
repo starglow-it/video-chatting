@@ -37,10 +37,10 @@ import {
     WebStorage,
 } from 'src/controllers/WebStorageController';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
+import { isMobile as isMobileShared } from 'shared-utils';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -72,7 +72,10 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
-
+import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
+import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
+import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
+import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 // helpers
 
 const Component = () => {
@@ -176,7 +179,7 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-    
+
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
@@ -217,7 +220,7 @@ const Component = () => {
                 </ConditionalRender>
             </MeetingBackgroundVideo>
 
-            {Boolean(meetingTemplate?.id) && (
+            {Boolean(meetingTemplate?.id) && !isMobileShared() && (
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
@@ -246,6 +249,25 @@ const Component = () => {
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
+            {Boolean(meetingTemplate?.id) && isMobileShared() && (
+                <MeetingSettingsPanel
+                    template={meetingTemplate}
+                    onTemplateUpdate={handleUpdateMeetingTemplate}
+                >
+                    <CustomGrid
+                        width="100%"
+                        height="100%"
+                        display="flex"
+                        flexDirection="column"
+                    >
+                        <MeetingHeader />
+                        <MeetingCarousel />
+                        <MeetingBottomBarMobile />
+                        <MeetingControlPanel />
+                        <MeetingLinksDrawer />
+                    </CustomGrid>
+                </MeetingSettingsPanel>
+            )}
 
             <DevicesSettingsDialog />
             <EndMeetingDialog />
@@ -254,7 +276,6 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
-            <MobilePortraitStub />
             <InviteGuestsDialog />
             <ConfirmBecomeParticipantDialog />
             <DownloadIcsEventDialog />

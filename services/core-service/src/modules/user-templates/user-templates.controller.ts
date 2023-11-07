@@ -823,21 +823,6 @@ export class UserTemplatesController {
     );
   }
 
-  private async validateTemplateOwner(
-    userId: string,
-    userTemplateId: string,
-    session: ITransactionSession,
-  ) {
-    const userTemplate = await this.userTemplatesComponent.findById(
-      userTemplateId,
-      session,
-    );
-    throwRpcError(
-      userTemplate.user.toString() !== userId,
-      TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
-    );
-    return;
-  }
 
   @MessagePattern({
     cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,

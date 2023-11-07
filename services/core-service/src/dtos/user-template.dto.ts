@@ -15,9 +15,11 @@ import {
   ISocialLink,
   ILanguage,
   IBusinessCategory,
+  TemplateLink,
 } from 'shared-types';
 
 import { PreviewImageDTO } from './preview-image.dto';
+import { Document } from 'mongoose';
 
 export class UserTemplateDTO implements IUserTemplate {
   @Expose()
@@ -119,11 +121,14 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   @Transform((data) =>
-    data.obj?.links?.map((link) => ({
-      id: link._id,
-      item: link.item,
-      position: link.position,
-    })),
+    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>(
+      (link) => ({
+        id: link._id,
+        title: link.title,
+        item: link.item,
+        position: link.position,
+      }),
+    ),
   )
   links: IUserTemplate['links'];
 

@@ -21,6 +21,10 @@
     transform: translateX(0);
   }
 
+  &.mobile {
+    width: 100%;
+  }
+
   .settingsControls {
     position: absolute;
     top: rem(27px);

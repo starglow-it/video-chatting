@@ -694,6 +694,15 @@ export class CommonTemplatesController {
           session,
         });
 
+        await this.templatePaymentsService.deleteMany({
+          query: {
+            userTemplate: {
+              $in: userTemplates,
+            },
+          },
+          session,
+        });
+
         await this.userTemplatesComponent.deleteUserTemplates(query, session);
 
         await this.commonTemplatesService.deleteCommonTemplate({

@@ -119,6 +119,7 @@ const Component = () => {
                 previewUrls: data.previewUrls,
                 links: data.templateLinks.map(link => ({
                     item: link.value,
+                    title: link.title ?? '',
                     position: {
                         top: link.top,
                         left: link.left,

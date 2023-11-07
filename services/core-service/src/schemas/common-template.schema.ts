@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import { BusinessCategoryDocument } from './business-category.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { UserDocument } from './user.schema';
-import { RoomType, TemplateType } from 'shared-types';
+import { RoomType, TemplateLink, TemplateType } from 'shared-types';
 import { MediaLink } from '../types/template';
 
 @Schema()
@@ -106,6 +106,7 @@ export class CommonTemplate {
     type: [
       {
         item: mongoose.Schema.Types.String,
+        title: mongoose.Schema.Types.String,
         position: {
           top: mongoose.Schema.Types.Number,
           left: mongoose.Schema.Types.Number,
@@ -113,7 +114,7 @@ export class CommonTemplate {
       },
     ],
   })
-  links: { item: string; position: { top: number; left: number } }[];
+  links: TemplateLink[];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

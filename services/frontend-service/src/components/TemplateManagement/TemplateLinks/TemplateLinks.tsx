@@ -17,6 +17,8 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles
+import { NotificationType } from 'src/store/types';
+import { addNotificationEvent } from 'src/store';
 import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
@@ -40,7 +42,7 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         () =>
             fields.map((link, index) => (
                 <TemplateLinkItem
-                    key={link?.key}
+                    key={link?.key ?? link?.id}
                     index={index}
                     onRemove={handleRemoveTemplateLink}
                     data={link}
@@ -58,8 +60,10 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
         append({
             value: '',
             key: getRandomNumber(100),
+            title: '',
             top: 0.5,
             left: 0.5,
+            type: 'add',
         });
     }, [isAddLinkDisabled]);
 
@@ -68,6 +72,12 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
 
         if (isNextClickValidation) {
             onNextStep();
+        } else {
+            addNotificationEvent({
+                message: 'errors.invalidUrl',
+                withErrorIcon: true,
+                type: NotificationType.validationError,
+            });
         }
     }, []);
 

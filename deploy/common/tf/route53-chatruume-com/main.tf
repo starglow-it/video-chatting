@@ -37,6 +37,18 @@ resource "aws_route53_record" "my" {
   }
 }
 
+resource "aws_route53_record" "tf" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "tf.chatruume.com"
+  type    = "A"
+
+  alias {
+    name                   = aws_route53_record.prod.name
+    zone_id                = data.aws_route53_zone.main.zone_id
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_route53_record" "admin" {
   zone_id = data.aws_route53_zone.main.zone_id
   name    = "admin.chatruume.com"

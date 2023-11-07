@@ -197,7 +197,7 @@ services:
       - "traefik.http.routers.meeting_socket.entrypoints=websecure"
       - "traefik.http.routers.meeting_socket.tls=true"
       - "traefik.http.services.meeting_socket.loadbalancer.server.port=8180"
-      - "io.portainer.accesscontrol.public"
+#      - "io.portainer.accesscontrol.public"
     networks:
       - internal
       - traefikpublic

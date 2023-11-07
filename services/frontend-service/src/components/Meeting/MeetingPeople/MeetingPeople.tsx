@@ -14,6 +14,8 @@ import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { $isPortraitLayout } from 'src/store';
+import { isMobile } from 'shared-utils';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
@@ -55,6 +57,7 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 export const MeetingPeople = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const isLurker = useStore($isLurker);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const participants = useStoreMap({
         store: $meetingUsersStore,
@@ -108,12 +111,24 @@ export const MeetingPeople = () => {
         : ['Chat'];
 
     return (
-        <CustomGrid display="flex" flexDirection="column" height="400px">
+        <CustomGrid
+            display="flex"
+            flexDirection="column"
+            height={isMobile() && !isPortraitLayout ? '250px' : '400px'}
+        >
             <Tabs
                 value={value}
                 onChange={handleChange}
                 aria-label="lab API tabs example"
-                classes={{ root: styles.tabs }}
+                variant={isMobile() ? 'scrollable' : undefined}
+                scrollButtons={isMobile()}
+                allowScrollButtonsMobile={isMobile()}
+                TabScrollButtonProps={{
+                    classes: { root: styles.buttonScroll },
+                }}
+                classes={{
+                    root: styles.tabs,
+                }}
             >
                 {tabs.map((tab, index) => (
                     <Tab
