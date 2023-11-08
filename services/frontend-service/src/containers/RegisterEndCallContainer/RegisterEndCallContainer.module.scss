@@ -8,6 +8,14 @@
   padding: rem(24px 40px 24px 40px);
 }
 
+.wrapperMobile {
+  width: 100%;
+  max-width: 100%;
+  padding: rem(24px 40px 24px 40px);
+  margin-top: 150px;
+  margin-bottom: 15px;
+}
+
 .image {
   width: rem(28px);
   height: rem(28px);
@@ -33,6 +41,7 @@
 
 .input {
   width: 100%;
+
   &:first-child {
     margin: 0 0 rem(24px) 0;
   }
@@ -56,6 +65,7 @@
 
 .termsText {
   display: inline-block;
+
   &.termsLink {
     margin: 0 rem(6px);
   }
