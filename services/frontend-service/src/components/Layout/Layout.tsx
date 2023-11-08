@@ -52,6 +52,7 @@ import {
     editRoomRoute,
     indexRoute,
     NotFoundRoute,
+    registerEndCallRoute,
     registerRoute,
     roomRoute,
     welcomeRoute,
@@ -140,6 +141,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         router.pathname,
     );
     const isRegisterRoute = new RegExp(`${registerRoute}`).test(
+        router.pathname,
+    );
+    const isRegisterEndCallRoute = new RegExp(`${registerEndCallRoute}`).test(
         router.pathname,
     );
 
@@ -242,7 +246,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
             <CustomBox className={styles.bgImage} />
             <ScrollParent
-                isAgreements={router.pathname === agreementsRoute}
+                isAgreements={
+                    router.pathname === agreementsRoute ||
+                    (isMobile && isRegisterEndCallRoute)
+                }
                 handleScrollToEnd={handleScrollToEnd}
                 containerRef={(el: any) => (scrollRef.current = el)}
             >

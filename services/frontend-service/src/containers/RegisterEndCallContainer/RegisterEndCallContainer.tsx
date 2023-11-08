@@ -50,6 +50,9 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
+import { isMobile } from 'shared-utils';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -137,31 +140,40 @@ const Component = () => {
 
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
+    const ComponentFinal = !isMobile()
+        ? CenteredPaper
+        : (CustomPaper as React.ElementType);
+
     return (
         <>
-            <MeetingBackgroundVideo
-                templateType={lastTemplate?.templateType}
-                src={lastTemplate?.templateUrl}
-                mediaLink={{
-                    src: lastTemplate.templateUrl,
-                    thumb: '',
-                    platform: 'youtube',
-                }}
+            <ConditionalRender condition={!!lastTemplate?.templateUrl}>
+                <MeetingBackgroundVideo
+                    templateType={lastTemplate?.templateType}
+                    src={lastTemplate?.templateUrl}
+                    mediaLink={{
+                        src: lastTemplate.templateUrl,
+                        thumb: '',
+                        platform: 'youtube',
+                    }}
+                >
+                    <CustomImage
+                        className={styles.image}
+                        src={lastTemplate?.templateUrl || ''}
+                        width="100%"
+                        height="100%"
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                </MeetingBackgroundVideo>
+            </ConditionalRender>
+            <ComponentFinal
+                className={isMobile() ? styles.wrapperMobile : styles.wrapper}
             >
-                <CustomImage
-                    className={styles.image}
-                    src={lastTemplate?.templateUrl || ''}
-                    width="100%"
-                    height="100%"
-                    layout="fill"
-                    objectFit="cover"
-                />
-            </MeetingBackgroundVideo>
-            <CenteredPaper className={styles.wrapper}>
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
+                    direction="column"
                 >
                     <CustomImage
                         src="/images/Ruume.svg"
@@ -173,6 +185,7 @@ const Component = () => {
                         className={styles.text}
                         nameSpace="register"
                         translation="signUpEndCall.title"
+                        sx={{ fontSize: { xs: 14, sm: 14, md: 18, xl: 18 } }}
                     />
                 </CustomGrid>
                 <CustomGrid
@@ -258,13 +271,20 @@ const Component = () => {
                                             nameSpace="common"
                                             translation="terms"
                                         />
-                                        {!is480Media && (
+                                        {!is480Media ? (
                                             <CustomTypography
                                                 className={styles.termsText}
                                                 variant="body2"
                                                 nameSpace="common"
                                                 translation="and"
                                             />
+                                        ) : (
+                                            <CustomTypography
+                                                className={styles.termsText}
+                                                variant="body2"
+                                            >
+                                                &
+                                            </CustomTypography>
                                         )}
                                         <CustomLink
                                             className={clsx(
@@ -295,7 +315,7 @@ const Component = () => {
                         />
                     </form>
                 </FormProvider>
-            </CenteredPaper>
+            </ComponentFinal>
             <SuccessfulRegisterDialog />
         </>
     );
