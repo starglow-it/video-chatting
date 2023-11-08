@@ -21,7 +21,7 @@ const RoomsTablePreviewItem = memo(
                     width={42}
                     height={28}
                     src={src}
-                    alt='rooms-table-preview-item'
+                    alt="rooms-table-preview-item"
                 />
             ) : null}
             <CustomTypography className={styles.text} variant="body2">

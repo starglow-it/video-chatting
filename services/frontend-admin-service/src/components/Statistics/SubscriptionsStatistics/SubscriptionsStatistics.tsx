@@ -65,7 +65,7 @@ const Component = ({
                         src="/images/eyes.webp"
                         width={40}
                         height={40}
-                        alt='subscriptions-statistics'
+                        alt="subscriptions-statistics"
                     />
                     <CustomTypography>
                         <Translation

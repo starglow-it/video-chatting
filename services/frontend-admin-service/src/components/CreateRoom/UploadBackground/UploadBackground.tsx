@@ -32,8 +32,6 @@ import { Translation } from '@components/Translation/Translation';
 
 import { UploadDragFileOverlay } from '@components/UploadDragFileOverlay/UploadDragFileOverlay';
 
-
-
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';

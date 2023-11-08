@@ -37,7 +37,7 @@ module.exports = withTM(
             domains: [
                 process.env.VULTR_STORAGE_HOSTNAME || '',
                 'lh3.googleusercontent.com',
-                'img.youtube.com'
+                'img.youtube.com',
             ],
             remotePatterns: [
                 {

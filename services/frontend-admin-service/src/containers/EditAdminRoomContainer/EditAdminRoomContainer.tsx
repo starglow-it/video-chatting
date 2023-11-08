@@ -48,6 +48,7 @@ import { CancelEditRoomDialog } from '@components/Dialogs/CancelEditRoomDialog/C
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { ICommonTemplate, PriceValues, RoomType } from 'shared-types';
 import { getProtocol } from 'src/helpers/http/getProtocol';
+import { mapToThumbYoutubeUrl } from 'src/helpers/func/mapToThumbYoutubeUrl';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -69,7 +70,6 @@ import frontendConfig from '../../const/config';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { mapToThumbYoutubeUrl } from 'src/helpers/func/mapToThumbYoutubeUrl';
 
 enum TabsValues {
     Background = 1,
@@ -454,7 +454,7 @@ const Component = () => {
             commonTemplate?.draftUrl,
             commonTemplate?.draftPreviewUrls,
             dirtyFields,
-            youtubeUrl
+            youtubeUrl,
         ],
     );
 
