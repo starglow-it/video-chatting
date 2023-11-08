@@ -15,14 +15,18 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { $authStore } from 'src/store';
 import { MeetingAvatarRole } from 'shared-types';
 import { registerRoute } from 'src/const/client-routes';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import styles from './MeetingAvatars.module.scss';
 import { AvatarItem } from './AvatarItem';
 import config from '../../../const/config';
 
 export const MeetingAvatars = ({
     devicesSettingsDialog = false,
+    onClose,
 }: {
     devicesSettingsDialog: boolean;
+    onClose(): void;
 }) => {
     const isLoading = useStore(getAvatarsMeetingFx.pending);
     const localUser = useStore($localUserStore);
@@ -137,13 +141,15 @@ export const MeetingAvatars = ({
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.header}>
-                <CustomTypography
-                    fontSize={16}
-                    fontWeight={600}
-                    marginBottom="10px"
-                >
+                <CustomTypography fontSize={16} fontWeight={600}>
                     Replace with Avatar
                 </CustomTypography>
+                <ActionButton
+                    Icon={<CloseIcon width="22px" height="22px" />}
+                    onAction={onClose}
+                    className={styles.closeButton}
+                    // variant="transparentPrimary"
+                />
             </CustomGrid>
             <CustomGrid className={styles.main}>
                 {!isAuthenticated ? renderAvatarsNoLogin() : renderAvatars()}

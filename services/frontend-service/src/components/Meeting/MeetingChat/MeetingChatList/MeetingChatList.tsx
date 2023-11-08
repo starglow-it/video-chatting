@@ -13,6 +13,7 @@ import {
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { isMobile } from 'shared-utils';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
@@ -68,8 +69,8 @@ export const MeetingChatList = () => {
                 >
                     <CustomImage
                         src="/images/empty-chat.png"
-                        width={130}
-                        height={150}
+                        width={isMobile() ? 90 : 130}
+                        height={isMobile() ? 100 : 150}
                         className={styles.imageEmpty}
                         loading="eager"
                         alt="media-item"

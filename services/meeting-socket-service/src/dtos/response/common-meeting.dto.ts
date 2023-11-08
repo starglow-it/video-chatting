@@ -43,4 +43,8 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
   users: ICommonMeetingUserDTO[];
 }
 
-export const meetingSerialization = <D extends MeetingDocument | MeetingDocument[]>(meeting: D) => serializeInstance(meeting, CommonMeetingDTO);
+export const meetingSerialization = <
+  D extends MeetingDocument | MeetingDocument[],
+>(
+  meeting: D,
+) => serializeInstance(meeting, CommonMeetingDTO);

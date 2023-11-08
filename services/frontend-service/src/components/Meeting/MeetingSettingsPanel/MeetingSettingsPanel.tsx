@@ -30,6 +30,7 @@ import {
 // styles
 import { ISocialLink, MeetingRole } from 'shared-types';
 import { customTemplateLinkSchema } from 'shared-frontend/validation';
+import { isMobile } from 'shared-utils';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
@@ -328,6 +329,9 @@ const Component = ({
                     className={clsx(styles.settingsWrapper, {
                         [styles.open]:
                             isEditTemplateOpened || isMeetingInfoOpened,
+                        [styles.mobile]:
+                            isMobile() &&
+                            (isEditTemplateOpened || isMeetingInfoOpened),
                     })}
                 >
                     <RoundCloseIcon

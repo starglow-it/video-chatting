@@ -88,6 +88,37 @@
     width: 100%;
     min-width: 100%;
   }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
+.monetizationPanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  opacity: 0;
+  right: 20px;
+  bottom: 30px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 51px;
+    min-width: 515px;
+    max-width: 515px;
+    right: 40px;
+    bottom: 0;
+  }
 }
 
 .scheduleOpenPanel {

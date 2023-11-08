@@ -1,15 +1,11 @@
 import { Controller } from '@nestjs/common';
-import { Connection, FilterQuery } from 'mongoose';
+import { Connection } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import {
-  CoreBrokerPatterns,
-  BUSINESS_CATEGORIES_SERVICE,
-  CORE_SERVICE,
-} from 'shared-const';
+import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE } from 'shared-const';
 
 // types
 import {

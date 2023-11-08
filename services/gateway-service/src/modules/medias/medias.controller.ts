@@ -28,7 +28,6 @@ import {
 import { CreateUserTemplateMediaRequest } from '../../dtos/requests/create-user-template-media.request';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
 import { MediasService } from './medias.service';
-import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
 import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategoriesQuery.dto';
@@ -169,7 +168,7 @@ export class MediasController {
     @Body() body: CreateUserTemplateMediaRequest,
   ): Promise<ResponseSumType<IMedia>> {
     try {
-      let userTemplateMedia = await this.mediaService.handleCreateMedia({
+      const userTemplateMedia = await this.mediaService.handleCreateMedia({
         body,
         file,
       });

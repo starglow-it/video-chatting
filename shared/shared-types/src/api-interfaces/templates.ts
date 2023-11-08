@@ -15,6 +15,12 @@ export enum RoomType {
 
 export type TemplateType = 'video' | 'image';
 
+export type TemplateLink = {
+  item: string;
+  title: string;
+  position: { top: number; left: number };
+};
+
 interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
@@ -43,7 +49,7 @@ export interface ICommonTemplate extends ITemplate {
   priceInCents?: number;
   businessCategories?: IBusinessCategory[];
   usersPosition: { bottom: number; left: number }[];
-  links?: { item: string; position: TemplateLinkPosition }[];
+  links?: TemplateLink[];
   stripeProductId?: string;
   isAudioAvailable: boolean;
   draft: boolean;
@@ -80,7 +86,7 @@ export interface IUserTemplate extends ITemplate {
   usersPosition: { bottom: number; left: number }[];
   usersSize: number[];
   indexUsers: string[];
-  links?: { item: string; position: { top: number; left: number } }[];
+  links?: TemplateLink[];
   meetingInstance: IMeetingInstance;
   draft: boolean;
   isPublic: boolean;
@@ -109,7 +115,7 @@ export interface IUpdateTemplate {
   isPublic?: boolean;
   meetingInstance?: IMeetingInstance;
   mediaLink?: IMediaLink;
-  links?: { item: string; position: { top: number; left: number } }[];
+  links?: TemplateLink[];
   socials: {
     youtube?: string;
     facebook?: string;

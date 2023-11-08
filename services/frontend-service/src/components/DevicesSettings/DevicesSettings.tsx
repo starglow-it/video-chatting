@@ -90,7 +90,6 @@ const Component = () => {
     const enabledPaymentPaywallParticipant = useStore(
         $enabledPaymentPaywallParticipant,
     );
-    console.log('#Duy Phan console pay', enabledPaymentPaywallParticipant);
 
     const isCameraActiveRef = useRef(isCameraActive);
 
@@ -365,6 +364,7 @@ const Component = () => {
                                             >
                                                 <CustomImage
                                                     src="/images/gmail.png"
+                                                    alt=""
                                                     width={52}
                                                     height={52}
                                                     objectFit="cover"

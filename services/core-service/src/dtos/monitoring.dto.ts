@@ -1,12 +1,5 @@
-import {
-  Expose,
-  Transform,
-  TransformFnParams,
-  Type,
-  TypeHelpOptions,
-  plainToInstance,
-} from 'class-transformer';
-import { IBusinessCategory, IMonitoring, MonitoringEvent } from 'shared-types';
+import { Expose, Transform } from 'class-transformer';
+import { IMonitoring, MonitoringEvent } from 'shared-types';
 
 export class MonitoringDto implements IMonitoring {
   @Expose()

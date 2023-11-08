@@ -106,6 +106,7 @@ const UsersStatistics = memo(
                             src="/images/eyes.webp"
                             width={40}
                             height={40}
+                            alt='users-statistics'
                         />
                         <CustomTypography>
                             <Translation

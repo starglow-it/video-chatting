@@ -30,7 +30,9 @@ export class CommonMediaDTO implements IMedia {
   @Type(() => UserTemplateDTO)
   userTemplate: IMedia['userTemplate'];
 
-
   @Expose()
   thumb: IMedia['thumb'];
+
+  @Expose()
+  status: IMedia['status'];
 }

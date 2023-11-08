@@ -159,11 +159,13 @@ export type ConnectionsStore = {
     };
 };
 
+export type TrackItem = {
+    audioTrack: MediaStreamTrack;
+    videoTrack: MediaStreamTrack;
+};
+
 export type TracksStore = {
-    [key: MeetingUser['id']]: {
-        audioTrack: MediaStreamTrack;
-        videoTrack: MediaStreamTrack;
-    };
+    [key: MeetingUser['id']]: TrackItem;
 };
 
 export type RoomStore = Room | null;

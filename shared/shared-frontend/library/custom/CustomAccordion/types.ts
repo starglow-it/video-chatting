@@ -1,6 +1,6 @@
 import React from 'react';
 import { TranslationProps } from '@library/common/Translation/types';
-import { TypographyVariant } from '@mui/material';
+import { TypographyProps, TypographyVariant } from '@mui/material';
 
 type CustomAccordionVariants = 'base' | 'large';
 
@@ -13,6 +13,8 @@ type BaseCustomAccordionProps = {
     typographyVariant?: TypographyVariant;
     variant?: CustomAccordionVariants;
     label: string | JSX.Element;
+    className?: string;
+    typographyProps?: TypographyProps;
 };
 
 export type CustomAccordionProps = React.PropsWithChildren<BaseCustomAccordionProps> &

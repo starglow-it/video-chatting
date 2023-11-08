@@ -23,7 +23,7 @@ export const getScreenShots = async (
               '-vframes 1',
               '-vcodec libwebp',
               '-f rawvideo',
-              `-s ${resolution.value}`,
+              `-vf scale=${resolution.value}`,
               '-ss 00:00:01',
             ]
           : [];

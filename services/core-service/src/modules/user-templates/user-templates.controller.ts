@@ -1,4 +1,4 @@
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection, UpdateQuery } from 'mongoose';
@@ -52,10 +52,7 @@ import { UserProfileStatisticService } from '../user-profile-statistic/user-prof
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
-import {
-  UserTemplate,
-  UserTemplateDocument,
-} from '../../schemas/user-template.schema';
+import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { ObjectId, isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';

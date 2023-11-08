@@ -57,13 +57,13 @@ export class MeetingDto implements ICommonMeetingDTO {
 
   @IsOptional()
   @IsBoolean({
-    message: 'Invalid isMute'
+    message: 'Invalid isMute',
   })
   isMute: boolean;
 
   @IsOptional()
   @IsString({
-      message: 'Invalid owner'
+    message: 'Invalid owner',
   })
   owner: string;
 

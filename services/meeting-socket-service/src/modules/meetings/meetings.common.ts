@@ -133,11 +133,10 @@ export class MeetingsCommonService {
 
     if (role === 'participant') {
       if (c === meeting.maxParticipants) return;
-    }
-    else if(role === 'lurker'){
+    } else if (role === 'lurker') {
       if (c >= 1000) return;
     }
-    
+
     return c;
   };
 

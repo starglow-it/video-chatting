@@ -7,7 +7,6 @@ import {
 } from 'mongoose';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
 import { QueryParams } from 'shared-types';
-import { SaveOptions } from 'mongoose';
 
 type OmitOptions = 'options';
 

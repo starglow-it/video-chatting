@@ -157,15 +157,41 @@ export const MeetingMonezationForm = forwardRef(
                         wrap="nowrap"
                         gap={2}
                         className={styles.wrapperForm}
+                        sx={{
+                            height: {
+                                xs: '200px',
+                                sm: 'auto',
+                                md: '200px',
+                                xl: '200px',
+                            },
+                        }}
                     >
                         <CustomGrid
                             container
                             wrap="nowrap"
                             className={styles.monetization}
                             gap={1}
-                            flexDirection="column"
+                            sx={{
+                                width: {
+                                    xs: '100%',
+                                    sm: '100%',
+                                    md: 340,
+                                    xl: 340,
+                                },
+                                flexDirection: {
+                                    xs: 'column',
+                                    sm: 'row',
+                                    md: 'column',
+                                    xl: 'column',
+                                },
+                            }}
                         >
-                            <CustomGrid container flex={1} gap={1}>
+                            <CustomGrid
+                                container
+                                flex={1}
+                                gap={1}
+                                alignItems="center"
+                            >
                                 <CustomTooltip
                                     title={
                                         <Translation
@@ -262,9 +288,27 @@ export const MeetingMonezationForm = forwardRef(
                             wrap="nowrap"
                             className={styles.monetization}
                             gap={1}
-                            flexDirection="column"
+                            sx={{
+                                width: {
+                                    xs: '100%',
+                                    sm: '100%',
+                                    md: 340,
+                                    xl: 340,
+                                },
+                                flexDirection: {
+                                    xs: 'column',
+                                    sm: 'row',
+                                    md: 'column',
+                                    xl: 'column',
+                                },
+                            }}
                         >
-                            <CustomGrid container flex={1} gap={1}>
+                            <CustomGrid
+                                container
+                                flex={1}
+                                gap={1}
+                                alignItems="center"
+                            >
                                 <CustomTooltip
                                     tooltipClassName={styles.tooltipField}
                                     placement="left"

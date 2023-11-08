@@ -1,13 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
-import { toNumber } from '../../utils/parsers/toNumber';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateUserFreeRequest {
   @ApiProperty({

@@ -87,6 +87,7 @@ const RoomPreviewDialog = memo(() => {
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center"
+                            alt='room-preview-dialog'
                         />
                     </ConditionalRender>
                 </CustomGrid>

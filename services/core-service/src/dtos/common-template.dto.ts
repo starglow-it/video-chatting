@@ -1,9 +1,10 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory, ICommonTemplate } from 'shared-types';
+import { IBusinessCategory, ICommonTemplate, TemplateLink } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { PreviewImageDTO } from './preview-image.dto';
+import { Document } from 'mongoose';
 
 class UserPositionDTO {
   @Expose()
@@ -90,8 +91,9 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   @Transform((data) =>
-    data.obj?.links?.map((link) => ({
+    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>((link) => ({
       id: link._id,
+      title: link.title,
       item: link.item,
       position: link.position,
     })),
@@ -103,7 +105,6 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   authorThumbnail: ICommonTemplate['authorThumbnail'];
-
 
   @Expose()
   authorName: ICommonTemplate['authorName'];

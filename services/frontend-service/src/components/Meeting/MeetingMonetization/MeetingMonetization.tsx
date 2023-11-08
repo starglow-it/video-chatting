@@ -24,6 +24,7 @@ import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
+import { isMobile } from 'shared-utils';
 import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
 import {
     $paymentMeetingLurker,
@@ -202,6 +203,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                 direction="row"
                 alignItems="center"
                 marginBottom={2}
+                maxWidth={isMobile() ? undefined : '340px'}
             >
                 <CustomGrid
                     display="flex"

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { toNumber } from '../../utils/parsers/toNumber';
 
 export class GetMeetingAvatarsQueryDto {

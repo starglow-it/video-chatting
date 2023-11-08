@@ -60,6 +60,8 @@ export type ITemplateLink = {
   value: string;
   top: number;
   left: number;
+  title: string;
+  type: 'add' | 'edit'
 };
 
 export type TemplateLinkPosition = {

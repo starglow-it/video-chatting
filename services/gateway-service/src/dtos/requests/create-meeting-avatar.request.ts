@@ -1,9 +1,13 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IMeetingAvatar } from 'shared-types';
+import { IMeetingAvatar, MeetingAvatarRole } from 'shared-types';
 import { Transform } from 'class-transformer';
 
 export class CreateMeetingAvatarRequest {
+  @ApiProperty({
+    type: Array<string>,
+    enum: Object.values(MeetingAvatarRole),
+  })
   @IsNotEmpty({
     message: 'Roles must be present',
   })

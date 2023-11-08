@@ -35,13 +35,13 @@ type MandrillMsg = {
   clicks?: unknown[];
   state: string;
   reject?: string;
-  metadata: Object;
+  metadata: object;
   _id: string;
   _version: string;
 };
 
 type MandrillWebhookEvents = Array<
-  Object & {
+  object & {
     event: string;
     _id: string;
     ts: number;

@@ -1,11 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MeetingAvatarsService } from './meeting-avatars.service';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import {
-  CoreBrokerPatterns,
-  MEETING_AVATAR_SERVICE,
-  MeetingBrokerPatterns,
-} from 'shared-const';
+import { MEETING_AVATAR_SERVICE, MeetingBrokerPatterns } from 'shared-const';
 import {
   CreateMeetingAvatarPayload,
   EntityList,

@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { CORE_PROVIDER, CoreBrokerPatterns } from 'shared-const';
+import { Injectable } from '@nestjs/common';
+import { CoreBrokerPatterns } from 'shared-const';
 import { IResouce, UploadResoucePayload } from 'shared-types';
 import { UploadService } from '../../modules/upload/upload.service';
 import { CoreService } from '../core/core.service';

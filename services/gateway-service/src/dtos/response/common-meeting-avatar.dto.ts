@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
-import {
-  IMeetingAvatar,
-  MeetingAvatarStatus,
-} from 'shared-types';
+import { Expose } from 'class-transformer';
+import { IMeetingAvatar, MeetingAvatarStatus } from 'shared-types';
 import { CommonResouceResDto } from './common-resouce.dto';
 
 export class CommonMeetingAvatarResDto implements IMeetingAvatar {

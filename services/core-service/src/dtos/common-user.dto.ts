@@ -5,7 +5,6 @@ import {
   ILanguage,
   ICommonUser,
   ISocialLink,
-  LoginTypes,
 } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';

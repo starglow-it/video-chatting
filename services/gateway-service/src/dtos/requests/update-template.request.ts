@@ -6,12 +6,16 @@ import {
   IsUrl,
   ValidateIf,
   ValidateNested,
-  IsBoolean,
-  IsNumber,
   IsNotEmpty,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate, IBusinessCategory, IMediaLink } from 'shared-types';
+import {
+  IUpdateTemplate,
+  IBusinessCategory,
+  IMediaLink,
+  TemplateLink,
+} from 'shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
@@ -52,6 +56,45 @@ class SocialsDTO {
   custom: string;
 }
 
+class LinkPosition {
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  top: number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  left: number;
+}
+
+class TemplateLinkDto implements TemplateLink {
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  @IsString({ message: 'item must be string' })
+  item: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @IsOptional()
+  @IsString({ message: 'title must be string' })
+  title: string;
+
+  @ApiProperty({
+    type: LinkPosition,
+  })
+  @IsNotEmpty()
+  @Type(() => LinkPosition)
+  position: { top: number; left: number };
+}
+
 class BusinessCategoryDTO {
   @ApiProperty({
     type: String,
@@ -82,7 +125,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'src must be a string'
+    message: 'src must be a string',
   })
   src: string;
 
@@ -92,7 +135,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'thumb must be a string'
+    message: 'thumb must be a string',
   })
   thumb: string;
 
@@ -102,7 +145,7 @@ class MediaLinkReqDto implements IMediaLink {
   })
   @IsNotEmpty()
   @IsString({
-    message: 'platform must be a string'
+    message: 'platform must be a string',
   })
   platform: string;
 }
@@ -142,20 +185,18 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Position must be string' })
   position: string;
 
-
   @ApiProperty({
     type: MediaLinkReqDto,
     required: false,
     example: {
       src: 'https://123.youtube.com',
       thumb: 'https://blabla.com',
-      platform: 'youtube'
-    }
+      platform: 'youtube',
+    },
   })
   @IsOptional()
   @Type(() => MediaLinkReqDto)
   mediaLink: IMediaLink;
-
 
   @ApiProperty({
     required: false,
@@ -217,6 +258,15 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsOptional()
   @IsString({ message: 'Preview Url must be string', each: true })
   previewUrls: string[];
+
+  @ApiProperty({
+    required: false,
+    type: Array<TemplateLinkDto>,
+    description: 'Links are array of object',
+  })
+  @IsOptional()
+  @Type(() => TemplateLinkDto)
+  links?: IUpdateTemplate['links'];
 
   @ApiProperty({
     required: false,

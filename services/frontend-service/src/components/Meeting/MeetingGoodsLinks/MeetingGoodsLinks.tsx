@@ -39,6 +39,7 @@ const Component = () => {
                     <CustomTooltip
                         {...(isGoodsVisible ? { open: true } : {})}
                         key={`${index}_${isGoodsVisible}`}
+                        title={link.title || undefined}
                         nameSpace="meeting"
                         translation="links.title"
                         placement="bottom"

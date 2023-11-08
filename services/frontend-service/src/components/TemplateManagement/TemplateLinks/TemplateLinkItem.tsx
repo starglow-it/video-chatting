@@ -13,7 +13,6 @@ import Draggable, {
 } from 'react-draggable';
 import { useStore } from 'effector-react';
 import { useFormContext } from 'react-hook-form';
-import InputBase from '@mui/material/InputBase';
 
 import { roundNumberToPrecision } from 'shared-utils';
 
@@ -26,12 +25,15 @@ import { RoundSuccessIcon } from 'shared-frontend/icons/RoundIcons/RoundSuccessI
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import styles from './TemplateLinks.module.scss';
 
-import { $windowSizeStore, addNotificationEvent } from '../../../store';
-
-import { TemplateLinkItemProps } from './TemplateLinks.types';
+import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomAccordion } from 'shared-frontend/library/custom/CustomAccordion';
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
 import { NotificationType } from '../../../store/types';
+import { TemplateLinkItemProps } from './TemplateLinks.types';
+import { $windowSizeStore, addNotificationEvent } from '../../../store';
+import styles from './TemplateLinks.module.scss';
 
 const Component = ({
     index,
@@ -51,8 +53,14 @@ const Component = ({
     } = useToggle(false);
 
     const inputKey = `templateLinks[${index}].value`;
+    const titleKey = `templateLinks[${index}].title`;
 
     const registerData = useMemo(() => register(inputKey), [inputKey]);
+    const { ref: refTitleData, ...registerTitleData } = useMemo(
+        () => register(titleKey),
+        [titleKey],
+    );
+    const titleRef = useRef<any>(null);
 
     const [draggablePosition, setDraggablePosition] = useState<ControlPosition>(
         {
@@ -128,30 +136,86 @@ const Component = ({
             event.stopPropagation();
             onRemove?.(index);
         },
-        [onRemove],
+        [onRemove, index],
     );
 
-    return (
-        <Draggable
-            disabled={!isDraggable}
-            position={draggablePosition}
-            onDrag={handleDrag}
-            onStop={handleStopDrag}
-            nodeRef={contentRef}
-            defaultClassName={styles.draggable}
-        >
-            <CustomTooltip
-                open
-                placement="bottom"
-                arrow
-                tooltipClassName={styles.itemTooltip}
-                title={
-                    <CustomGrid
-                        container
-                        wrap="nowrap"
-                        gap={1}
-                        className={styles.tooltipContent}
-                    >
+    const [currentAccordionId, setCurrentAccordionId] = useState(
+        linkData.type === 'add'
+            ? `accord-tooltip-${linkData.key ?? linkData?.id}`
+            : '',
+    );
+
+    const handleChangeAccordion = useCallback((accordionId: string) => {
+        setCurrentAccordionId(prev =>
+            prev === accordionId ? '' : accordionId,
+        );
+    }, []);
+
+    const renderTooltip = () => {
+        return (
+            <CustomAccordion
+                currentAccordionId={currentAccordionId}
+                accordionId={`accord-tooltip-${linkData.key ?? linkData?.id}`}
+                onChange={handleChangeAccordion}
+                label={titleRef.current?.value || ''}
+                typographyVariant="h5"
+                variant="base"
+                AccordionSummaryIcon={
+                    <RoundArrowIcon
+                        width="25px"
+                        height="25px"
+                        className={styles.arrowIcon}
+                    />
+                }
+                className={styles.accordion}
+                typographyProps={{
+                    fontSize: 18,
+                    color: 'colors.white.primary',
+                }}
+            >
+                <CustomGrid
+                    container
+                    direction="column"
+                    wrap="nowrap"
+                    gap={2}
+                    className={styles.tooltipContent}
+                >
+                    <CustomGrid container direction="column" gap={1}>
+                        <CustomTypography
+                            variant="body3"
+                            color="colors.white.primary"
+                            className={styles.label}
+                        >
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="templateLinks.form.title"
+                            />
+                        </CustomTypography>
+                        <CustomInput
+                            multiline
+                            autoComplete="off"
+                            color="secondary"
+                            minRows={1}
+                            classes={{
+                                root: styles.inputWrapper,
+                            }}
+                            InputProps={{
+                                classes: {
+                                    input: styles.textArea,
+                                    root: styles.inputRoot,
+                                },
+                            }}
+                            placeholder="Type a title for link"
+                            onFocus={handleSetElementActive}
+                            {...registerTitleData}
+                            ref={e => {
+                                refTitleData(e);
+                                titleRef.current = e;
+                            }}
+                        />
+                    </CustomGrid>
+
+                    <CustomGrid>
                         {isStatic ? (
                             <CustomTypography
                                 className={styles.staticLink}
@@ -160,21 +224,53 @@ const Component = ({
                                 {linkData.value}
                             </CustomTypography>
                         ) : (
-                            <InputBase
-                                multiline
-                                inputProps={{
-                                    cols: '25',
-                                }}
-                                minRows={1}
-                                maxRows={4}
-                                classes={{
-                                    root: styles.inputWrapper,
-                                }}
-                                placeholder="Enter link & drag to place"
-                                onFocus={handleSetElementActive}
-                                {...registerData}
-                            />
+                            <CustomGrid
+                                container
+                                flexDirection="column"
+                                gap={1}
+                            >
+                                <CustomTypography
+                                    variant="body3"
+                                    color="colors.white.primary"
+                                    className={styles.label}
+                                >
+                                    <Translation
+                                        nameSpace="createRoom"
+                                        translation="templateLinks.form.link"
+                                    />
+                                </CustomTypography>
+                                <CustomInput
+                                    multiline
+                                    autoComplete="off"
+                                    color="secondary"
+                                    inputProps={{
+                                        cols: '25',
+                                    }}
+                                    minRows={1}
+                                    maxRows={4}
+                                    classes={{
+                                        root: styles.inputWrapper,
+                                    }}
+                                    // eslint-disable-next-line react/jsx-no-duplicate-props
+                                    InputProps={{
+                                        classes: {
+                                            input: styles.textArea,
+                                            root: styles.inputRoot,
+                                        },
+                                    }}
+                                    placeholder="Enter link & drag to place"
+                                    onFocus={handleSetElementActive}
+                                    {...registerData}
+                                />
+                            </CustomGrid>
                         )}
+                    </CustomGrid>
+                    <CustomGrid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        gap={1}
+                    >
                         {isActive && !isStatic ? (
                             <RoundSuccessIcon
                                 className={styles.acceptIcon}
@@ -192,7 +288,26 @@ const Component = ({
                             />
                         )}
                     </CustomGrid>
-                }
+                </CustomGrid>
+            </CustomAccordion>
+        );
+    };
+
+    return (
+        <Draggable
+            disabled={!isDraggable}
+            position={draggablePosition}
+            onDrag={handleDrag}
+            onStop={handleStopDrag}
+            nodeRef={contentRef}
+            defaultClassName={styles.draggable}
+        >
+            <CustomTooltip
+                open
+                placement="bottom"
+                arrow
+                tooltipClassName={styles.itemTooltip}
+                title={renderTooltip()}
             >
                 <CustomBox
                     justifyContent="center"
