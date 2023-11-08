@@ -65,8 +65,8 @@ export const CustomYoutubePlayer = ({
             iframeClassName={styles.fullPlayer}
             className={className}
             opts={{
-                width: '100%',
-                height: '100%',
+                width: '630',
+                height: '340',
                 playerVars: {
                     autoplay: 1,
                     playsinline: 1,
@@ -77,6 +77,7 @@ export const CustomYoutubePlayer = ({
                     showinfo: 0,
                     modestbranding: 1,
                     fs: 1,
+                    allowfullscreen: 1
                 },
             }}
             onReady={onReady}
