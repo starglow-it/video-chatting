@@ -34,9 +34,20 @@ const Component = ({
         onSwitchOff: onHideMenu,
     } = useToggle(false);
 
-    const { url, id } = template;
+    const { url, id, mediaLink } = template;
 
     const renderMedia = () => {
+        if (mediaLink)
+            return (
+                <CustomImage
+                    src={mediaLink.thumb}
+                    width={250}
+                    height={150}
+                    className={styles.image}
+                    loading="eager"
+                    alt="media-item"
+                />
+            );
         if (!url) return null;
         switch (template.templateType) {
             case 'image':

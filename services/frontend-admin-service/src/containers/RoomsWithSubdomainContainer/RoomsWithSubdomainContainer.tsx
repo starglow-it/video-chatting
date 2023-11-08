@@ -140,7 +140,10 @@ export const RoomsWithSubdomainContainer = () => {
                     previewAndRoomName: {
                         label: (
                             <RoomsTablePreviewItem
-                                src={templatePreview?.url}
+                                src={
+                                    template.mediaLink?.thumb ||
+                                    templatePreview?.url
+                                }
                                 roomName={template.name}
                             />
                         ),

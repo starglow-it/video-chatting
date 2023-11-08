@@ -166,7 +166,7 @@ const Component = ({
                     [
                         {
                             file,
-                        },
+                        } as any,
                     ],
                     acceptedFiles.length + rejectedFiles.length,
                 );
