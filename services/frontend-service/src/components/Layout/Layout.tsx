@@ -230,7 +230,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
-    console.log('#Duy Phan console', heightFull);
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -274,7 +274,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     >
                         <ConditionalRender
                             condition={
-                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                                !isMobile
+                                    ? !isNotFoundRoute
+                                    : (!isNotFoundRoute && !isRoomRoute)
                             }
                         >
                             <CustomBox
