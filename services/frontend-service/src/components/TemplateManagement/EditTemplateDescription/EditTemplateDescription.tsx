@@ -44,12 +44,16 @@ import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
+import { useRouter } from 'next/router';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 
 const Component = ({
     onNextStep,
     onPreviousStep,
     template,
 }: EditTemplateDescriptionProps) => {
+    const router = useRouter();
+    const tagAutoFilled = router.query?.tag;
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -75,6 +79,16 @@ const Component = ({
     useEffect(() => {
         trigger('tags');
 
+        if (!!tagAutoFilled) {
+            setValue('tags', [
+                {
+                    ...CUSTOM_CATEROFY_BUSSINESS,
+                    label: CUSTOM_CATEROFY_BUSSINESS.value,
+                },
+            ]);
+            return;
+        }
+
         if (
             !tags.find(
                 (value: AutocompleteType<IBusinessCategory> | string) =>
@@ -96,7 +110,7 @@ const Component = ({
                     : item,
             ),
         );
-    }, [tags]);
+    }, []);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -179,14 +193,22 @@ const Component = ({
         [],
     );
 
+    console.log('#Duy Phan console', CUSTOM_CATEROFY_BUSSINESS);
+
     const businessCategoriesOptions = useMemo(
-        () =>
-            businessCategories.list.map(item => ({
+        () => [
+            ...businessCategories.list.map(item => ({
                 ...item,
                 label: item.value,
             })),
+            {
+                ...CUSTOM_CATEROFY_BUSSINESS,
+                label: CUSTOM_CATEROFY_BUSSINESS.value,
+            },
+        ],
         [businessCategories.list],
     );
+    console.log('#Duy Phan console', businessCategoriesOptions);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
@@ -269,8 +291,14 @@ const Component = ({
                         autoHighlight
                         options={businessCategoriesOptions}
                         control={control}
+                        classes={{
+                            input: !!tagAutoFilled
+                                ? styles.disabledTags
+                                : undefined,
+                        }}
                         name="tags"
                         autoComplete
+                        disabled={!!tagAutoFilled}
                         error={tagsErrorMessage}
                         errorComponent={
                             <ConditionalRender
