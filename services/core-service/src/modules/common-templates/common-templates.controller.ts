@@ -573,6 +573,9 @@ export class CommonTemplatesController {
           if (
             await this.commonTemplatesService.exists({
               query: {
+                _id: {
+                  $ne: templateId,
+                },
                 subdomain: updateData.subdomain,
               },
             })
