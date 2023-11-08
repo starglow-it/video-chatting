@@ -16,6 +16,7 @@ import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 
 const Component = () => {
     const { list } = useStore($businessCategoriesStore);
@@ -93,6 +94,13 @@ const Component = () => {
                     onSelect={selectMenu}
                 />
             ))}
+            <MenuItemTemplate
+                isActive={businessCategories.includes(
+                    CUSTOM_CATEROFY_BUSSINESS?.id,
+                )}
+                item={CUSTOM_CATEROFY_BUSSINESS}
+                onSelect={selectMenu}
+            />
         </CustomGrid>
     );
 };

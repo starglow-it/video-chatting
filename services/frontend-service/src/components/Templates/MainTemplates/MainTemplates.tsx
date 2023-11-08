@@ -8,6 +8,7 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
+    $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -64,6 +65,7 @@ const Component = () => {
     );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
+    const { businessCategories = [] } = useStore($queryTemplatesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -201,6 +203,13 @@ const Component = () => {
         templateDraft?.id,
     ]);
 
+    const handleCreateRoomDesign = async () => {
+        const response = await createTemplateFx();
+        router.push(
+            `${getCreateRoomUrl(response?.id ?? '')}?tag=interior-design`,
+        );
+    };
+
     const renderTemplates = useMemo(() => {
         switch (mode) {
             case 'private':
@@ -224,6 +233,10 @@ const Component = () => {
                         onPageChange={handleCommonTemplatesPageChange}
                         onChooseTemplate={handleChooseCommonTemplate}
                         TemplateComponent={CommonTemplateItem}
+                        allowCreate={businessCategories.includes(
+                            'interior-design',
+                        )}
+                        onCreate={handleCreateRoomDesign}
                     />
                 );
             default:
