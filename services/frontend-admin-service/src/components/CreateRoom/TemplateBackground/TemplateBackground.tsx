@@ -5,15 +5,20 @@ import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPla
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomYoutubePlayer } from 'shared-frontend/library/custom/CustomYoutubePlayer/CustomYoutubePlayer';
 
 import { TemplateBackgroundProps } from './TemplateBackground.types';
 
 import styles from './TemplateBackground.module.scss';
 
-const Component = ({ url, templateType }: TemplateBackgroundProps) => (
+const Component = ({
+    url,
+    templateType,
+    youtubeUrl,
+}: TemplateBackgroundProps) => (
     <CustomGrid container className={styles.background}>
-        <ConditionalRender condition={Boolean(url)}>
-            {templateType === 'image' ? (
+        <ConditionalRender condition={!!url || !!youtubeUrl}>
+            {templateType === 'image' && !youtubeUrl && (
                 <CustomImage
                     src={url ?? ''}
                     alt="background_preview"
@@ -21,7 +26,8 @@ const Component = ({ url, templateType }: TemplateBackgroundProps) => (
                     objectFit="cover"
                     objectPosition="center"
                 />
-            ) : (
+            )}
+            {templateType === 'video' && !youtubeUrl && (
                 <CustomVideoPlayer
                     src={url}
                     className={styles.player}
@@ -30,6 +36,12 @@ const Component = ({ url, templateType }: TemplateBackgroundProps) => (
                     isMuted={false}
                 />
             )}
+            <CustomYoutubePlayer
+                className={styles.player}
+                url={youtubeUrl}
+                muted
+                volume={0}
+            />
         </ConditionalRender>
     </CustomGrid>
 );

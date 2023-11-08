@@ -45,7 +45,7 @@ const Component = ({
 }: TemplateLinkItemProps) => {
     const { width, height } = useStore($windowSizeStore);
 
-    const { register, setValue, trigger, getValues } = useFormContext();
+    const { register, setValue, trigger } = useFormContext();
 
     const {
         value: isActive,

@@ -215,7 +215,7 @@ const Component = () => {
                         src="/images/blush_face.webp"
                         width={40}
                         height={40}
-                        alt='rooms-container'
+                        alt="rooms-container"
                     />
                     <CustomTypography variant="body2">
                         <Translation nameSpace="rooms" translation="noRooms" />

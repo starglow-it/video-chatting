@@ -48,6 +48,7 @@ import { CancelEditRoomDialog } from '@components/Dialogs/CancelEditRoomDialog/C
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { ICommonTemplate, PriceValues, RoomType } from 'shared-types';
 import { getProtocol } from 'src/helpers/http/getProtocol';
+import { mapToThumbYoutubeUrl } from 'src/helpers/func/mapToThumbYoutubeUrl';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -227,6 +228,8 @@ const Component = () => {
         name: 'templatePrice',
     });
 
+    const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
+
     const previousParticipantsNumber = usePrevious(participantsNumber);
 
     useEffect(() => {
@@ -268,7 +271,7 @@ const Component = () => {
                         title,
                         top: position.top,
                         left: position.left,
-                        type: 'edit'
+                        type: 'edit',
                     }),
                 ),
                 templatePrice: commonTemplate.priceInCents
@@ -281,6 +284,9 @@ const Component = () => {
                     label: item.value,
                 })),
                 subdomain: domain?.split('.')[0],
+                youtubeUrl: commonTemplate.mediaLink
+                    ? commonTemplate.mediaLink.src
+                    : '',
             });
 
             updateCommonTemplateDataEvent({
@@ -323,16 +329,26 @@ const Component = () => {
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherAlias) => {
-            if (
-                item.value > TabsValues.Background &&
-                !(commonTemplate?.draftUrl || background)
-            ) {
-                addNotificationEvent({
-                    type: NotificationType.BackgroundFileShouldBeUploaded,
-                    message: 'uploadBackground.shouldBeUploaded',
-                    withErrorIcon: true,
-                });
-                return;
+            if (item.value > TabsValues.Background) {
+                if (youtubeUrl) {
+                    const response = await trigger(['youtubeUrl']);
+                    if (!response) {
+                        addNotificationEvent({
+                            type: NotificationType.BackgroundFileShouldBeUploaded,
+                            message: 'errors.invalidUrl',
+                            withErrorIcon: true,
+                        });
+                        return;
+                    }
+                }
+                if (!(commonTemplate?.draftUrl || background)) {
+                    addNotificationEvent({
+                        type: NotificationType.BackgroundFileShouldBeUploaded,
+                        message: 'uploadBackground.shouldBeUploaded',
+                        withErrorIcon: true,
+                    });
+                    return;
+                }
             }
 
             if (item.value > TabsValues.Settings) {
@@ -359,7 +375,7 @@ const Component = () => {
 
             onValueChange(item);
         },
-        [activeItem, background, commonTemplate?.draftUrl],
+        [activeItem, background, commonTemplate?.draftUrl, youtubeUrl],
     );
 
     const onSubmit = useCallback(
@@ -392,9 +408,13 @@ const Component = () => {
                               frontendConfig.baseDomain
                           }`
                         : '',
-                    mediaLink: commonTemplate?.draftUrl
-                        ? null
-                        : (undefined as any),
+                    mediaLink: data.youtubeUrl
+                        ? {
+                              src: data.youtubeUrl,
+                              thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                              platform: 'youtube',
+                          }
+                        : null,
                 } as any;
 
                 if (dirtyFields.background) {
@@ -434,6 +454,7 @@ const Component = () => {
             commonTemplate?.draftUrl,
             commonTemplate?.draftPreviewUrls,
             dirtyFields,
+            youtubeUrl,
         ],
     );
 
@@ -448,6 +469,7 @@ const Component = () => {
             setValue('background', URL.createObjectURL(file), {
                 shouldDirty: true,
             });
+            setValue('youtubeUrl', '');
 
             if (commonTemplate?.id) {
                 const response = await uploadTemplateBackgroundFx({
@@ -502,6 +524,7 @@ const Component = () => {
                     <TemplateBackground
                         templateType={commonTemplate?.templateType ?? 'video'}
                         url={commonTemplate?.draftUrl || background}
+                        youtubeUrl={youtubeUrl}
                     />
 
                     <CustomGrid
