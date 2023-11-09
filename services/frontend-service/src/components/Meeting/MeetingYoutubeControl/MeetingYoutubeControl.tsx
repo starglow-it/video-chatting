@@ -20,6 +20,10 @@ import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';
 import debounce from '@mui/utils/debounce';
 import { mapToThumbYoutubeUrl } from 'src/utils/functions/mapToThumbYoutubeUrl';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
 import styles from './MeetingYoutubeControl.module.scss';
 
 export const MeetingYoutubeControl = () => {
@@ -46,17 +50,27 @@ export const MeetingYoutubeControl = () => {
 
     const handleSyncUrl = useCallback(
         debounce(newUrl => {
+            const newThumb = mapToThumbYoutubeUrl(newUrl);
             updateMeetingTemplateFxWithData({
                 url: '',
                 previewUrls: [],
                 mediaLink: (newUrl
                     ? {
                           src: newUrl,
-                          thumb: mapToThumbYoutubeUrl(newUrl),
+                          thumb: newThumb,
                           platform: 'youtube',
                       }
                     : null) as any,
             });
+            if (newUrl) {
+                WebStorage.save({
+                    key: StorageKeysEnum.bgLastCall,
+                    data: {
+                        templateUrl: newThumb,
+                        templateType: 'image',
+                    },
+                });
+            }
         }, 300),
         [],
     );

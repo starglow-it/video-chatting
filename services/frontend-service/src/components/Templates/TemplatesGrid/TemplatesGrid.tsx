@@ -22,6 +22,13 @@ const Component = <TemplateType extends { id: string }>({
     innerClassName,
     allowCreate = false,
     onCreate,
+    isCustomElementCreate = false,
+    ElementCreate = (
+        <CustomGrid display="flex" flexDirection="row" alignItems="center">
+            <PlusIcon width="22px" height="22px" />
+            <CustomTypography nameSpace="templates" translation="createRoom" />
+        </CustomGrid>
+    ),
 }: TemplateGridProps<TemplateType>) => {
     const is1100Media = useMediaQuery('(max-width:1100px)');
 
@@ -51,28 +58,22 @@ const Component = <TemplateType extends { id: string }>({
                         key="create-a-template"
                         gap={1}
                     >
-                        <CustomGrid
-                            display="flex"
-                            flexDirection="row"
-                            alignItems="center"
-                        >
-                            <PlusIcon width="22px" height="22px" />
-                            <CustomTypography
-                                nameSpace="templates"
-                                translation="createRoom"
-                            />
-                        </CustomGrid>
-                        <CustomTypography
-                            nameSpace="templates"
-                            translation="descCreateRoom"
-                            textAlign="center"
-                            fontSize={12}
-                        />
-                        <CustomTypography
-                            nameSpace="templates"
-                            translation="embedLinks"
-                            textAlign="center"
-                        />
+                        {ElementCreate}
+                        {!isCustomElementCreate && (
+                            <>
+                                <CustomTypography
+                                    nameSpace="templates"
+                                    translation="descCreateRoom"
+                                    textAlign="center"
+                                    fontSize={12}
+                                />
+                                <CustomTypography
+                                    nameSpace="templates"
+                                    translation="embedLinks"
+                                    textAlign="center"
+                                />
+                            </>
+                        )}
                     </CustomGrid>
                 ),
             });

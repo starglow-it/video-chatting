@@ -33,6 +33,10 @@
 
 .socialsWrapper {
   margin: rem(20px) 0 0 0;
+
+  &.mobile {
+    margin: rem(10px) 0 0 0;
+  }
 }
 
 .createAccountSeparator {
@@ -77,4 +81,14 @@
 
 .textOr {
   color: $normal-gray-scale;
+}
+
+.muiInput {
+  height: 30px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.buttonGG{
+  height: 50px;
 }

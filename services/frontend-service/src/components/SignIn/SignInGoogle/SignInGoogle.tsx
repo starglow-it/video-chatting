@@ -7,6 +7,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { PropsWithClassName } from 'shared-frontend/types';
 import { addNotificationEvent, googleVerifyFx } from '../../../store';
 
 import { NotificationType } from '../../../store/types';
@@ -14,7 +15,10 @@ import { NotificationType } from '../../../store/types';
 import styles from './SignInGoogle.module.scss';
 import frontendConfig from '../../../const/config';
 
-export const SignInGoogle = ({ buttonText = '' }: { buttonText: string }) => {
+export const SignInGoogle = ({
+    buttonText = '',
+    className,
+}: PropsWithClassName<{ buttonText?: string }>) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const handleReject = (text: string) => {
         setIsProcessing(false);
@@ -57,9 +61,13 @@ export const SignInGoogle = ({ buttonText = '' }: { buttonText: string }) => {
 
     return (
         <SocialLogin
-            className={clsx(styles.btnGoogle, {
-                [styles.btnProcessing]: isProcessing,
-            })}
+            className={clsx(
+                styles.btnGoogle,
+                {
+                    [styles.btnProcessing]: isProcessing,
+                },
+                className,
+            )}
             onClick={loginGoogle}
         >
             <ConditionalRender condition={isProcessing}>

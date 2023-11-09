@@ -30,6 +30,7 @@ import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/Subs
 import { useToggle } from '@hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { dashboardRoute } from 'src/const/client-routes';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
 import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
@@ -236,7 +237,21 @@ const Component = () => {
                         allowCreate={businessCategories.includes(
                             'interior-design',
                         )}
+                        ElementCreate={
+                            <CustomGrid
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
+                            >
+                                <PlusIcon width="22px" height="22px" />
+                                <CustomTypography
+                                    nameSpace="templates"
+                                    translation="addYourDesign"
+                                />
+                            </CustomGrid>
+                        }
                         onCreate={handleCreateRoomDesign}
+                        isCustomElementCreate
                     />
                 );
             default:
