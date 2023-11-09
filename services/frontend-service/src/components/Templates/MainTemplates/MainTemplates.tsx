@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
+    $businessCategoriesStore,
     $isBusinessSubscription,
     $isProfessionalSubscription,
     $isTrial,
@@ -8,7 +9,6 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
-    $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -31,6 +31,7 @@ import { useToggle } from '@hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { dashboardRoute } from 'src/const/client-routes';
 import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
 import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
@@ -66,7 +67,7 @@ const Component = () => {
     );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
-    const { businessCategories = [] } = useStore($queryTemplatesStore);
+    const { list: categories } = useStore($businessCategoriesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -234,9 +235,12 @@ const Component = () => {
                         onPageChange={handleCommonTemplatesPageChange}
                         onChooseTemplate={handleChooseCommonTemplate}
                         TemplateComponent={CommonTemplateItem}
-                        allowCreate={businessCategories.includes(
-                            'interior-design',
-                        )}
+                        allowCreate={
+                            !!categories.find(
+                                item =>
+                                    item.key === CUSTOM_CATEROFY_BUSSINESS.key,
+                            )
+                        }
                         ElementCreate={
                             <CustomGrid
                                 display="flex"
