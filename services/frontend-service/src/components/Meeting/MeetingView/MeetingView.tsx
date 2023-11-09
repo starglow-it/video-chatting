@@ -156,8 +156,12 @@ const Component = () => {
         WebStorage.save({
             key: StorageKeysEnum.bgLastCall,
             data: {
-                templateUrl: meetingTemplate.url,
-                templateType: meetingTemplate.templateType,
+                templateUrl: meetingTemplate.mediaLink
+                    ? meetingTemplate.mediaLink.thumb
+                    : meetingTemplate.url,
+                templateType: meetingTemplate.mediaLink
+                    ? 'image'
+                    : meetingTemplate.templateType,
             },
         });
     }, []);
