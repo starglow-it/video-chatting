@@ -2,11 +2,15 @@ import { ICommonUser } from './users';
 import { IUserTemplate } from './templates';
 import { MediaCategoryType } from './media';
 
-
 export enum Environmens {
   Local = 'local',
   Demo = 'demo',
-  Production = 'production'
+  Production = 'production',
+}
+
+export enum BusinessCategoryTypeEnum {
+  CanUpdate = 'can-update',
+  Freeze = 'freeze',
 }
 
 export interface IBusinessCategory {
@@ -14,6 +18,7 @@ export interface IBusinessCategory {
   value: string;
   color: string;
   icon: string;
+  type?: BusinessCategoryTypeEnum;
 }
 
 export interface IMediaCategory {
@@ -61,7 +66,7 @@ export type ITemplateLink = {
   top: number;
   left: number;
   title: string;
-  type: 'add' | 'edit'
+  type: 'add' | 'edit';
 };
 
 export type TemplateLinkPosition = {
@@ -134,9 +139,9 @@ export enum KickUserReasons {
 }
 
 export enum PlanKeys {
-  House = "House",
-  Professional = "Professional",
-  Business = "Business",
+  House = 'House',
+  Professional = 'Professional',
+  Business = 'Business',
 }
 
 export enum PriceValues {

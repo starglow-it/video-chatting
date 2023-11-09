@@ -29,6 +29,7 @@ import { UpdateBusinessCategoryParam } from '../../dtos/params/update-business-c
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { DeleteBusinessCategoriesRequest } from '../../dtos/requests/delete-business-categories.request';
 import { CreateBusinessCategoryRequest } from '../../dtos/requests/create-business-category.request';
+import { GetBusinessCategoriesQueryDto } from 'src/dtos/query/GetBusinessCategoriesQuery.dto';
 
 @ApiTags('Bussiness Categories')
 @Controller('categories')
@@ -48,14 +49,18 @@ export class CategoriesController {
   })
   async getCategories(
     @Request() req,
-    @Query('skip', ParseIntPipe) skip: number,
-    @Query('limit', ParseIntPipe) limit: number,
+    @Query() query: GetBusinessCategoriesQueryDto,
   ): Promise<ResponseSumType<EntityList<IBusinessCategory>>> {
     try {
+      const { skip, limit, type } = query;
+
       const businessCategories =
         await this.categoriesService.getBusinessCategories({
           skip,
           limit,
+          query: {
+            type,
+          },
         });
 
       return {

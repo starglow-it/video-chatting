@@ -4,6 +4,7 @@ import { CoreBrokerPatterns } from 'shared-const';
 import {
   CreateBusinessCategoryPayload,
   DeletesBusinessCategoriesPayload,
+  GetBusinessCategoriesPayload,
   UpdateBusinessCategoryPayload,
 } from 'shared-types';
 
@@ -11,7 +12,7 @@ import {
 export class CategoriesService {
   constructor(private coreService: CoreService) {}
 
-  async getBusinessCategories(payload) {
+  async getBusinessCategories(payload: GetBusinessCategoriesPayload) {
     const pattern = { cmd: CoreBrokerPatterns.GetBusinessCategories };
 
     return this.coreService.sendCustom(pattern, payload);

@@ -9,6 +9,7 @@ const ObjectId = Types.ObjectId;
 
 //  const
 import {
+  CUSTOM_CATEROFY_BUSSINESS,
   MediaNativeErrorEnum,
   TEMPLATES_SERVICE,
   TemplateBrokerPatterns,
@@ -38,6 +39,7 @@ import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import {
   AddTemplateToUserPayload,
+  BusinessCategoryTypeEnum,
   CreateTemplatePayload,
   DeleteCommonTemplatePayload,
   EditTemplatePayload,
@@ -509,6 +511,10 @@ export class CommonTemplatesController {
                   value: category.value,
                   color: category.color,
                   icon: category.icon,
+                  type:
+                    category.key === CUSTOM_CATEROFY_BUSSINESS.key
+                      ? BusinessCategoryTypeEnum.Freeze
+                      : BusinessCategoryTypeEnum.CanUpdate,
                 },
                 session,
               });
