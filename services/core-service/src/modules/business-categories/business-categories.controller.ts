@@ -35,18 +35,19 @@ export class BusinessCategoriesController {
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessCategories })
   async getBusinessCategories(
-    @Payload() { skip = 0, limit = 6 }: GetBusinessCategoriesPayload,
+    @Payload()
+    { skip = 0, limit = 6, query = {} }: GetBusinessCategoriesPayload,
   ): Promise<EntityList<IBusinessCategory>> {
     try {
       return withTransaction(this.connection, async (session) => {
         const businessCategories = await this.businessCategoriesService.find({
-          query: {},
+          query,
           options: { skip, limit },
           session,
         });
 
         const categoriesCount = await this.businessCategoriesService.count({
-          query: {},
+          query,
         });
 
         const parsedCategories = plainToInstance(
@@ -104,6 +105,17 @@ export class BusinessCategoriesController {
   async updateBusinessCategory({ id, data }: UpdateBusinessCategoryPayload) {
     return withTransaction(this.connection, async (session) => {
       try {
+        const keyExisted = await this.businessCategoriesService.exists({
+          key: data.key,
+          _id: {
+            $ne: id,
+          },
+        });
+
+        if (keyExisted) {
+          throw new RpcException('Category must unique');
+        }
+
         const businessCategory =
           await this.businessCategoriesService.findOneAndUpdate({
             query: {

@@ -1,9 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsEmail,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserCredentials } from 'shared-types';
 
