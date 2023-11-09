@@ -187,7 +187,10 @@ const Component = () => {
                         className={styles.text}
                         nameSpace="register"
                         translation="signUpEndCall.title"
-                        sx={{ fontSize: { xs: 14, sm: 14, md: 18, xl: 18 } }}
+                        sx={{
+                            fontSize: { xs: 16, sm: 16, md: 18, xl: 18 },
+                            marginTop: { xs: 0, sm: 0, md: '10px', xl: '10px' },
+                        }}
                     />
                 </CustomGrid>
                 <CustomGrid
