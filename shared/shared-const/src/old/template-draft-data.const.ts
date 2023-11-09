@@ -22,4 +22,4 @@ export const CUSTOM_CATEROFY_BUSSINESS = {
   value: 'Interior Design',
   icon: '01f6cb-fe0f',
   color: 'white',
-} as IBusinessCategory;
+} as Omit<IBusinessCategory, 'type'>;

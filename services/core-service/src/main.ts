@@ -51,6 +51,7 @@ async function bootstrap() {
   await app.listen();
 
   if (config.isSeed) {
+    await seeder.seedBusinessCategories();
     await seeder.seedLanguages();
     await seeder.createCounter();
     await seeder.seedAdminUser();
