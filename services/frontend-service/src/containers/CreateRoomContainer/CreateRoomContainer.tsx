@@ -262,10 +262,10 @@ const Component = () => {
             />
             <SubscriptionsPlans
                 isDisabled={false}
+                activePlanKey={profile.subscriptionPlanKey}
                 isSubscriptionStep={isSubscriptionStep}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
-                onlyPaidPlans
             />
         </>
     );

@@ -33,6 +33,9 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
+import { isMobile } from 'shared-utils';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import {
     $authStore,
     $registerStore,
@@ -50,9 +53,6 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
-import { isMobile } from 'shared-utils';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
