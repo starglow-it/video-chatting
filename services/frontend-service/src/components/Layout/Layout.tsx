@@ -276,7 +276,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                             condition={
                                 !isMobile
                                     ? !isNotFoundRoute
-                                    : (!isNotFoundRoute && !isRoomRoute)
+                                    : !isNotFoundRoute && !isRoomRoute
                             }
                         >
                             <CustomBox

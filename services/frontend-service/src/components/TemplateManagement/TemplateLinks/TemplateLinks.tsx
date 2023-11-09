@@ -18,13 +18,21 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // styles
 import { NotificationType } from 'src/store/types';
-import { addNotificationEvent } from 'src/store';
+import { $isBusinessSubscription, addNotificationEvent } from 'src/store';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { useStore } from 'effector-react';
 import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
 import { TemplatesLinksProps } from './TemplateLinks.types';
 
-const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
+const Component = ({
+    onNextStep,
+    onPreviousStep,
+    onUpgrade,
+}: TemplatesLinksProps) => {
+    const isBusinessSubscription = useStore($isBusinessSubscription);
     const { control, trigger } = useFormContext();
 
     const { fields, append, remove } = useFieldArray({
@@ -82,36 +90,108 @@ const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
     }, []);
 
     return (
-        <CustomGrid container className={styles.wrapper}>
-            <CustomTooltip
-                title={
-                    isAddLinkDisabled ? (
-                        <Translation
-                            nameSpace="createRoom"
-                            translation="tooltips.addLinkDisabled"
-                        />
-                    ) : (
-                        ''
-                    )
-                }
-            >
-                <CustomButton
-                    onClick={handleAddLinkInput}
-                    className={clsx(styles.addLinkButton, {
-                        [styles.disabled]: isAddLinkDisabled,
-                    })}
-                    label={
-                        <CustomTypography variant="body2">
+        <CustomGrid
+            container
+            className={styles.wrapper}
+            alignItems="center"
+            justifyContent="center"
+        >
+            <ConditionalRender condition={!isBusinessSubscription}>
+                <CustomPaper
+                    className={styles.paperUpgrade}
+                    variant="black-glass"
+                >
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        justifyContent="flex-start"
+                        direction="column"
+                        className={styles.mainUpgrade}
+                        height="100%"
+                        padding={4}
+                    >
+                        <CustomTypography
+                            variant="h2"
+                            fontSize={30}
+                            color="colors.white.primary"
+                        >
                             <Translation
                                 nameSpace="createRoom"
-                                translation="addLink"
+                                translation="upgrade.embedYourLinks"
                             />
                         </CustomTypography>
+                        <CustomTypography
+                            variant="h4"
+                            marginTop={7}
+                            color="colors.white.primary"
+                        >
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="upgrade.businessMembership"
+                            />
+                        </CustomTypography>
+                        <CustomTypography
+                            marginTop={4}
+                            color="colors.white.primary"
+                        >
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="upgrade.embedLinks"
+                            />
+                        </CustomTypography>
+                        <CustomTypography color="colors.white.primary">
+                            +
+                        </CustomTypography>
+                        <CustomTypography color="colors.white.primary">
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="upgrade.commission"
+                            />
+                        </CustomTypography>
+                        <CustomButton
+                            label={
+                                <Translation
+                                    nameSpace="createRoom"
+                                    translation="upgrade.button"
+                                />
+                            }
+                            className={styles.buttonUpgrade}
+                            onClick={onUpgrade}
+                        />
+                    </CustomGrid>
+                </CustomPaper>
+            </ConditionalRender>
+            <ConditionalRender condition={isBusinessSubscription}>
+                <CustomTooltip
+                    title={
+                        isAddLinkDisabled ? (
+                            <Translation
+                                nameSpace="createRoom"
+                                translation="tooltips.addLinkDisabled"
+                            />
+                        ) : (
+                            ''
+                        )
                     }
-                    Icon={<CustomLinkIcon width="24px" height="24px" />}
-                />
-            </CustomTooltip>
-            {renderLinks}
+                >
+                    <CustomButton
+                        onClick={handleAddLinkInput}
+                        className={clsx(styles.addLinkButton, {
+                            [styles.disabled]: isAddLinkDisabled,
+                        })}
+                        label={
+                            <CustomTypography variant="body2">
+                                <Translation
+                                    nameSpace="createRoom"
+                                    translation="addLink"
+                                />
+                            </CustomTypography>
+                        }
+                        Icon={<CustomLinkIcon width="24px" height="24px" />}
+                    />
+                </CustomTooltip>
+                {renderLinks}
+            </ConditionalRender>
             <CustomGrid
                 container
                 gap={1.5}

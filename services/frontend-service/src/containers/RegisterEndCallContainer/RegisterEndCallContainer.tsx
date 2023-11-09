@@ -35,6 +35,9 @@ import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { USER_IS_BLOCKED } from 'shared-const';
+import { isMobile } from 'shared-utils';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import {
     $authStore,
     $registerStore,
@@ -52,9 +55,6 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
-import { isMobile } from 'shared-utils';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

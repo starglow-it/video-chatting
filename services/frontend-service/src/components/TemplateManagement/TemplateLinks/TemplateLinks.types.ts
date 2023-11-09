@@ -13,4 +13,5 @@ export type TemplatesLinksProps = {
     links: ITemplateLink[];
     onNextStep: () => void;
     onPreviousStep: () => void;
+    onUpgrade: () => void;
 };

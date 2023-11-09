@@ -26,6 +26,8 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 
 // stores
 import { getRandomHexColor } from 'shared-utils';
+import { useRouter } from 'next/router';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import {
     $businessCategoriesStore,
     checkCustomLinkFx,
@@ -44,8 +46,6 @@ import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
-import { useRouter } from 'next/router';
-import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 
 const Component = ({
     onNextStep,
