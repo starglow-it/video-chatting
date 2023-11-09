@@ -14,7 +14,6 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
-import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
 
@@ -94,13 +93,6 @@ const Component = () => {
                     onSelect={selectMenu}
                 />
             ))}
-            <MenuItemTemplate
-                isActive={businessCategories.includes(
-                    CUSTOM_CATEROFY_BUSSINESS?.id,
-                )}
-                item={CUSTOM_CATEROFY_BUSSINESS}
-                onSelect={selectMenu}
-            />
         </CustomGrid>
     );
 };
