@@ -163,7 +163,6 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
         'CommonTemplate',
         'UserTemplate',
         'Media',
-        'BusinessCategory',
       ];
 
       const collections = await this.getRecords(entities);
@@ -181,7 +180,6 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
         'CommonTemplate',
         'UserTemplate',
         'Media',
-        'BusinessCategory',
       ];
 
       const collections = await this.getRecords(entities);
@@ -199,7 +197,6 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
         'CommonTemplate',
         'UserTemplate',
         'Media',
-        'BusinessCategory',
       ];
 
       const collections = await this.getRecords(entities);

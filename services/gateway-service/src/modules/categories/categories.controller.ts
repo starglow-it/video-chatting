@@ -52,15 +52,12 @@ export class CategoriesController {
     @Query() query: GetBusinessCategoriesQueryDto,
   ): Promise<ResponseSumType<EntityList<IBusinessCategory>>> {
     try {
-      const { skip, limit, type } = query;
+      const { skip, limit } = query;
 
       const businessCategories =
         await this.categoriesService.getBusinessCategories({
           skip,
           limit,
-          query: {
-            type,
-          },
         });
 
       return {

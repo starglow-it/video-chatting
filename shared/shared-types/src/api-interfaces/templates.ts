@@ -3,7 +3,6 @@ import {
   ILanguage,
   ISocialLink,
   IPreviewImage,
-  TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
 import { IMeetingInstance, MeetingRole } from './meeting';
@@ -12,6 +11,8 @@ export enum RoomType {
   Normal = 'normal',
   Featured = 'featured',
 }
+
+export type TemplateCateogyType = 'default' | 'interior-design';
 
 export type TemplateType = 'video' | 'image';
 
@@ -29,6 +30,7 @@ interface ITemplate {
   templateType: TemplateType;
   mediaLink: IMediaLink;
   subdomain: string;
+  categoryType: TemplateCateogyType;
 }
 
 export interface ICommonTemplate extends ITemplate {

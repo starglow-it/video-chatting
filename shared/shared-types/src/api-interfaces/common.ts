@@ -8,17 +8,11 @@ export enum Environmens {
   Production = 'production',
 }
 
-export enum BusinessCategoryTypeEnum {
-  CanUpdate = 'can-update',
-  Freeze = 'freeze',
-}
-
 export interface IBusinessCategory {
   key: string;
   value: string;
   color: string;
   icon: string;
-  type?: BusinessCategoryTypeEnum;
 }
 
 export interface IMediaCategory {

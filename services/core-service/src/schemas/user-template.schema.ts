@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import {
   ICommonUser,
   RoomType,
+  TemplateCateogyType,
   TemplateLink,
   TemplateType,
 } from 'shared-types';
@@ -256,6 +257,12 @@ export class UserTemplate {
     required: false,
   })
   subdomain: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: <TemplateCateogyType>'default',
+  })
+  categoryType: TemplateCateogyType;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

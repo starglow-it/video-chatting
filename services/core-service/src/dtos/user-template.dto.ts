@@ -162,4 +162,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   subdomain: IUserTemplate['subdomain'];
+
+  @Expose()
+  categoryType: IUserTemplate['categoryType'];
 }

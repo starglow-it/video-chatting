@@ -13,7 +13,6 @@ import {
   BUSINESS_CATEGORIES,
 } from 'shared-const';
 import {
-  BusinessCategoryTypeEnum,
   Counters,
   MediaCategoryType,
   MeetingRole,
@@ -184,21 +183,6 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
-  }
-
-  async seedBusinessCategories() {
-    BUSINESS_CATEGORIES.map(async (bc) => {
-      if (
-        !(await this.businessCategoriesService.exists({
-          key: bc.key,
-          type: BusinessCategoryTypeEnum.Freeze,
-        }))
-      ) {
-        await this.businessCategoriesService.create({
-          data: { ...bc, type: BusinessCategoryTypeEnum.Freeze },
-        });
-      }
-    });
   }
 
   async seedAdminUser() {
