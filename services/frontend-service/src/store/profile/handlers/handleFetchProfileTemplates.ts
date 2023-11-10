@@ -10,11 +10,12 @@ import {
 export const handleFetchProfileTemplates = async ({
     limit,
     skip,
+    categoryType,
 }: GetProfileTemplatesPayload): Promise<GetProfileTemplatesResponse> => {
     const { result, success } = await sendRequestWithCredentials<
         GetProfileTemplatesResponse,
         ErrorState
-    >(profileTemplatesUrl({ limit, skip }));
+    >(profileTemplatesUrl({ limit, skip, categoryType }));
 
     if (success) {
         return {

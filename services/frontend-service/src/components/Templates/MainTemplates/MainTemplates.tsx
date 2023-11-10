@@ -9,6 +9,7 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
+    $queryProfileTemplatesStore,
     $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
@@ -70,6 +71,7 @@ const Component = () => {
     const isTrial = useStore($isTrial);
     const { list: categories } = useStore($businessCategoriesStore);
     const { businessCategories = [] } = useStore($queryTemplatesStore);
+    const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -208,10 +210,8 @@ const Component = () => {
     ]);
 
     const handleCreateRoomDesign = async () => {
-        const response = await createTemplateFx();
-        router.push(
-            `${getCreateRoomUrl(response?.id ?? '')}?tag=interior-design`,
-        );
+        const response = await createTemplateFx('interior-design');
+        router.push(`${getCreateRoomUrl(response?.id ?? '')}`);
     };
 
     const renderTemplates = () => {
@@ -225,24 +225,6 @@ const Component = () => {
                         onChooseTemplate={handleChooseProfileTemplate}
                         TemplateComponent={ProfileTemplateItem}
                         allowCreate
-                        onCreate={handleCreateRoom}
-                    />
-                );
-
-            case 'common':
-                return (
-                    <TemplatesGrid<ICommonTemplate>
-                        list={templates.list}
-                        count={templates.count}
-                        onPageChange={handleCommonTemplatesPageChange}
-                        onChooseTemplate={handleChooseCommonTemplate}
-                        TemplateComponent={CommonTemplateItem}
-                        allowCreate={businessCategories.includes(
-                            categories.find(
-                                item =>
-                                    item.key === CUSTOM_CATEROFY_BUSSINESS.key,
-                            )?.id ?? '',
-                        )}
                         ElementCreate={
                             <CustomGrid
                                 display="flex"
@@ -256,8 +238,27 @@ const Component = () => {
                                 />
                             </CustomGrid>
                         }
-                        onCreate={handleCreateRoomDesign}
-                        isCustomElementCreate
+                        onCreate={
+                            queryProfileTemplates.categoryType ===
+                            'interior-design'
+                                ? handleCreateRoomDesign
+                                : handleCreateRoom
+                        }
+                        isCustomElementCreate={
+                            queryProfileTemplates.categoryType ===
+                            'interior-design'
+                        }
+                    />
+                );
+
+            case 'common':
+                return (
+                    <TemplatesGrid<ICommonTemplate>
+                        list={templates.list}
+                        count={templates.count}
+                        onPageChange={handleCommonTemplatesPageChange}
+                        onChooseTemplate={handleChooseCommonTemplate}
+                        TemplateComponent={CommonTemplateItem}
                     />
                 );
             default:

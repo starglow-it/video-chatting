@@ -52,8 +52,6 @@ const Component = ({
     onPreviousStep,
     template,
 }: EditTemplateDescriptionProps) => {
-    const router = useRouter();
-    const tagAutoFilled = router.query?.tag;
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -69,6 +67,7 @@ const Component = ({
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
+    const isCustom = template?.categoryType === 'interior-design';
 
     useEffect(() => {
         (() => {
@@ -79,15 +78,11 @@ const Component = ({
     useEffect(() => {
         trigger('tags');
 
-        if (!!tagAutoFilled) {
-            const customTag =
-                businessCategories.list.find(
-                    item => item.key === CUSTOM_CATEROFY_BUSSINESS.key,
-                ) ?? ({} as any);
+        if (isCustom) {
             setValue('tags', [
                 {
-                    ...customTag,
-                    label: customTag.value ?? '',
+                    ...CUSTOM_CATEROFY_BUSSINESS,
+                    label: CUSTOM_CATEROFY_BUSSINESS.value ?? '',
                 },
             ]);
             return;
@@ -291,13 +286,13 @@ const Component = ({
                         options={businessCategoriesOptions}
                         control={control}
                         classes={{
-                            input: !!tagAutoFilled
+                            inputRoot: isCustom
                                 ? styles.disabledTags
                                 : undefined,
                         }}
                         name="tags"
                         autoComplete
-                        disabled={!!tagAutoFilled}
+                        disabled={isCustom}
                         error={tagsErrorMessage}
                         errorComponent={
                             <ConditionalRender

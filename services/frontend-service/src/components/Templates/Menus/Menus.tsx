@@ -6,6 +6,7 @@ import {
     $modeTemplateStore,
     $profileStore,
     $profileTemplatesCountStore,
+    $queryProfileTemplatesStore,
     $queryTemplatesStore,
     setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
@@ -14,8 +15,10 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
+import { TemplateCategoryType } from 'shared-types';
 
 const Component = () => {
     const { list } = useStore($businessCategoriesStore);
@@ -26,9 +29,10 @@ const Component = () => {
     const profile = useStore($profileStore);
     const mode = useStore($modeTemplateStore);
     const templatesLimit = `${profileTemplatesCount.count}/${profile.maxTemplatesNumber}`;
+    const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     useEffect(() => {
-        setQueryProfileTemplatesEvent({});
+        setQueryProfileTemplatesEvent({ categoryType: 'default' });
     }, []);
 
     const selectMenu = (id: string) => {
@@ -38,8 +42,8 @@ const Component = () => {
         });
     };
 
-    const selectMyRooms = () => {
-        setQueryProfileTemplatesEvent({ skip: 0 });
+    const selectMyRooms = (categoryType: TemplateCategoryType) => {
+        setQueryProfileTemplatesEvent({ skip: 0, categoryType });
     };
 
     return (
@@ -52,9 +56,11 @@ const Component = () => {
         >
             <CustomPaper
                 className={clsx(styles.barge, {
-                    [styles.active]: mode === 'private',
+                    [styles.active]:
+                        mode === 'private' &&
+                        queryProfileTemplates.categoryType === 'default',
                 })}
-                onClick={selectMyRooms}
+                onClick={() => selectMyRooms('default')}
             >
                 <CustomGrid container direction="row" alignItems="center">
                     <CustomGrid className={styles.emoji}>
@@ -93,6 +99,14 @@ const Component = () => {
                     onSelect={selectMenu}
                 />
             ))}
+            <MenuItemTemplate
+                isActive={
+                    mode === 'private' &&
+                    queryProfileTemplates.categoryType === 'interior-design'
+                }
+                item={CUSTOM_CATEROFY_BUSSINESS}
+                onSelect={() => selectMyRooms('interior-design')}
+            />
         </CustomGrid>
     );
 };
