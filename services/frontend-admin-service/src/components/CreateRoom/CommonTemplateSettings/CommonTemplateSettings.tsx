@@ -297,6 +297,17 @@ const Component = ({
                                 autoHighlight
                                 options={businessCategoriesOptions}
                                 control={control}
+                                classes={{
+                                    inputRoot:
+                                        commonTemplate?.categoryType ===
+                                        'interior-design'
+                                            ? styles.disabledTags
+                                            : undefined,
+                                }}
+                                disabled={
+                                    commonTemplate?.categoryType ===
+                                    'interior-design'
+                                }
                                 name="tags"
                                 autoComplete
                                 error={tagsErrorMessage}

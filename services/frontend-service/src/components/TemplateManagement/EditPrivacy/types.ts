@@ -1,4 +1,4 @@
-import { ICommonTemplate, IUserTemplate } from "shared-types";
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 
 export type EditPrivacyProps = {
     onPreviousStep: () => void;
