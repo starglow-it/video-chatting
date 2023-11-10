@@ -115,7 +115,10 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
+                businessCategories:
+                    template.categoryType === 'interior-design'
+                        ? []
+                        : data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,

@@ -16,9 +16,9 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
 import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
+import { TemplateCategoryType } from 'shared-types';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
-import { TemplateCategoryType } from 'shared-types';
 
 const Component = () => {
     const { list } = useStore($businessCategoriesStore);

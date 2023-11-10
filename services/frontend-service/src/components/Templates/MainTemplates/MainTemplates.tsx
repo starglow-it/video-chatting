@@ -1,7 +1,6 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
-    $businessCategoriesStore,
     $isBusinessSubscription,
     $isProfessionalSubscription,
     $isTrial,
@@ -10,7 +9,6 @@ import {
     $profileTemplatesCountStore,
     $profileTemplatesStore,
     $queryProfileTemplatesStore,
-    $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -33,7 +31,6 @@ import { useToggle } from '@hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { dashboardRoute } from 'src/const/client-routes';
 import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
-import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
 import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
@@ -69,8 +66,6 @@ const Component = () => {
     );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
-    const { list: categories } = useStore($businessCategoriesStore);
-    const { businessCategories = [] } = useStore($queryTemplatesStore);
     const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     const {

@@ -476,6 +476,7 @@ const Component = ({
                                 onSubmit={handleSubmit}
                                 onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
+                                template={template}
                             />
                         </ConditionalRender>
 

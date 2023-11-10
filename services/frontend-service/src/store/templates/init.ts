@@ -175,7 +175,7 @@ sample({
     clock: loadmoreUserTemplates,
     source: combine({
         profile: $profileStore,
-        query: $queryTemplatesStore,
+        query: $queryProfileTemplatesStore,
     }),
     fn: ({ profile: { id }, query }) => ({
         ...query,

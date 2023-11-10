@@ -52,8 +52,10 @@ const Component = ({
     onSubmit,
     onPreviousStep,
     onUpgradePlan,
+    template,
 }: EditPrivacyProps) => {
     const isTrial = useStore($isTrial);
+    const isCustom = template?.categoryType === 'interior-design';
 
     const { setValue, watch } = useFormContext();
 
@@ -63,6 +65,13 @@ const Component = ({
         const isPublic = watch('isPublic');
         if (isPublic) {
             onChange(options[1].value);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isCustom) {
+            onChange(options[1].value);
+            setValue('isPublic', true);
         }
     }, []);
 
@@ -84,22 +93,25 @@ const Component = ({
                     Icon,
                     availableWithTrial,
                     withUpgradeButton,
-                }) => (
-                    <OptionItem
-                        key={id}
-                        onClick={() => handleChangeActiveOption(value)}
-                        isActive={activeTab.value === value}
-                        nameSpace="createRoom"
-                        translationKey={translationKey}
-                        Icon={Icon}
-                        disabled={!availableWithTrial && isTrial}
-                        onUpgradeClick={
-                            withUpgradeButton && !availableWithTrial && isTrial
-                                ? onUpgradePlan
-                                : undefined
-                        }
-                    />
-                ),
+                }) =>
+                    isCustom && id === '1' ? null : (
+                        <OptionItem
+                            key={id}
+                            onClick={() => handleChangeActiveOption(value)}
+                            isActive={activeTab.value === value}
+                            nameSpace="createRoom"
+                            translationKey={translationKey}
+                            Icon={Icon}
+                            disabled={!availableWithTrial && isTrial}
+                            onUpgradeClick={
+                                withUpgradeButton &&
+                                !availableWithTrial &&
+                                isTrial
+                                    ? onUpgradePlan
+                                    : undefined
+                            }
+                        />
+                    ),
             ),
         [options, activeTab, handleChangeActiveOption, isTrial, onUpgradePlan],
     );
