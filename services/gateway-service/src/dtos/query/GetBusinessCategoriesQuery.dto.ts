@@ -23,6 +23,7 @@ export class GetBusinessCategoriesQueryDto {
 
   @ApiProperty({
     type: String,
+    required: false,
     enum: Object.values(BusinessCategoryTypeEnum),
   })
   @IsOptional()
