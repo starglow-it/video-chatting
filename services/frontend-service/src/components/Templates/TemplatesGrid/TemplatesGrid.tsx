@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react';
-import { useMediaQuery } from '@mui/material';
+import { memo } from 'react';
 
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -16,7 +15,6 @@ import styles from './TemplatesGrid.module.scss';
 const Component = <TemplateType extends { id: string }>({
     TemplateComponent,
     list,
-    count,
     onChooseTemplate,
     outerClassName,
     innerClassName,
@@ -30,9 +28,7 @@ const Component = <TemplateType extends { id: string }>({
         </CustomGrid>
     ),
 }: TemplateGridProps<TemplateType>) => {
-    const is1100Media = useMediaQuery('(max-width:1100px)');
-
-    const renderTemplates = useMemo(() => {
+    const renderTemplates = () => {
         const initialTemplatesRender = list?.map(template => ({
             id: template.id,
             component: (
@@ -80,7 +76,7 @@ const Component = <TemplateType extends { id: string }>({
         }
 
         return initialTemplatesRender.map(element => element.component);
-    }, [list, count, is1100Media, onChooseTemplate, TemplateComponent]);
+    };
 
     return (
         <CustomGrid
@@ -92,7 +88,7 @@ const Component = <TemplateType extends { id: string }>({
         >
             <CustomBox className={innerClassName || styles.templatesContent}>
                 <CustomGrid container gap={3} justifyContent="flex-start">
-                    {renderTemplates}
+                    {renderTemplates()}
                 </CustomGrid>
             </CustomBox>
         </CustomGrid>
