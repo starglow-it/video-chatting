@@ -37,7 +37,7 @@ export type UpdateCountryStatisticsPayload = {
 
 export type DeleteCommonUserPayload = {
   id: string;
-}
+};
 
 export type FindUsersByIdPayload = {
   userIds: ICommonUser['id'][];
@@ -45,7 +45,7 @@ export type FindUsersByIdPayload = {
 
 export type FindUserPayload = Partial<ICommonUser>;
 export type UpdateUserPayload = {
-  query: FilterQuery<ICommonUser>;
+  query: FilterQuery<ICommonUser & { _id: any }>;
   data: Partial<ICommonUser>;
 };
 
