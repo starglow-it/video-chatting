@@ -52,6 +52,7 @@ import {
     editRoomRoute,
     indexRoute,
     NotFoundRoute,
+    registerEndCallRoute,
     registerRoute,
     roomRoute,
     welcomeRoute,
@@ -142,6 +143,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isRegisterRoute = new RegExp(`${registerRoute}`).test(
         router.pathname,
     );
+    const isRegisterEndCallRoute = new RegExp(`${registerEndCallRoute}`).test(
+        router.pathname,
+    );
 
     const shouldShowFooter = useMemo(
         () =>
@@ -226,7 +230,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
-    console.log('#Duy Phan console', heightFull);
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -242,7 +246,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
             <CustomBox className={styles.bgImage} />
             <ScrollParent
-                isAgreements={router.pathname === agreementsRoute}
+                isAgreements={
+                    router.pathname === agreementsRoute ||
+                    (isMobile && isRegisterEndCallRoute)
+                }
                 handleScrollToEnd={handleScrollToEnd}
                 containerRef={(el: any) => (scrollRef.current = el)}
             >
@@ -267,7 +274,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     >
                         <ConditionalRender
                             condition={
-                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                                !isMobile
+                                    ? !isNotFoundRoute
+                                    : !isNotFoundRoute && !isRoomRoute
                             }
                         >
                             <CustomBox

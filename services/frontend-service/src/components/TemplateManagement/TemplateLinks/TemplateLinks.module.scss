@@ -130,3 +130,21 @@
 .arrowIcon {
   color: $primary-white;
 }
+
+.paperUpgrade {
+  max-width: rem(456px);
+  width: 100%;
+  height: rem(474px);
+  // height: fit-content;
+  padding: rem(32px);
+}
+
+.mainUpgrade {
+  border: 2px solid rgba($primary-white, 0.25);
+  height: 100%;
+  border-radius: 8px;
+}
+
+.buttonUpgrade {
+  margin-top: 40px;
+}

@@ -120,7 +120,10 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
+                businessCategories:
+                    template.categoryType === 'interior-design'
+                        ? []
+                        : data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,
@@ -192,7 +195,10 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
+                businessCategories:
+                    template.categoryType === 'interior-design'
+                        ? []
+                        : data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,
@@ -269,10 +275,10 @@ const Component = () => {
             />
             <SubscriptionsPlans
                 isDisabled={false}
+                activePlanKey={profile.subscriptionPlanKey}
                 isSubscriptionStep={isSubscriptionStep}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
-                onlyPaidPlans
             />
         </>
     );

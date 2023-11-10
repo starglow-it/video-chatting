@@ -7,6 +7,7 @@ export class BusinessCategory {
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
+    unique: true,
   })
   key: string;
 

@@ -93,7 +93,6 @@ const tabs: ValuesSwitcherItem<number>[] = [
         id: 3,
         value: TabsValues.Links,
         label: 'Links',
-        disabled: true,
         tooltip: (
             <Translation
                 nameSpace="createRoom"
@@ -424,15 +423,11 @@ const Component = ({
     }, []);
 
     const handleNextStep = () => {
-        if (activeValue === TabsValues.Settings && !isBusinessSubscription)
-            onValueChange(tabs[3]);
-        else onNextValue();
+        onNextValue();
     };
 
     const handlePreviousStep = () => {
-        if (activeValue === TabsValues.Privacy && !isBusinessSubscription) {
-            onValueChange(tabs[1]);
-        } else onPreviousValue();
+        onPreviousValue();
     };
 
     return (
@@ -481,6 +476,7 @@ const Component = ({
                                 onSubmit={handleSubmit}
                                 onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
+                                template={template}
                             />
                         </ConditionalRender>
 
@@ -491,6 +487,7 @@ const Component = ({
                                 links={templateLinks}
                                 onNextStep={handleNextStep}
                                 onPreviousStep={handlePreviousStep}
+                                onUpgrade={handleUpgradePlanClick}
                             />
                         </ConditionalRender>
 

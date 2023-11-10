@@ -13,7 +13,11 @@ export const NotFoundContainer = () => {
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.main}>
-                <CustomTypography className={styles.title}>
+                <CustomTypography
+                    className={styles.title}
+                    textAlign="center"
+                    sx={{ fontSize: { xs: 30, sm: 30, md: 48, xl: 48 } }}
+                >
                     What are you looking for?
                 </CustomTypography>
                 <CustomImage
@@ -22,7 +26,10 @@ export const NotFoundContainer = () => {
                     height={140}
                 />
                 <CustomGrid display="flex" flexDirection="column">
-                    <CustomTypography className={styles.desc}>
+                    <CustomTypography
+                        className={styles.desc}
+                        sx={{ fontSize: { xs: 17, sm: 17, md: 20, xl: 20 } }}
+                    >
                         the url you typed either doesn&apos;t exist
                     </CustomTypography>
                     <CustomTypography className={styles.desc} paddingLeft={5}>
@@ -30,6 +37,9 @@ export const NotFoundContainer = () => {
                         <CustomTypography
                             className={styles.descSub}
                             onClick={redirectTo}
+                            sx={{
+                                fontSize: { xs: 17, sm: 17, md: 20, xl: 20 },
+                            }}
                         >
                             continuum
                         </CustomTypography>

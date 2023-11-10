@@ -16,7 +16,11 @@ import {
     templatesLinksSchema,
 } from 'shared-frontend/validation';
 import { adjustUserPositions, getRandomNumber } from 'shared-utils';
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
+import {
+    CUSTOM_CATEROFY_BUSSINESS,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from 'shared-const';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
@@ -279,10 +283,18 @@ const Component = () => {
                     : undefined,
                 participantsNumber: commonTemplate.maxParticipants,
                 participantsPositions: userPositions,
-                tags: commonTemplate?.businessCategories?.map(item => ({
-                    ...item,
-                    label: item.value,
-                })),
+                tags:
+                    commonTemplate.categoryType === 'interior-design'
+                        ? [
+                              {
+                                  ...CUSTOM_CATEROFY_BUSSINESS,
+                                  label: CUSTOM_CATEROFY_BUSSINESS.value ?? '',
+                              },
+                          ]
+                        : commonTemplate?.businessCategories?.map(item => ({
+                              ...item,
+                              label: item.value,
+                          })),
                 subdomain: domain?.split('.')[0],
                 youtubeUrl: commonTemplate.mediaLink
                     ? commonTemplate.mediaLink.src
@@ -388,7 +400,10 @@ const Component = () => {
                     name: data.name,
                     description: data.description,
                     maxParticipants: data.participantsNumber,
-                    businessCategories: data.tags,
+                    businessCategories:
+                        commonTemplate.categoryType === 'interior-design'
+                            ? []
+                            : data.tags,
                     type: data.type,
                     priceInCents: templatePriceFinal,
                     usersPosition: adjustUserPositions(

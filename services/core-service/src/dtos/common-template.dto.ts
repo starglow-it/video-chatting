@@ -1,6 +1,10 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory, ICommonTemplate, TemplateLink } from 'shared-types';
+import {
+  IBusinessCategory,
+  ICommonTemplate,
+  TemplateLink,
+} from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { PreviewImageDTO } from './preview-image.dto';
@@ -91,12 +95,14 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   @Transform((data) =>
-    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>((link) => ({
-      id: link._id,
-      title: link.title,
-      item: link.item,
-      position: link.position,
-    })),
+    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>(
+      (link) => ({
+        id: link._id,
+        title: link.title,
+        item: link.item,
+        position: link.position,
+      }),
+    ),
   )
   links: ICommonTemplate['links'];
 
@@ -117,4 +123,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   subdomain: ICommonTemplate['subdomain'];
+
+  @Expose()
+  categoryType: ICommonTemplate['categoryType'];
 }

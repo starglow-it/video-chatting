@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $isBusinessSubscription,
@@ -8,6 +8,7 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
+    $queryProfileTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -29,6 +30,7 @@ import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/Subs
 import { useToggle } from '@hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { dashboardRoute } from 'src/const/client-routes';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
 import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
@@ -64,6 +66,7 @@ const Component = () => {
     );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
+    const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -201,7 +204,12 @@ const Component = () => {
         templateDraft?.id,
     ]);
 
-    const renderTemplates = useMemo(() => {
+    const handleCreateRoomDesign = async () => {
+        const response = await createTemplateFx('interior-design');
+        router.push(`${getCreateRoomUrl(response?.id ?? '')}`);
+    };
+
+    const renderTemplates = () => {
         switch (mode) {
             case 'private':
                 return (
@@ -212,7 +220,29 @@ const Component = () => {
                         onChooseTemplate={handleChooseProfileTemplate}
                         TemplateComponent={ProfileTemplateItem}
                         allowCreate
-                        onCreate={handleCreateRoom}
+                        ElementCreate={
+                            <CustomGrid
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
+                            >
+                                <PlusIcon width="22px" height="22px" />
+                                <CustomTypography
+                                    nameSpace="templates"
+                                    translation="addYourDesign"
+                                />
+                            </CustomGrid>
+                        }
+                        onCreate={
+                            queryProfileTemplates.categoryType ===
+                            'interior-design'
+                                ? handleCreateRoomDesign
+                                : handleCreateRoom
+                        }
+                        isCustomElementCreate={
+                            queryProfileTemplates.categoryType ===
+                            'interior-design'
+                        }
                     />
                 );
 
@@ -229,7 +259,7 @@ const Component = () => {
             default:
                 return null;
         }
-    }, [mode, templates, profileTemplates]);
+    };
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {
@@ -266,7 +296,7 @@ const Component = () => {
                 justifyContent="flex-start"
             >
                 <MenusTemplate />
-                {renderTemplates}
+                {renderTemplates()}
             </CustomGrid>
             <SubscriptionsPlans
                 withBackgroundBlur
@@ -287,10 +317,12 @@ const Component = () => {
                             variant="h2"
                             nameSpace="subscriptions"
                             translation="upgradePlan.title"
+                            color="colors.orange.primary"
                         />
                         <CustomTypography
                             nameSpace="subscriptions"
                             translation="upgradePlan.description"
+                            color="colors.orange.primary"
                         />
                     </CustomGrid>
                 }

@@ -81,5 +81,12 @@
       "private": "Private"
     }
   },
-  "addLink": "Add Link"
+  "addLink": "Add Link",
+  "upgrade" : {
+    "button": "Upgrade",
+    "embedYourLinks": "Embed Your Links",
+    "businessMembership": "Business Membership",
+    "embedLinks": "Embed Links",
+    "commission": "0% Commission on Payments"
+  }
 }

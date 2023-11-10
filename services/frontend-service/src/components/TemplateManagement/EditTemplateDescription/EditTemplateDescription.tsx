@@ -26,6 +26,7 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 
 // stores
 import { getRandomHexColor } from 'shared-utils';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import {
     $businessCategoriesStore,
     checkCustomLinkFx,
@@ -65,6 +66,7 @@ const Component = ({
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
+    const isCustom = template?.categoryType === 'interior-design';
 
     useEffect(() => {
         (() => {
@@ -74,6 +76,16 @@ const Component = ({
 
     useEffect(() => {
         trigger('tags');
+
+        if (isCustom) {
+            setValue('tags', [
+                {
+                    ...CUSTOM_CATEROFY_BUSSINESS,
+                    label: CUSTOM_CATEROFY_BUSSINESS.value ?? '',
+                },
+            ]);
+            return;
+        }
 
         if (
             !tags.find(
@@ -96,7 +108,7 @@ const Component = ({
                     : item,
             ),
         );
-    }, [tags]);
+    }, []);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -179,6 +191,8 @@ const Component = ({
         [],
     );
 
+    console.log('#Duy Phan console', CUSTOM_CATEROFY_BUSSINESS);
+
     const businessCategoriesOptions = useMemo(
         () =>
             businessCategories.list.map(item => ({
@@ -187,6 +201,7 @@ const Component = ({
             })),
         [businessCategories.list],
     );
+    console.log('#Duy Phan console', businessCategoriesOptions);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
@@ -269,8 +284,14 @@ const Component = ({
                         autoHighlight
                         options={businessCategoriesOptions}
                         control={control}
+                        classes={{
+                            inputRoot: isCustom
+                                ? styles.disabledTags
+                                : undefined,
+                        }}
                         name="tags"
                         autoComplete
+                        disabled={isCustom}
                         error={tagsErrorMessage}
                         errorComponent={
                             <ConditionalRender

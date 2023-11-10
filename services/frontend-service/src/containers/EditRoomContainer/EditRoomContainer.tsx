@@ -25,6 +25,7 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // store
 import {
+    $profileStore,
     clearTemplateDraft,
     editUserTemplateFx,
     getEditingTemplateFx,
@@ -50,6 +51,7 @@ const Component = () => {
     const isUpdateMeetingTemplateFilePending = useStore(
         uploadUserTemplateFileFx.pending,
     );
+    const profile = useStore($profileStore);
 
     const [template, setTemplate] = useState<IUserTemplate | null>(null);
 
@@ -113,7 +115,10 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
+                businessCategories:
+                    template.categoryType === 'interior-design'
+                        ? []
+                        : data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,
@@ -232,6 +237,7 @@ const Component = () => {
             <SubscriptionsPlans
                 isDisabled={false}
                 isSubscriptionStep={isSubscriptionStep}
+                activePlanKey={profile.subscriptionPlanKey}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
                 onlyPaidPlans

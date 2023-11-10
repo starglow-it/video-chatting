@@ -69,10 +69,11 @@ export const getProfileTemplateByTemplateIdFx = templatesDomain.effect<
 export const getProfileTemplatesFx = attach({
     effect: getProfileTemplatesBase,
     source: $profileStore,
-    mapParams: ({ limit, skip }, profile: Profile) => ({
+    mapParams: ({ limit, skip, categoryType }, profile: Profile) => ({
         userId: profile.id,
         limit,
         skip,
+        categoryType,
     }),
 });
 

@@ -33,6 +33,9 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
+import { isMobile } from 'shared-utils';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import {
     $authStore,
     $registerStore,
@@ -137,42 +140,55 @@ const Component = () => {
 
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
+    const ComponentFinal = !isMobile()
+        ? CenteredPaper
+        : (CustomPaper as React.ElementType);
+
     return (
         <>
-            <MeetingBackgroundVideo
-                templateType={lastTemplate?.templateType}
-                src={lastTemplate?.templateUrl}
-                mediaLink={{
-                    src: lastTemplate.templateUrl,
-                    thumb: '',
-                    platform: 'youtube',
-                }}
+            <ConditionalRender
+                condition={!!lastTemplate?.templateUrl && !isMobile()}
             >
-                <CustomImage
-                    className={styles.image}
-                    src={lastTemplate?.templateUrl || ''}
-                    width="100%"
-                    height="100%"
-                    layout="fill"
-                    objectFit="cover"
-                />
-            </MeetingBackgroundVideo>
-            <CenteredPaper className={styles.wrapper}>
+                <MeetingBackgroundVideo
+                    templateType={lastTemplate?.templateType}
+                    src={lastTemplate?.templateUrl}
+                    mediaLink={null}
+                >
+                    <CustomImage
+                        className={styles.image}
+                        src={lastTemplate?.templateUrl || ''}
+                        width="100%"
+                        height="100%"
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                </MeetingBackgroundVideo>
+            </ConditionalRender>
+            <ComponentFinal
+                className={isMobile() ? styles.wrapperMobile : styles.wrapper}
+            >
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
+                    direction="column"
                 >
-                    <CustomImage
-                        src="/images/Ruume.svg"
-                        width="150px"
-                        height="35px"
-                    />
+                    {!isMobile() && (
+                        <CustomImage
+                            src="/images/Ruume.svg"
+                            width="150px"
+                            height="35px"
+                        />
+                    )}
                     <CustomTypography
                         variant="h2bold"
                         className={styles.text}
                         nameSpace="register"
                         translation="signUpEndCall.title"
+                        sx={{
+                            fontSize: { xs: 16, sm: 16, md: 18, xl: 18 },
+                            marginTop: { xs: 0, sm: 0, md: '10px', xl: '10px' },
+                        }}
                     />
                 </CustomGrid>
                 <CustomGrid
@@ -187,12 +203,22 @@ const Component = () => {
                         alt="hi-hand"
                     />
                 </CustomGrid>
-                <SignInGoogle buttonText="buttons.registerGoogle" />
+                <SignInGoogle
+                    buttonText="buttons.registerGoogle"
+                    className={isMobile() ? styles.buttonGG : undefined}
+                />
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
-                    marginTop="18px"
+                    sx={{
+                        marginTop: {
+                            xs: '10px',
+                            sm: '10px',
+                            md: '18px',
+                            xl: '18px',
+                        },
+                    }}
                 >
                     <CustomTypography
                         className={styles.textOr}
@@ -201,7 +227,12 @@ const Component = () => {
                     />
                 </CustomGrid>
                 <FormProvider {...methods}>
-                    <form className={styles.socialsWrapper} onSubmit={onSubmit}>
+                    <form
+                        className={clsx(styles.socialsWrapper, {
+                            [styles.mobile]: isMobile(),
+                        })}
+                        onSubmit={onSubmit}
+                    >
                         <CustomGrid container>
                             <CustomGrid item className={styles.input}>
                                 <EmailInput
@@ -211,6 +242,11 @@ const Component = () => {
                                             : ''
                                     }
                                     onClear={handleResetEmailField}
+                                    InputProps={{
+                                        classes: isMobile()
+                                            ? { input: styles.muiInput }
+                                            : undefined,
+                                    }}
                                     {...register('email')}
                                 />
                             </CustomGrid>
@@ -220,6 +256,11 @@ const Component = () => {
                                     onFocus={handleFocusInput}
                                     {...register('password')}
                                     onCustomBlur={handleBlurInput}
+                                    InputProps={{
+                                        classes: isMobile()
+                                            ? { input: styles.muiInput }
+                                            : undefined,
+                                    }}
                                 />
                                 <PasswordHints
                                     show={showHints}
@@ -258,14 +299,14 @@ const Component = () => {
                                             nameSpace="common"
                                             translation="terms"
                                         />
-                                        {!is480Media && (
+                                        {!is480Media ? (
                                             <CustomTypography
                                                 className={styles.termsText}
                                                 variant="body2"
                                                 nameSpace="common"
                                                 translation="and"
                                             />
-                                        )}
+                                        ) : null}
                                         <CustomLink
                                             className={clsx(
                                                 styles.termsText,
@@ -295,7 +336,7 @@ const Component = () => {
                         />
                     </form>
                 </FormProvider>
-            </CenteredPaper>
+            </ComponentFinal>
             <SuccessfulRegisterDialog />
         </>
     );

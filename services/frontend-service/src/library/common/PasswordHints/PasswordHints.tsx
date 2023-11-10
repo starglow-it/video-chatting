@@ -10,6 +10,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // styles
+import { isMobile } from 'shared-utils';
 import styles from './PasswordHints.module.scss';
 
 // types
@@ -78,6 +79,7 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
                                     }
                                     return theme.palette.text.secondary;
                                 },
+                                flex: isMobile() ? 1 : undefined,
                             }}
                             variant="body3"
                         />
@@ -95,6 +97,12 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
     return (
         <CustomGrid
             container
+            sx={{
+                height: show
+                    ? { xs: 'auto', sm: 'auto', md: '45px', xl: '45px' }
+                    : 0,
+                maxHeight: { xs: 'auto', sm: 'auto', md: '38px', xl: '38px' },
+            }}
             className={clsx(styles.hintsWrapper, {
                 [styles.showHints]: show,
             })}

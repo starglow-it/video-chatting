@@ -9,6 +9,7 @@ const ObjectId = Types.ObjectId;
 
 //  const
 import {
+  CUSTOM_CATEROFY_BUSSINESS,
   MediaNativeErrorEnum,
   TEMPLATES_SERVICE,
   TemplateBrokerPatterns,
@@ -321,6 +322,7 @@ export class CommonTemplatesController {
           roomType: targetTemplate.roomType,
           subdomain: targetTemplate.subdomain,
           mediaLink: targetTemplate.mediaLink,
+          categoryType: targetTemplate.categoryType,
         };
 
         const userTemplate =
@@ -447,13 +449,16 @@ export class CommonTemplatesController {
   async createTemplate(@Payload() data: CreateTemplatePayload) {
     try {
       return withTransaction(this.connection, async (session) => {
-        const { userId, roomType } = data;
+        const { userId, roomType, categoryType } = data;
         const template = await this.commonTemplatesService.createCommonTemplate(
           {
             data: {
-              author: userId,
+              author: userId as any,
               ...(roomType && {
                 roomType,
+              }),
+              ...(categoryType && {
+                categoryType,
               }),
             },
             session,

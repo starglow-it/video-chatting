@@ -126,11 +126,11 @@
           },
           {
             "key": "callers",
-            "text": "Up to 10 callers"
+            "text": "10 Participants, 1000 Audience"
           },
           {
-            "key": "rooms",
-            "text": "Take Payments"
+            "key": "commission",
+            "text": "Ruume Commission: 10% (Participants), 30% (Audience)"
           }
         ]
       ],
@@ -146,12 +146,12 @@
           },
           {
             "key": "callers",
-            "text": "Up to 10 callers",
+            "text": "10 Participants, 1000 Audience",
             "type": "fade"
           },
           {
-            "key": "rooms",
-            "text": "Take Payments",
+            "key": "commission",
+            "text": "Ruume Commission: 5% (Participants), 20% (Audience)",
             "type": "fade"
           },
           {
@@ -174,12 +174,12 @@
           },
           {
             "key": "callers",
-            "text": "Up to 10 callers",
+            "text": "10 Participants, 1000 Audience",
             "type": "fade"
           },
           {
-            "key": "rooms",
-            "text": "Take Payments",
+            "key": "commission",
+            "text": "Ruume Commission: 0% (Participants), 10% (Audience)",
             "type": "fade"          
           },
           {
