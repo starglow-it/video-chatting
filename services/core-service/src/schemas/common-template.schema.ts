@@ -6,7 +6,7 @@ import { PreviewImageDocument } from './preview-image.schema';
 import { UserDocument } from './user.schema';
 import {
   RoomType,
-  TemplateCateogyType,
+  TemplateCategoryType,
   TemplateLink,
   TemplateType,
 } from 'shared-types';
@@ -175,9 +175,9 @@ export class CommonTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: <TemplateCateogyType>'default',
+    default: <TemplateCategoryType>'default',
   })
-  categoryType: TemplateCateogyType;
+  categoryType: TemplateCategoryType;
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;

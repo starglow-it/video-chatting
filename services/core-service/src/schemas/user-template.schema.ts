@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import {
   ICommonUser,
   RoomType,
-  TemplateCateogyType,
+  TemplateCategoryType,
   TemplateLink,
   TemplateType,
 } from 'shared-types';
@@ -260,9 +260,9 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: <TemplateCateogyType>'default',
+    default: <TemplateCategoryType>'default',
   })
-  categoryType: TemplateCateogyType;
+  categoryType: TemplateCategoryType;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

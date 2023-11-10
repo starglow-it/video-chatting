@@ -31,7 +31,7 @@ import {
   ITemplatePayment,
   GetTemplatePaymentsPayload,
   GetTemplatePaymentPayload,
-  TemplateCateogyType,
+  TemplateCategoryType,
 } from 'shared-types';
 
 // helpers
@@ -459,7 +459,7 @@ export class UserTemplatesController {
           {
             $match: {
               user: new mongoose.Types.ObjectId(userId),
-              categoryType: categoryType || <TemplateCateogyType>'default',
+              categoryType: categoryType || <TemplateCategoryType>'default',
             },
           },
           {
@@ -514,7 +514,7 @@ export class UserTemplatesController {
         const userTemplatesCount =
           await this.userTemplatesService.countUserTemplates({
             user: new mongoose.Types.ObjectId(userId),
-            categoryType: categoryType || <TemplateCateogyType>'default',
+            categoryType: categoryType || <TemplateCategoryType>'default',
           });
 
         const parsedTemplates = plainToInstance(

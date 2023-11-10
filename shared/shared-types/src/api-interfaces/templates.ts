@@ -12,7 +12,7 @@ export enum RoomType {
   Featured = 'featured',
 }
 
-export type TemplateCateogyType = 'default' | 'interior-design';
+export type TemplateCategoryType = 'default' | 'interior-design';
 
 export type TemplateType = 'video' | 'image';
 
@@ -30,7 +30,7 @@ interface ITemplate {
   templateType: TemplateType;
   mediaLink: IMediaLink;
   subdomain: string;
-  categoryType: TemplateCateogyType;
+  categoryType: TemplateCategoryType;
 }
 
 export interface ICommonTemplate extends ITemplate {
