@@ -3,8 +3,8 @@ import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
 import {
-  CreatePaymentIntentPayload,
   DeleteTemplateStripeProductPayload,
+  ICommonUser,
 } from 'shared-types';
 import { parseBoolean } from 'shared-utils';
 import { TCreatePaymentIntent } from 'src/common/types/createPaymentIntent';
@@ -128,8 +128,8 @@ export class PaymentsService {
     basePath,
     cancelPath,
     meetingToken,
-    customerEmail,
     customer,
+    customerEmail,
     trialPeriodEndTimestamp,
     templateId,
     userId,
@@ -141,7 +141,7 @@ export class PaymentsService {
     templateId?: string;
     meetingToken?: string;
     customerEmail: string;
-    customer?: string;
+    customer: string;
     trialPeriodEndTimestamp?: number;
     userId?: string;
   }) {
@@ -254,6 +254,13 @@ export class PaymentsService {
     });
 
     return product;
+  }
+
+  async createCustomer(user: ICommonUser) {
+    return await this.stripeClient.customers.create({
+      email: user.email,
+      name: user.fullName,
+    });
   }
 
   async updateProduct(productId, data) {
