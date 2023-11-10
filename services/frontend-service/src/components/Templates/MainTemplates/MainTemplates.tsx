@@ -214,7 +214,7 @@ const Component = () => {
         );
     };
 
-    const renderTemplates = useMemo(() => {
+    const renderTemplates = () => {
         switch (mode) {
             case 'private':
                 return (
@@ -263,7 +263,7 @@ const Component = () => {
             default:
                 return null;
         }
-    }, [mode, templates, profileTemplates]);
+    };
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {
@@ -300,7 +300,7 @@ const Component = () => {
                 justifyContent="flex-start"
             >
                 <MenusTemplate />
-                {renderTemplates}
+                {renderTemplates()}
             </CustomGrid>
             <SubscriptionsPlans
                 withBackgroundBlur
@@ -321,10 +321,12 @@ const Component = () => {
                             variant="h2"
                             nameSpace="subscriptions"
                             translation="upgradePlan.title"
+                            color="colors.orange.primary"
                         />
                         <CustomTypography
                             nameSpace="subscriptions"
                             translation="upgradePlan.description"
+                            color="colors.orange.primary"
                         />
                     </CustomGrid>
                 }
