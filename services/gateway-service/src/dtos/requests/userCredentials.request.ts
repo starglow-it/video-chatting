@@ -4,7 +4,6 @@ import {
   IsEmail,
   MinLength,
   IsOptional,
-  IsMongoId,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserCredentials, RegisterType } from 'shared-types';

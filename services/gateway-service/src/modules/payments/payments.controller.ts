@@ -363,11 +363,6 @@ export class PaymentsController {
         cancelUrl: body.cancelUrl,
       });
 
-      await this.coreService.findUserAndUpdate({
-        userId: req.user.userId,
-        data: { stripeSessionId: session.id },
-      });
-
       return {
         success: true,
         result: {
