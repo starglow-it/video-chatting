@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import { DeleteTemplateStripeProductPayload, ICommonUser } from 'shared-types';
+import {
+  DeleteTemplateStripeProductPayload,
+  ICommonUser,
+} from 'shared-types';
 import { parseBoolean } from 'shared-utils';
 import { TCreatePaymentIntent } from 'src/common/types/createPaymentIntent';
 
