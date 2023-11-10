@@ -34,7 +34,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                     src={previewImage?.url || ''}
                     width={334}
                     height={190}
-                    alt='profile-template-item'
+                    alt="profile-template-item"
                 />
             </ConditionalRender>
             <CustomGrid className={styles.templateInfo} display="grid">

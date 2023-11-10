@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { PropsWithClassName } from 'shared-frontend/types';
 import YouTube from 'react-youtube';
 
 import styles from './CustomYoutubePlayer.module.scss';
+import { PropsWithClassName } from 'types';
 
 export const CustomYoutubePlayer = ({
     url,
@@ -65,8 +65,8 @@ export const CustomYoutubePlayer = ({
             iframeClassName={styles.fullPlayer}
             className={className}
             opts={{
-                width: '630',
-                height: '340',
+                width: 1920,
+                height: 1280,
                 playerVars: {
                     autoplay: 1,
                     playsinline: 1,
@@ -77,7 +77,6 @@ export const CustomYoutubePlayer = ({
                     showinfo: 0,
                     modestbranding: 1,
                     fs: 1,
-                    allowfullscreen: 1
                 },
             }}
             onReady={onReady}
