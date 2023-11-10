@@ -183,7 +183,7 @@ export class CommonTemplatesService {
     data,
     session,
   }: {
-    data: UpdateQuery<CommonTemplateDocument>;
+    data: Partial<CommonTemplateDocument>;
     session?: ITransactionSession;
   }) {
     const isTemplatesCounterExists = await this.countersService.exists({

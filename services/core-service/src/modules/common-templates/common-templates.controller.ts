@@ -39,7 +39,6 @@ import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import {
   AddTemplateToUserPayload,
-  BusinessCategoryTypeEnum,
   CreateTemplatePayload,
   DeleteCommonTemplatePayload,
   EditTemplatePayload,
@@ -323,6 +322,7 @@ export class CommonTemplatesController {
           roomType: targetTemplate.roomType,
           subdomain: targetTemplate.subdomain,
           mediaLink: targetTemplate.mediaLink,
+          categoryType: targetTemplate.categoryType,
         };
 
         const userTemplate =
@@ -449,13 +449,16 @@ export class CommonTemplatesController {
   async createTemplate(@Payload() data: CreateTemplatePayload) {
     try {
       return withTransaction(this.connection, async (session) => {
-        const { userId, roomType } = data;
+        const { userId, roomType, categoryType } = data;
         const template = await this.commonTemplatesService.createCommonTemplate(
           {
             data: {
-              author: userId,
+              author: userId as any,
               ...(roomType && {
                 roomType,
+              }),
+              ...(categoryType && {
+                categoryType,
               }),
             },
             session,
@@ -511,10 +514,6 @@ export class CommonTemplatesController {
                   value: category.value,
                   color: category.color,
                   icon: category.icon,
-                  type:
-                    category.key === CUSTOM_CATEROFY_BUSSINESS.key
-                      ? BusinessCategoryTypeEnum.Freeze
-                      : BusinessCategoryTypeEnum.CanUpdate,
                 },
                 session,
               });

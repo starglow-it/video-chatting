@@ -37,6 +37,8 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
 import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
+import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
+import { CreateCommonTemplateRequestDto } from '../../dtos/requests/create-common-template.request';
 
 @ApiTags('Common Templates')
 @Controller('templates')
@@ -109,7 +111,7 @@ export class TemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAdminAuthGuard)
   @Post('/add/featured')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Featured Template' })
@@ -155,10 +157,12 @@ export class TemplatesController {
   })
   async postCreateTemplate(
     @Request() req,
+    @Body() { categoryType }: CreateCommonTemplateRequestDto,
   ): Promise<ResponseSumType<ICommonTemplate>> {
     try {
       const templateData = await this.templatesService.createTemplate({
         userId: req.user.userId,
+        categoryType,
       });
 
       return {

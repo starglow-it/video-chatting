@@ -1,4 +1,4 @@
-import { ICommonUser, RoomType } from './api-interfaces';
+import { ICommonUser, RoomType, TemplateCateogyType } from './api-interfaces';
 
 export type SuccessResult<Result> = {
   result?: Result;
@@ -40,6 +40,7 @@ export type QueryParams = {
   draft?: boolean;
   type?: string;
   isHaveSubdomain?: boolean;
+  categoryType?: TemplateCateogyType;
   roomType?: RoomType;
 };
 
