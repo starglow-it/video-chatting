@@ -198,6 +198,6 @@ sample({
 
 sample({
     clock: setQueryProfileTemplatesEvent,
-    source: $queryTemplatesStore,
+    source: $queryProfileTemplatesStore,
     target: getProfileTemplatesFx,
 });
