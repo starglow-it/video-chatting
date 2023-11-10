@@ -68,6 +68,8 @@ const Component = () => {
     const isTrial = useStore($isTrial);
     const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
+    const isCustom = queryProfileTemplates.categoryType === 'interior-design';
+
     const {
         value: isSubscriptionsOpen,
         onSwitchOn: handleOpenSubscriptionPlans,
@@ -221,28 +223,24 @@ const Component = () => {
                         TemplateComponent={ProfileTemplateItem}
                         allowCreate
                         ElementCreate={
-                            <CustomGrid
-                                display="flex"
-                                flexDirection="row"
-                                alignItems="center"
-                            >
-                                <PlusIcon width="22px" height="22px" />
-                                <CustomTypography
-                                    nameSpace="templates"
-                                    translation="addYourDesign"
-                                />
-                            </CustomGrid>
+                            isCustom ? (
+                                <CustomGrid
+                                    display="flex"
+                                    flexDirection="row"
+                                    alignItems="center"
+                                >
+                                    <PlusIcon width="22px" height="22px" />
+                                    <CustomTypography
+                                        nameSpace="templates"
+                                        translation="addYourDesign"
+                                    />
+                                </CustomGrid>
+                            ) : undefined
                         }
                         onCreate={
-                            queryProfileTemplates.categoryType ===
-                            'interior-design'
-                                ? handleCreateRoomDesign
-                                : handleCreateRoom
+                            isCustom ? handleCreateRoomDesign : handleCreateRoom
                         }
-                        isCustomElementCreate={
-                            queryProfileTemplates.categoryType ===
-                            'interior-design'
-                        }
+                        isCustomElementCreate={isCustom}
                     />
                 );
 
