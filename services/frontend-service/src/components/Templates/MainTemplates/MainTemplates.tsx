@@ -9,6 +9,7 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
+    $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -68,6 +69,7 @@ const Component = () => {
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
     const { list: categories } = useStore($businessCategoriesStore);
+    const { businessCategories = [] } = useStore($queryTemplatesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -235,12 +237,12 @@ const Component = () => {
                         onPageChange={handleCommonTemplatesPageChange}
                         onChooseTemplate={handleChooseCommonTemplate}
                         TemplateComponent={CommonTemplateItem}
-                        allowCreate={
-                            !!categories.find(
+                        allowCreate={businessCategories.includes(
+                            categories.find(
                                 item =>
                                     item.key === CUSTOM_CATEROFY_BUSSINESS.key,
-                            )
-                        }
+                            )?.id ?? '',
+                        )}
                         ElementCreate={
                             <CustomGrid
                                 display="flex"
