@@ -26,6 +26,7 @@ import {
   DeleteLeastUsedTemplatesPayload,
   GetCommonTemplateByIdPayload,
   CreateMonitoringPayload,
+  UpdateProfilePayload,
 } from 'shared-types';
 import { firstValueFrom } from 'rxjs';
 
@@ -47,6 +48,12 @@ export class CoreService {
     const pattern = { cmd: UserBrokerPatterns.FindUser };
 
     return this.client.send(pattern, payload).toPromise();
+  }
+
+  async findUserAndUpdate(payload: UpdateProfilePayload): Promise<ICommonUser> {
+    const pattern = { cmd: UserBrokerPatterns.UpdateProfile };
+
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async getCommonTemplateById(
