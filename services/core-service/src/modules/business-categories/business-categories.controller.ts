@@ -40,15 +40,15 @@ export class BusinessCategoriesController {
   ): Promise<EntityList<IBusinessCategory>> {
     try {
       return withTransaction(this.connection, async (session) => {
+        console.log(query);
+        
         const businessCategories = await this.businessCategoriesService.find({
           query,
           options: { skip, limit },
           session,
         });
 
-        const categoriesCount = await this.businessCategoriesService.count({
-          query,
-        });
+        const categoriesCount = await this.businessCategoriesService.count(query);
 
         const parsedCategories = plainToInstance(
           CommonBusinessCategoryDTO,
