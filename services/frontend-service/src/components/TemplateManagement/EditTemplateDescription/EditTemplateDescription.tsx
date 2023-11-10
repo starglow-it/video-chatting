@@ -80,10 +80,14 @@ const Component = ({
         trigger('tags');
 
         if (!!tagAutoFilled) {
+            const customTag =
+                businessCategories.list.find(
+                    item => item.key === CUSTOM_CATEROFY_BUSSINESS.key,
+                ) ?? ({} as any);
             setValue('tags', [
                 {
-                    ...CUSTOM_CATEROFY_BUSSINESS,
-                    label: CUSTOM_CATEROFY_BUSSINESS.value,
+                    ...customTag,
+                    label: customTag.value ?? '',
                 },
             ]);
             return;
@@ -196,16 +200,11 @@ const Component = ({
     console.log('#Duy Phan console', CUSTOM_CATEROFY_BUSSINESS);
 
     const businessCategoriesOptions = useMemo(
-        () => [
-            ...businessCategories.list.map(item => ({
+        () =>
+            businessCategories.list.map(item => ({
                 ...item,
                 label: item.value,
             })),
-            {
-                ...CUSTOM_CATEROFY_BUSSINESS,
-                label: CUSTOM_CATEROFY_BUSSINESS.value,
-            },
-        ],
         [businessCategories.list],
     );
     console.log('#Duy Phan console', businessCategoriesOptions);
