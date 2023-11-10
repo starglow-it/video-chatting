@@ -34,7 +34,6 @@ import { CommonUserRestDTO } from '../../dtos/response/common-user.dto';
 
 // requests
 import { TokenRequest } from '../../dtos/requests/token.request';
-import { UserCredentialsRequest } from '../../dtos/requests/userCredentials.request';
 
 // guards
 import { LocalAuthGuard } from '../../guards/local.guard';

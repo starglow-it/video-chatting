@@ -38,7 +38,6 @@ import {
   LoginTypes,
   HttpMethods,
   ICommonTemplate,
-  RegisterType,
 } from 'shared-types';
 
 // dtos

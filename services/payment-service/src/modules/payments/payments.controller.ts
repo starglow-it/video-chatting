@@ -344,8 +344,7 @@ export class PaymentsController {
         );
 
         product = await this.paymentService.getStripeProduct(
-          // @ts-ignore
-          subscription?.plan?.product,
+          subscription?.['plan']?.product,
         );
       }
 
@@ -754,8 +753,7 @@ export class PaymentsController {
     }
 
     const productData = await this.paymentService.getStripeProduct(
-      // @ts-ignore
-      subscription.plan.product,
+      subscription['plan'].product,
     );
 
     const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
@@ -883,8 +881,7 @@ export class PaymentsController {
       );
 
       const product = await this.paymentService.getStripeProduct(
-        // @ts-ignore
-        subscription.plan.product,
+        subscription['plan'].product,
       );
 
       const plan = plans[product.name || PlanKeys.House];
