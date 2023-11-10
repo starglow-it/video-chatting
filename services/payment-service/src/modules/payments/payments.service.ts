@@ -2,10 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import {
-  DeleteTemplateStripeProductPayload,
-  ICommonUser,
-} from 'shared-types';
+import { DeleteTemplateStripeProductPayload, ICommonUser } from 'shared-types';
 import { parseBoolean } from 'shared-utils';
 import { TCreatePaymentIntent } from 'src/common/types/createPaymentIntent';
 
@@ -364,7 +361,7 @@ export class PaymentsService {
       },
     };
 
-    let charges = [];
+    const charges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       charges.push(charge);
@@ -381,7 +378,7 @@ export class PaymentsService {
       },
     };
 
-    let paymentIntents = [];
+    const paymentIntents = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (charge.invoice) {
@@ -400,7 +397,7 @@ export class PaymentsService {
       },
     };
 
-    let transactionCharges = [];
+    const transactionCharges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (
@@ -426,7 +423,7 @@ export class PaymentsService {
       },
     };
 
-    let roomPurchaseCharges = [];
+    const roomPurchaseCharges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (
