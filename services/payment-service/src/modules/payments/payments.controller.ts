@@ -479,13 +479,16 @@ export class PaymentsController {
 
       let customer: Stripe.Customer;
 
-      if (!user.stripeCustomerId) {
+      if (user.stripeCustomerId) {
+        customer = (await this.paymentService.getCustomer({
+          customerId: user.stripeCustomerId,
+        })) as Stripe.Customer;
+      }
+
+      if (!customer) {
         customer = await this.paymentService.createCustomer(user);
       }
 
-      customer = (await this.paymentService.getCustomer({
-        customerId: user.stripeCustomerId,
-      })) as Stripe.Customer;
 
       const session = await this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
