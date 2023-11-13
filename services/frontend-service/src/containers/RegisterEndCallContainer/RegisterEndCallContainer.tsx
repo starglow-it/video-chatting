@@ -36,7 +36,7 @@ import { RegisterType } from 'shared-types';
 import {
     $authStore,
     $registerStore,
-    registerWithoutTemplateFx,
+    registerUserFx,
     resetRegisterErrorEvent,
 } from '../../store';
 
@@ -93,7 +93,7 @@ const Component = () => {
     const onSubmit = handleSubmit(async (data: RegisterUserParams) => {
         resetRegisterErrorEvent();
 
-        registerWithoutTemplateFx({
+        registerUserFx({
             email: data.email.trim().toLowerCase(),
             password: data.password,
             registerType: RegisterType.EndCall,
