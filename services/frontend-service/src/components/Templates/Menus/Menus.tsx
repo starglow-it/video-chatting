@@ -15,7 +15,6 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
-import { TemplateCategoryType } from 'shared-types';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
 
@@ -31,7 +30,7 @@ const Component = () => {
     const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     useEffect(() => {
-        setQueryProfileTemplatesEvent({ categoryType: 'default' });
+        setQueryProfileTemplatesEvent({});
     }, []);
 
     const selectMenu = (id: string) => {
@@ -41,8 +40,8 @@ const Component = () => {
         });
     };
 
-    const selectMyRooms = (categoryType: TemplateCategoryType) => {
-        setQueryProfileTemplatesEvent({ skip: 0, categoryType });
+    const selectMyRooms = () => {
+        setQueryProfileTemplatesEvent({ skip: 0 });
     };
 
     return (
@@ -55,11 +54,9 @@ const Component = () => {
         >
             <CustomPaper
                 className={clsx(styles.barge, {
-                    [styles.active]:
-                        mode === 'private' &&
-                        queryProfileTemplates.categoryType === 'default',
+                    [styles.active]: mode === 'private',
                 })}
-                onClick={() => selectMyRooms('default')}
+                onClick={selectMyRooms}
             >
                 <CustomGrid container direction="row" alignItems="center">
                     <CustomGrid className={styles.emoji}>

@@ -37,10 +37,9 @@ export const postProfileAvatarUrl = {
 export const profileTemplatesUrl = ({
     skip,
     limit,
-    categoryType,
 }: QueryParams) => {
     return {
-        url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}&categoryType=${categoryType}`,
+        url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
         method: HttpMethods.Get,
     };
 };
