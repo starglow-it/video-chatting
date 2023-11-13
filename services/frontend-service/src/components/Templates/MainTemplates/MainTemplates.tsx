@@ -205,8 +205,8 @@ const Component = () => {
     ]);
 
     const handleCreateRoomDesign = async () => {
+        const response = await createTemplateFx();
         if (isBusinessSubscription || isProfessionalSubscription) {
-            const response = await createTemplateFx();
             router.push(
                 `${getCreateRoomUrl(response?.id ?? '')}?tags=${
                     queryTemplatesStore.businessCategories?.[0]
@@ -268,9 +268,12 @@ const Component = () => {
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {
             if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
+                const roomUrl = getCreateRoomUrl(templateDraft?.id ?? '');
                 const response = await startCheckoutSessionForSubscriptionFx({
                     productId,
-                    baseUrl: getCreateRoomUrl(templateDraft?.id ?? ''),
+                    baseUrl: !!queryTemplatesStore.businessCategories
+                        ? `${roomUrl}?tags=${queryTemplatesStore.businessCategories?.[0]}`
+                        : `${roomUrl}`,
                     cancelUrl: dashboardRoute,
                     withTrial: trial,
                 });
