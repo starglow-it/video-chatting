@@ -33,6 +33,8 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
+import { USER_IS_BLOCKED } from 'shared-const';
 import {
     $authStore,
     $registerStore,
@@ -226,7 +228,16 @@ const Component = () => {
                                     fieldKey="password"
                                 />
                             </CustomGrid>
+                            {authState?.error?.message &&
+                                authState?.error?.message !==
+                                    USER_IS_BLOCKED.message && (
+                                    <ErrorMessage
+                                        className={styles.errorContainer}
+                                        error={authState?.error?.message}
+                                    />
+                                )}
                         </CustomGrid>
+
 
                         <CustomGrid
                             container
