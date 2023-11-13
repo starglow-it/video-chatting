@@ -49,6 +49,7 @@ import {
   GetStripeSubscriptionPayload,
   GetStripeTemplateProductByNamePayload,
   GetStripeTemplateProductPayload,
+  ICommonUser,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
   MonetizationStatisticTypes,
@@ -84,16 +85,6 @@ export class PaymentsController {
       });
 
       switch (event.type) {
-        case 'customer.created':
-          this.logger.log('handle "customer.created" event');
-          const customer = event.data.object as Stripe.Customer;
-
-          await this.coreService.updateUser({
-            query: { email: customer.email },
-            data: { stripeCustomerId: customer.id },
-          });
-
-          break;
         case 'checkout.session.completed':
           this.logger.log('handle "checkout.session.completed" event');
 
@@ -177,6 +168,7 @@ export class PaymentsController {
 
       switch (event.type) {
         case 'account.updated':
+          this.logger.log('handle "account.updated" on express webhook event');
           const accountData = event.data.object as Stripe.Account;
 
           if (accountData.payouts_enabled || accountData.details_submitted) {
@@ -352,8 +344,7 @@ export class PaymentsController {
         );
 
         product = await this.paymentService.getStripeProduct(
-          // @ts-ignore
-          subscription?.plan?.product,
+          subscription?.['plan']?.product,
         );
       }
 
@@ -481,20 +472,47 @@ export class PaymentsController {
       const price = await this.paymentService.getProductPrice(product.id);
 
       const plan = plans[product.name ?? PlanKeys.House];
-      return this.paymentService.getStripeCheckoutSession({
+
+      const user = await this.coreService.findUser({
+        email: payload.customerEmail,
+      });
+
+      let customer: Stripe.Customer;
+
+      if (user.stripeCustomerId) {
+        customer = (await this.paymentService.getCustomer({
+          customerId: user.stripeCustomerId,
+        })) as Stripe.Customer;
+      }
+
+      if (!customer) {
+        customer = await this.paymentService.createCustomer(user);
+      }
+
+
+      const session = await this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
         priceId: price.id as string,
         basePath: payload.baseUrl,
         cancelPath: payload.cancelUrl,
         meetingToken: payload.meetingToken,
-        customerEmail: payload.customerEmail,
-        customer: payload.customer,
+        customerEmail: user.email,
+        customer: customer.id,
         trialPeriodEndTimestamp: payload.withTrial
           ? ['production'].includes(environment)
             ? plan.trialPeriodDays
             : plan.testTrialPeriodDays
           : undefined,
       });
+
+      await this.coreService.findUserAndUpdate({
+        userId: user.id,
+        data: {
+          stripeSessionId: session.id,
+          stripeCustomerId: customer.id,
+        },
+      });
+      return session;
     } catch (err) {
       throw new RpcException({
         message: err.message,
@@ -734,12 +752,19 @@ export class PaymentsController {
 
   async handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     const user = await this.coreService.findUser({
-      stripeSubscriptionId: subscription.id,
+      stripeCustomerId: subscription.customer as string,
     });
 
+    const updateData: Partial<ICommonUser> = {};
+
+    if (!user.stripeSubscriptionId) {
+      Object.assign(updateData, {
+        stripeSubscriptionId: subscription.id,
+      });
+    }
+
     const productData = await this.paymentService.getStripeProduct(
-      // @ts-ignore
-      subscription.plan.product,
+      subscription['plan'].product,
     );
 
     const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
@@ -754,31 +779,33 @@ export class PaymentsController {
       user.renewSubscriptionTimestampInSeconds <
       subscription.current_period_end;
 
+    Object.assign(updateData, {
+      subscriptionPlanKey: isSubscriptionPeriodUpdated
+        ? nextPlan.name
+        : currentPlan.name,
+      nextSubscriptionPlanKey: !isSubscriptionPeriodUpdated
+        ? nextPlan.name
+        : null,
+      prevSubscriptionPlanKey: user.subscriptionPlanKey,
+      maxTemplatesNumber: isSubscriptionPeriodUpdated
+        ? nextPlan.features.templatesLimit
+        : currentPlan.features.templatesLimit,
+      maxMeetingTime: isSubscriptionPeriodUpdated
+        ? nextPlan.features.timeLimit
+        : currentPlan.features.timeLimit,
+      renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
+        ? user.renewSubscriptionTimestampInSeconds
+        : subscription.current_period_end,
+      isDowngradeMessageShown: !(
+        isPlanHasChanged &&
+        isPlanDowngraded &&
+        (isCurrentSubscriptionIsActive || isSubscriptionPeriodUpdated)
+      ),
+    });
+
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
-      data: {
-        subscriptionPlanKey: isSubscriptionPeriodUpdated
-          ? nextPlan.name
-          : currentPlan.name,
-        nextSubscriptionPlanKey: !isSubscriptionPeriodUpdated
-          ? nextPlan.name
-          : null,
-        prevSubscriptionPlanKey: user.subscriptionPlanKey,
-        maxTemplatesNumber: isSubscriptionPeriodUpdated
-          ? nextPlan.features.templatesLimit
-          : currentPlan.features.templatesLimit,
-        maxMeetingTime: isSubscriptionPeriodUpdated
-          ? nextPlan.features.timeLimit
-          : currentPlan.features.timeLimit,
-        renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
-          ? user.renewSubscriptionTimestampInSeconds
-          : subscription.current_period_end,
-        isDowngradeMessageShown: !(
-          isPlanHasChanged &&
-          isPlanDowngraded &&
-          (isCurrentSubscriptionIsActive || isSubscriptionPeriodUpdated)
-        ),
-      },
+      data: updateData,
     });
 
     if (isSubscriptionPeriodUpdated) {
@@ -832,8 +859,11 @@ export class PaymentsController {
 
   async handleSubscriptionCreated(subscription: Stripe.Subscription) {
     await this.coreService.updateUser({
-      query: { stripeSubscriptionId: subscription.id },
-      data: { isSubscriptionActive: false },
+      query: { stripeCustomerId: subscription.customer },
+      data: {
+        isSubscriptionActive: false,
+        stripeSubscriptionId: subscription.id,
+      },
     });
   }
 
@@ -862,8 +892,7 @@ export class PaymentsController {
       );
 
       const product = await this.paymentService.getStripeProduct(
-        // @ts-ignore
-        subscription.plan.product,
+        subscription['plan'].product,
       );
 
       const plan = plans[product.name || PlanKeys.House];
@@ -944,8 +973,12 @@ export class PaymentsController {
         value: charge.amount,
       });
 
+      const transferUser = await this.coreService.findUser({
+        stripeAccountId: charge.transfer_data?.destination as string,
+      });
+
       await this.coreService.updateUserProfileStatistic({
-        userId: charge?.transfer_data?.destination as string,
+        userId: transferUser.id,
         statisticKey: 'moneyEarned',
         value: charge.amount,
       });

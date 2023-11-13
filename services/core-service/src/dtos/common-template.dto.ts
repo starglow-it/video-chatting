@@ -91,12 +91,14 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   @Transform((data) =>
-    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>((link) => ({
-      id: link._id,
-      title: link.title,
-      item: link.item,
-      position: link.position,
-    })),
+    (data.obj?.links as (TemplateLink & Document)[])?.map<TemplateLink>(
+      (link) => ({
+        id: link._id,
+        title: link.title,
+        item: link.item,
+        position: link.position,
+      }),
+    ),
   )
   links: ICommonTemplate['links'];
 

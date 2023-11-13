@@ -823,7 +823,6 @@ export class UserTemplatesController {
     );
   }
 
-
   @MessagePattern({
     cmd: UserTemplatesBrokerPatterns.GetTemplatePayment,
   })
