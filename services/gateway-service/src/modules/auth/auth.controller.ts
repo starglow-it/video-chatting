@@ -562,6 +562,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
 
+      if(!user.isConfirmed){
+        throw new DataValidationException('Please confirm registration on your email')
+      }
+
       if (!user.profileAvatar && user.loginType === LoginTypes.Google) {
         const image = await this.getImageFromUrl(picture);
         await this.coreService.findUserAndUpdateAvatar({
