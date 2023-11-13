@@ -283,18 +283,10 @@ const Component = () => {
                     : undefined,
                 participantsNumber: commonTemplate.maxParticipants,
                 participantsPositions: userPositions,
-                tags:
-                    commonTemplate.categoryType === 'interior-design'
-                        ? [
-                              {
-                                  ...CUSTOM_CATEROFY_BUSSINESS,
-                                  label: CUSTOM_CATEROFY_BUSSINESS.value ?? '',
-                              },
-                          ]
-                        : commonTemplate?.businessCategories?.map(item => ({
-                              ...item,
-                              label: item.value,
-                          })),
+                tags: commonTemplate?.businessCategories?.map(item => ({
+                    ...item,
+                    label: item.value,
+                })),
                 subdomain: domain?.split('.')[0],
                 youtubeUrl: commonTemplate.mediaLink
                     ? commonTemplate.mediaLink.src
@@ -400,10 +392,7 @@ const Component = () => {
                     name: data.name,
                     description: data.description,
                     maxParticipants: data.participantsNumber,
-                    businessCategories:
-                        commonTemplate.categoryType === 'interior-design'
-                            ? []
-                            : data.tags,
+                    businessCategories: data.tags,
                     type: data.type,
                     priceInCents: templatePriceFinal,
                     usersPosition: adjustUserPositions(

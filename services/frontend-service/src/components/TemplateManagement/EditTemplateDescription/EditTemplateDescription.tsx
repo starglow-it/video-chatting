@@ -27,6 +27,7 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 // stores
 import { getRandomHexColor } from 'shared-utils';
 import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
+import { useRouter } from 'next/router';
 import {
     $businessCategoriesStore,
     checkCustomLinkFx,
@@ -51,6 +52,7 @@ const Component = ({
     onPreviousStep,
     template,
 }: EditTemplateDescriptionProps) => {
+    const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -66,7 +68,8 @@ const Component = ({
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
-    const isCustom = template?.categoryType === 'interior-design';
+    const tagsCustom = router.query.tags;
+    const isCustom = !!tagsCustom;
 
     useEffect(() => {
         (() => {
@@ -78,10 +81,13 @@ const Component = ({
         trigger('tags');
 
         if (isCustom) {
+            const tagCustom = businessCategories.list.find(
+                item => item.id === tagsCustom,
+            );
             setValue('tags', [
                 {
-                    ...CUSTOM_CATEROFY_BUSSINESS,
-                    label: CUSTOM_CATEROFY_BUSSINESS.value ?? '',
+                    ...tagCustom,
+                    label: tagCustom?.value ?? '',
                 },
             ]);
             return;

@@ -4,7 +4,6 @@ import {
     IUserTemplate,
     QueryParams,
     RoomType,
-    TemplateCategoryType,
 } from 'shared-types';
 import { EntityList } from '../types';
 import { templatesDomain } from './domain/model';
@@ -174,7 +173,7 @@ export const uploadUserTemplateFileFx = templatesDomain.effect<
 >('uploadUserTemplateFile');
 
 export const createTemplateFx = templatesDomain.effect<
-    void | TemplateCategoryType,
+    void,
     CreateTemplateResponse,
     void
 >('createTemplate');
