@@ -15,7 +15,6 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
-import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import { TemplateCategoryType } from 'shared-types';
 import styles from './Menus.module.scss';
 import { MenuItemTemplate } from '../MenuItem/MenuItem';
@@ -99,14 +98,6 @@ const Component = () => {
                     onSelect={selectMenu}
                 />
             ))}
-            <MenuItemTemplate
-                isActive={
-                    mode === 'private' &&
-                    queryProfileTemplates.categoryType === 'interior-design'
-                }
-                item={CUSTOM_CATEROFY_BUSSINESS}
-                onSelect={() => selectMyRooms('interior-design')}
-            />
         </CustomGrid>
     );
 };

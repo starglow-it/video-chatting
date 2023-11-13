@@ -120,10 +120,7 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories:
-                    template.categoryType === 'interior-design'
-                        ? []
-                        : data.tags,
+                businessCategories: data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,
@@ -195,10 +192,7 @@ const Component = () => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories:
-                    template.categoryType === 'interior-design'
-                        ? []
-                        : data.tags,
+                businessCategories: data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,

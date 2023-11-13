@@ -24,6 +24,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // store
+import { useRouter } from 'next/router';
 import { $isTrial } from '../../../store';
 
 // styles
@@ -52,10 +53,10 @@ const Component = ({
     onSubmit,
     onPreviousStep,
     onUpgradePlan,
-    template,
 }: EditPrivacyProps) => {
     const isTrial = useStore($isTrial);
-    const isCustom = template?.categoryType === 'interior-design';
+    const router = useRouter();
+    const isCustom = !!router.query.tags;
 
     const { setValue, watch } = useFormContext();
 
