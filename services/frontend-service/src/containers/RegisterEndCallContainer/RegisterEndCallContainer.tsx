@@ -36,6 +36,8 @@ import { RegisterType } from 'shared-types';
 import { isMobile } from 'shared-utils';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
+import { USER_IS_BLOCKED } from 'shared-const';
 import {
     $authStore,
     $registerStore,
@@ -267,7 +269,16 @@ const Component = () => {
                                     fieldKey="password"
                                 />
                             </CustomGrid>
+                            {authState?.error?.message &&
+                                authState?.error?.message !==
+                                    USER_IS_BLOCKED.message && (
+                                    <ErrorMessage
+                                        className={styles.errorContainer}
+                                        error={authState?.error?.message}
+                                    />
+                                )}
                         </CustomGrid>
+
 
                         <CustomGrid
                             container
