@@ -226,6 +226,9 @@ const Component = () => {
         );
     };
 
+    console.log('#Duy Phan console', isUserSentEnterRequest);
+    console.log('#Duy Phan console', localUser.accessStatus)
+
     return (
         <>
             <CustomGrid container direction="column" wrap="nowrap">
