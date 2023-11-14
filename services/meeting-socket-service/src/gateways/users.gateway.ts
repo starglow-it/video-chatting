@@ -223,7 +223,7 @@ export class UsersGateway extends BaseGateway {
       });
 
       if (!u) {
-        return wsError(client.id, {
+        return wsError(client, {
           message: 'User has been deleted',
         });
       }

@@ -77,7 +77,7 @@ export class MeetingNotesGateway extends BaseGateway {
           success: true,
         };
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }

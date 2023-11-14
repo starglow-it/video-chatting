@@ -120,7 +120,7 @@ export class LurkersGateway extends BaseGateway {
 
         const meeting = await this.meetingsService.findById(meetingId, session);
         if (!meeting) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting found',
           });
         }
@@ -133,7 +133,7 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!host) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'Host not found',
           });
         }
@@ -149,7 +149,7 @@ export class LurkersGateway extends BaseGateway {
           socketEmitterId: host.socketId,
         });
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }
@@ -171,14 +171,14 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!meetingUser) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'User not found',
           });
         }
 
         const meeting = await this.meetingsService.findById(meetingId, session);
         if (!meeting) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting found',
           });
         }
@@ -192,7 +192,7 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!host) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'Host not found',
           });
         }
@@ -204,7 +204,7 @@ export class LurkersGateway extends BaseGateway {
           socketEmitterId: meetingUser.socketId,
         });
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }
@@ -271,7 +271,7 @@ export class LurkersGateway extends BaseGateway {
       try {
         const meeting = await this.meetingsService.findById(meetingId);
         if (!meeting) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting found',
           });
         }
@@ -288,7 +288,7 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!user) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting user found',
           });
         }
@@ -303,7 +303,7 @@ export class LurkersGateway extends BaseGateway {
           });
 
           if (!userTemplate) {
-            return wsError(socket.id, {
+            return wsError(socket, {
               message: 'User template not found',
             });
           }
@@ -315,7 +315,7 @@ export class LurkersGateway extends BaseGateway {
           });
 
           if (!u) {
-            return wsError(socket.id, 'meeting.maxParticipantsNumber');
+            return wsError(socket, 'meeting.maxParticipantsNumber');
           }
           Object.assign(updateData, {
             meetingRole: MeetingRole.Participant,
@@ -343,7 +343,7 @@ export class LurkersGateway extends BaseGateway {
           socketEmitterId: userUpdated.socketId,
         });
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }
@@ -357,7 +357,7 @@ export class LurkersGateway extends BaseGateway {
       try {
         const meeting = await this.meetingsService.findById(meetingId);
         if (!meeting) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting found',
           });
         }
@@ -371,7 +371,7 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!user) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'No meeting user found',
           });
         }
@@ -384,7 +384,7 @@ export class LurkersGateway extends BaseGateway {
           });
 
           if (!userTemplate) {
-            return wsError(socket.id, {
+            return wsError(socket, {
               message: 'User template not found',
             });
           }
@@ -396,7 +396,7 @@ export class LurkersGateway extends BaseGateway {
           });
 
           if (!u) {
-            return wsError(socket.id, 'meeting.maxParticipantsNumber');
+            return wsError(socket, 'meeting.maxParticipantsNumber');
           }
           Object.assign(updateData, {
             meetingRole: MeetingRole.Participant,
@@ -422,7 +422,7 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!host) {
-          return wsError(socket.id, {
+          return wsError(socket, {
             message: 'Host not found',
           });
         }
@@ -437,7 +437,7 @@ export class LurkersGateway extends BaseGateway {
           socketEmitterId: host.socketId,
         });
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }
