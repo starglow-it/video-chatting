@@ -9,6 +9,7 @@
       "incorrect": "Code is incorrect"
     },
     "notGoogleAccount": "This email is already used",
+    "notConfirmEmail": "Please confirm registration on your email",
     "pass": {
       "invalid": "Please enter valid password",
       "incorrect": "Password is incorrect",

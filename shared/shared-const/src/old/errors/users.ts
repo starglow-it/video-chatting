@@ -32,6 +32,11 @@ export const USER_IS_BLOCKED = {
   errorCode: 108,
 };
 
+export const USER_NOT_CONFIRM_EMAIL = {
+  message: 'user.notConfirmEmail',
+  errorCode: 109,
+}
+
 export const USER_NOT_GOOGLE_ACCOUNT = {
   message: 'user.notGoogleAccount',
   errorCode: 110

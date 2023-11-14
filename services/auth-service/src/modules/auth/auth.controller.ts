@@ -67,8 +67,12 @@ export class AuthController {
     @Payload() payload: RegisterUserPayload,
   ): Promise<ICommonUser> {
     try {
-      let user = null;
-      if (payload.registerType === RegisterType.Default) {
+      let user: ICommonUser = null;
+      const registerCofirmationTypes = [
+        RegisterType.Default,
+        RegisterType.EndCall,
+      ];
+      if (registerCofirmationTypes.includes(payload.registerType)) {
         const token = await this.authService.generateToken({
           email: payload.email,
           type: TokenTypes.Confirm,

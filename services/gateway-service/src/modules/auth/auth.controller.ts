@@ -30,6 +30,7 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
+  USER_NOT_CONFIRM_EMAIL,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
@@ -560,6 +561,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         user = await this.coreService.findUserByEmail({
           email,
         });
+      }
+
+      if (!user.isConfirmed) {
+        throw new DataValidationException(USER_NOT_CONFIRM_EMAIL);
       }
 
       if (!user.profileAvatar && user.loginType === LoginTypes.Google) {
