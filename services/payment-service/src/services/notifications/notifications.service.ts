@@ -4,7 +4,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { NotificationsBrokerPatterns } from 'shared-const';
 import { CoreService } from '../core/core.service';
 import { MessagesSendResponse, MonitoringEvent } from 'shared-types';
-import { AxiosError } from 'axios';
 
 @Injectable()
 export class NotificationsService {

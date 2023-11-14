@@ -2,10 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import {
-  CreatePaymentIntentPayload,
-  DeleteTemplateStripeProductPayload,
-} from 'shared-types';
+import { DeleteTemplateStripeProductPayload, ICommonUser } from 'shared-types';
 import { parseBoolean } from 'shared-utils';
 import { TCreatePaymentIntent } from 'src/common/types/createPaymentIntent';
 
@@ -128,8 +125,8 @@ export class PaymentsService {
     basePath,
     cancelPath,
     meetingToken,
-    customerEmail,
     customer,
+    customerEmail,
     trialPeriodEndTimestamp,
     templateId,
     userId,
@@ -141,7 +138,7 @@ export class PaymentsService {
     templateId?: string;
     meetingToken?: string;
     customerEmail: string;
-    customer?: string;
+    customer: string;
     trialPeriodEndTimestamp?: number;
     userId?: string;
   }) {
@@ -256,6 +253,13 @@ export class PaymentsService {
     return product;
   }
 
+  async createCustomer(user: ICommonUser) {
+    return await this.stripeClient.customers.create({
+      email: user.email,
+      name: user.fullName,
+    });
+  }
+
   async updateProduct(productId, data) {
     const updatedProduct = await this.stripeClient.products.update(productId, {
       name: data.name,
@@ -357,7 +361,7 @@ export class PaymentsService {
       },
     };
 
-    let charges = [];
+    const charges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       charges.push(charge);
@@ -374,7 +378,7 @@ export class PaymentsService {
       },
     };
 
-    let paymentIntents = [];
+    const paymentIntents = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (charge.invoice) {
@@ -393,7 +397,7 @@ export class PaymentsService {
       },
     };
 
-    let transactionCharges = [];
+    const transactionCharges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (
@@ -419,7 +423,7 @@ export class PaymentsService {
       },
     };
 
-    let roomPurchaseCharges = [];
+    const roomPurchaseCharges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (

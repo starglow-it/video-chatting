@@ -1,5 +1,5 @@
 import { IUserCredentials } from '../rest-data';
-import { IToken, QueryParams, TokenPayloadType } from '../common';
+import { FilterQuery, IToken, QueryParams, TokenPayloadType } from '../common';
 import {
   ICommonUser,
   IUpdateProfile,
@@ -37,7 +37,7 @@ export type UpdateCountryStatisticsPayload = {
 
 export type DeleteCommonUserPayload = {
   id: string;
-}
+};
 
 export type FindUsersByIdPayload = {
   userIds: ICommonUser['id'][];
@@ -45,7 +45,7 @@ export type FindUsersByIdPayload = {
 
 export type FindUserPayload = Partial<ICommonUser>;
 export type UpdateUserPayload = {
-  query: any;
+  query: FilterQuery<ICommonUser & { _id: any }>;
   data: Partial<ICommonUser>;
 };
 
