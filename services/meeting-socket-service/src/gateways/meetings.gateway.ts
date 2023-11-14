@@ -786,7 +786,7 @@ export class MeetingsGateway
 
         const user = await this.usersComponent.findOneAndUpdate({
           query: { socketId: socket.id },
-          data: { accessStatus: MeetingAccessStatusEnum.Waiting },
+          data: { accessStatus: MeetingAccessStatusEnum.Settings },
           session,
         });
 
