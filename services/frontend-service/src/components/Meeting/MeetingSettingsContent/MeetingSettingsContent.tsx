@@ -106,7 +106,7 @@ const Component = ({
                     }
                     nameSpace="meeting"
                     translation={
-                        isMobile ? 'features.peopleHearMe' : 'peopleCanHearMe'
+                        isMobile ? 'features.peopleHearMe' : 'features.peopleCanHearMe'
                     }
                     checked={isMicrophone}
                     onChange={onToggleMicrophone}
