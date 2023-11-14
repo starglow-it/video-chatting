@@ -18,4 +18,6 @@ export type TemplateGridProps<TemplateType extends { id: string }> = {
     itemGap?: number;
     allowCreate?: boolean;
     onCreate?: () => void;
+    ElementCreate?: JSX.Element;
+    isCustomElementCreate?: boolean;
 };

@@ -6,6 +6,7 @@ import {
     $modeTemplateStore,
     $profileStore,
     $profileTemplatesCountStore,
+    $queryProfileTemplatesStore,
     $queryTemplatesStore,
     setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
@@ -26,6 +27,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const mode = useStore($modeTemplateStore);
     const templatesLimit = `${profileTemplatesCount.count}/${profile.maxTemplatesNumber}`;
+    const queryProfileTemplates = useStore($queryProfileTemplatesStore);
 
     useEffect(() => {
         setQueryProfileTemplatesEvent({});

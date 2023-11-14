@@ -25,6 +25,7 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // store
 import {
+    $profileStore,
     clearTemplateDraft,
     editUserTemplateFx,
     getEditingTemplateFx,
@@ -50,6 +51,7 @@ const Component = () => {
     const isUpdateMeetingTemplateFilePending = useStore(
         uploadUserTemplateFileFx.pending,
     );
+    const profile = useStore($profileStore);
 
     const [template, setTemplate] = useState<IUserTemplate | null>(null);
 
@@ -232,6 +234,7 @@ const Component = () => {
             <SubscriptionsPlans
                 isDisabled={false}
                 isSubscriptionStep={isSubscriptionStep}
+                activePlanKey={profile.subscriptionPlanKey}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
                 onlyPaidPlans

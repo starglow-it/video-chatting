@@ -26,6 +26,8 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 
 // stores
 import { getRandomHexColor } from 'shared-utils';
+import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
+import { useRouter } from 'next/router';
 import {
     $businessCategoriesStore,
     checkCustomLinkFx,
@@ -50,6 +52,7 @@ const Component = ({
     onPreviousStep,
     template,
 }: EditTemplateDescriptionProps) => {
+    const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -65,6 +68,8 @@ const Component = ({
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
+    const tagsCustom = router.query.tags;
+    const isCustom = !!tagsCustom;
 
     useEffect(() => {
         (() => {
@@ -74,6 +79,19 @@ const Component = ({
 
     useEffect(() => {
         trigger('tags');
+
+        if (isCustom) {
+            const tagCustom = businessCategories.list.find(
+                item => item.id === tagsCustom,
+            );
+            setValue('tags', [
+                {
+                    ...tagCustom,
+                    label: tagCustom?.value ?? '',
+                },
+            ]);
+            return;
+        }
 
         if (
             !tags.find(
@@ -96,7 +114,7 @@ const Component = ({
                     : item,
             ),
         );
-    }, [tags]);
+    }, []);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -179,6 +197,8 @@ const Component = ({
         [],
     );
 
+    console.log('#Duy Phan console', CUSTOM_CATEROFY_BUSSINESS);
+
     const businessCategoriesOptions = useMemo(
         () =>
             businessCategories.list.map(item => ({
@@ -187,6 +207,7 @@ const Component = ({
             })),
         [businessCategories.list],
     );
+    console.log('#Duy Phan console', businessCategoriesOptions);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
@@ -269,8 +290,14 @@ const Component = ({
                         autoHighlight
                         options={businessCategoriesOptions}
                         control={control}
+                        classes={{
+                            inputRoot: isCustom
+                                ? styles.disabledTags
+                                : undefined,
+                        }}
                         name="tags"
                         autoComplete
+                        disabled={isCustom}
                         error={tagsErrorMessage}
                         errorComponent={
                             <ConditionalRender

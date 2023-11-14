@@ -10,6 +10,7 @@ import {
   MEDIA_CATEGORIES,
   PaymentType,
   DEFAULT_PRICE,
+  BUSINESS_CATEGORIES,
 } from 'shared-const';
 import {
   Counters,

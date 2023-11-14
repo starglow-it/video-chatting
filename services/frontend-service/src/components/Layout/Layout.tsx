@@ -24,6 +24,8 @@ import { Footer } from '@components/Footer/Footer';
 // types
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
 import { LayoutProps } from './types';
 
 // stores
@@ -39,6 +41,7 @@ import {
     getProfileTemplatesFx,
     getTemplatesFx,
     initiateSocketConnectionEvent,
+    initUserWithoutTokenFx,
     loadmoreCommonTemplates,
     loadmoreUserTemplates,
     sendJoinDashboardSocketEvent,
@@ -52,6 +55,7 @@ import {
     editRoomRoute,
     indexRoute,
     NotFoundRoute,
+    registerEndCallRoute,
     registerRoute,
     roomRoute,
     welcomeRoute,
@@ -142,6 +146,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isRegisterRoute = new RegExp(`${registerRoute}`).test(
         router.pathname,
     );
+    const isRegisterEndCallRoute = new RegExp(`${registerEndCallRoute}`).test(
+        router.pathname,
+    );
 
     const shouldShowFooter = useMemo(
         () =>
@@ -222,11 +229,17 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
         }
     };
+
+    const hanleStartFreeRoom = async () => {
+        const { userWithoutLoginId, userTemplateId } = parseCookies();
+        if (!userWithoutLoginId) await initUserWithoutTokenFx({});
+        else router.push(getClientMeetingUrl(userTemplateId));
+    };
     // console.log('#Duy Phan console pt', isPortraitLayout, height)
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
-    console.log('#Duy Phan console', heightFull);
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -242,7 +255,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
             <CustomBox className={styles.bgImage} />
             <ScrollParent
-                isAgreements={router.pathname === agreementsRoute}
+                isAgreements={
+                    router.pathname === agreementsRoute ||
+                    (isMobile && isRegisterEndCallRoute)
+                }
                 handleScrollToEnd={handleScrollToEnd}
                 containerRef={(el: any) => (scrollRef.current = el)}
             >
@@ -267,7 +283,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     >
                         <ConditionalRender
                             condition={
-                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                                !isMobile
+                                    ? !isNotFoundRoute
+                                    : !isNotFoundRoute && !isRoomRoute
                             }
                         >
                             <CustomBox
@@ -338,6 +356,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         xl: 'none',
                                                     },
                                                 }}
+                                                onClick={hanleStartFreeRoom}
                                             >
                                                 Start Calling for Free
                                             </CustomGrid>

@@ -31,6 +31,7 @@ import {
   ITemplatePayment,
   GetTemplatePaymentsPayload,
   GetTemplatePaymentPayload,
+  TemplateCategoryType,
 } from 'shared-types';
 
 // helpers
@@ -443,7 +444,14 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplates })
   async getUserTemplates(
     @Payload()
-    { userId, skip, limit, sort, direction }: GetUserTemplatesPayload,
+    {
+      userId,
+      categoryType,
+      skip,
+      limit,
+      sort,
+      direction,
+    }: GetUserTemplatesPayload,
   ): Promise<EntityList<IUserTemplate>> {
     try {
       return withTransaction(this.connection, async (session) => {
@@ -451,6 +459,7 @@ export class UserTemplatesController {
           {
             $match: {
               user: new mongoose.Types.ObjectId(userId),
+              categoryType: categoryType || <TemplateCategoryType>'default',
             },
           },
           {
@@ -490,7 +499,7 @@ export class UserTemplatesController {
         }
 
         if (skip) {
-          aggregationPipeline.push({ $skip: skip });
+          aggregationPipeline.push({ $skip: skip * limit });
         }
 
         if (limit) {
@@ -505,6 +514,7 @@ export class UserTemplatesController {
         const userTemplatesCount =
           await this.userTemplatesService.countUserTemplates({
             user: new mongoose.Types.ObjectId(userId),
+            categoryType: categoryType || <TemplateCategoryType>'default',
           });
 
         const parsedTemplates = plainToInstance(

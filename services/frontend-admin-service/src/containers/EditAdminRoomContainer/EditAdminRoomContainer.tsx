@@ -16,7 +16,11 @@ import {
     templatesLinksSchema,
 } from 'shared-frontend/validation';
 import { adjustUserPositions, getRandomNumber } from 'shared-utils';
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
+import {
+    CUSTOM_CATEROFY_BUSSINESS,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from 'shared-const';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';

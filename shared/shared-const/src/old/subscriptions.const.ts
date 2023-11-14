@@ -52,7 +52,7 @@ const businessSubscription: PlanData = {
   name: PlanKeys.Business,
   key: 'business',
   priceInCents: 2500,
-  description: 'No platform commission + embed link',
+  description: 'Add Links to your content',
   features: {
     templatesLimit: 50,
     timeLimit: null,

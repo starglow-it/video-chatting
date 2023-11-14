@@ -119,4 +119,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   subdomain: ICommonTemplate['subdomain'];
+
+  @Expose()
+  @ApiProperty()
+  categoryType: ICommonTemplate['categoryType'];
 }

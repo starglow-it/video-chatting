@@ -40,6 +40,8 @@ import { TemplateIdParam } from '../../dtos/params/template-id.params';
 import { UpdateTemplatePaymentsRequest } from '../../dtos/requests/update-template-payment.request';
 import { UserId } from '../../utils/decorators/user-id.decorator';
 import { CommonTemplatePaymentDto } from '../../dtos/response/common-template-payment.dto';
+import { GetProfileTemplatesQueryDto } from '../../dtos/query/get-profile-templates.query';
+import { TemplatesModule } from '../templates/templates.module';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -62,12 +64,12 @@ export class ProfileTemplatesController {
   })
   async getProfileTemplates(
     @Request() req,
-    @Query('skip', ParseIntPipe) skip: number,
-    @Query('limit', ParseIntPipe) limit: number,
+    @Query() {skip, limit, categoryType}: GetProfileTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<IUserTemplate>>> {
     try {
-      const template = await this.userTemplatesService.getUserTemplates({
+      const templates = await this.userTemplatesService.getUserTemplates({
         userId: req.user.userId,
+        categoryType,
         skip,
         limit,
         sort: 'usedAt',
@@ -76,7 +78,7 @@ export class ProfileTemplatesController {
 
       return {
         success: true,
-        result: template,
+        result: templates,
       };
     } catch (err) {
       this.logger.error(

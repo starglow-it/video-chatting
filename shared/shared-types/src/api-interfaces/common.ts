@@ -2,11 +2,10 @@ import { ICommonUser } from './users';
 import { IUserTemplate } from './templates';
 import { MediaCategoryType } from './media';
 
-
 export enum Environmens {
   Local = 'local',
   Demo = 'demo',
-  Production = 'production'
+  Production = 'production',
 }
 
 export interface IBusinessCategory {
@@ -61,7 +60,7 @@ export type ITemplateLink = {
   top: number;
   left: number;
   title: string;
-  type: 'add' | 'edit'
+  type: 'add' | 'edit';
 };
 
 export type TemplateLinkPosition = {
@@ -134,9 +133,9 @@ export enum KickUserReasons {
 }
 
 export enum PlanKeys {
-  House = "House",
-  Professional = "Professional",
-  Business = "Business",
+  House = 'House',
+  Professional = 'Professional',
+  Business = 'Business',
 }
 
 export enum PriceValues {

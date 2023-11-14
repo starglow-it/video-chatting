@@ -18,3 +18,23 @@
   .icon {
     fill: none;
   }
+
+  .roleItem {
+    position: relative;
+  }
+
+  .tooltip {
+    position: absolute;
+    right: -14px;
+    top: 8px;
+    cursor: pointer;
+  }
+
+  .popperTooltip {
+    z-index: 9999;
+  }
+
+  .containerTooltip {
+    height: auto;
+    white-space: inherit;
+  }

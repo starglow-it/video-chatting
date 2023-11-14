@@ -4,7 +4,12 @@ import * as mongoose from 'mongoose';
 import { BusinessCategoryDocument } from './business-category.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { UserDocument } from './user.schema';
-import { RoomType, TemplateLink, TemplateType } from 'shared-types';
+import {
+  RoomType,
+  TemplateCategoryType,
+  TemplateLink,
+  TemplateType,
+} from 'shared-types';
 import { MediaLink } from '../types/template';
 
 @Schema()
@@ -167,6 +172,12 @@ export class CommonTemplate {
     required: false,
   })
   subdomain: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: <TemplateCategoryType>'default',
+  })
+  categoryType: TemplateCategoryType;
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;
