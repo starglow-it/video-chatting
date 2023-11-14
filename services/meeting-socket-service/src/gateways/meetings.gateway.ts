@@ -207,6 +207,11 @@ export class MeetingsGateway
 
     if (!isMeetingHost) return;
     await this.setTimeoutFinishMeeting(meeting);
+
+    await notifyParticipantsMeetingInfo({
+      meeting,
+      emitToRoom: this.emitToRoom.bind(this),
+    });
   }
 
   private async getLastOldMessageInMeeting(
@@ -326,10 +331,6 @@ export class MeetingsGateway
           session,
           user: userUpdated,
           userTemplate,
-        });
-        await notifyParticipantsMeetingInfo({
-          meeting,
-          emitToRoom: this.emitToRoom.bind(this),
         });
       });
     } catch (error) {

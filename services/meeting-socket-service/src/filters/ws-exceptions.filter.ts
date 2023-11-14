@@ -24,13 +24,14 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
       clientId: client.id,
       ctx: data,
       error: details,
+      exception: exception.stack,
     });
 
-    return {
+    client.send({
       success: false,
       ...(details.i18nMsg && {
         message: details.i18nMsg,
       }),
-    };
+    });
   }
 }
