@@ -67,7 +67,7 @@ import {
   MeetingUserDocument,
 } from '../schemas/meeting-user.schema';
 import { MeetingDocument } from '../schemas/meeting.schema';
-import { wsError } from '../utils/ws/wsError';
+import { throwWsError, wsError } from '../utils/ws/wsError';
 import { ReconnectDto } from '../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
@@ -83,7 +83,7 @@ import { UserActionInMeeting } from '../types';
 import { PassAuth } from '../utils/decorators/passAuth.decorator';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
-import { MeetingNativeErrorEnum } from 'shared-const';
+import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 
 @WebSocketGateway({
@@ -166,10 +166,7 @@ export class MeetingsGateway
       {
         meeting: meeting.id,
         accessStatus: {
-          $in: [
-            MeetingAccessStatusEnum.InMeeting,
-            MeetingAccessStatusEnum.Disconnected,
-          ],
+          $in: [MeetingAccessStatusEnum.InMeeting],
         },
       },
       session,
@@ -243,34 +240,32 @@ export class MeetingsGateway
           session,
         });
         if (!user) {
-          return wsError(client, {
-            message: MeetingNativeErrorEnum.USER_NOT_FOUND,
-          });
+          throw new WsBadRequestException(
+            MeetingNativeErrorEnum.USER_NOT_FOUND,
+          );
         }
 
         await user.populate('meeting');
         if (!user.meeting) {
-          return wsError(client, {
-            message: MeetingNativeErrorEnum.MEETING_NOT_FOUND,
-          });
+          throw new WsBadRequestException(
+            MeetingNativeErrorEnum.MEETING_NOT_FOUND,
+          );
         }
 
         const userId = user._id.toString();
-        let meeting = user.meeting;
+        let meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          user,
+        );
+        await meeting.populate(['owner']);
         const isOwner = meeting.owner._id.toString() === userId;
 
         const userTemplate = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
         });
 
-        if (!userTemplate) {
-          return wsError(client, {
-            message: 'User template not found',
-          });
-        }
+        throwWsError(!userTemplate, 'User template not found');
 
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
-        let isDisconnectStatus = false;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
         }
@@ -286,11 +281,7 @@ export class MeetingsGateway
             event: UserActionInMeeting.Leave,
           });
 
-          if (!u) {
-            return wsError(client, {
-              message: 'User has been deleted',
-            });
-          }
+          throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
 
           Object.assign(updateData, {
             userPosition: u.position,
@@ -305,8 +296,6 @@ export class MeetingsGateway
           data: updateData,
           session,
         });
-
-        if (isDisconnectStatus) return;
 
         if (
           !isOwner &&
@@ -323,7 +312,9 @@ export class MeetingsGateway
         }
 
         await userUpdated.populate('meeting');
-        meeting = userUpdated.meeting;
+        meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          userUpdated,
+        );
 
         await this.handleOutRoom({
           client,
@@ -361,11 +352,7 @@ export class MeetingsGateway
           id: message.templateId,
         });
 
-        if (!template) {
-          return wsError(socket, {
-            message: 'No template found',
-          });
-        }
+        throwWsError(!template, 'No template found');
 
         let meeting = await this.meetingsService.findOne(
           {
@@ -387,39 +374,30 @@ export class MeetingsGateway
           );
         }
 
-        if (!meeting) {
-          return wsError(socket, {
-            message: '[handleJoinWaitingRoom] no meeting found',
-          });
-        }
+        throwWsError(!meeting, '[handleJoinWaitingRoom] no meeting found');
 
         if (template.user) {
           const mainUser = await this.coreService.findUserById({
             userId: template.user.id,
           });
 
-          if (
+          throwWsError(
             mainUser &&
-            mainUser.maxMeetingTime === 0 &&
-            this.meetingsCommonService.checkCurrentUserPlain(mainUser)
-          ) {
-            return {
-              success: false,
-              message: 'meeting.timeLimit',
-            };
-          }
+              mainUser.maxMeetingTime === 0 &&
+              this.meetingsCommonService.checkCurrentUserPlain(mainUser),
+            'meeting.timeLimit',
+          );
         }
 
-        if (
+        throwWsError(
           typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
             meeting,
             message.meetingRole == MeetingRole.Lurker
               ? 'lurker'
               : 'participant',
-          )) === 'undefined'
-        ) {
-          return wsError(socket, 'meeting.maxParticipantsNumber');
-        }
+          )) === 'undefined',
+          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+        );
 
         const user = await this.usersService.createUser(
           {
@@ -494,7 +472,6 @@ export class MeetingsGateway
 
     return withTransaction(this.connection, async (session) => {
       try {
-        throw new WsBadRequestException('Test.error');
         this.taskService.deleteTimeout({
           name: `meeting:finish:${message.meetingId}`,
         });
@@ -508,9 +485,7 @@ export class MeetingsGateway
           id: meeting.templateId,
         });
 
-        if (!template) {
-          throw new WsBadRequestException('No template found');
-        }
+        throwWsError(!template, 'No template found');
 
         const mainUser = await this.coreService.findUserById({
           userId: template.user.id,
@@ -524,9 +499,7 @@ export class MeetingsGateway
           event: UserActionInMeeting.Join,
         });
 
-        if (!u) {
-          return wsError(socket, 'meeting.maxParticipantsNumber');
-        }
+        throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
         const lastOldMessage = await this.getLastOldMessageInMeeting(
           meeting._id.toString(),
@@ -700,22 +673,18 @@ export class MeetingsGateway
             message.meetingId,
             session,
           );
-          if (!meeting) {
-            return wsError(socket, {
-              message: 'Meeting not found',
-            });
-          }
+
+          throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
-          if (
+          throwWsError(
             typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
               meeting,
               'participant',
-            )) === 'undefined'
-          ) {
-            return wsError(socket, 'meeting.maxParticipantsNumber');
-          }
+            )) === 'undefined',
+            MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+          );
 
           const plainUser = userSerialization(user);
 
@@ -833,20 +802,15 @@ export class MeetingsGateway
           msg.meetingId,
           session,
         );
-        if (!meeting) {
-          return wsError(socket, {
-            message: 'No meeting found',
-          });
-        }
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-        if (
+        throwWsError(
           typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
             meeting,
             'lurker',
-          )) === 'undefined'
-        ) {
-          return wsError(socket, 'meeting.maxParticipantsNumber');
-        }
+          )) === 'undefined',
+          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+        );
 
         const lastOldMessage = await this.getLastOldMessageInMeeting(
           meeting._id.toString(),
@@ -871,11 +835,8 @@ export class MeetingsGateway
             },
           });
 
-          if (!meetingAvatar) {
-            return wsError(socket, {
-              message: 'Meeting Avatar not found',
-            });
-          }
+          throwWsError(!meetingAvatar, 'Meeting Avatar not found');
+
           Object.assign(updateData, {
             meetingAvatarId: msg.meetingAvatarId,
           });
@@ -890,24 +851,12 @@ export class MeetingsGateway
           session,
         });
 
-        if (!mU) {
-          return wsError(socket, {
-            message: 'No user found',
-          });
-        }
-
-        const host = await this.usersService.findOne({
+        const host = await this.usersComponent.findOne({
           query: {
             _id: meeting.hostUserId,
           },
           session,
         });
-
-        if (!host) {
-          return wsError(socket, {
-            message: 'Host not found',
-          });
-        }
 
         await meeting.populate(['users']);
         socket.join(`lurker:${msg.meetingId}`);
@@ -937,7 +886,7 @@ export class MeetingsGateway
   async sendAccessAnswer(
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<ResponseSumType<void>> {
+  ): Promise<void> {
     this.logger.debug({
       message: `[${MeetingSubscribeEvents.OnAnswerAccessRequest}] event`,
       ctx: message,
@@ -969,9 +918,7 @@ export class MeetingsGateway
             userTemplate: template,
           });
 
-          if (!u) {
-            return wsError(socket, 'meeting.maxParticipantsNumber');
-          }
+          throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
           const lastOldMessage = await this.getLastOldMessageInMeeting(
             meeting._id.toString(),
@@ -1019,6 +966,8 @@ export class MeetingsGateway
             },
           );
         }
+
+        throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
         if (!user) {
           return wsError(socket, {
@@ -1107,22 +1056,14 @@ export class MeetingsGateway
 
     try {
       return withTransaction(this.connection, async (session) => {
+        if (!socket) return;
         const meeting = await this.meetingsService.findById(
           message.meetingId,
           session,
         );
 
-        if (!socket) {
-          return wsError(null, {
-            message: 'User has been deleted',
-          });
-        }
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-        if (!meeting) {
-          return wsError(socket, {
-            message: 'Meeting not found',
-          });
-        }
 
         meeting.endsAt = Date.now();
         meeting.save();
@@ -1187,16 +1128,10 @@ export class MeetingsGateway
     });
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersService.findOne({
+        const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
           session,
         });
-
-        if (!user) {
-          return wsError(socket, {
-            message: 'No user found',
-          });
-        }
 
         const meeting = await this.meetingsService.findById(
           user?.meeting._id.toString(),
@@ -1233,6 +1168,13 @@ export class MeetingsGateway
           }
 
           await meeting.save();
+
+          console.log(meeting.users);
+
+          await notifyParticipantsMeetingInfo({
+            meeting,
+            emitToRoom: this.emitToRoom.bind(this),
+          });
         }
 
         return wsResult();
@@ -1256,7 +1198,7 @@ export class MeetingsGateway
         });
         const { meetingUserId } = msg;
 
-        const user = await this.usersService.findOne({
+        const user = await this.usersComponent.findOne({
           query: {
             _id: meetingUserId,
             accessStatus: MeetingAccessStatusEnum.Disconnected,
@@ -1264,18 +1206,7 @@ export class MeetingsGateway
           session,
         });
 
-        if (!user) {
-          return wsError(client, {
-            message: 'No user found',
-          });
-        }
-
-        await user.populate('meeting');
-        if (!user.meeting) {
-          return wsError(client, {
-            message: 'No meeting found',
-          });
-        }
+        await this.usersComponent.findMeetingFromPopulateUser(user);
 
         const updateData = {
           socketId: client.id,
@@ -1285,11 +1216,8 @@ export class MeetingsGateway
         const userTemplate = await this.coreService.findMeetingTemplateById({
           id: user.meeting.templateId,
         });
-        if (!userTemplate) {
-          return wsError(client, {
-            message: 'No user template found',
-          });
-        }
+
+        throwWsError(!userTemplate, 'No user template found');
 
         if (user.meetingRole !== MeetingRole.Lurker) {
           const u = await this.usersService.updateSizeAndPositionForUser({
@@ -1298,9 +1226,8 @@ export class MeetingsGateway
             event: UserActionInMeeting.Join,
           });
 
-          if (!u) {
-            return wsError(client, 'meeting.maxParticipantsNumber');
-          }
+          throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
+
           Object.assign(updateData, {
             userPosition: u.position,
             userSize: u.size,
@@ -1315,8 +1242,9 @@ export class MeetingsGateway
           session,
         });
 
-        await userUpdated.populate('meeting');
-        const meeting = userUpdated.meeting;
+        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          userUpdated,
+        );
 
         await meeting.populate(['users']);
         const meetingId = meeting._id.toString();
@@ -1554,17 +1482,11 @@ export class MeetingsGateway
 
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersService.findOne({
+        const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
           session,
           populatePaths: 'meeting',
         });
-
-        if (!user) {
-          return wsError(socket, {
-            message: 'The Meeting user not found',
-          });
-        }
 
         const meeting = await this.meetingsService.updateMeetingById(
           user?.meeting?._id,

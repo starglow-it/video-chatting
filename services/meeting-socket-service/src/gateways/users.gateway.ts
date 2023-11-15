@@ -47,10 +47,11 @@ import {
 import { UsersSubscribeEvents } from '../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../types';
-import { wsError } from '../utils/ws/wsError';
+import { throwWsError, wsError } from '../utils/ws/wsError';
 import { wsResult } from '../utils/ws/wsResult';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
+import { MeetingNativeErrorEnum } from 'shared-const';
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
@@ -183,7 +184,7 @@ export class UsersGateway extends BaseGateway {
   async removeUser(
     @ConnectedSocket() client: Socket,
     @MessageBody() message: RemoveUserRequestDTO,
-  ): Promise<ResponseSumType<void>> {
+  ): Promise<void> {
     return withTransaction(this.connection, async (session) => {
       console.log('Kick user event', {
         message,
@@ -222,11 +223,7 @@ export class UsersGateway extends BaseGateway {
         event: UserActionInMeeting.Leave,
       });
 
-      if (!u) {
-        return wsError(client, {
-          message: 'User has been deleted',
-        });
-      }
+      throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
 
       await this.usersComponent.findOneAndUpdate({
         query: {

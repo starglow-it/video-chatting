@@ -12,7 +12,9 @@ export const replaceItemInArray = <T extends unknown>(
     );
   }
 
-  if (index === -1) return;
-  arr[index] = replaceItem;
+  if (index !== -1) {
+    arr[index] = replaceItem;
+  }
+
   return index;
 };

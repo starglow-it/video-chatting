@@ -7,7 +7,7 @@ export type WsError = {
 };
 
 export function wsError(client: Socket, err: unknown) {
-  const error = err['message'] as string | object
+  const error = err['message'] as string | object;
   const details =
     error instanceof Object
       ? { ...error }
@@ -18,21 +18,17 @@ export function wsError(client: Socket, err: unknown) {
   console.error({
     clientId: client.id,
     error: details,
-    exception: error['stack'],
   });
+  console.error(err['stack']);
+  
 
-  client.send({
+  client?.send({
     success: false,
     ...(details.i18nMsg && {
       message: details.i18nMsg,
     }),
   });
-  return {
-    success: false,
-    ...(details.i18nMsg && {
-      message: details.i18nMsg,
-    }),
-  };
+  return;
 }
 
 export const throwWsError = (condition: boolean, message: string) => {

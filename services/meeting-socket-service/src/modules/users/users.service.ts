@@ -151,7 +151,7 @@ export class UsersService {
       updateIndexParams[event].replaceItem,
     );
 
-    if (!index && typeof index !== 'number') return;
+    if (index <= -1) return;
 
     await this.coreService.updateUserTemplate({
       templateId: userTemplate.id,
