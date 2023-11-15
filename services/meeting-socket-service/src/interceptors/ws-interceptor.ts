@@ -12,7 +12,7 @@ import { WsBadRequestException } from 'src/exceptions/ws.exception';
 
 @Injectable()
 export class WsInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<void> {
     const client = context.switchToWs().getClient() as Socket;
     return next.handle().pipe(
       map((data) => {
