@@ -195,7 +195,7 @@ const Component = () => {
                         translation="getStarted.title"
                     />
                 </CustomGrid>
-                <SignInGoogle buttonText="buttons.registerGoogle" />
+                {/* <SignInGoogle buttonText="buttons.registerGoogle" /> */}
                 <CustomGrid
                     container
                     alignItems="center"
