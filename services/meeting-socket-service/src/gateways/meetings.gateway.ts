@@ -1273,7 +1273,7 @@ export class MeetingsGateway
           users: plainUsers,
         });
       } catch (err) {
-        return wsError(client, err);
+        throw new WsBadRequestException(err);
       }
     });
   }

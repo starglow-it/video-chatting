@@ -24,8 +24,8 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
       clientId: client.id,
       ctx: data,
       error: details,
-      exception: exception.stack,
     });
+    console.log(exception.stack);
 
     client.send({
       success: false,
