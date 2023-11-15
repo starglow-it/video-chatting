@@ -34,6 +34,7 @@ import { NotFoundRoute } from 'src/const/client-routes';
 import { useNetworkDetect } from '@hooks/useNetworkDetect';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import {
+    $windowSizeStore,
     getSubscriptionWithDataFx,
     initLandscapeListener,
     initWindowListeners,
@@ -121,6 +122,7 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const { width, height } = useStore($windowSizeStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -283,7 +285,7 @@ const MeetingContainer = memo(() => {
     }, []);
 
     const previewImage = (meetingTemplate?.previewUrls || []).find(
-        image => image.resolution === 240,
+        image => image.resolution === 1080,
     );
 
     return (
@@ -315,15 +317,24 @@ const MeetingContainer = memo(() => {
                     videoClassName={styles.wrapperBackgroundMedia}
                     mediaLink={null}
                 >
-                    <CustomImage
-                        src={
-                            meetingTemplate.mediaLink?.thumb ??
-                            previewImage?.url ??
-                            ''
+                    <ConditionalRender
+                        condition={
+                            !!previewImage?.url || !!meetingTemplate.mediaLink
                         }
-                        className={styles.wrapperBackgroundMedia}
-                        layout="fill"
-                    />
+                    >
+                        <CustomImage
+                            src={
+                                meetingTemplate.mediaLink?.thumb ??
+                                previewImage?.url ??
+                                ''
+                            }
+                            className={styles.wrapperBackgroundMedia}
+                            width={isMobile ? `${width}px` : '100%'}
+                            height={isMobile ? `${height}px` : '100%'}
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    </ConditionalRender>
                 </MeetingBackgroundVideo>
             </ConditionalRender>
             <ConditionalRender
