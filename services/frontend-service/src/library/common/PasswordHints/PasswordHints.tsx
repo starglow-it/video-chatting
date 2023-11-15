@@ -10,11 +10,12 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // styles
-import { isMobile } from 'shared-utils';
 import styles from './PasswordHints.module.scss';
 
 // types
 import { PasswordHintsProps } from './types';
+import { useStore } from 'effector-react';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 const HINTS = [
     {
@@ -31,6 +32,7 @@ const HINTS = [
 
 const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
     const { control } = useFormContext();
+    const { isMobile } = useBrowserDetect();
 
     const { isSubmitted, errors } = useFormState({ control });
     const passwordValue = useWatch({ control, name: fieldKey });
@@ -79,7 +81,7 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
                                     }
                                     return theme.palette.text.secondary;
                                 },
-                                flex: isMobile() ? 1 : undefined,
+                                flex: isMobile ? 1 : undefined,
                             }}
                             variant="body3"
                         />
@@ -91,6 +93,7 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
             isPasswordLengthPassed,
             isPasswordContentPassed,
             isSubmitted,
+            isMobile
         ],
     );
 

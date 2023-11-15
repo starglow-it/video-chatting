@@ -33,11 +33,11 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
+import { USER_IS_BLOCKED } from 'shared-const';
 import { isMobile } from 'shared-utils';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
-import { USER_IS_BLOCKED } from 'shared-const';
 import {
     $authStore,
     $registerStore,
