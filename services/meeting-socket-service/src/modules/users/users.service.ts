@@ -11,12 +11,7 @@ import {
   UserActionInMeeting,
   UserActionInMeetingParams,
 } from '../../types';
-import {
-  IUserTemplate,
-  MeetingAccessStatusEnum,
-  MeetingRole,
-} from 'shared-types';
-import { Socket } from 'socket.io';
+import { IUserTemplate } from 'shared-types';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';

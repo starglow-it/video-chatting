@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MeetingChatsGateway } from '../../gateways/meeting-chats.gateway';
 import { MeetingChatsService } from './meeting-chats.service';
-import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   MeetingChat,

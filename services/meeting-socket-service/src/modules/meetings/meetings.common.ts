@@ -2,28 +2,19 @@ import { Injectable, Logger } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
   ICommonUser,
-  IUserTemplate,
   MeetingAccessStatusEnum,
   PlanKeys,
   TimeoutTypesEnum,
 } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { MeetingTimeService } from '../meeting-time/meeting-time.service';
-import {
-  ITransactionSession,
-  withTransaction,
-} from '../../helpers/mongo/withTransaction';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from './meetings.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
-import { userSerialization } from '../../dtos/response/common-user.dto';
-import { MeetingEmitEvents } from '../../const/socket-events/emitters';
-import { TEventEmitter } from '../../types/socket-events';
-import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
-import { wsError } from '../../utils/ws/wsError';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
 import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';
 

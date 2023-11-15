@@ -1,13 +1,11 @@
 import {
   ConnectedSocket,
   MessageBody,
-  SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { BaseGateway } from './base.gateway';
 import { MeetingChatsService } from '../modules/meeting-chats/meeting-chats.service';
-import { UsersService } from '../modules/users/users.service';
 import { SendMeetingChatRequestDto } from '../dtos/requests/chats/send-meeting-chat.dto';
 import {
   ITransactionSession,
@@ -31,6 +29,8 @@ import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UnReactMeetingChatRequestDto } from '../dtos/requests/chats/unreact-meeting-chat.dto';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { UsersComponent } from '../modules/users/users.component';
+import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
+import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -38,11 +38,9 @@ import { UsersComponent } from '../modules/users/users.component';
     origin: '*',
   },
 })
-// @UseFilters(WebsocketExceptionsFilter)
 export class MeetingChatsGateway extends BaseGateway {
   constructor(
     private readonly meetingChatsService: MeetingChatsService,
-    private readonly usersService: UsersService,
     private readonly usersComponent: UsersComponent,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
     @InjectConnection() private readonly connection: Connection,
@@ -104,208 +102,225 @@ export class MeetingChatsGateway extends BaseGateway {
     return m;
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnSendMessage)
+  @WsEvent(MeetingSubscribeEvents.OnSendMessage)
   async sendMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: SendMeetingChatRequestDto,
   ) {
-    console.debug(`Event ${MeetingSubscribeEvents.OnSendMessage}`);
     return withTransaction(this.connection, async (session) => {
-      const user = this.getUserFromSocket(socket);
-      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
-        user,
-      );
-      const meetingChat = await this.meetingChatsService.create({
-        data: {
-          body: msg.body,
-          meeting: meeting._id,
-          sender: user._id,
-        },
-        session,
-      });
-      await meetingChat.populate(['meeting', 'sender']);
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          user,
+        );
+        const meetingChat = await this.meetingChatsService.create({
+          data: {
+            body: msg.body,
+            meeting: meeting._id,
+            sender: user._id,
+          },
+          session,
+        });
 
-      const plainMeetingChat = meetingChatSerialization(meetingChat);
-      this.emitToRoom(
-        `meeting:${meeting._id.toString()}`,
-        MeetingEmitEvents.ReceiveMessage,
-        {
+        await meetingChat.populate(['meeting', 'sender']);
+
+        const plainMeetingChat = meetingChatSerialization(meetingChat);
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveMessage,
+          {
+            message: plainMeetingChat,
+          },
+        );
+
+        return wsResult({
           message: plainMeetingChat,
-        },
-      );
-
-      return wsResult({
-        message: plainMeetingChat,
-      });
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnLoadMoreMessages)
+  @WsEvent(MeetingSubscribeEvents.OnLoadMoreMessages)
   async loadMoreMessages(
     @ConnectedSocket() socket: Socket,
     @MessageBody() { skip, limit }: LoadMoreMeetingChatRequestDto,
   ) {
-    console.debug(`Event ${MeetingSubscribeEvents.OnLoadMoreMessages}`);
     return withTransaction(this.connection, async (session) => {
-      const user = this.getUserFromSocket(socket);
-      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
-        user,
-      );
-      const meetingChats = await this.meetingChatsService.findMany({
-        query: {
-          meeting: meeting._id,
-          ...(!!user.lastOldMessage && {
-            _id: {
-              $gt: user.lastOldMessage,
-            },
-          }),
-        },
-        session,
-        populatePaths: ['sender', 'meeting'],
-        options: {
-          sort: {
-            createdAt: -1,
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          user,
+        );
+        const meetingChats = await this.meetingChatsService.findMany({
+          query: {
+            meeting: meeting._id,
+            ...(!!user.lastOldMessage && {
+              _id: {
+                $gt: user.lastOldMessage,
+              },
+            }),
           },
-          skip: skip * (limit || MESSAGES_LIMIT),
-          limit: limit || MESSAGES_LIMIT,
-        },
-      });
+          session,
+          populatePaths: ['sender', 'meeting'],
+          options: {
+            sort: {
+              createdAt: -1,
+            },
+            skip: skip * (limit || MESSAGES_LIMIT),
+            limit: limit || MESSAGES_LIMIT,
+          },
+        });
 
-      const plainMeetingChats = meetingChatSerialization(meetingChats);
-      return wsResult({
-        messages: plainMeetingChats,
-      });
+        const plainMeetingChats = meetingChatSerialization(meetingChats);
+        return wsResult({
+          messages: plainMeetingChats,
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnReactionMessage)
+  @WsEvent(MeetingSubscribeEvents.OnReactionMessage)
   async reactMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: ReactMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      console.debug(`Event ${MeetingSubscribeEvents.OnReactionMessage}`);
-      const user = this.getUserFromSocket(socket);
-      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
-        user,
-      );
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          user,
+        );
 
-      const message = await this.getMessageById(msg.meetingChatId, session);
+        const message = await this.getMessageById(msg.meetingChatId, session);
 
-      this.checkReactionKind(msg.kind);
+        this.checkReactionKind(msg.kind);
 
-      const reactions = this.caculateReactions(
-        message.reactions,
-        msg.kind,
-        user,
-        'asc',
-      );
+        const reactions = this.caculateReactions(
+          message.reactions,
+          msg.kind,
+          user,
+          'asc',
+        );
 
-      message.reactions = reactions;
-      message.save();
+        message.reactions = reactions;
+        message.save();
 
-      let reaction = await this.meetingChatReactionsService.findOne({
-        query: {
-          user: user._id,
-          meetingChat: message._id,
-          kind: msg.kind,
-        },
-        session,
-      });
-
-      if (!reaction) {
-        reaction = await this.meetingChatReactionsService.create({
-          data: {
-            kind: msg.kind,
-            meetingChat: message._id,
+        let reaction = await this.meetingChatReactionsService.findOne({
+          query: {
             user: user._id,
-            meeting: meeting._id,
+            meetingChat: message._id,
+            kind: msg.kind,
           },
           session,
         });
-      }
 
-      await reaction.populate([
-        {
-          path: 'meetingChat',
-          populate: ['sender'],
-        },
-        'user',
-      ]);
+        if (!reaction) {
+          reaction = await this.meetingChatReactionsService.create({
+            data: {
+              kind: msg.kind,
+              meetingChat: message._id,
+              user: user._id,
+              meeting: meeting._id,
+            },
+            session,
+          });
+        }
 
-      const plainReaction = meetingChatReactionSerialization(reaction);
+        await reaction.populate([
+          {
+            path: 'meetingChat',
+            populate: ['sender'],
+          },
+          'user',
+        ]);
 
-      this.emitToRoom(
-        `meeting:${meeting._id.toString()}`,
-        MeetingEmitEvents.ReceiveReaction,
-        {
+        const plainReaction = meetingChatReactionSerialization(reaction);
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveReaction,
+          {
+            reaction: plainReaction,
+          },
+        );
+
+        return wsResult({
           reaction: plainReaction,
-        },
-      );
-
-      return wsResult({
-        reaction: plainReaction,
-      });
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnUnReactionMessage)
+  @WsEvent(MeetingSubscribeEvents.OnUnReactionMessage)
   async unreactMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UnReactMeetingChatRequestDto,
   ) {
-    console.debug(`Event ${MeetingSubscribeEvents.OnUnReactionMessage}`);
     return withTransaction(this.connection, async (session) => {
-      const user = this.getUserFromSocket(socket);
-      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
-        user,
-      );
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+          user,
+        );
 
-      let message = await this.getMessageById(msg.meetingChatId, session);
+        let message = await this.getMessageById(msg.meetingChatId, session);
 
-      this.checkReactionKind(msg.kind);
+        this.checkReactionKind(msg.kind);
 
-      const reactions = this.caculateReactions(
-        message.reactions,
-        msg.kind,
-        user,
-        'desc',
-      );
+        const reactions = this.caculateReactions(
+          message.reactions,
+          msg.kind,
+          user,
+          'desc',
+        );
 
-      await this.meetingChatReactionsService.deleteOne({
-        query: {
-          meetingChat: new ObjectId(msg.meetingChatId),
-          user: user._id,
-          kind: msg.kind,
-        },
-        session,
-      });
+        await this.meetingChatReactionsService.deleteOne({
+          query: {
+            meetingChat: new ObjectId(msg.meetingChatId),
+            user: user._id,
+            kind: msg.kind,
+          },
+          session,
+        });
 
-      message = await this.meetingChatsService.findOneAndUpdate({
-        query: {
-          _id: new ObjectId(msg.meetingChatId),
-        },
-        data: {
-          reactions,
-        },
-        session,
-      });
+        message = await this.meetingChatsService.findOneAndUpdate({
+          query: {
+            _id: new ObjectId(msg.meetingChatId),
+          },
+          data: {
+            reactions,
+          },
+          session,
+        });
 
-      await message.populate('sender');
+        await message.populate('sender');
 
-      const plainMessage = meetingChatSerialization(message);
+        const plainMessage = meetingChatSerialization(message);
 
-      this.emitToRoom(
-        `meeting:${meeting._id.toString()}`,
-        MeetingEmitEvents.ReceiveUnReaction,
-        {
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveUnReaction,
+          {
+            message: plainMessage,
+          },
+        );
+
+        return wsResult({
           message: plainMessage,
-        },
-      );
-
-      return wsResult({
-        message: plainMessage,
-      });
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 }

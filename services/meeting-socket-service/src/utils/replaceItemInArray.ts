@@ -1,6 +1,6 @@
 import { isPrimitive } from './isPrimitiveType';
 
-export const replaceItemInArray = <T extends unknown>(
+export const replaceItemInArray = <T = any>(
   arr: T[],
   searchItem: T,
   replaceItem: T,

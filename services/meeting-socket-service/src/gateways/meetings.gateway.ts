@@ -2,7 +2,6 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
@@ -31,14 +30,8 @@ import {
 
 import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
 import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
-import {
-  CommonUserDTO,
-  userSerialization,
-} from '../dtos/response/common-user.dto';
-import {
-  CommonMeetingDTO,
-  meetingSerialization,
-} from '../dtos/response/common-meeting.dto';
+import { userSerialization } from '../dtos/response/common-user.dto';
+import { meetingSerialization } from '../dtos/response/common-meeting.dto';
 import { EnterMeetingRequestDTO } from '../dtos/requests/enter-meeting.dto';
 import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-meeting.dto';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
@@ -62,12 +55,9 @@ import {
   VideoChatSubscribeEvents,
 } from '../const/socket-events/subscribers';
 import { MeetingsCommonService } from '../modules/meetings/meetings.common';
-import {
-  MeetingUser,
-  MeetingUserDocument,
-} from '../schemas/meeting-user.schema';
+import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { MeetingDocument } from '../schemas/meeting.schema';
-import { throwWsError, wsError } from '../utils/ws/wsError';
+import { subscribeWsError, throwWsError, wsError } from '../utils/ws/wsError';
 import { ReconnectDto } from '../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
@@ -84,7 +74,7 @@ import { PassAuth } from '../utils/decorators/passAuth.decorator';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
-import { WsBadRequestException } from '../exceptions/ws.exception';
+import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -235,22 +225,12 @@ export class MeetingsGateway
     console.log('disconnect', client.id);
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersService.findOne({
+        const user = await this.usersComponent.findOne({
           query: { socketId: client.id },
           session,
         });
-        if (!user) {
-          throw new WsBadRequestException(
-            MeetingNativeErrorEnum.USER_NOT_FOUND,
-          );
-        }
 
-        await user.populate('meeting');
-        if (!user.meeting) {
-          throw new WsBadRequestException(
-            MeetingNativeErrorEnum.MEETING_NOT_FOUND,
-          );
-        }
+        await this.usersComponent.findMeetingFromPopulateUser(user);
 
         const userId = user._id.toString();
         let meeting = await this.usersComponent.findMeetingFromPopulateUser(
@@ -330,22 +310,14 @@ export class MeetingsGateway
   }
 
   @PassAuth()
-  @SubscribeMessage(MeetingSubscribeEvents.OnJoinWaitingRoom)
+  @WsEvent(MeetingSubscribeEvents.OnJoinWaitingRoom)
   async handleJoinWaitingRoom(
     @MessageBody() message: JoinMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const eventName = 'handleJoinWaitingRoom event';
-        console.time(eventName);
-        this.logger.debug({
-          message: eventName,
-          ctx: message,
-        });
-
-        this.logger.debug(`User joined meeting ${message.templateId}`);
-
+        subscribeWsError(socket);
         socket.join(`waitingRoom:${message.templateId}`);
 
         const template = await this.coreService.findMeetingTemplateById({
@@ -445,7 +417,6 @@ export class MeetingsGateway
             users: plainUsers,
           },
         );
-        console.timeEnd(eventName);
         return wsResult({
           meeting: plainMeeting,
           user: plainUser,
@@ -458,20 +429,14 @@ export class MeetingsGateway
   }
 
   @Roles([MeetingRole.Host])
-  @SubscribeMessage(MeetingSubscribeEvents.OnStartMeeting)
+  @WsEvent(MeetingSubscribeEvents.OnStartMeeting)
   async startMeeting(
     @MessageBody() message: StartMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    const eventName = 'startMeeting event';
-    console.time(eventName);
-    this.logger.log({
-      message: eventName,
-      ctx: message,
-    });
-
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         this.taskService.deleteTimeout({
           name: `meeting:finish:${message.meetingId}`,
         });
@@ -605,7 +570,6 @@ export class MeetingsGateway
             users: plainUsers,
           },
         );
-        console.timeEnd(eventName);
 
         return wsResult({
           user: plainUser,
@@ -619,19 +583,16 @@ export class MeetingsGateway
   }
 
   @Roles([MeetingRole.Participant])
-  @SubscribeMessage(MeetingSubscribeEvents.OnSendAccessRequest)
+  @WsEvent(MeetingSubscribeEvents.OnSendAccessRequest)
   async sendEnterMeetingRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.log({
-      message: 'sendEnterMeetingRequest event',
-      ctx: message,
-    });
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
         try {
+          subscribeWsError(socket);
           const {
             user: { meetingAvatarId },
           } = message;
@@ -727,18 +688,14 @@ export class MeetingsGateway
   }
 
   @Roles([MeetingRole.Participant])
-  @SubscribeMessage(MeetingSubscribeEvents.OnCancelAccessRequest)
+  @WsEvent(MeetingSubscribeEvents.OnCancelAccessRequest)
   async cancelAccessRequest(
     @MessageBody() message: EnterMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.log({
-      message: 'cancelAccessRequest event',
-      ctx: message,
-    });
-
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         if (!message.meetingId) return { success: true };
 
         const meeting = await this.meetingsService.findById(
@@ -786,18 +743,14 @@ export class MeetingsGateway
   }
 
   @Roles([MeetingRole.Lurker])
-  @SubscribeMessage(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
+  @WsEvent(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
   async joinMeetingWithLurker(
     @MessageBody() msg: LurkerJoinMeetingDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.debug({
-      message: `[${MeetingSubscribeEvents.OnJoinMeetingWithLurker} event]`,
-      ctx: msg,
-    });
-
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const meeting = await this.meetingsService.findById(
           msg.meetingId,
           session,
@@ -882,18 +835,14 @@ export class MeetingsGateway
   }
 
   @Roles([MeetingRole.Host])
-  @SubscribeMessage(MeetingSubscribeEvents.OnAnswerAccessRequest)
+  @WsEvent(MeetingSubscribeEvents.OnAnswerAccessRequest)
   async sendAccessAnswer(
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
     @ConnectedSocket() socket: Socket,
-  ): Promise<void> {
-    this.logger.debug({
-      message: `[${MeetingSubscribeEvents.OnAnswerAccessRequest}] event`,
-      ctx: message,
-    });
-
+  ): Promise<ResponseSumType<void>> {
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const meeting = await this.meetingsService.findById(
           message.meetingId,
           session,
@@ -1044,18 +993,14 @@ export class MeetingsGateway
     }
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnEndMeeting)
+  @WsEvent(MeetingSubscribeEvents.OnEndMeeting)
   async endMeeting(
     @MessageBody() message: EndMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.debug({
-      message: `[${MeetingSubscribeEvents.OnEndMeeting}] event`,
-      ctx: message,
-    });
-
-    try {
-      return withTransaction(this.connection, async (session) => {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        subscribeWsError(socket);
         if (!socket) return;
         const meeting = await this.meetingsService.findById(
           message.meetingId,
@@ -1063,7 +1008,6 @@ export class MeetingsGateway
         );
 
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
 
         meeting.endsAt = Date.now();
         meeting.save();
@@ -1094,10 +1038,10 @@ export class MeetingsGateway
         await this.updateTimeForHost(socket, meeting, session);
 
         return wsResult();
-      });
-    } catch (error) {
-      return wsError(socket, error);
-    }
+      } catch (error) {
+        return wsError(socket, error);
+      }
+    });
   }
 
   async handleTimeLimitForHost({ user, meeting, session }) {
@@ -1116,18 +1060,14 @@ export class MeetingsGateway
     }
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnLeaveMeeting)
+  @WsEvent(MeetingSubscribeEvents.OnLeaveMeeting)
   async leaveMeeting(
     @MessageBody() message: LeaveMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    const event = 'leaveMeeting event';
-    this.logger.log({
-      message: event,
-      ctx: message,
-    });
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
           session,
@@ -1185,17 +1125,14 @@ export class MeetingsGateway
   }
 
   @PassAuth()
-  @SubscribeMessage(MeetingSubscribeEvents.OnReconnect)
+  @WsEvent(MeetingSubscribeEvents.OnReconnect)
   async reconnect(
     @MessageBody() msg: ReconnectDto,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        console.log('Event Recconnect', {
-          message: msg,
-          ctx: client.id,
-        });
+        subscribeWsError(socket);
         const { meetingUserId } = msg;
 
         const user = await this.usersComponent.findOne({
@@ -1209,7 +1146,7 @@ export class MeetingsGateway
         await this.usersComponent.findMeetingFromPopulateUser(user);
 
         const updateData = {
-          socketId: client.id,
+          socketId: socket.id,
           accessStatus: MeetingAccessStatusEnum.InMeeting,
         };
 
@@ -1248,7 +1185,7 @@ export class MeetingsGateway
 
         await meeting.populate(['users']);
         const meetingId = meeting._id.toString();
-        client.join(`meeting:${meetingId}`);
+        socket.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
         const plainUsers = userSerialization(meeting.users);
@@ -1273,26 +1210,24 @@ export class MeetingsGateway
           users: plainUsers,
         });
       } catch (err) {
-        throw new WsBadRequestException(err);
+        return wsError(socket, err);
       }
     });
   }
 
   @Roles([MeetingRole.Host])
-  @SubscribeMessage(UsersSubscribeEvents.OnChangeHost)
+  @WsEvent(UsersSubscribeEvents.OnChangeHost)
   async changeHost(
     @MessageBody() message: ChangeHostDto,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersService.findById(message.userId, session);
-
-        if (!user) {
-          return wsError(socket, {
-            message: '[changeHost]: no user found',
-          });
-        }
+        subscribeWsError(socket);
+        const user = await this.usersComponent.findById({
+          id: message.userId,
+          session,
+        });
 
         const profileUser = await this.coreService.findUserById({
           userId: user.profileId,
@@ -1470,18 +1405,14 @@ export class MeetingsGateway
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnUpdateMeeting)
+  @WsEvent(MeetingSubscribeEvents.OnUpdateMeeting)
   async updateMeeting(
     @MessageBody() message: UpdateMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.log({
-      message: 'updateMeeting event',
-      ctx: message,
-    });
-
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
           session,
@@ -1540,81 +1471,71 @@ export class MeetingsGateway
     }
   }
 
-  @SubscribeMessage(VideoChatSubscribeEvents.SendOffer)
-  async sendOffer(@MessageBody() message: SendOfferRequestDto): Promise<void> {
-    this.logger.log({
-      message: `[${VideoChatSubscribeEvents.SendOffer} event]`,
-      ctx: {
-        userId: message.userId,
-        socketId: message.socketId,
-      },
-    });
+  @WsEvent(VideoChatSubscribeEvents.SendOffer)
+  async sendOffer(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: SendOfferRequestDto,
+  ): Promise<ResponseSumType<void>> {
+    try {
+      subscribeWsError(socket);
+      this.emitToSocketId(
+        message.socketId,
+        VideoChatEmitEvents.GetOffer,
+        message,
+      );
 
-    this.emitToSocketId(
-      message.socketId,
-      VideoChatEmitEvents.GetOffer,
-      message,
-    );
-
-    return;
+      return;
+    } catch (err) {
+      return wsError(socket, err);
+    }
   }
 
-  @SubscribeMessage(VideoChatSubscribeEvents.SendAnswer)
+  @WsEvent(VideoChatSubscribeEvents.SendAnswer)
   async sendAnswer(
+    @ConnectedSocket() socket: Socket,
     @MessageBody() message: SendAnswerOfferRequestDto,
-  ): Promise<void> {
-    this.logger.log({
-      message: `[${VideoChatSubscribeEvents.SendAnswer} event]`,
-      ctx: {
-        userId: message.userId,
-        socketId: message.socketId,
-      },
-    });
+  ): Promise<ResponseSumType<void>> {
+    try {
+      subscribeWsError(socket);
+      this.emitToSocketId(
+        message.socketId,
+        VideoChatEmitEvents.GetAnswer,
+        message,
+      );
 
-    this.emitToSocketId(
-      message.socketId,
-      VideoChatEmitEvents.GetAnswer,
-      message,
-    );
-
-    return;
+      return;
+    } catch (err) {
+      return wsError(socket, err);
+    }
   }
 
-  @SubscribeMessage(VideoChatSubscribeEvents.SendIceCandidate)
+  @WsEvent(VideoChatSubscribeEvents.SendIceCandidate)
   async sendIceCandidate(
+    @ConnectedSocket() socket: Socket,
     @MessageBody() message: SendIceCandidateRequestDto,
-  ): Promise<void> {
-    this.logger.log({
-      message: `[${VideoChatSubscribeEvents.SendIceCandidate} event]`,
-      ctx: {
-        userId: message.userId,
-        socketId: message.socketId,
-      },
-    });
+  ): Promise<ResponseSumType<void>> {
+    try {
+      subscribeWsError(socket);
+      this.emitToSocketId(
+        message.socketId,
+        VideoChatEmitEvents.GetIceCandidate,
+        message,
+      );
 
-    this.emitToSocketId(
-      message.socketId,
-      VideoChatEmitEvents.GetIceCandidate,
-      message,
-    );
-
-    return;
+      return;
+    } catch (err) {
+      return wsError(socket, err);
+    }
   }
 
-  @SubscribeMessage(VideoChatSubscribeEvents.SendDevicesPermissions)
+  @WsEvent(VideoChatSubscribeEvents.SendDevicesPermissions)
   async updateDevicesPermissions(
     @MessageBody() message: SendDevicesPermissionsRequestDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.logger.log({
-      message: `[${VideoChatSubscribeEvents.SendDevicesPermissions} event]`,
-      ctx: {
-        userId: message.userId,
-      },
-    });
-
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const user = await this.usersComponent.findOneAndUpdate({
           query: {
             _id: message.userId,

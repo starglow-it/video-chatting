@@ -6,7 +6,7 @@ export type WsError = {
   message?: string;
 };
 
-export function wsError(client: Socket, err: unknown) {
+export function wsError(client: Socket, err: unknown): WsError {
   const error = err['message'] as string | object;
   const details =
     error instanceof Object
@@ -20,15 +20,13 @@ export function wsError(client: Socket, err: unknown) {
     error: details,
   });
   console.error(err['stack']);
-  
 
-  client?.send({
+  return {
     success: false,
     ...(details.i18nMsg && {
       message: details.i18nMsg,
     }),
-  });
-  return;
+  };
 }
 
 export const throwWsError = (condition: boolean, message: string) => {
@@ -36,3 +34,6 @@ export const throwWsError = (condition: boolean, message: string) => {
     throw new WsBadRequestException(message);
   }
 };
+
+export const subscribeWsError = (socket: Socket) =>
+  throwWsError(socket.data.error, socket.data.error);

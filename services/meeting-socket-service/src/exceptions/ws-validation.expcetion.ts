@@ -1,4 +1,4 @@
-import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
+import { WsException } from '@nestjs/websockets';
 import { ValidationError } from 'class-validator';
 
 export class WsValidationException extends WsException {
