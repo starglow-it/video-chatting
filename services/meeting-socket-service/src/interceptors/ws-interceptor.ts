@@ -9,8 +9,8 @@ import { Reflector } from '@nestjs/core';
 import { Observable, catchError, map } from 'rxjs';
 import { ResponseSumType } from 'shared-types';
 import { Socket } from 'socket.io';
-import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
-import { WsBadRequestException } from 'src/exceptions/ws.exception';
+import { WsValidationException } from '../exceptions/ws-validation.expcetion';
+import { WsBadRequestException } from '../exceptions/ws.exception';
 import { WS_EVENT } from '../utils/decorators/wsEvent.decorator';
 
 @Injectable()
