@@ -38,10 +38,12 @@ import {
     $isCameraActiveStore,
     $isMicActiveStore,
     $isOwner,
+    $isOwnerInMeeting,
     $isStreamRequestedStore,
     $isUserSendEnterRequest,
     $localUserStore,
     $meetingTemplateStore,
+    $meetingUsersStore,
     $videoDevicesStore,
     $videoErrorStore,
     joinMeetingEvent,
@@ -99,6 +101,8 @@ const Component = () => {
     const isEnterWaitingRoomRequestPending = useStore(
         sendEnterWaitingRoomSocketEvent.pending,
     );
+    const meetingUsers = useStore($meetingUsersStore);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
@@ -195,11 +199,14 @@ const Component = () => {
     const isAudioError = Boolean(audioError);
     const isVideoError = Boolean(videoError);
 
+    const isAccessStatusWaiting =
+        localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
+
     const isEnterMeetingDisabled =
         isAudioError ||
         isEnterMeetingRequestPending ||
         isEnterWaitingRoomRequestPending ||
-        localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
+        isAccessStatusWaiting;
 
     const isPayWallBeforeJoin =
         enabledPaymentPaywallParticipant && waitingPaywall;
@@ -225,9 +232,7 @@ const Component = () => {
             '_blank',
         );
     };
-
-    console.log('#Duy Phan console', isUserSentEnterRequest);
-    console.log('#Duy Phan console', localUser.accessStatus)
+    console.log('#Duy Phan console', isOwnerInMeeting)
 
     return (
         <>
@@ -283,33 +288,78 @@ const Component = () => {
                         >
                             {isUserSentEnterRequest ||
                             (!isUserSentEnterRequest &&
-                                localUser.accessStatus ===
-                                    MeetingAccessStatusEnum.Waiting) ? (
+                                isAccessStatusWaiting) ? (
                                 <>
-                                    <CustomGrid container direction="column">
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.title'
-                                                    : 'requestSent'
+                                    <ConditionalRender
+                                        condition={isAccessStatusWaiting}
+                                    >
+                                        <ConditionalRender
+                                            condition={!meetingUsers.length}
+                                        >
+                                            <CustomGrid
+                                                container
+                                                direction="column"
+                                            >
+                                                <CustomTypography
+                                                    className={styles.title}
+                                                    variant="h3bold"
+                                                    nameSpace="meeting"
+                                                    translation="meetingNotStarted.title"
+                                                />
+                                                <CustomTypography
+                                                    variant="body1"
+                                                    color="text.secondary"
+                                                    nameSpace="meeting"
+                                                    translation="meetingNotStarted.text"
+                                                />
+                                            </CustomGrid>
+                                        </ConditionalRender>
+                                        <ConditionalRender
+                                            condition={
+                                                !!meetingUsers.length &&
+                                                !isOwnerInMeeting
                                             }
-                                        />
-                                        <CustomTypography
-                                            variant="body1"
-                                            color="text.secondary"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.text'
-                                                    : 'enterPermission'
-                                            }
-                                        />
-                                    </CustomGrid>
+                                        >
+                                            <CustomGrid
+                                                container
+                                                direction="column"
+                                            >
+                                                <CustomTypography
+                                                    className={styles.title}
+                                                    variant="h3bold"
+                                                    nameSpace="meeting"
+                                                    translation="hostLeftRoom.title"
+                                                />
+                                                <CustomTypography
+                                                    variant="body1"
+                                                    color="text.secondary"
+                                                    nameSpace="meeting"
+                                                    translation="hostLeftRoom.text"
+                                                />
+                                            </CustomGrid>
+                                        </ConditionalRender>
+                                    </ConditionalRender>
+                                    <ConditionalRender
+                                        condition={!isAccessStatusWaiting}
+                                    >
+                                        <CustomGrid
+                                            container
+                                            direction="column"
+                                        >
+                                            <CustomTypography
+                                                className={styles.title}
+                                                variant="h3bold"
+                                                nameSpace="meeting"
+                                                translation="requestSent"
+                                            />
+                                            <CustomTypography
+                                                variant="body1"
+                                                color="text.secondary"
+                                                nameSpace="meeting"
+                                                translation="enterPermission"
+                                            />
+                                        </CustomGrid>
+                                    </ConditionalRender>
                                     <ConditionalRender
                                         condition={isUserSentEnterRequest}
                                     >
@@ -335,10 +385,7 @@ const Component = () => {
                                         </CustomGrid>
                                     </ConditionalRender>
                                     <ConditionalRender
-                                        condition={
-                                            localUser.accessStatus ===
-                                            MeetingAccessStatusEnum.Waiting
-                                        }
+                                        condition={isAccessStatusWaiting}
                                     >
                                         <CustomGrid
                                             className={styles.titleLeaveMessage}
