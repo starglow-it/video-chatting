@@ -209,5 +209,6 @@
   "role": {
     "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
     "tooltipLurker": "Invite up to 1000 Audience members. They view & hear Participants."
-  }
+  },
+  "waitForTheHost": "Waiting for the Host"
 }

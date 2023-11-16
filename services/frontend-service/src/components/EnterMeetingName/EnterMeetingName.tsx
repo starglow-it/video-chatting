@@ -30,6 +30,7 @@ import {
     $isLurker,
     $isMeetingSocketConnecting,
     $isOwner,
+    $isOwnerInMeeting,
     $localUserStore,
     $meetingTemplateStore,
     joinLurkerMeetingSocketEvent,
@@ -60,6 +61,7 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
         fullName: string;
@@ -129,7 +131,7 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender condition={!isJoinPaywall}>
+            <ConditionalRender condition={!isJoinPaywall && isOwnerInMeeting}>
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="meeting"
@@ -202,6 +204,14 @@ const Component = () => {
                         />
                     </form>
                 </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={!isJoinPaywall && !isOwnerInMeeting}>
+                <CustomTypography
+                    variant="h3bold"
+                    nameSpace="meeting"
+                    textAlign="center"
+                    translation="waitForTheHost"
+                />
             </ConditionalRender>
             <ConditionalRender condition={isJoinPaywall}>
                 <MeetingPaywall onPaymentSuccess={handlePaymentSuccess} />
