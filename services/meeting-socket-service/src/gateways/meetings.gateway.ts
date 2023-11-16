@@ -74,7 +74,7 @@ import { PassAuth } from '../utils/decorators/passAuth.decorator';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
-import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -193,8 +193,9 @@ export class MeetingsGateway
       return;
     }
 
-    if (!isMeetingHost) return;
-    await this.setTimeoutFinishMeeting(meeting);
+    if (isMeetingHost) {
+      await this.setTimeoutFinishMeeting(meeting);
+    }
 
     await notifyParticipantsMeetingInfo({
       meeting,
@@ -564,6 +565,15 @@ export class MeetingsGateway
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
           MeetingEmitEvents.UpdateMeeting,
           {
             meeting: plainMeeting,
@@ -1000,8 +1010,8 @@ export class MeetingsGateway
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        subscribeWsError(socket);
         if (!socket) return;
+        subscribeWsError(socket);
         const meeting = await this.meetingsService.findById(
           message.meetingId,
           session,
@@ -1235,18 +1245,14 @@ export class MeetingsGateway
 
         await user.populate([{ path: 'meeting', populate: 'hostUserId' }]);
 
-        if (
+        throwWsError(
           profileUser &&
-          profileUser?.maxMeetingTime === 0 &&
-          [PlanKeys.House, PlanKeys.Professional].includes(
-            profileUser?.subscriptionPlanKey,
-          )
-        ) {
-          return {
-            success: false,
-            message: 'meeting.userHasNoTimeLeft',
-          };
-        }
+            profileUser?.maxMeetingTime === 0 &&
+            [PlanKeys.House, PlanKeys.Professional].includes(
+              profileUser?.subscriptionPlanKey,
+            ),
+          'meeting.userHasNoTimeLeft',
+        );
 
         const meeting = await this.meetingsService.findById(
           user.meeting._id,

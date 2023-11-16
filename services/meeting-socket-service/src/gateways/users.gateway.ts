@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Connection } from 'mongoose';
@@ -48,6 +47,7 @@ import { wsResult } from '../utils/ws/wsResult';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
 import { MeetingNativeErrorEnum } from 'shared-const';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
@@ -116,7 +116,7 @@ export class UsersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
+  @WsEvent(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
     @MessageBody() message: UpdateUserRequestDTO,
     @ConnectedSocket() socket: Socket,
@@ -177,7 +177,7 @@ export class UsersGateway extends BaseGateway {
   }
 
   @Roles([MeetingRole.Host])
-  @SubscribeMessage(UsersSubscribeEvents.OnRemoveUser)
+  @WsEvent(UsersSubscribeEvents.OnRemoveUser)
   async removeUser(
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: RemoveUserRequestDTO,

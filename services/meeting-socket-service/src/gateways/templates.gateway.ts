@@ -17,7 +17,7 @@ import { UpdatePaymentRequestDto } from '../dtos/requests/payment/update-payment
 import { Roles } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
 import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
-import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 
 @WebSocketGateway({
   transports: ['websocket'],

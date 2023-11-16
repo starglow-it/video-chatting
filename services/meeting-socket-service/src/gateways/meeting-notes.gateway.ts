@@ -20,8 +20,8 @@ import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
 import { subscribeWsError, wsError } from '../utils/ws/wsError';
-import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
-import { wsResult } from 'src/utils/ws/wsResult';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { wsResult } from '../utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],

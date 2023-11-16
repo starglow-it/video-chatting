@@ -29,8 +29,8 @@ import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UnReactMeetingChatRequestDto } from '../dtos/requests/chats/unreact-meeting-chat.dto';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { UsersComponent } from '../modules/users/users.component';
-import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
-import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { subscribeWsError, wsError } from '../utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],

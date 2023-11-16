@@ -47,7 +47,7 @@ import { CoreService } from '../services/core/core.service';
 import { UserActionInMeeting } from '../types';
 import { BaseGateway } from './base.gateway';
 import { UsersComponent } from '../modules/users/users.component';
-import { WsEvent } from 'src/utils/decorators/wsEvent.decorator';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 
 type TRequestSwitchRoleParams = {
