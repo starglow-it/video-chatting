@@ -28,6 +28,10 @@ jobs:
         with:
           ref: staging
 
+      - name: Cleanup before deploy
+        run: |
+          sh -c "if [ $(df / --output='pcent' | grep -o "[0-9]*") -gt 80 ]; then docker system prune -f; fi"
+
       - name: Update Traefik
         run: |
           cd deploy/staging
