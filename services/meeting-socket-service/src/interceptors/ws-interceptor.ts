@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable, catchError, map } from 'rxjs';
+import { ResponseSumType } from 'shared-types';
 import { Socket } from 'socket.io';
 import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
 import { WsBadRequestException } from 'src/exceptions/ws.exception';
@@ -16,7 +17,7 @@ import { WS_EVENT } from 'src/utils/decorators/wsEvent.decorator';
 export class WsInterceptor implements NestInterceptor {
   constructor(private readonly reflect: Reflector) {}
   private logger = new Logger(WsInterceptor.name);
-  intercept(context: ExecutionContext, next: CallHandler): Observable<void> {
+  intercept(context: ExecutionContext, next: CallHandler<ResponseSumType<any>>): Observable<ResponseSumType<any>> {
     const client = context.switchToWs().getClient() as Socket;
     const eventName = this.reflect.getAllAndOverride<string>(WS_EVENT, [
       context.getHandler(),
