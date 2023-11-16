@@ -28,6 +28,10 @@
     "title": "Meeting has not \nstarted yet",
     "text": "Please wait for the host arrival"
   },
+  "hostLeftRoom": {
+    "title": "Host has left the room",
+    "text": "You can leave a message"
+  },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
   "cam": "Camera",

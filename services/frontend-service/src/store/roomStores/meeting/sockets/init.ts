@@ -8,11 +8,7 @@ import {
     MeetingRole,
 } from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
-import {
-    $isUserSendEnterRequest,
-    $meetingTemplateStore,
-    setIsUserSendEnterRequest,
-} from '../meetingTemplate/model';
+import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
     $localUserStore,
     updateLocalUserEvent,
@@ -20,7 +16,6 @@ import {
 import { $profileStore } from '../../../profile/profile/model';
 import {
     emitEnterMeetingEvent,
-    emitEnterWaitingRoom,
     endMeetingSocketEvent,
     enterMeetingRequestSocketEvent,
     joinWaitingRoomSocketEvent,
@@ -271,12 +266,12 @@ sample({
     target: sendEnterMeetingRequestSocketEvent,
 });
 
-sample({
-    clock: emitEnterWaitingRoom,
-    source: $isUserSendEnterRequest,
-    filter: isUserSendEnterRequest => !isUserSendEnterRequest,
-    target: sendEnterWaitingRoomSocketEvent,
-});
+// sample({
+//     clock: emitEnterWaitingRoom,
+//     source: $isUserSendEnterRequest,
+//     filter: isUserSendEnterRequest => !isUserSendEnterRequest,
+//     target: sendEnterWaitingRoomSocketEvent,
+// });
 
 const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
     if (data?.user) updateLocalUserEvent(data?.user);
@@ -287,7 +282,7 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
 const handleMeetingEventsError = (data: string) => {
     if (data) {
         setMeetingErrorEvent(data);
-        setIsUserSendEnterRequest(false);
+        updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Waiting });
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
@@ -324,11 +319,11 @@ sample({
     target: initVideoChatEvent,
 });
 
-sample({
-    clock: sendEnterMeetingRequestSocketEvent.doneData,
-    fn: () => true,
-    target: setIsUserSendEnterRequest,
-});
+// sample({
+//     clock: sendEnterMeetingRequestSocketEvent.doneData,
+//     fn: () => true,
+//     target: setIsUserSendEnterRequest,
+// });
 
 sample({
     clock: sendEnterWaitingRoomSocketEvent.doneData,
@@ -336,11 +331,11 @@ sample({
     target: updateLocalUserEvent,
 });
 
-sample({
-    clock: cancelAccessMeetingRequestSocketEvent.doneData,
-    fn: () => false,
-    target: setIsUserSendEnterRequest,
-});
+// sample({
+//     clock: cancelAccessMeetingRequestSocketEvent.doneData,
+//     fn: () => false,
+//     target: setIsUserSendEnterRequest,
+// });
 
 initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     socketInstance?.on(

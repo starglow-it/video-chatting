@@ -211,12 +211,12 @@ const Component = () => {
                     },
                 })),
                 mediaLink: data.youtubeUrl
-                ? {
-                      src: data.youtubeUrl,
-                      thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
-                      platform: 'youtube',
-                  }
-                : null
+                    ? {
+                          src: data.youtubeUrl,
+                          thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                          platform: 'youtube',
+                      }
+                    : null,
             };
 
             await editTemplateFx({

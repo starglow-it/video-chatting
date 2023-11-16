@@ -131,7 +131,7 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender condition={!isJoinPaywall && isOwnerInMeeting}>
+            <ConditionalRender condition={!isJoinPaywall && !isLurker}>
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="meeting"
@@ -205,7 +205,9 @@ const Component = () => {
                     </form>
                 </CustomGrid>
             </ConditionalRender>
-            <ConditionalRender condition={!isJoinPaywall && !isOwnerInMeeting}>
+            <ConditionalRender
+                condition={!isJoinPaywall && !isOwnerInMeeting && isLurker}
+            >
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="meeting"

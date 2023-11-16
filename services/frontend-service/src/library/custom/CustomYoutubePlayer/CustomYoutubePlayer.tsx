@@ -77,7 +77,7 @@ export const CustomYoutubePlayer = ({
                     showinfo: 0,
                     modestbranding: 1,
                     fs: 1,
-                    allowfullscreen: 1
+                    allowfullscreen: 1,
                 },
             }}
             onReady={onReady}
