@@ -17,7 +17,10 @@ import { WS_EVENT } from '../utils/decorators/wsEvent.decorator';
 export class WsInterceptor implements NestInterceptor {
   constructor(private readonly reflect: Reflector) {}
   private logger = new Logger(WsInterceptor.name);
-  intercept(context: ExecutionContext, next: CallHandler<ResponseSumType<any>>): Observable<ResponseSumType<any>> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<ResponseSumType<any>>,
+  ): Observable<ResponseSumType<any>> {
     const client = context.switchToWs().getClient() as Socket;
     const eventName = this.reflect.getAllAndOverride<string>(WS_EVENT, [
       context.getHandler(),

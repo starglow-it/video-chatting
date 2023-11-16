@@ -1,4 +1,5 @@
 import { PopulateOptions } from 'mongoose';
+import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 
 export type CustomPopulateOptions =
   | string
@@ -18,3 +19,8 @@ export type UserActionInMeetingParams = {
     replaceItem: string | null;
   };
 };
+
+export type SocketData = Partial<{
+  user: MeetingUserDocument;
+  error: any;
+}>;
