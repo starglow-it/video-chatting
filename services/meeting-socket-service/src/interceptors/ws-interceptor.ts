@@ -11,7 +11,7 @@ import { ResponseSumType } from 'shared-types';
 import { Socket } from 'socket.io';
 import { WsValidationException } from 'src/exceptions/ws-validation.expcetion';
 import { WsBadRequestException } from 'src/exceptions/ws.exception';
-import { WS_EVENT } from 'src/utils/decorators/wsEvent.decorator';
+import { WS_EVENT } from '../utils/decorators/wsEvent.decorator';
 
 @Injectable()
 export class WsInterceptor implements NestInterceptor {
