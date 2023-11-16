@@ -15,7 +15,10 @@ import { IUserTemplate } from 'shared-types';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';
-import { UpdateModelSingleQuery } from '../../types/mongoose';
+import {
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
+} from '../../types/mongoose';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 
 @Injectable()
@@ -111,11 +114,16 @@ export class UsersService {
     return;
   }
 
-  async findUsers(
+  async findUsers({
     query,
-    { session }: ITransactionSession,
-  ): Promise<MeetingUserDocument[]> {
-    return this.meetingUser.find(query, {}, { session }).exec();
+    populatePaths,
+    session: { session },
+  }: GetModelMultipleQuery<MeetingUserDocument>): Promise<
+    MeetingUserDocument[]
+  > {
+    return this.meetingUser
+      .find(query, {}, { session, populate: populatePaths })
+      .exec();
   }
 
   async updateSizeAndPositionForUser({

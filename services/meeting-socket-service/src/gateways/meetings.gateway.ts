@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, Types } from 'mongoose';
+import { Connection, PopulateOptions, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 
 import { BaseGateway } from './base.gateway';
@@ -152,15 +152,24 @@ export class MeetingsGateway
       await meeting.save({ session: session.session });
     }
 
-    const meetingUsers = await this.usersService.findUsers(
-      {
+    const meetingId = meeting._id.toString();
+    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
+
+    const meetingUsers = await this.usersService.findUsers({
+      query: {
         meeting: meeting.id,
         accessStatus: {
-          $in: [MeetingAccessStatusEnum.InMeeting],
+          $in: [
+            MeetingAccessStatusEnum.InMeeting,
+            ...(isMeetingHost &&
+            user.accessStatus === MeetingAccessStatusEnum.Disconnected
+              ? [...MeetingAccessStatusEnum.Disconnected]
+              : []),
+          ],
         },
       },
       session,
-    );
+    });
 
     const activeParticipants = meetingUsers.length;
 
@@ -170,9 +179,6 @@ export class MeetingsGateway
       ratingKey: 'minutes',
       value: timeToAdd,
     });
-
-    const meetingId = meeting._id.toString();
-    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
 
     await this.meetingsCommonService.handleUserLoggedInDisconnect({
       isMeetingHost,
@@ -220,6 +226,25 @@ export class MeetingsGateway
       session,
     });
     return msg;
+  }
+
+  private populateUsersInMeeting(
+    meeting: MeetingDocument,
+  ): string | PopulateOptions | (string | PopulateOptions)[] {
+    return {
+      path: 'users',
+      match: {
+        meeting: meeting._id,
+        accessStatus: {
+          $in: [
+            MeetingAccessStatusEnum.RequestSent,
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.SwitchRoleSent,
+            MeetingAccessStatusEnum.EnterName,
+          ],
+        },
+      },
+    };
   }
 
   async handleDisconnect(client: Socket) {
@@ -347,7 +372,7 @@ export class MeetingsGateway
           );
         }
 
-        throwWsError(!meeting, '[handleJoinWaitingRoom] no meeting found');
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         if (template.user) {
           const mainUser = await this.coreService.findUserById({
@@ -404,7 +429,7 @@ export class MeetingsGateway
         meeting.users.push(user.id);
         meeting.save();
 
-        await meeting.populate('users');
+        await meeting.populate(this.populateUsersInMeeting(meeting));
 
         const plainMeeting = meetingSerialization(meeting);
         const plainUser = userSerialization(user);
