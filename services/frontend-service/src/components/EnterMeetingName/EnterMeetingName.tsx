@@ -131,7 +131,7 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender condition={!isJoinPaywall && !isLurker}>
+            <ConditionalRender condition={!isJoinPaywall && (!isLurker || isOwnerInMeeting)}>
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="meeting"

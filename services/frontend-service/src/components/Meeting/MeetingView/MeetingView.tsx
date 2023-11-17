@@ -51,6 +51,7 @@ import {
 } from '../../../store';
 import {
     $isOwner,
+    $isOwnerInMeeting,
     $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
@@ -87,6 +88,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
@@ -105,6 +107,15 @@ const Component = () => {
             });
         }
     }, [isOwner, isMobile]);
+
+    useEffect(() => {
+        if (!isOwnerInMeeting && isMeetingConnected) {
+            addNotificationEvent({
+                type: NotificationType.HostChanged,
+                message: 'Host has left the room.',
+            });
+        }
+    }, [isOwnerInMeeting]);
 
     useEffect(() => {
         if (
