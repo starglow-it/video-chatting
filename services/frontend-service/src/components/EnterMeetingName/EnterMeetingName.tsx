@@ -134,13 +134,6 @@ const Component = () => {
         }
     }, []);
 
-    if (
-        !isSocketConnected ||
-        isMeetingSocketConnecting ||
-        isJoinWaitingRoomPending
-    )
-        return <CustomLoader className={styles.loader} />;
-
     return (
         <CustomGrid
             container
@@ -226,24 +219,34 @@ const Component = () => {
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender condition={!isJoinPaywall && isLurker}>
-                <ConditionalRender
-                    condition={!isOwnerInMeeting && isHasMeeting}
-                >
-                    <CustomTypography
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        textAlign="center"
-                        translation="waitForTheHost"
-                    />
-                </ConditionalRender>
-                <ConditionalRender condition={!isHasMeeting}>
-                    <CustomTypography
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        textAlign="center"
-                        translation="meetingNotStarted.title"
-                    />
-                </ConditionalRender>
+                {!(
+                    isSocketConnected &&
+                    !isMeetingSocketConnecting &&
+                    !isJoinWaitingRoomPending
+                ) ? (
+                    <CustomLoader className={styles.loader} />
+                ) : (
+                    <>
+                        <ConditionalRender
+                            condition={!isOwnerInMeeting && isHasMeeting}
+                        >
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                textAlign="center"
+                                translation="waitForTheHost"
+                            />
+                        </ConditionalRender>
+                        <ConditionalRender condition={!isHasMeeting}>
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                textAlign="center"
+                                translation="meetingNotStarted.title"
+                            />
+                        </ConditionalRender>
+                    </>
+                )}
             </ConditionalRender>
             <ConditionalRender condition={isJoinPaywall}>
                 <MeetingPaywall onPaymentSuccess={handlePaymentSuccess} />
