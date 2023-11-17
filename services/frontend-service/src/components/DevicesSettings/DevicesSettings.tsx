@@ -243,6 +243,59 @@ const Component = () => {
         );
     };
 
+    const renderMeetingNotStartedYet = () => {
+        return (
+            <>
+                <ConditionalRender condition={!isHasMeeting}>
+                    <CustomGrid container direction="column">
+                        <CustomTypography
+                            className={styles.title}
+                            variant="h3bold"
+                            nameSpace="meeting"
+                            translation="meetingNotStarted.title"
+                        />
+                        <CustomTypography
+                            variant="body1"
+                            color="text.secondary"
+                            nameSpace="meeting"
+                            translation="meetingNotStarted.text"
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
+                <CustomGrid className={styles.titleLeaveMessage}>
+                    <span>Leave a Message</span>
+                </CustomGrid>
+                <CustomGrid className={styles.actions} gap={2}>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToDefault}
+                    >
+                        <CustomImage
+                            src="/images/default-gmail.jpg"
+                            width={60}
+                            height={60}
+                            objectFit="cover"
+                        />
+                        <span>Default Email</span>
+                    </CustomGrid>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToGmail}
+                    >
+                        <CustomImage
+                            src="/images/gmail.png"
+                            alt=""
+                            width={52}
+                            height={52}
+                            objectFit="cover"
+                        />
+                        <span>Gmail</span>
+                    </CustomGrid>
+                </CustomGrid>
+            </>
+        );
+    };
+
     const renderMainContent = () => {
         switch (localUser.accessStatus) {
             case MeetingAccessStatusEnum.Settings:
@@ -278,36 +331,43 @@ const Component = () => {
             case MeetingAccessStatusEnum.RequestSent:
                 return (
                     <>
-                        <CustomGrid container direction="column">
-                            <CustomTypography
-                                className={styles.title}
-                                variant="h3bold"
-                                nameSpace="meeting"
-                                translation="requestSent"
-                            />
-                            <CustomTypography
-                                variant="body1"
-                                color="text.secondary"
-                                nameSpace="meeting"
-                                translation="enterPermission"
-                            />
-                        </CustomGrid>
-                        <CustomGrid
-                            container
-                            alignItems="center"
-                            direction={isMobile ? 'row' : 'column-reverse'}
-                            className={clsx(styles.loader, {
-                                [styles.mobile]: isMobile,
-                            })}
-                            gap={1}
+                        <ConditionalRender
+                            condition={isHasMeeting && isOwnerInMeeting}
                         >
-                            <CustomLoader />
-                            <CustomTypography
-                                color="colors.orange.primary"
-                                nameSpace="meeting"
-                                translation="waitForHost"
-                            />
-                        </CustomGrid>
+                            <CustomGrid container direction="column">
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="requestSent"
+                                />
+                                <CustomTypography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    nameSpace="meeting"
+                                    translation="enterPermission"
+                                />
+                            </CustomGrid>
+                            <CustomGrid
+                                container
+                                alignItems="center"
+                                direction={isMobile ? 'row' : 'column-reverse'}
+                                className={clsx(styles.loader, {
+                                    [styles.mobile]: isMobile,
+                                })}
+                                gap={1}
+                            >
+                                <CustomLoader />
+                                <CustomTypography
+                                    color="colors.orange.primary"
+                                    nameSpace="meeting"
+                                    translation="waitForHost"
+                                />
+                            </CustomGrid>
+                        </ConditionalRender>
+                        <ConditionalRender condition={!isHasMeeting}>
+                            {renderMeetingNotStartedYet()}
+                        </ConditionalRender>
                     </>
                 );
 
@@ -332,53 +392,8 @@ const Component = () => {
                                 />
                             </CustomGrid>
                         </ConditionalRender>
-                        <ConditionalRender condition={!isHasMeeting}>
-                            <CustomGrid container direction="column">
-                                <CustomTypography
-                                    className={styles.title}
-                                    variant="h3bold"
-                                    nameSpace="meeting"
-                                    translation="meetingNotStarted.title"
-                                />
-                                <CustomTypography
-                                    variant="body1"
-                                    color="text.secondary"
-                                    nameSpace="meeting"
-                                    translation="meetingNotStarted.text"
-                                />
-                            </CustomGrid>
-                        </ConditionalRender>
 
-                        <CustomGrid className={styles.titleLeaveMessage}>
-                            <span>Leave a Message</span>
-                        </CustomGrid>
-                        <CustomGrid className={styles.actions} gap={2}>
-                            <CustomGrid
-                                className={styles.actionItem}
-                                onClick={linkToDefault}
-                            >
-                                <CustomImage
-                                    src="/images/default-gmail.jpg"
-                                    width={60}
-                                    height={60}
-                                    objectFit="cover"
-                                />
-                                <span>Default Email</span>
-                            </CustomGrid>
-                            <CustomGrid
-                                className={styles.actionItem}
-                                onClick={linkToGmail}
-                            >
-                                <CustomImage
-                                    src="/images/gmail.png"
-                                    alt=""
-                                    width={52}
-                                    height={52}
-                                    objectFit="cover"
-                                />
-                                <span>Gmail</span>
-                            </CustomGrid>
-                        </CustomGrid>
+                        {renderMeetingNotStartedYet()}
                     </>
                 );
             default:

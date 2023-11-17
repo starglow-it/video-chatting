@@ -298,6 +298,9 @@ sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,
 );
+cancelAccessMeetingRequestSocketEvent.failData.watch(() =>
+    updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Settings }),
+);
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.failData.watch((error: any) => {
