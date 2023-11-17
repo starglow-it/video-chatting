@@ -309,13 +309,6 @@ export class MeetingsGateway
             session,
           });
 
-          this.emitToRoom(
-            `waitingRoom:${meeting.templateId}`,
-            MeetingEmitEvents.FinishMeeting,
-            {
-              reason: FinishMeetingReason.RemoveMeeting,
-            },
-          );
           return;
         }
 
