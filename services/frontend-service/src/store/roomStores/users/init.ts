@@ -88,7 +88,7 @@ answerRequestByLurkerEvent.doneData.watch(async data => {
 requestSwitchRoleByLurkerEvent.doneData.watch(data => {
     if (data) {
         addNotificationEvent({
-            message: `Request sent to Host. Please waiting Host approve`,
+            message: `Request sent to Host. Please wait for Host to approve`,
             withSuccessIcon: true,
             type: NotificationType.RequestBecomeParticipantSuccess,
         });
