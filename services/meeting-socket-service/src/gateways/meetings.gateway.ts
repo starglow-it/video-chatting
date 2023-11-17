@@ -86,7 +86,6 @@ export class MeetingsGateway
   extends BaseGateway
   implements OnGatewayDisconnect
 {
-  private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingsService: MeetingsService,
     private meetingChatsService: MeetingChatsService,
