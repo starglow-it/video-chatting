@@ -701,7 +701,7 @@ export class MeetingsGateway
           }
 
           const user = await this.usersService.findOneAndUpdate({
-            query: { _id: socket.id },
+            query: { socketId: socket.id },
             data: updateData,
             session,
           });
