@@ -299,6 +299,8 @@ const Component = () => {
         switch (localUser.accessStatus) {
             case MeetingAccessStatusEnum.Settings:
             case MeetingAccessStatusEnum.Rejected:
+            case MeetingAccessStatusEnum.Left:
+            case MeetingAccessStatusEnum.Kicked:
                 return (
                     <MeetingSettingsContent
                         stream={changeStream}
