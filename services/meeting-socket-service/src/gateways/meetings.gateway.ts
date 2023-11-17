@@ -17,6 +17,7 @@ import { TasksService } from '../modules/tasks/tasks.service';
 import { CoreService } from '../services/core/core.service';
 
 import {
+  FinishMeetingReason,
   IUserTemplate,
   KickUserReasons,
   MeetingAccessStatusEnum,
@@ -219,6 +220,13 @@ export class MeetingsGateway
         meetingId,
         session,
       });
+      this.emitToRoom(
+        `waitingRoom:${meeting.templateId}`,
+        MeetingEmitEvents.FinishMeeting,
+        {
+          reason: FinishMeetingReason.RemoveMeeting,
+        },
+      );
       return;
     }
 
@@ -1058,8 +1066,6 @@ export class MeetingsGateway
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        if (!socket) return;
-        subscribeWsError(socket);
         const meeting = await this.meetingsService.findById(
           message.meetingId,
           session,
@@ -1069,6 +1075,9 @@ export class MeetingsGateway
 
         meeting.endsAt = Date.now();
         meeting.save();
+
+        if (!socket) return;
+        subscribeWsError(socket);
 
         if (
           Object.values(KickUserReasons).includes(
@@ -1132,8 +1141,6 @@ export class MeetingsGateway
           user?.meeting._id.toString(),
           session,
         );
-
-        console.log(meeting);
 
         const userId = user._id.toString();
 
