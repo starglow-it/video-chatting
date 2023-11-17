@@ -34,7 +34,6 @@ import { userSerialization } from '../dtos/response/common-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
 import { EnterMeetingRequestDTO } from '../dtos/requests/enter-meeting.dto';
 import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-meeting.dto';
-import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 import { EndMeetingRequestDTO } from '../dtos/requests/end-meeting.dto';
 import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 
@@ -155,23 +154,18 @@ export class MeetingsGateway
     const meetingId = meeting._id.toString();
     const isMeetingHost = meeting.hostUserId._id.toString() === userId;
 
-    const meetingUsers = await this.usersService.findUsers({
-      query: {
-        meeting: meeting.id,
-        accessStatus: {
-          $in: [
-            MeetingAccessStatusEnum.InMeeting,
-            ...(isMeetingHost &&
-            user.accessStatus === MeetingAccessStatusEnum.Disconnected
-              ? [...MeetingAccessStatusEnum.Disconnected]
-              : []),
-          ],
-        },
+    const activeParticipants = await this.usersService.countMany({
+      meeting: meeting._id,
+      accessStatus: {
+        $in: [
+          MeetingAccessStatusEnum.InMeeting,
+          ...(isMeetingHost &&
+          user.accessStatus === MeetingAccessStatusEnum.Disconnected
+            ? [MeetingAccessStatusEnum.Disconnected]
+            : []),
+        ],
       },
-      session,
     });
-
-    const activeParticipants = meetingUsers.length;
 
     await this.coreService.updateRoomRatingStatistic({
       templateId: commonTemplate.id,
@@ -188,7 +182,7 @@ export class MeetingsGateway
       user,
     });
 
-    if (activeParticipants === 0) {
+    if (activeParticipants) {
       await this.meetingsCommonService.handleClearMeetingData({
         userId: meeting.owner._id,
         templateId: userTemplate.id,
@@ -1096,10 +1090,7 @@ export class MeetingsGateway
   }
 
   @WsEvent(MeetingSubscribeEvents.OnLeaveMeeting)
-  async leaveMeeting(
-    @MessageBody() message: LeaveMeetingRequestDTO,
-    @ConnectedSocket() socket: Socket,
-  ) {
+  async leaveMeeting(@ConnectedSocket() socket: Socket) {
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
@@ -1112,6 +1103,8 @@ export class MeetingsGateway
           user?.meeting._id.toString(),
           session,
         );
+
+        console.log(meeting);
 
         const userId = user._id.toString();
 
@@ -1143,8 +1136,6 @@ export class MeetingsGateway
           }
 
           await meeting.save();
-
-          console.log(meeting.users);
 
           await notifyParticipantsMeetingInfo({
             meeting,
