@@ -73,8 +73,15 @@ const OnboardingTemplateItem = memo(
                 onMouseEnter={handleShowPreview}
                 onMouseLeave={handleHidePreview}
             >
-                <ConditionalRender condition={Boolean(previewImage?.url)}>
-                    <CustomImage src={previewImage?.url ?? ''} layout="fill" />
+                <ConditionalRender
+                    condition={!!previewImage?.url || !!template.mediaLink}
+                >
+                    <CustomImage
+                        src={
+                            previewImage?.url ?? template.mediaLink?.thumb ?? ''
+                        }
+                        layout="fill"
+                    />
                 </ConditionalRender>
                 <TemplateMainInfo
                     show={!showPreview}

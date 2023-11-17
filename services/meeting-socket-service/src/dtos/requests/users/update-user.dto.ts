@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ICommonMeetingUserDTO } from '../../../interfaces/common-user.interface';
 
 export class UpdateUserRequestDTO implements Partial<ICommonMeetingUserDTO> {

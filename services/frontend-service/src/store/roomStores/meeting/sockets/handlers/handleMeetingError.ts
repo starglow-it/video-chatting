@@ -1,5 +1,6 @@
+import { updateLocalUserEvent } from 'src/store/roomStores/users/localUser/model';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { setMeetingErrorEvent } from '../../meetingError/model';
-import { setIsUserSendEnterRequest } from '../../meetingTemplate/model';
 import { appDialogsApi } from '../../../../dialogs/init';
 import { AppDialogsEnum } from '../../../../types';
 
@@ -11,6 +12,5 @@ export const handleMeetingError = ({ message }: { message: string }) => {
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
     }
-
-    setIsUserSendEnterRequest(false);
+    updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Settings });
 };

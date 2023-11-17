@@ -1,9 +1,8 @@
-import { Expose, Transform, Type, plainToInstance } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { serializeInstance } from '../serialization';
-import { MeetingRole } from 'shared-types';
 
 export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()

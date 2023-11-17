@@ -28,6 +28,10 @@
     "title": "Meeting has not \nstarted yet",
     "text": "Please wait for the host arrival"
   },
+  "hostLeftRoom": {
+    "title": "Host has left the room",
+    "text": "You can leave a message"
+  },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
   "cam": "Camera",
@@ -209,5 +213,6 @@
   "role": {
     "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
     "tooltipLurker": "Invite up to 1000 Audience members. They view & hear Participants."
-  }
+  },
+  "waitForTheHost": "Waiting for the Host"
 }

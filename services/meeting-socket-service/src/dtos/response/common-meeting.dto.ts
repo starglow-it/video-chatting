@@ -1,4 +1,4 @@
-import { Expose, Transform, Type, plainToInstance } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { ICommonMeetingDTO } from '../../interfaces/common-meeting.interface';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CommonUserDTO } from './common-user.dto';

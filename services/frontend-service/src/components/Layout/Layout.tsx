@@ -24,6 +24,7 @@ import { Footer } from '@components/Footer/Footer';
 // types
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { MeetingEndDialog } from '@components/Dialogs/MeetingEndDialog/MeetingEndDialog';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { LayoutProps } from './types';
@@ -383,6 +384,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         </ConditionalRender>
                         {children}
                         <MeetingFinishedDialog />
+                        <MeetingEndDialog />
                     </CustomGrid>
                     <ConditionalRender
                         condition={shouldShowFooter || isNotFoundRoute}

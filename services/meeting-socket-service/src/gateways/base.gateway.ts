@@ -1,23 +1,22 @@
-import {
-  OnGatewayConnection,
-  OnGatewayInit,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { OnGatewayConnection, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TEventEmitter } from '../types/socket-events';
 import { MAX_EVENT_LISTENER } from '../const/common';
 import { InjectWsErrorHandler } from '../utils/decorators/injectWsErrorHandler.decorator';
 import { InjectWsGlobalGuard } from '../utils/decorators/injectWsGlobalGuard.decorator';
 import { MeetingUserDocument } from '../schemas/meeting-user.schema';
+import { UseInterceptors } from '@nestjs/common';
+import { WsInterceptor } from 'src/interceptors/ws-interceptor';
 
 @InjectWsGlobalGuard()
 @InjectWsErrorHandler()
+@UseInterceptors(WsInterceptor)
 export class BaseGateway implements OnGatewayConnection {
   getUserFromSocket(socket: Socket): MeetingUserDocument {
     return socket.data['user'];
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     client.setMaxListeners(MAX_EVENT_LISTENER);
   }
 

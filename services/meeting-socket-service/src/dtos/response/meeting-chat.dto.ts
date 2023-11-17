@@ -5,9 +5,7 @@ import { ICommonMeetingDTO } from '../../interfaces/common-meeting.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
 import { ISenderDto } from '../../interfaces/sender.interface';
 import { SenderDto } from './sender.dto';
-import { mapToArray } from '../../utils/mapToArray';
 import { serializeInstance } from '../serialization';
-import { MeetingReactionKind } from 'shared-types';
 
 export class MeetingChatDto implements IMeetingChat {
   @Expose()

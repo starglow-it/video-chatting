@@ -197,8 +197,6 @@ const Component = ({
         [],
     );
 
-    console.log('#Duy Phan console', CUSTOM_CATEROFY_BUSSINESS);
-
     const businessCategoriesOptions = useMemo(
         () =>
             businessCategories.list.map(item => ({
@@ -207,7 +205,6 @@ const Component = ({
             })),
         [businessCategories.list],
     );
-    console.log('#Duy Phan console', businessCategoriesOptions);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =

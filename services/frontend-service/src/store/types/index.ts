@@ -163,6 +163,7 @@ export type AppDialogsState = {
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
     confirmBecomeParticipantDialog: boolean;
+    meetingEndDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -190,6 +191,7 @@ export enum AppDialogsEnum {
     userBlockedDialog = 'userBlockedDialog',
     downgradedSubscriptionDialog = 'downgradedSubscriptionDialog',
     meetingFinishedDialog = 'meetingFinishedDialog',
+    meetingEndDialog = 'meetingEndDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
     confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
 }

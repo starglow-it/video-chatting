@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
-import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Global()
 @Module({

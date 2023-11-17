@@ -38,7 +38,7 @@ $meetingUsersStore
             return [...oldUsers, ...newUsers];
         }
 
-        return state;
+        return [];
     })
     .on(updateMeetingUserEvent, (state, { user }) =>
         state.map(_user =>

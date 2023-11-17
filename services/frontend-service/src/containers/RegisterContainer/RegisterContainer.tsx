@@ -107,23 +107,7 @@ const Component = () => {
     useEffect(() => {
         (async () => {
             if (authState.isAuthenticated && !isVerifying) {
-                if (authState.isFirstLogin) {
-                    const initialTemplateData = WebStorage.get<{
-                        templateId: string;
-                    }>({
-                        key: StorageKeysEnum.templateId,
-                    });
-                    const result = await createMeetingFx({
-                        templateId: initialTemplateData.templateId,
-                    });
-
-                    const meetingUrl = getClientMeetingUrl(
-                        result?.template?.id || '',
-                    );
-                    await router.push(`${meetingUrl}?success_house=true`);
-                } else {
-                    router.push(dashboardRoute);
-                }
+                router.push(dashboardRoute);
             }
         })();
     }, [authState.isAuthenticated, isVerifying]);
