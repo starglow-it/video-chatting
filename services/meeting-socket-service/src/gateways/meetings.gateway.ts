@@ -58,7 +58,6 @@ import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { MeetingDocument } from '../schemas/meeting.schema';
 import { subscribeWsError, throwWsError, wsError } from '../utils/ws/wsError';
 import { ReconnectDto } from '../dtos/requests/recconnect.dto';
-import { notifyParticipantsMeetingInfo } from '../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../utils/ws/wsResult';
 import { ObjectId } from '../utils/objectId';
@@ -74,6 +73,7 @@ import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { TEventEmitter } from 'src/types/socket-events';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -99,6 +99,35 @@ export class MeetingsGateway
   ) {
     super();
   }
+
+  private notifyParticipantsMeetingInfo = async ({
+    meeting,
+    emitToRoom,
+  }: {
+    emitToRoom: (...args: TEventEmitter) => void;
+    meeting: MeetingDocument;
+  }) => {
+    const meetingUsers = meeting.users.filter(
+      (u) => u.accessStatus === MeetingAccessStatusEnum.InMeeting,
+    );
+
+    const plainUsers = userSerialization(meetingUsers);
+    const plainMeeting = meetingSerialization(meeting);
+
+    emitToRoom(
+      `waitingRoom:${meeting.templateId}`,
+      MeetingEmitEvents.UpdateMeeting,
+      {
+        meeting: plainMeeting,
+        users: plainUsers,
+      },
+    );
+
+    emitToRoom(`meeting:${plainMeeting.id}`, MeetingEmitEvents.UpdateMeeting, {
+      meeting: plainMeeting,
+      users: plainUsers,
+    });
+  };
 
   async setTimeoutFinishMeeting(meeting: MeetingDocument) {
     const meetingId = meeting._id.toString() as string;
@@ -182,7 +211,7 @@ export class MeetingsGateway
       user,
     });
 
-    if (activeParticipants) {
+    if (!activeParticipants) {
       await this.meetingsCommonService.handleClearMeetingData({
         userId: meeting.owner._id,
         templateId: userTemplate.id,
@@ -197,7 +226,7 @@ export class MeetingsGateway
       await this.setTimeoutFinishMeeting(meeting);
     }
 
-    await notifyParticipantsMeetingInfo({
+    await this.notifyParticipantsMeetingInfo({
       meeting,
       emitToRoom: this.emitToRoom.bind(this),
     });
@@ -1137,7 +1166,7 @@ export class MeetingsGateway
 
           await meeting.save();
 
-          await notifyParticipantsMeetingInfo({
+          await this.notifyParticipantsMeetingInfo({
             meeting,
             emitToRoom: this.emitToRoom.bind(this),
           });
