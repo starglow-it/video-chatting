@@ -279,7 +279,9 @@ export class MeetingsGateway
 
   isChangeVideoContainer = (user: MeetingUserDocument) =>
     user.meetingRole !== MeetingRole.Lurker &&
-    user.accessStatus === MeetingAccessStatusEnum.InMeeting;
+    [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Left].includes(
+      user.accessStatus as MeetingAccessStatusEnum,
+    );
 
   async handleDisconnect(client: Socket) {
     console.log('disconnect', client.id);
