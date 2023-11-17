@@ -8,7 +8,7 @@ import {
     $profileStore,
     $profileTemplatesCountStore,
     $profileTemplatesStore,
-    $queryProfileTemplatesStore,
+    $queryTemplatesStore,
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
@@ -66,9 +66,7 @@ const Component = () => {
     );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
-    const queryProfileTemplates = useStore($queryProfileTemplatesStore);
-
-    const isCustom = queryProfileTemplates.categoryType === 'interior-design';
+    const queryTemplatesStore = useStore($queryTemplatesStore);
 
     const {
         value: isSubscriptionsOpen,
@@ -207,8 +205,16 @@ const Component = () => {
     ]);
 
     const handleCreateRoomDesign = async () => {
-        const response = await createTemplateFx('interior-design');
-        router.push(`${getCreateRoomUrl(response?.id ?? '')}`);
+        const response = await createTemplateFx();
+        if (isBusinessSubscription || isProfessionalSubscription) {
+            router.push(
+                `${getCreateRoomUrl(response?.id ?? '')}?tags=${
+                    queryTemplatesStore.businessCategories?.[0]
+                }`,
+            );
+            return;
+        }
+        handleOpenSubscriptionPlans();
     };
 
     const renderTemplates = () => {
@@ -222,25 +228,7 @@ const Component = () => {
                         onChooseTemplate={handleChooseProfileTemplate}
                         TemplateComponent={ProfileTemplateItem}
                         allowCreate
-                        ElementCreate={
-                            isCustom ? (
-                                <CustomGrid
-                                    display="flex"
-                                    flexDirection="row"
-                                    alignItems="center"
-                                >
-                                    <PlusIcon width="22px" height="22px" />
-                                    <CustomTypography
-                                        nameSpace="templates"
-                                        translation="addYourDesign"
-                                    />
-                                </CustomGrid>
-                            ) : undefined
-                        }
-                        onCreate={
-                            isCustom ? handleCreateRoomDesign : handleCreateRoom
-                        }
-                        isCustomElementCreate={isCustom}
+                        onCreate={handleCreateRoom}
                     />
                 );
 
@@ -252,6 +240,24 @@ const Component = () => {
                         onPageChange={handleCommonTemplatesPageChange}
                         onChooseTemplate={handleChooseCommonTemplate}
                         TemplateComponent={CommonTemplateItem}
+                        ElementCreate={
+                            <CustomGrid
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
+                            >
+                                <PlusIcon width="22px" height="22px" />
+                                <CustomTypography
+                                    nameSpace="templates"
+                                    translation="addYourDesign"
+                                />
+                            </CustomGrid>
+                        }
+                        isCustomElementCreate={
+                            !!queryTemplatesStore.businessCategories
+                        }
+                        allowCreate={!!queryTemplatesStore.businessCategories}
+                        onCreate={handleCreateRoomDesign}
                     />
                 );
             default:
@@ -262,9 +268,12 @@ const Component = () => {
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {
             if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
+                const roomUrl = getCreateRoomUrl(templateDraft?.id ?? '');
                 const response = await startCheckoutSessionForSubscriptionFx({
                     productId,
-                    baseUrl: getCreateRoomUrl(templateDraft?.id ?? ''),
+                    baseUrl: !!queryTemplatesStore.businessCategories
+                        ? `${roomUrl}?tags=${queryTemplatesStore.businessCategories?.[0]}`
+                        : `${roomUrl}`,
                     cancelUrl: dashboardRoute,
                     withTrial: trial,
                 });

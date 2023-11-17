@@ -45,6 +45,7 @@ import styles from './MeetingView.module.scss';
 
 // stores
 import {
+    $windowSizeStore,
     addNotificationEvent,
     appDialogsApi,
     checkIsPortraitLayoutEvent,
@@ -90,6 +91,7 @@ const Component = () => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const { isMobile } = useBrowserDetect();
+    const { width, height } = useStore($windowSizeStore);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -194,6 +196,7 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
+    console.log('#Duy Phan console', previewImage);
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
@@ -204,27 +207,19 @@ const Component = () => {
             >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender
-                        condition={!!previewImage?.url && !isMobile}
-                    >
-                        <CustomImage
-                            className={styles.image}
-                            src={previewImage?.url || ''}
-                            width="100%"
-                            height="100%"
-                            layout="fill"
-                            objectFit="cover"
-                        />
-                    </ConditionalRender>
-                    <ConditionalRender
                         condition={
-                            isMobile && !!meetingTemplate?.mediaLink?.thumb
+                            !!previewImage?.url || !!meetingTemplate.mediaLink
                         }
                     >
                         <CustomImage
                             className={styles.image}
-                            src={meetingTemplate?.mediaLink?.thumb || ''}
-                            width="100%"
-                            height="100%"
+                            src={
+                                previewImage?.url ||
+                                meetingTemplate?.mediaLink?.thumb ||
+                                ''
+                            }
+                            width={isMobile ? `${width}px` : '100%'}
+                            height={isMobile ? `${height}px` : '100%'}
                             layout="fill"
                             objectFit="cover"
                         />

@@ -25,6 +25,8 @@ import { Footer } from '@components/Footer/Footer';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingEndDialog } from '@components/Dialogs/MeetingEndDialog/MeetingEndDialog';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
 import { LayoutProps } from './types';
 
 // stores
@@ -40,6 +42,7 @@ import {
     getProfileTemplatesFx,
     getTemplatesFx,
     initiateSocketConnectionEvent,
+    initUserWithoutTokenFx,
     loadmoreCommonTemplates,
     loadmoreUserTemplates,
     sendJoinDashboardSocketEvent,
@@ -228,6 +231,12 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         }
     };
 
+    const hanleStartFreeRoom = async () => {
+        const { userWithoutLoginId, userTemplateId } = parseCookies();
+        if (!userWithoutLoginId) await initUserWithoutTokenFx({});
+        else router.push(getClientMeetingUrl(userTemplateId));
+    };
+    // console.log('#Duy Phan console pt', isPortraitLayout, height)
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
@@ -348,6 +357,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         xl: 'none',
                                                     },
                                                 }}
+                                                onClick={hanleStartFreeRoom}
                                             >
                                                 Start Calling for Free
                                             </CustomGrid>

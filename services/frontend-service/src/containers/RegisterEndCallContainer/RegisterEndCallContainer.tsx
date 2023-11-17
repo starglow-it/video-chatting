@@ -33,13 +33,15 @@ import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
+import { USER_IS_BLOCKED } from 'shared-const';
 import { isMobile } from 'shared-utils';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import {
     $authStore,
     $registerStore,
-    registerWithoutTemplateFx,
+    registerUserFx,
     resetRegisterErrorEvent,
 } from '../../store';
 
@@ -96,7 +98,7 @@ const Component = () => {
     const onSubmit = handleSubmit(async (data: RegisterUserParams) => {
         resetRegisterErrorEvent();
 
-        registerWithoutTemplateFx({
+        registerUserFx({
             email: data.email.trim().toLowerCase(),
             password: data.password,
             registerType: RegisterType.EndCall,
@@ -267,7 +269,16 @@ const Component = () => {
                                     fieldKey="password"
                                 />
                             </CustomGrid>
+                            {authState?.error?.message &&
+                                authState?.error?.message !==
+                                    USER_IS_BLOCKED.message && (
+                                    <ErrorMessage
+                                        className={styles.errorContainer}
+                                        error={authState?.error?.message}
+                                    />
+                                )}
                         </CustomGrid>
+
 
                         <CustomGrid
                             container
