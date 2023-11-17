@@ -10,7 +10,6 @@ import { CreateTemplateResponse } from '../types';
 export const handleCreateTemplate = async (
     type: TemplateCategoryType | undefined,
 ): Promise<CreateTemplateResponse> => {
-    console.log('#Duy Phan console', type);
     const response = await sendRequestWithCredentials<
         ICommonTemplate,
         ErrorState

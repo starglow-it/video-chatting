@@ -127,7 +127,6 @@ const Component = () => {
     } = useToggle(isBackgroundAudioActive);
 
     const { isMobile } = useBrowserDetect();
-    console.log('#Duy Phan console', localUser);
 
     useEffect(() => {
         updateLocalUserEvent({
