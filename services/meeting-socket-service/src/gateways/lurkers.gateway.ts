@@ -272,7 +272,7 @@ export class LurkersGateway extends BaseGateway {
 
           throwWsError(!userTemplate, 'User template not found');
 
-          const u = await this.usersService.updateSizeAndPositionForUser({
+          const u = await this.usersService.updateVideoContainer({
             userTemplate,
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,
@@ -340,7 +340,7 @@ export class LurkersGateway extends BaseGateway {
 
           throwWsError(!userTemplate, 'User template not found');
 
-          const u = await this.usersService.updateSizeAndPositionForUser({
+          const u = await this.usersService.updateVideoContainer({
             userTemplate,
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,

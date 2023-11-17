@@ -277,6 +277,10 @@ export class MeetingsGateway
     };
   }
 
+  isChangeVideoContainer = (user: MeetingUserDocument) =>
+    user.meetingRole !== MeetingRole.Lurker &&
+    user.accessStatus === MeetingAccessStatusEnum.InMeeting;
+
   async handleDisconnect(client: Socket) {
     console.log('disconnect', client.id);
     return withTransaction(this.connection, async (session) => {
@@ -299,7 +303,21 @@ export class MeetingsGateway
           id: meeting.templateId,
         });
 
-        throwWsError(!userTemplate, 'User template not found');
+        if (!userTemplate) {
+          await this.meetingsCommonService.clearMeeting({
+            meetingId: meeting._id,
+            session,
+          });
+
+          this.emitToRoom(
+            `waitingRoom:${meeting.templateId}`,
+            MeetingEmitEvents.FinishMeeting,
+            {
+              reason: FinishMeetingReason.RemoveMeeting,
+            },
+          );
+          return;
+        }
 
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
@@ -310,8 +328,8 @@ export class MeetingsGateway
           accessStatus: accessStatusUpdate,
         };
 
-        if (user.meetingRole !== MeetingRole.Lurker) {
-          const u = await this.usersService.updateSizeAndPositionForUser({
+        if (this.isChangeVideoContainer(user)) {
+          const u = await this.usersService.updateVideoContainer({
             userTemplate,
             userId,
             event: UserActionInMeeting.Leave,
@@ -514,7 +532,7 @@ export class MeetingsGateway
 
         const user = this.getUserFromSocket(socket);
 
-        const u = await this.usersService.updateSizeAndPositionForUser({
+        const u = await this.usersService.updateVideoContainer({
           userTemplate: template,
           userId: user._id.toString(),
           event: UserActionInMeeting.Join,
@@ -917,7 +935,7 @@ export class MeetingsGateway
           id: meeting.templateId,
         });
 
-        let user = await this.usersService.findOne({
+        let user = await this.usersComponent.findOne({
           query: {
             _id: new ObjectId(message.userId),
             accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
@@ -926,7 +944,7 @@ export class MeetingsGateway
         });
 
         if (message.isUserAccepted) {
-          const u = await this.usersService.updateSizeAndPositionForUser({
+          const u = await this.usersService.updateVideoContainer({
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,
             userTemplate: template,
@@ -939,7 +957,7 @@ export class MeetingsGateway
             session,
           );
 
-          user = await this.usersComponent.findOneAndUpdate({
+          user = await this.usersService.findOneAndUpdate({
             query: {
               _id: user._id,
             },
@@ -955,7 +973,7 @@ export class MeetingsGateway
             session,
           });
         } else if (!message.isUserAccepted) {
-          user = await this.usersComponent.findOneAndUpdate({
+          user = await this.usersService.findOneAndUpdate({
             query: {
               _id: user._id,
             },
@@ -976,17 +994,9 @@ export class MeetingsGateway
             user.socketId,
             MeetingEmitEvents.SendMeetingError,
             {
-              message: 'meeting.requestDenied',
+              message: MeetingI18nErrorEnum.ACCESS_REQUEST_DENINED,
             },
           );
-        }
-
-        throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
-
-        if (!user) {
-          return wsError(socket, {
-            message: 'No user found',
-          });
         }
 
         await meeting.populate(['owner', 'users']);
@@ -1018,7 +1028,7 @@ export class MeetingsGateway
 
         userSocket.join(`meeting:${meeting._id}`);
 
-        this.emitToSocketId(user.socketId, 'meeting:userAccepted', {
+        this.emitToSocketId(user.socketId, MeetingEmitEvents.AcceptRequest, {
           user: plainUser,
         });
       } catch (error) {
@@ -1070,7 +1080,7 @@ export class MeetingsGateway
           session,
         );
 
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+        if (!meeting) return;
 
         meeting.endsAt = Date.now();
         meeting.save();
@@ -1217,8 +1227,8 @@ export class MeetingsGateway
 
         throwWsError(!userTemplate, 'No user template found');
 
-        if (user.meetingRole !== MeetingRole.Lurker) {
-          const u = await this.usersService.updateSizeAndPositionForUser({
+        if (this.isChangeVideoContainer(user)) {
+          const u = await this.usersService.updateVideoContainer({
             userTemplate,
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,

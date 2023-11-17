@@ -211,7 +211,7 @@ export class UsersGateway extends BaseGateway {
           id: meeting.templateId,
         });
 
-        const u = await this.usersService.updateSizeAndPositionForUser({
+        const u = await this.usersService.updateVideoContainer({
           userTemplate,
           userId: user._id.toString(),
           event: UserActionInMeeting.Leave,

@@ -126,7 +126,7 @@ export class UsersService {
       .exec();
   }
 
-  async updateSizeAndPositionForUser({
+  async updateVideoContainer({
     userTemplate,
     userId,
     event,

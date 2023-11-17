@@ -76,12 +76,12 @@ export class MeetingsCommonService {
     });
   }
 
-  async handleClearMeetingData({
-    templateId,
-    userId,
-    instanceId,
+  async clearMeeting({
     meetingId,
     session,
+  }: {
+    meetingId: string;
+    session: ITransactionSession;
   }) {
     await this.meetingChatReactionsService.deleteMany({
       query: { meeting: meetingId },
@@ -95,14 +95,22 @@ export class MeetingsCommonService {
     await this.usersService.deleteMany({ meeting: meetingId }, session);
 
     await this.meetingsService.deleteById({ meetingId }, session);
+  }
 
+  async handleClearMeetingData({
+    templateId,
+    userId,
+    instanceId,
+    meetingId,
+    session,
+  }) {
+    await this.clearMeeting({ meetingId, session });
     await this.coreService.updateMeetingInstance({
       instanceId,
       data: {
         owner: null,
       },
     });
-
     await this.coreService.updateUserTemplate({
       templateId,
       userId,
