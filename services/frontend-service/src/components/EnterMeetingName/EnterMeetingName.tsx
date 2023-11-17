@@ -21,6 +21,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -43,7 +44,6 @@ import {
 
 // styles
 import styles from './EnterMeetingName.module.scss';
-import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 const validationSchema = yup.object({
     fullName: fullNameSchema().required('required'),
