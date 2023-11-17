@@ -700,8 +700,8 @@ export class MeetingsGateway
             });
           }
 
-          const user = await this.usersComponent.findOneAndUpdate({
-            query: { socketId: socket.id },
+          const user = await this.usersService.findOneAndUpdate({
+            query: { _id: socket.id },
             data: updateData,
             session,
           });
@@ -715,6 +715,21 @@ export class MeetingsGateway
 
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
+          const meetingUsers = await this.usersService.findUsers({
+            query: {
+              meeting: meeting._id,
+              accessStatus: {
+                $in: [
+                  MeetingAccessStatusEnum.RequestSent,
+                  MeetingAccessStatusEnum.InMeeting,
+                  MeetingAccessStatusEnum.SwitchRoleSent,
+                  MeetingAccessStatusEnum.EnterName,
+                ],
+              },
+            },
+            session,
+          });
+
           throwWsError(
             typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
               meeting,
@@ -727,7 +742,7 @@ export class MeetingsGateway
 
           const plainMeeting = meetingSerialization(meeting);
 
-          const plainUsers = userSerialization(meeting.users);
+          const plainUsers = userSerialization(meetingUsers);
 
           if (
             meeting?.hostUserId?.socketId &&
