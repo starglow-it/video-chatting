@@ -31,7 +31,11 @@ $localUserStore
             state.isGenerated
                 ? clientRoutes.welcomeRoute
                 : clientRoutes.dashboardRoute,
-        );
+        ).then(() => {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.meetingEndDialog,
+            });
+        });
 
         return state;
     })

@@ -10,10 +10,6 @@
 
   .button {
     margin: rem(32px 0 0 0);
-
-    &.mobile {
-      margin: rem(auto 0 0 0);
-    }
   }
 }
 
@@ -28,4 +24,8 @@
 
 .banner {
   margin-top: rem(18px) !important;
+}
+
+.loader {
+  left: 50%;
 }

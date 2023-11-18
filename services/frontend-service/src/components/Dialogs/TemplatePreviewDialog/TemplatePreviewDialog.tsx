@@ -94,9 +94,17 @@ const Component = ({
                         companyName=""
                         userName={previewTemplate?.name}
                     />
-                    <ConditionalRender condition={Boolean(previewImage?.id)}>
+                    <ConditionalRender
+                        condition={
+                            !!previewImage?.id || !!previewTemplate?.mediaLink
+                        }
+                    >
                         <CustomImage
-                            src={previewImage?.url || ''}
+                            src={
+                                previewImage?.url ||
+                                previewTemplate?.mediaLink?.thumb ||
+                                ''
+                            }
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center"

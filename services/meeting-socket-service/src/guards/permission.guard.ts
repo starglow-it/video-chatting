@@ -1,14 +1,12 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { UsersService } from '../modules/users/users.service';
 import { Socket } from 'socket.io';
-import { throwWsError } from '../utils/ws/wsError';
 import { MeetingNativeErrorEnum } from 'shared-const';
 import { PASS_AUTH_KEY } from '../utils/decorators/passAuth.decorator';
 import { ROLE } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
 import { UsersComponent } from '../modules/users/users.component';
+import { SocketData } from 'src/types';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -17,7 +15,7 @@ export class PermissionGuard implements CanActivate {
     private readonly usersComponent: UsersComponent,
   ) {}
 
-  private getPassAuthKey(ctx: ExecutionContext): Boolean {
+  private getPassAuthKey(ctx: ExecutionContext): boolean {
     return this.reflector.getAllAndOverride(PASS_AUTH_KEY, [
       ctx.getClass(),
       ctx.getHandler(),
@@ -33,25 +31,28 @@ export class PermissionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client = context.switchToWs().getClient() as Socket;
+    const customData = client.data as SocketData;
+    try {
+      if (this.getPassAuthKey(context)) {
+        return true;
+      }
 
-    if (this.getPassAuthKey(context)) {
+      const user = await this.usersComponent.findOne({
+        query: {
+          socketId: client.id,
+        },
+      });
+
+      const roles = this.getRoles(context);
+      if (roles.length && !roles.includes(user.meetingRole as MeetingRole)) {
+        customData['error'] = MeetingNativeErrorEnum.USER_NOT_HAVE_PERMISSION;
+      }
+
+      customData['user'] = user;
+      return true;
+    } catch (err) {
+      customData['error'] = err;
       return true;
     }
-
-    const user = await this.usersComponent.findOne({
-      query: {
-        socketId: client.id,
-      },
-    });
-
-    const roles = this.getRoles(context);
-    throwWsError(
-      roles.length && !roles.includes(user.meetingRole as MeetingRole),
-      MeetingNativeErrorEnum.USER_NOT_HAVE_PERMISSION,
-    );
-
-    client.data['user'] = user;
-
-    return true;
   }
 }

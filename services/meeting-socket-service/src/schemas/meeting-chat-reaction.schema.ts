@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { MeetingUser, MeetingUserDocument } from './meeting-user.schema';
-import { MeetingChat, MeetingChatDocument } from './meeting-chat.schema';
+import { MeetingUserDocument } from './meeting-user.schema';
+import { MeetingChatDocument } from './meeting-chat.schema';
 import { MeetingReactionKind } from 'shared-types';
 import { MeetingDocument } from './meeting.schema';
 

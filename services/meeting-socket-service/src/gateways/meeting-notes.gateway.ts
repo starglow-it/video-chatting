@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -20,7 +19,9 @@ import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
-import { wsError } from '../utils/ws/wsError';
+import { subscribeWsError, wsError } from '../utils/ws/wsError';
+import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { wsResult } from '../utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -38,13 +39,14 @@ export class MeetingNotesGateway extends BaseGateway {
     super();
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnSendMeetingNote)
+  @WsEvent(MeetingSubscribeEvents.OnSendMeetingNote)
   async sendMeetingNote(
     @MessageBody() message: SendMeetingNoteRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
+        subscribeWsError(socket);
         const user = await this.usersService.findOne({
           query: { socketId: socket.id },
           session,
@@ -73,60 +75,67 @@ export class MeetingNotesGateway extends BaseGateway {
           },
         );
 
-        return {
-          success: true,
-        };
+        return wsResult();
       } catch (err) {
-        return wsError(socket.id, err);
+        return wsError(socket, err);
       }
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnRemoveMeetingMote)
+  @WsEvent(MeetingSubscribeEvents.OnRemoveMeetingMote)
   async removeMeetingNote(
     @MessageBody() message: RemoveMeetingNoteRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
-      const user = this.getUserFromSocket(socket);
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        await this.meetingNotesService.deleteOne(
+          { _id: message.noteId },
+          session,
+        );
 
-      await this.meetingNotesService.deleteOne(
-        { _id: message.noteId },
-        session,
-      );
-
-      this.emitToRoom(
-        `meeting:${user.meeting.toString()}`,
-        MeetingEmitEvents.RemoveMeetingNote,
-        {
-          meetingNoteId: message.noteId,
-        },
-      );
+        this.emitToRoom(
+          `meeting:${user.meeting.toString()}`,
+          MeetingEmitEvents.RemoveMeetingNote,
+          {
+            meetingNoteId: message.noteId,
+          },
+        );
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 
-  @SubscribeMessage(MeetingSubscribeEvents.OnGetMeetingNotes)
+  @WsEvent(MeetingSubscribeEvents.OnGetMeetingNotes)
   async getMeetingNotes(@ConnectedSocket() socket: Socket) {
     return withTransaction(this.connection, async (session) => {
-      const user = this.getUserFromSocket(socket);
+      try {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meetingNotes = await this.meetingNotesService.findMany(
+          { meeting: user.meeting },
+          session,
+          'user',
+        );
 
-      const meetingNotes = await this.meetingNotesService.findMany(
-        { meeting: user.meeting },
-        session,
-        'user',
-      );
+        const plainMeetingNotes = plainToInstance(
+          MeetingNoteDTO,
+          meetingNotes,
+          {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          },
+        );
 
-      const plainMeetingNotes = plainToInstance(MeetingNoteDTO, meetingNotes, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      return {
-        success: true,
-        result: {
+        return wsResult({
           meetingNotes: plainMeetingNotes,
-        },
-      };
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
     });
   }
 }

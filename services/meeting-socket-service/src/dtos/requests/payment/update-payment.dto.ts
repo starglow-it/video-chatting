@@ -1,12 +1,4 @@
-import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { PaymentType } from 'shared-const';
 import { MeetingRole } from 'shared-types';
 

@@ -25,12 +25,13 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
       ctx: data,
       error: details,
     });
+    console.log(exception.stack);
 
-    return {
+    client.send({
       success: false,
       ...(details.i18nMsg && {
         message: details.i18nMsg,
       }),
-    };
+    });
   }
 }

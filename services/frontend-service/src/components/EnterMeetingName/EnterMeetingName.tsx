@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
@@ -21,6 +21,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -30,8 +31,10 @@ import {
     $isLurker,
     $isMeetingSocketConnecting,
     $isOwner,
+    $isOwnerInMeeting,
     $localUserStore,
     $meetingTemplateStore,
+    $meetingUsersStore,
     joinLurkerMeetingSocketEvent,
     sendJoinWaitingRoomSocketEvent,
     updateLocalUserEvent,
@@ -60,6 +63,16 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isHasMeeting = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+            ),
+    });
+
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
         fullName: string;
@@ -129,7 +142,9 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender condition={!isJoinPaywall}>
+            <ConditionalRender
+                condition={!isJoinPaywall && (!isLurker || isOwnerInMeeting)}
+            >
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="meeting"
@@ -202,6 +217,36 @@ const Component = () => {
                         />
                     </form>
                 </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={!isJoinPaywall && isLurker}>
+                {!(
+                    isSocketConnected &&
+                    !isMeetingSocketConnecting &&
+                    !isJoinWaitingRoomPending
+                ) ? (
+                    <CustomLoader className={styles.loader} />
+                ) : (
+                    <>
+                        <ConditionalRender
+                            condition={!isOwnerInMeeting && isHasMeeting}
+                        >
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                textAlign="center"
+                                translation="waitForTheHost"
+                            />
+                        </ConditionalRender>
+                        <ConditionalRender condition={!isHasMeeting}>
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                textAlign="center"
+                                translation="meetingNotStarted.title"
+                            />
+                        </ConditionalRender>
+                    </>
+                )}
             </ConditionalRender>
             <ConditionalRender condition={isJoinPaywall}>
                 <MeetingPaywall onPaymentSuccess={handlePaymentSuccess} />

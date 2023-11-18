@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
@@ -38,10 +38,11 @@ import {
     $isCameraActiveStore,
     $isMicActiveStore,
     $isOwner,
+    $isOwnerInMeeting,
     $isStreamRequestedStore,
-    $isUserSendEnterRequest,
     $localUserStore,
     $meetingTemplateStore,
+    $meetingUsersStore,
     $videoDevicesStore,
     $videoErrorStore,
     joinMeetingEvent,
@@ -78,7 +79,6 @@ const Component = () => {
     const audioError = useStore($audioErrorStore);
 
     const isOwner = useStore($isOwner);
-    const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
@@ -99,6 +99,19 @@ const Component = () => {
     const isEnterWaitingRoomRequestPending = useStore(
         sendEnterWaitingRoomSocketEvent.pending,
     );
+    const isHasMeeting = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+            ),
+    });
+
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+
+    const isUserSentEnterRequest =
+        localUser.accessStatus === MeetingAccessStatusEnum.RequestSent;
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
@@ -195,11 +208,14 @@ const Component = () => {
     const isAudioError = Boolean(audioError);
     const isVideoError = Boolean(videoError);
 
+    const isAccessStatusWaiting =
+        localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
+
     const isEnterMeetingDisabled =
         isAudioError ||
         isEnterMeetingRequestPending ||
         isEnterWaitingRoomRequestPending ||
-        localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
+        isAccessStatusWaiting;
 
     const isPayWallBeforeJoin =
         enabledPaymentPaywallParticipant && waitingPaywall;
@@ -224,6 +240,189 @@ const Component = () => {
         )}`,
             '_blank',
         );
+    };
+
+    const renderMeetingNotStartedYet = () => {
+        return (
+            <>
+                <ConditionalRender condition={!isHasMeeting}>
+                    <CustomGrid container direction="column">
+                        <CustomTypography
+                            className={styles.title}
+                            variant="h3bold"
+                            nameSpace="meeting"
+                            translation="meetingNotStarted.title"
+                        />
+                        <CustomTypography
+                            variant="body1"
+                            color="text.secondary"
+                            nameSpace="meeting"
+                            translation="meetingNotStarted.text"
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
+                <CustomGrid className={styles.titleLeaveMessage}>
+                    <span>Leave a Message</span>
+                </CustomGrid>
+                <CustomGrid className={styles.actions} gap={2}>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToDefault}
+                    >
+                        <CustomImage
+                            src="/images/default-gmail.jpg"
+                            width={60}
+                            height={60}
+                            objectFit="cover"
+                        />
+                        <span>Default Email</span>
+                    </CustomGrid>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToGmail}
+                    >
+                        <CustomImage
+                            src="/images/gmail.png"
+                            alt=""
+                            width={52}
+                            height={52}
+                            objectFit="cover"
+                        />
+                        <span>Gmail</span>
+                    </CustomGrid>
+                </CustomGrid>
+            </>
+        );
+    };
+
+    const renderMainContent = () => {
+        switch (localUser.accessStatus) {
+            case MeetingAccessStatusEnum.Settings:
+            case MeetingAccessStatusEnum.Rejected:
+            case MeetingAccessStatusEnum.Left:
+            case MeetingAccessStatusEnum.Kicked:
+                return (
+                    <MeetingSettingsContent
+                        stream={changeStream}
+                        isBackgroundActive={isSettingsAudioBackgroundActive}
+                        backgroundVolume={settingsBackgroundAudioVolume}
+                        isAuraActive={isAuraActive}
+                        onBackgroundToggle={handleToggleBackgroundAudio}
+                        onChangeBackgroundVolume={
+                            setSettingsBackgroundAudioVolume
+                        }
+                        onToggleAura={toggleIsAuraActive}
+                        isAudioActive={meetingTemplate.isAudioAvailable}
+                        title={
+                            <CustomTypography
+                                className={styles.title}
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                translation={
+                                    isMobile ? 'settings.main' : 'readyToJoin'
+                                }
+                            />
+                        }
+                        isCamera={isCameraActive}
+                        isMicrophone={isMicActive}
+                        onToggleCamera={handleToggleCamera}
+                        onToggleMicrophone={handleToggleMic}
+                    />
+                );
+            case MeetingAccessStatusEnum.RequestSent:
+                return (
+                    <>
+                        <ConditionalRender
+                            condition={isHasMeeting && isOwnerInMeeting}
+                        >
+                            <CustomGrid container direction="column">
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="requestSent"
+                                />
+                                <CustomTypography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    nameSpace="meeting"
+                                    translation="enterPermission"
+                                />
+                            </CustomGrid>
+                            <CustomGrid
+                                container
+                                alignItems="center"
+                                direction={isMobile ? 'row' : 'column-reverse'}
+                                className={clsx(styles.loader, {
+                                    [styles.mobile]: isMobile,
+                                })}
+                                gap={1}
+                            >
+                                <CustomLoader />
+                                <CustomTypography
+                                    color="colors.orange.primary"
+                                    nameSpace="meeting"
+                                    translation="waitForHost"
+                                />
+                            </CustomGrid>
+                        </ConditionalRender>
+                        <ConditionalRender
+                            condition={isHasMeeting && !isOwnerInMeeting}
+                        >
+                            <CustomGrid container direction="column">
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="hostLeftRoom.title"
+                                />
+                                <CustomTypography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    nameSpace="meeting"
+                                    translation="hostLeftRoom.text"
+                                />
+                            </CustomGrid>
+                        </ConditionalRender>
+                        <ConditionalRender
+                            condition={
+                                !isHasMeeting ||
+                                (isHasMeeting && !isOwnerInMeeting)
+                            }
+                        >
+                            {renderMeetingNotStartedYet()}
+                        </ConditionalRender>
+                    </>
+                );
+
+            case MeetingAccessStatusEnum.Waiting:
+                return (
+                    <>
+                        <ConditionalRender
+                            condition={isHasMeeting && !isOwnerInMeeting}
+                        >
+                            <CustomGrid container direction="column">
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="hostLeftRoom.title"
+                                />
+                                <CustomTypography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    nameSpace="meeting"
+                                    translation="hostLeftRoom.text"
+                                />
+                            </CustomGrid>
+                        </ConditionalRender>
+
+                        {renderMeetingNotStartedYet()}
+                    </>
+                );
+            default:
+                return null;
+        }
     };
 
     return (
@@ -278,140 +477,7 @@ const Component = () => {
                             }
                             wrap="nowrap"
                         >
-                            {isUserSentEnterRequest ||
-                            (!isUserSentEnterRequest &&
-                                localUser.accessStatus ===
-                                    MeetingAccessStatusEnum.Waiting) ? (
-                                <>
-                                    <CustomGrid container direction="column">
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.title'
-                                                    : 'requestSent'
-                                            }
-                                        />
-                                        <CustomTypography
-                                            variant="body1"
-                                            color="text.secondary"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.text'
-                                                    : 'enterPermission'
-                                            }
-                                        />
-                                    </CustomGrid>
-                                    <ConditionalRender
-                                        condition={isUserSentEnterRequest}
-                                    >
-                                        <CustomGrid
-                                            container
-                                            alignItems="center"
-                                            direction={
-                                                isMobile
-                                                    ? 'row'
-                                                    : 'column-reverse'
-                                            }
-                                            className={clsx(styles.loader, {
-                                                [styles.mobile]: isMobile,
-                                            })}
-                                            gap={1}
-                                        >
-                                            <CustomLoader />
-                                            <CustomTypography
-                                                color="colors.orange.primary"
-                                                nameSpace="meeting"
-                                                translation="waitForHost"
-                                            />
-                                        </CustomGrid>
-                                    </ConditionalRender>
-                                    <ConditionalRender
-                                        condition={
-                                            localUser.accessStatus ===
-                                            MeetingAccessStatusEnum.Waiting
-                                        }
-                                    >
-                                        <CustomGrid
-                                            className={styles.titleLeaveMessage}
-                                        >
-                                            <span>Leave a Message</span>
-                                        </CustomGrid>
-                                        <CustomGrid
-                                            className={styles.actions}
-                                            gap={2}
-                                        >
-                                            <CustomGrid
-                                                className={styles.actionItem}
-                                                onClick={linkToDefault}
-                                            >
-                                                <CustomImage
-                                                    src="/images/default-gmail.jpg"
-                                                    width={60}
-                                                    height={60}
-                                                    objectFit="cover"
-                                                />
-                                                <span>Default Email</span>
-                                            </CustomGrid>
-                                            <CustomGrid
-                                                className={styles.actionItem}
-                                                onClick={linkToGmail}
-                                            >
-                                                <CustomImage
-                                                    src="/images/gmail.png"
-                                                    alt=""
-                                                    width={52}
-                                                    height={52}
-                                                    objectFit="cover"
-                                                />
-                                                <span>Gmail</span>
-                                            </CustomGrid>
-                                        </CustomGrid>
-                                    </ConditionalRender>
-                                </>
-                            ) : (
-                                <MeetingSettingsContent
-                                    stream={changeStream}
-                                    isBackgroundActive={
-                                        isSettingsAudioBackgroundActive
-                                    }
-                                    backgroundVolume={
-                                        settingsBackgroundAudioVolume
-                                    }
-                                    isAuraActive={isAuraActive}
-                                    onBackgroundToggle={
-                                        handleToggleBackgroundAudio
-                                    }
-                                    onChangeBackgroundVolume={
-                                        setSettingsBackgroundAudioVolume
-                                    }
-                                    onToggleAura={toggleIsAuraActive}
-                                    isAudioActive={
-                                        meetingTemplate.isAudioAvailable
-                                    }
-                                    title={
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation={
-                                                isMobile
-                                                    ? 'settings.main'
-                                                    : 'readyToJoin'
-                                            }
-                                        />
-                                    }
-                                    isCamera={isCameraActive}
-                                    isMicrophone={isMicActive}
-                                    onToggleCamera={handleToggleCamera}
-                                    onToggleMicrophone={handleToggleMic}
-                                />
-                            )}
+                            {renderMainContent()}
                             <ConditionalRender condition={isOwner}>
                                 <CustomCheckbox
                                     labelClassName={styles.label}

@@ -29,6 +29,10 @@
     "meetingFinished": {
       "title": "The meeting has been finished",
       "text": "The meeting has been finished as the host’s account was deleted by Ruume admin. \n Sorry for inconvenience"
+    },
+    "meetingEnd": {
+      "title": "The meeting has been finished",
+      "text": "The meeting has been finished because all participant in meeting is leave. \n Sorry for inconvenience"
     }
   }
 }

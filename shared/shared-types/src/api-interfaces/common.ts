@@ -132,6 +132,10 @@ export enum KickUserReasons {
   Deleted = 'deleted',
 }
 
+export enum FinishMeetingReason {
+  RemoveMeeting = 'removeMeeting',
+}
+
 export enum PlanKeys {
   House = 'House',
   Professional = 'Professional',

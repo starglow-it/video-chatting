@@ -3,6 +3,7 @@ import {
     ErrorState,
     FailedResult,
     IUserTemplate,
+    MeetingAccessStatusEnum,
     SuccessResult,
 } from 'shared-types';
 import { meetingDomain } from '../../../domains';
@@ -79,7 +80,12 @@ export const $isOwnerInMeeting = combine<{
     template: $meetingTemplateStore,
 }).map(({ users, template }) =>
     Boolean(
-        users.find(user => user.profileId === template?.meetingInstance?.owner),
+        users.find(
+            user =>
+                user.profileId === template?.meetingInstance?.owner &&
+                user.accessStatus !== MeetingAccessStatusEnum.Left &&
+                user.accessStatus !== MeetingAccessStatusEnum.Disconnected,
+        ),
     ),
 );
 

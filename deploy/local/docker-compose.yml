@@ -48,8 +48,8 @@ services:
       dockerfile: ./livekit-service/Dockerfile.dev
       args:
         - LIVEKIT_IP=127.0.0.1
-        - LIVEKIT_API_KEY=APIGZAoRvLhzuaE
-        - LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
+        - LIVEKIT_API_KEY=APITwjKveEFMgjY
+        - LIVEKIT_API_SECRET=x99whlMSgf7chP8XHr1IcAq9yAf3qZm7fftfIAxvrm7A
     restart: always
     ports:
       - "7880:7880"
