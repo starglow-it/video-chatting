@@ -29,6 +29,10 @@
       overflow: hidden;
       flex: 1 1 auto;
 
+      &.fitContent {
+        flex: none;
+      }
+
       .scroll {
         padding: rem(0 28px);
         display: flex;

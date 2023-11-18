@@ -87,6 +87,7 @@ import { BackgroundManager } from '../../helpers/media/applyBlur';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
+    const { isMobile } = useBrowserDetect();
 
     const ChildComponent = useMemo(() => {
         if (localUser.accessStatus === MeetingAccessStatusEnum.EnterName) {
@@ -100,7 +101,15 @@ const NotMeetingComponent = memo(() => {
     }, [localUser.accessStatus]);
 
     return (
-        <CustomPaper className={styles.wrapper} id="anchor-unlock">
+        <CustomPaper
+            className={clsx(styles.wrapper, {
+                [styles.fitContent]:
+                    isMobile &&
+                    localUser.accessStatus ===
+                        MeetingAccessStatusEnum.EnterName,
+            })}
+            id="anchor-unlock"
+        >
             <CustomScroll className={styles.scroll}>
                 <CustomGrid container direction="column" wrap="nowrap">
                     <ChildComponent />
