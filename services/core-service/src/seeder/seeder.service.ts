@@ -491,6 +491,74 @@ export class SeederService {
     });
   }
 
+  async seedReplaceYoutubeThumb() {
+    return withTransaction(this.connection, async (session) => {
+      const userTemplates = await this.userTemplatesService.findUserTemplates({
+        query: {
+          mediaLink: {
+            $ne: null,
+          },
+        },
+      });
+
+      const templates = await this.commonTemplatesService.findCommonTemplates({
+        query: {
+          mediaLink: {
+            $ne: null,
+          },
+        },
+      });
+
+      const  getYouTubeVideoId = (videoUrl: string) => {
+        try {
+            if (!videoUrl) return null;
+            const parsedUrl = new URL(videoUrl);
+            if (
+                parsedUrl.hostname === 'www.youtube.com' ||
+                parsedUrl.hostname === 'youtube.com'
+            ) {
+                return parsedUrl.searchParams.get('v');
+            }
+            if (parsedUrl.hostname === 'youtu.be') {
+                return parsedUrl.pathname.substr(1);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        return null;
+    }
+
+      const utPromises = userTemplates.map((t) => async () => {
+        const yId = getYouTubeVideoId(t.mediaLink.src);
+        if(yId) {
+          const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
+          t.mediaLink = {
+            src: t.mediaLink.src,
+            thumb: replaceThumb,
+            platform: t.mediaLink.platform,
+          };
+          t.save();
+        }
+      });
+
+      const tPromises = templates.map((t) => async () => {
+        const yId = getYouTubeVideoId(t.mediaLink.src);
+        if(yId) {
+          const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
+          t.mediaLink = {
+            src: t.mediaLink.src,
+            thumb: replaceThumb,
+            platform: t.mediaLink.platform,
+          };
+          t.save();
+        }
+        
+      });
+
+      return executePromiseQueue([...tPromises,...utPromises]);
+    });
+  }
+
   async syncDataInUserTemplates() {
     return withTransaction(this.connection, async (session) => {
       try {
