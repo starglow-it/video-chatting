@@ -60,6 +60,7 @@ async function bootstrap() {
     await seeder.seedCreateGlobalCommonTemplate();
     await seeder.seedMediaCategories();
     await seeder.syncDataInUserTemplates();
+    await seeder.seedReplaceYoutubeThumb();
   }
 
   usersController.startCheckSubscriptions();

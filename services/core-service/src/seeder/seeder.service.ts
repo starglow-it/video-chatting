@@ -491,6 +491,50 @@ export class SeederService {
     });
   }
 
+  async seedReplaceYoutubeThumb() {
+    return withTransaction(this.connection, async (session) => {
+      const userTemplates = await this.userTemplatesService.findUserTemplates({
+        query: {
+          mediaLink: {
+            $ne: null,
+          },
+        },
+      });
+
+      const templates = await this.commonTemplatesService.findCommonTemplates({
+        query: {
+          mediaLink: {
+            $ne: null,
+          },
+        },
+      });
+
+      const utPromises = userTemplates.map((t) => async () => {
+        const yId = new URL(t.mediaLink.src).searchParams.get('v');
+        const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
+        t.mediaLink = {
+          src: t.mediaLink.src,
+          thumb: replaceThumb,
+          platform: t.mediaLink.platform,
+        };
+        t.save();
+      });
+
+      const tPromises = templates.map((t) => async () => {
+        const yId = new URL(t.mediaLink.src).searchParams.get('v');
+        const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
+        t.mediaLink = {
+          src: t.mediaLink.src,
+          thumb: replaceThumb,
+          platform: t.mediaLink.platform,
+        };
+        t.save();
+      });
+
+      return executePromiseQueue([...tPromises,...utPromises]);
+    });
+  }
+
   async syncDataInUserTemplates() {
     return withTransaction(this.connection, async (session) => {
       try {
