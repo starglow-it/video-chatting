@@ -19,5 +19,5 @@ function getYouTubeVideoId(videoUrl: string) {
 
 export const mapToThumbYoutubeUrl = (url: string) => {
     const yId = getYouTubeVideoId(url);
-    return yId ? `https://img.youtube.com/vi/${yId}/hqdefault.jpg` : '';
+    return yId ? `https://img.youtube.com/vi/${yId}/maxresdefault.jpg` : '';
 };
