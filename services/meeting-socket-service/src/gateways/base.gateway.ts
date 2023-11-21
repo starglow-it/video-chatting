@@ -42,10 +42,16 @@ export class BaseGateway implements OnGatewayConnection {
 
   async joinRoom(socket: Socket, roomId: string) {
     const us = await this.getSocket(roomId, socket.id);
-    console.log(us);
-    
     if (!us) {
       socket.join(roomId);
+    }
+    return;
+  }
+
+  async leaveRoom(socket: Socket, roomId: string) {
+    const us = await this.getSocket(roomId, socket.id);
+    if (us) {
+      socket.leave(roomId);
     }
     return;
   }

@@ -75,6 +75,7 @@ import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
+import { WsBadRequestException } from 'src/exceptions/ws.exception';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -149,28 +150,6 @@ export class MeetingsGateway
         meetingId,
       }),
     });
-  }
-
-  private async emitToUserJoinRoomBeforeHost(room: string) {
-    const userSockets = await this.server.in(room).fetchSockets();
-    const existUserSocketIds = (
-      await Promise.all(
-        userSockets.map(async (s) => {
-          const user = await this.usersService.findOne({
-            query: { socketId: s.id },
-          });
-          if (user) return;
-          return s.id;
-        }),
-      )
-    ).filter(Boolean);
-
-    if (existUserSocketIds.length) {
-      this.emitToRoom(room, MeetingEmitEvents.RejoinWaititngRoom, {
-        sockets: existUserSocketIds,
-      });
-    }
-    return;
   }
 
   async handleOutRoom({
@@ -409,7 +388,10 @@ export class MeetingsGateway
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        this.joinRoom(socket, `waitingRoom:${message.templateId}`);
+        const waitingRoom = `waitingRoom:${message.templateId}`;
+        const rejoinRoom = `rejoin:${message.templateId}`;
+        this.joinRoom(socket, waitingRoom);
+        this.leaveRoom(socket, rejoinRoom);
 
         const template = await this.coreService.findMeetingTemplateById({
           id: message.templateId,
@@ -437,7 +419,12 @@ export class MeetingsGateway
           );
         }
 
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+        if (!meeting) {
+          socket.join(rejoinRoom);
+          throw new WsBadRequestException(
+            MeetingNativeErrorEnum.MEETING_NOT_FOUND,
+          );
+        }
 
         if (template.user) {
           const mainUser = await this.coreService.findUserById({
@@ -671,7 +658,11 @@ export class MeetingsGateway
           },
         );
 
-        this.emitToUserJoinRoomBeforeHost(`waitingRoom:${meeting.templateId}`);
+        this.emitToRoom(
+          `rejoin:${meeting.templateId}`,
+          MeetingEmitEvents.RejoinWaititngRoom,
+        );
+        
         return wsResult({
           user: plainUser,
           meeting: plainMeeting,

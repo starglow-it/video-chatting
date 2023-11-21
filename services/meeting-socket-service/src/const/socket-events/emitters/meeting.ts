@@ -12,6 +12,6 @@ export enum MeetingEmitEvents {
   UpdateTemplatePayments = 'template:payments:update',
   ReceiveMessage = 'meeting:chat:message:receive',
   ReceiveReaction = 'meeting:chat:reaction:receive',
-  RejoinWaititngRoom = 'meeting:room:rejoin',
+  RejoinWaititngRoom = 'meeting:rejoin',
   ReceiveUnReaction = 'meeting:chat:unreaction:receive',
 }
