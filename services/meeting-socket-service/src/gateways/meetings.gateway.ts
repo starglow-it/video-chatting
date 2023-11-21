@@ -151,6 +151,28 @@ export class MeetingsGateway
     });
   }
 
+  private async emitToUserJoinRoomBeforeHost(room: string) {
+    const userSockets = await this.server.in(room).fetchSockets();
+    const existUserSocketIds = (
+      await Promise.all(
+        userSockets.map(async (s) => {
+          const user = await this.usersService.findOne({
+            query: { socketId: s.id },
+          });
+          if (user) return;
+          return s.id;
+        }),
+      )
+    ).filter(Boolean);
+
+    if (existUserSocketIds.length) {
+      this.emitToRoom(room, MeetingEmitEvents.RejoinWaititngRoom, {
+        sockets: existUserSocketIds,
+      });
+    }
+    return;
+  }
+
   async handleOutRoom({
     meeting,
     session,
@@ -387,7 +409,7 @@ export class MeetingsGateway
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        socket.join(`waitingRoom:${message.templateId}`);
+        this.joinRoom(socket, `waitingRoom:${message.templateId}`);
 
         const template = await this.coreService.findMeetingTemplateById({
           id: message.templateId,
@@ -649,6 +671,7 @@ export class MeetingsGateway
           },
         );
 
+        this.emitToUserJoinRoomBeforeHost(`waitingRoom:${meeting.templateId}`);
         return wsResult({
           user: plainUser,
           meeting: plainMeeting,

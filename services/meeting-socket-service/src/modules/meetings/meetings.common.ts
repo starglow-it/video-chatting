@@ -20,7 +20,6 @@ import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-react
 
 @Injectable()
 export class MeetingsCommonService {
-  private logger: Logger = new Logger(MeetingsCommonService.name);
   constructor(
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
@@ -28,7 +27,6 @@ export class MeetingsCommonService {
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
-    @InjectConnection() private readonly connection: Connection,
   ) {}
 
   async handleTimeLimit({
