@@ -660,9 +660,9 @@ export class MeetingsGateway
 
         this.emitToRoom(
           `rejoin:${meeting.templateId}`,
-          MeetingEmitEvents.RejoinWaititngRoom,
+          MeetingEmitEvents.RejoinWaitingRoom,
         );
-        
+
         return wsResult({
           user: plainUser,
           meeting: plainMeeting,
