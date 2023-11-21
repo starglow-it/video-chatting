@@ -1,10 +1,8 @@
 import { updateLocalUserEvent } from 'src/store/roomStores/users/localUser/model';
-import { rejoinMeetingEvent } from '../../meeting/model';
-import { sendJoinWaitingRoomSocketEvent } from '../init';
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { sendJoinWaitingRoomSocketEvent } from '../init';
 
 export const handleRejoinMeeting = async () => {
-    updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Settings });
+    updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.EnterName });
     await sendJoinWaitingRoomSocketEvent();
-    // rejoinMeetingEvent();
 };
