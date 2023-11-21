@@ -40,12 +40,6 @@ const Component = () => {
                     translation="dialogs.meetingEnd.title"
                 />
 
-                <CustomTypography
-                    className={styles.text}
-                    nameSpace="dashboard"
-                    translation="dialogs.meetingEnd.text"
-                />
-
                 <CustomButton
                     label={
                         <Translation
