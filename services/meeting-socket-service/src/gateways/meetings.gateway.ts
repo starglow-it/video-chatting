@@ -75,6 +75,7 @@ import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from 'src/exceptions/ws.exception';
+import { LeaveMeetingRequestDTO } from 'src/dtos/requests/leave-meeting.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -286,13 +287,16 @@ export class MeetingsGateway
     );
 
   async handleDisconnect(client: Socket) {
-    console.log('disconnect', client.id);
+    console.log(`handleDisconnect ${client.id}`);
+    
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersComponent.findOne({
+        const user = await this.usersService.findOne({
           query: { socketId: client.id },
           session,
         });
+
+        if(!user)return wsResult();
 
         await this.usersComponent.findMeetingFromPopulateUser(user);
 
@@ -1151,20 +1155,30 @@ export class MeetingsGateway
     }
   }
 
+  @PassAuth()
   @WsEvent(MeetingSubscribeEvents.OnLeaveMeeting)
-  async leaveMeeting(@ConnectedSocket() socket: Socket) {
+  async leaveMeeting(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: LeaveMeetingRequestDTO,
+  ) {
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        const user = await this.usersComponent.findOne({
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
+
+        const user = await this.usersService.findOne({
           query: { socketId: socket.id },
           session,
         });
 
-        const meeting = await this.meetingsService.findById(
-          user?.meeting._id.toString(),
-          session,
-        );
+        if (!meeting && !user) {
+          return wsResult();
+        }
+
+        throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
         const userId = user._id.toString();
 
