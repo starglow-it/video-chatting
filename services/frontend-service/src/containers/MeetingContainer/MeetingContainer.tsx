@@ -187,9 +187,11 @@ const MeetingContainer = memo(() => {
         })();
 
         return () => {
-            sendLeaveMeetingSocketEvent();
-            resetRoomStores();
-            BackgroundManager.destroy();
+            (async () => {
+                await sendLeaveMeetingSocketEvent();
+                resetRoomStores();
+                BackgroundManager.destroy();
+            })();
         };
     }, []);
 
