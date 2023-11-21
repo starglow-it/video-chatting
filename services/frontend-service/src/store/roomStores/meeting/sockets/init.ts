@@ -431,4 +431,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnRejoinWaitingRoom,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnRejoinWaitingRoom,
+        ),
+    );
 });

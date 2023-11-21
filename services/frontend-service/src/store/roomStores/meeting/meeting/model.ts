@@ -60,6 +60,9 @@ export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
 export const joinMeetingEvent =
     meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');
 
+export const rejoinMeetingEvent =
+    meetingDomain.createEvent<void>('joinMeetingEvent');
+
 export const joinMeetingWithLurkerEvent = meetingDomain.createEvent(
     'joinMeetingWithLurkerEvent',
 );

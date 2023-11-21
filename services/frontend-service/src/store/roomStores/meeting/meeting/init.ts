@@ -15,6 +15,7 @@ import {
     setActiveTabPanelEvent,
     $isToggleLinksDrawer,
     toggleLinksDrawerEvent,
+    rejoinMeetingEvent,
 } from './model';
 import {
     $changeStreamStore,
@@ -34,6 +35,10 @@ import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWait
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingRoleStore } from '../meetingRole/model';
 import { handleJoinMeetingWithLurker } from './handlers/handleJoinMeetingWithLurker';
+import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+} from '../../audio/model';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -76,6 +81,20 @@ sample({
         ...params,
     }),
     target: joinMeetingFx,
+});
+
+sample({
+    clock: rejoinMeetingEvent,
+    source: combine({
+        isBackgroundAudioActive: $isBackgroundAudioActive,
+        backgroundAudioVolume: $backgroundAudioVolume,
+    }),
+    fn: store => ({
+        isSettingsAudioBackgroundActive: store.isBackgroundAudioActive,
+        settingsBackgroundAudioVolume: store.backgroundAudioVolume,
+        needToRememberSettings: true,
+    }),
+    target: joinMeetingEvent,
 });
 
 sample({
