@@ -288,7 +288,7 @@ export class MeetingsGateway
 
   async handleDisconnect(client: Socket) {
     console.log(`handleDisconnect ${client.id}`);
-    
+
     return withTransaction(this.connection, async (session) => {
       try {
         const user = await this.usersService.findOne({
@@ -296,7 +296,7 @@ export class MeetingsGateway
           session,
         });
 
-        if(!user)return wsResult();
+        if (!user) return wsResult();
 
         await this.usersComponent.findMeetingFromPopulateUser(user);
 
@@ -1522,13 +1522,20 @@ export class MeetingsGateway
         );
 
         const plainMeeting = meetingSerialization(meeting);
+        const emitData = {
+          meeting: plainMeeting,
+        };
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-          },
+          emitData,
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitData,
         );
       } catch (error) {
         return wsError(socket, error);
