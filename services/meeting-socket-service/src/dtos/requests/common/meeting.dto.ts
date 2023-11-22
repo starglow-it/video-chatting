@@ -68,6 +68,13 @@ export class MeetingDto implements ICommonMeetingDTO {
   owner: string;
 
   @IsOptional()
+  @IsBoolean({
+    message: 'Invalid isMute',
+  })
+  isBlockAudiences: boolean;
+
+  @IsOptional()
   @Type(() => MeetingUserDto)
   users: ICommonMeetingUserDTO[];
+
 }
