@@ -34,9 +34,25 @@ export class BaseGateway implements OnGatewayConnection {
     socket.broadcast.to(roomId).emit(eventName, data ?? {});
   }
 
-  async getSocket(roomId, socketId) {
+  async getSocket(roomId: string, socketId: string) {
     const sockets = await this.server.sockets.in(roomId).fetchSockets();
 
     return sockets.find((socket) => socket.id === socketId);
+  }
+
+  async joinRoom(socket: Socket, roomId: string) {
+    const us = await this.getSocket(roomId, socket.id);
+    if (!us) {
+      socket.join(roomId);
+    }
+    return;
+  }
+
+  async leaveRoom(socket: Socket, roomId: string) {
+    const us = await this.getSocket(roomId, socket.id);
+    if (us) {
+      socket.leave(roomId);
+    }
+    return;
   }
 }

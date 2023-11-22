@@ -15,4 +15,10 @@ export class UpdateMeetingRequestDTO implements IUpdateCommonMeeting {
     message: 'invalid',
   })
   isMute: boolean;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'invalid',
+  })
+  isBlockAudiences: boolean;
 }

@@ -35,6 +35,9 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
   isMute: boolean;
 
   @Expose()
+  isBlockAudiences: boolean;
+
+  @Expose()
   @Type(() => CommonUserDTO)
   @Transform((data) => data?.obj?.owner?.['_id']?.toString())
   owner: ICommonMeetingUserDTO['id'];

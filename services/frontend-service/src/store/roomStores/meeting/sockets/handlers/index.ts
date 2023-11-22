@@ -18,6 +18,7 @@ import { handleReceiveMessage } from './handleReceiveMessage';
 import { handleReceiveReaction } from './handleReceiveReaction';
 import { handleReceiveUnReaction } from './handleReceiveUnReaction';
 import { handleReceiveUpdatePaymentMeeting } from './handleReceiveUpdatePaymentMeeting';
+import { handleRejoinMeeting } from './handleRejoinMeeting';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -108,6 +109,12 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiceUnReaction,
             {
                 handler: handleReceiveUnReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnRejoinWaitingRoom,
+            {
+                handler: handleRejoinMeeting,
             },
         ],
     ]);

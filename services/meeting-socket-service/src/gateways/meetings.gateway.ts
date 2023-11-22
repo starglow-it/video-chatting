@@ -4,7 +4,6 @@ import {
   OnGatewayDisconnect,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, PopulateOptions, Types } from 'mongoose';
 import { Socket } from 'socket.io';
@@ -75,6 +74,8 @@ import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
+import { WsBadRequestException } from 'src/exceptions/ws.exception';
+import { LeaveMeetingRequestDTO } from 'src/dtos/requests/leave-meeting.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -128,6 +129,27 @@ export class MeetingsGateway
       users: plainUsers,
     });
   };
+
+  private async getMeetingUsersInRoom(
+    meeting: MeetingDocument,
+    session: ITransactionSession,
+  ) {
+    return this.usersService.findUsers({
+      query: {
+        meeting: meeting._id,
+        accessStatus: {
+          $in: [
+            MeetingAccessStatusEnum.RequestSent,
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.SwitchRoleSent,
+            MeetingAccessStatusEnum.EnterName,
+            MeetingAccessStatusEnum.Settings,
+          ],
+        },
+      },
+      session,
+    });
+  }
 
   async setTimeoutFinishMeeting(meeting: MeetingDocument) {
     const meetingId = meeting._id.toString() as string;
@@ -258,25 +280,6 @@ export class MeetingsGateway
     return msg;
   }
 
-  private populateUsersInMeeting(
-    meeting: MeetingDocument,
-  ): string | PopulateOptions | (string | PopulateOptions)[] {
-    return {
-      path: 'users',
-      match: {
-        meeting: meeting._id,
-        accessStatus: {
-          $in: [
-            MeetingAccessStatusEnum.RequestSent,
-            MeetingAccessStatusEnum.InMeeting,
-            MeetingAccessStatusEnum.SwitchRoleSent,
-            MeetingAccessStatusEnum.EnterName,
-          ],
-        },
-      },
-    };
-  }
-
   isChangeVideoContainer = (user: MeetingUserDocument) =>
     user.meetingRole !== MeetingRole.Lurker &&
     [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Left].includes(
@@ -284,13 +287,16 @@ export class MeetingsGateway
     );
 
   async handleDisconnect(client: Socket) {
-    console.log('disconnect', client.id);
+    console.log(`handleDisconnect ${client.id}`);
+
     return withTransaction(this.connection, async (session) => {
       try {
-        const user = await this.usersComponent.findOne({
+        const user = await this.usersService.findOne({
           query: { socketId: client.id },
           session,
         });
+
+        if (!user) return wsResult();
 
         await this.usersComponent.findMeetingFromPopulateUser(user);
 
@@ -387,7 +393,10 @@ export class MeetingsGateway
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        socket.join(`waitingRoom:${message.templateId}`);
+        const waitingRoom = `waitingRoom:${message.templateId}`;
+        const rejoinRoom = `rejoin:${message.templateId}`;
+        this.joinRoom(socket, waitingRoom);
+        this.leaveRoom(socket, rejoinRoom);
 
         const template = await this.coreService.findMeetingTemplateById({
           id: message.templateId,
@@ -415,7 +424,12 @@ export class MeetingsGateway
           );
         }
 
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+        if (!meeting) {
+          socket.join(rejoinRoom);
+          throw new WsBadRequestException(
+            MeetingNativeErrorEnum.MEETING_NOT_FOUND,
+          );
+        }
 
         if (template.user) {
           const mainUser = await this.coreService.findUserById({
@@ -472,11 +486,11 @@ export class MeetingsGateway
         meeting.users.push(user.id);
         meeting.save();
 
-        await meeting.populate(this.populateUsersInMeeting(meeting));
+        const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
 
         const plainMeeting = meetingSerialization(meeting);
         const plainUser = userSerialization(user);
-        const plainUsers = userSerialization(meeting.users);
+        const plainUsers = userSerialization(meetingUsers);
 
         this.emitToRoom(
           `meeting:${plainMeeting.id}`,
@@ -649,6 +663,11 @@ export class MeetingsGateway
           },
         );
 
+        this.emitToRoom(
+          `rejoin:${meeting.templateId}`,
+          MeetingEmitEvents.RejoinWaitingRoom,
+        );
+
         return wsResult({
           user: plainUser,
           meeting: plainMeeting,
@@ -717,20 +736,10 @@ export class MeetingsGateway
 
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
-          const meetingUsers = await this.usersService.findUsers({
-            query: {
-              meeting: meeting._id,
-              accessStatus: {
-                $in: [
-                  MeetingAccessStatusEnum.RequestSent,
-                  MeetingAccessStatusEnum.InMeeting,
-                  MeetingAccessStatusEnum.SwitchRoleSent,
-                  MeetingAccessStatusEnum.EnterName,
-                ],
-              },
-            },
+          const meetingUsers = await this.getMeetingUsersInRoom(
+            meeting,
             session,
-          });
+          );
 
           throwWsError(
             typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
@@ -1146,20 +1155,30 @@ export class MeetingsGateway
     }
   }
 
+  @PassAuth()
   @WsEvent(MeetingSubscribeEvents.OnLeaveMeeting)
-  async leaveMeeting(@ConnectedSocket() socket: Socket) {
+  async leaveMeeting(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: LeaveMeetingRequestDTO,
+  ) {
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        const user = await this.usersComponent.findOne({
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
+
+        const user = await this.usersService.findOne({
           query: { socketId: socket.id },
           session,
         });
 
-        const meeting = await this.meetingsService.findById(
-          user?.meeting._id.toString(),
-          session,
-        );
+        if (!meeting && !user) {
+          return wsResult();
+        }
+
+        throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
         const userId = user._id.toString();
 
@@ -1264,25 +1283,36 @@ export class MeetingsGateway
           userUpdated,
         );
 
+        const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
+
         await meeting.populate(['users']);
         const meetingId = meeting._id.toString();
         socket.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
-        const plainUsers = userSerialization(meeting.users);
+        const plainUsers = userSerialization(meetingUsers);
+
+        const emitMeetingData = {
+          meeting: plainMeeting,
+          users: plainUsers,
+        };
+
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
+          emitMeetingData,
         );
 
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: userTemplate.id },
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitMeetingData,
         );
 
         return wsResult({
@@ -1503,13 +1533,20 @@ export class MeetingsGateway
         );
 
         const plainMeeting = meetingSerialization(meeting);
+        const emitData = {
+          meeting: plainMeeting,
+        };
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-          },
+          emitData,
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitData,
         );
       } catch (error) {
         return wsError(socket, error);
