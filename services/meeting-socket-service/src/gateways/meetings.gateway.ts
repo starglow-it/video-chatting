@@ -288,7 +288,7 @@ export class MeetingsGateway
 
   async handleDisconnect(client: Socket) {
     console.log(`handleDisconnect ${client.id}`);
-    
+
     return withTransaction(this.connection, async (session) => {
       try {
         const user = await this.usersService.findOne({
@@ -296,7 +296,7 @@ export class MeetingsGateway
           session,
         });
 
-        if(!user)return wsResult();
+        if (!user) return wsResult();
 
         await this.usersComponent.findMeetingFromPopulateUser(user);
 
@@ -1283,25 +1283,36 @@ export class MeetingsGateway
           userUpdated,
         );
 
+        const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
+
         await meeting.populate(['users']);
         const meetingId = meeting._id.toString();
         socket.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
-        const plainUsers = userSerialization(meeting.users);
+        const plainUsers = userSerialization(meetingUsers);
+
+        const emitMeetingData = {
+          meeting: plainMeeting,
+          users: plainUsers,
+        };
+
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
+          emitMeetingData,
         );
 
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: userTemplate.id },
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitMeetingData,
         );
 
         return wsResult({
@@ -1522,13 +1533,20 @@ export class MeetingsGateway
         );
 
         const plainMeeting = meetingSerialization(meeting);
+        const emitData = {
+          meeting: plainMeeting,
+        };
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-          },
+          emitData,
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitData,
         );
       } catch (error) {
         return wsError(socket, error);

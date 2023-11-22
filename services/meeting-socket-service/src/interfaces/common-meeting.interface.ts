@@ -12,4 +12,5 @@ export interface ICommonMeetingDTO {
   isMute: boolean;
   owner: ICommonMeetingUserDTO['id'];
   users: ICommonMeetingUserDTO[];
+  isBlockAudiences: boolean;
 }
