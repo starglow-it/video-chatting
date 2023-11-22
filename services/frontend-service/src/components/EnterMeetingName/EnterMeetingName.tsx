@@ -147,8 +147,7 @@ const Component = () => {
             <ConditionalRender
                 condition={
                     !isJoinPaywall &&
-                    (!isLurker || isOwnerInMeeting) &&
-                    !isBlockAudiences
+                    (!isLurker || (isOwnerInMeeting && !isBlockAudiences))
                 }
             >
                 <CustomTypography
