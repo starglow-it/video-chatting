@@ -196,7 +196,6 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-    console.log('#Duy Phan console', previewImage);
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>

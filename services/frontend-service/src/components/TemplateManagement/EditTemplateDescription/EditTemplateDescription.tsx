@@ -26,7 +26,6 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 
 // stores
 import { getRandomHexColor } from 'shared-utils';
-import { CUSTOM_CATEROFY_BUSSINESS } from 'shared-const';
 import { useRouter } from 'next/router';
 import {
     $businessCategoriesStore,

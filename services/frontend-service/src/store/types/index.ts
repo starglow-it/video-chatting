@@ -51,6 +51,7 @@ export type Meeting = {
     users: MeetingUser[];
     volume: number;
     isMute: boolean;
+    isBlockAudiences?: boolean;
 };
 
 export type MeetingChat = {
