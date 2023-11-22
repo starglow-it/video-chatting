@@ -69,7 +69,7 @@ export class MeetingDto implements ICommonMeetingDTO {
 
   @IsOptional()
   @IsBoolean({
-    message: 'Invalid isMute',
+    message: 'Invalid',
   })
   isBlockAudiences: boolean;
 
