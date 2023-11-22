@@ -1283,25 +1283,36 @@ export class MeetingsGateway
           userUpdated,
         );
 
+        const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
+
         await meeting.populate(['users']);
         const meetingId = meeting._id.toString();
         socket.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
-        const plainUsers = userSerialization(meeting.users);
+        const plainUsers = userSerialization(meetingUsers);
+
+        const emitMeetingData = {
+          meeting: plainMeeting,
+          users: plainUsers,
+        };
+
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
+          emitMeetingData,
         );
 
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: userTemplate.id },
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitMeetingData,
         );
 
         return wsResult({
