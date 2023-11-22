@@ -18,17 +18,20 @@ import { useTimer } from '@hooks/useTimer';
 import { isMobile } from 'shared-utils';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { MeetingRole } from 'shared-types';
+import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
+import { $meetingStore, updateMeetingSocketEvent } from 'src/store/roomStores';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
     const router = useRouter();
     const { inviteGuestsDialog } = useStore($appDialogsStore);
+    const { isBlockAudiences } = useStore($meetingStore);
     const [link, setLink] = useState<string>(
         getClientMeetingUrlWithDomain(router.query.token as string),
     );
 
     const refRoleGroup = useRef<any>(null);
-    // const { isMobile } = useBrowserDetect();
+
     const {
         value: currentTime,
         onStartTimer: handleStartCountDown,
@@ -91,6 +94,10 @@ export const InviteGuestsDialog = () => {
         );
     };
 
+    const onChangeSwitch = () => {
+        updateMeetingSocketEvent({ isBlockAudiences: !isBlockAudiences });
+    };
+
     return (
         <CustomDialog
             open={inviteGuestsDialog && !isMobile()}
@@ -144,10 +151,29 @@ export const InviteGuestsDialog = () => {
                         <span>Gmail</span>
                     </CustomGrid>
                 </CustomGrid>
+                <CustomGrid
+                    display="flex"
+                    justifyContent="center"
+                    gap={1}
+                    margin="20px"
+                >
+                    {!isBlockAudiences ? (
+                        <span>Public</span>
+                    ) : (
+                        <span>Private</span>
+                    )}
+                    <CustomSwitch
+                        onChange={onChangeSwitch}
+                        checked={!isBlockAudiences}
+                    />
+                </CustomGrid>
                 <MeetingRoleGroup
                     className={styles.roleGroup}
                     ref={refRoleGroup}
                     onChangeValue={handleChangeRole}
+                    audienceClassName={
+                        isBlockAudiences ? styles.block : undefined
+                    }
                 />
             </CustomGrid>
         </CustomDialog>

@@ -21,6 +21,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
+import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -29,11 +30,13 @@ import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
     $isHaveNewMessage,
     $isLurker,
     $isMeetingHostStore,
+    $isOwner,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
@@ -47,6 +50,7 @@ import {
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
+    updateMeetingSocketEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -64,7 +68,9 @@ const Component = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isLurker = useStore($isLurker);
+    const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -80,6 +86,7 @@ const Component = () => {
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
+    const { isBlockAudiences } = meeting;
 
     const { isMobile } = useBrowserDetect();
 
@@ -136,6 +143,46 @@ const Component = () => {
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={
+                                isBlockAudiences
+                                    ? 'lock.private'
+                                    : 'lock.public'
+                            }
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={() =>
+                                updateMeetingSocketEvent({
+                                    isBlockAudiences: !isBlockAudiences,
+                                })
+                            }
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: isBlockAudiences,
+                            })}
+                            Icon={
+                                isBlockAudiences ? (
+                                    <LockIcon width="22px" height="22px" />
+                                ) : (
+                                    <UnlockIcon width="18px" height="18px" />
+                                )
+                            }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
             <ConditionalRender condition={!isMobile && !isLurker}>
                 <CustomTooltip
                     title={
