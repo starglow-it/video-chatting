@@ -1256,7 +1256,10 @@ export class MeetingsGateway
 
         throwWsError(!userTemplate, 'No user template found');
 
-        if (this.isChangeVideoContainer(user)) {
+        if (
+          user.meetingRole !== MeetingRole.Lurker &&
+          user.accessStatus === MeetingAccessStatusEnum.Disconnected
+        ) {
           const u = await this.usersService.updateVideoContainer({
             userTemplate,
             userId: user._id.toString(),
