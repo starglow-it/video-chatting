@@ -31,5 +31,5 @@ export enum CoreBrokerPatterns {
   GetResouces = 'get_resouces',
   UpdateResouce = 'update_resouce',
   DeleteResouces = 'delete_resouce',
-  UploadResouce = 'upload_resouce'
+  UploadResouce = 'upload_resouce',
 }

@@ -115,4 +115,4 @@ export interface ITimestamp {
   day: number;
   hours: number;
   minutes: number;
-};
+}

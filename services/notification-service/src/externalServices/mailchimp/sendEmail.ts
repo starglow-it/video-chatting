@@ -50,7 +50,7 @@ export const sendEmail = async ({
         let buff = Buffer.from(icalEventContent ?? '');
         let content = buff.toString('base64');
 
-        console.log(sendTo,targetTemplate);
+        console.log(sendTo, targetTemplate);
 
         const sendTemplateData: MessagesSendTemplateRequest = {
             template_name: targetTemplate.slug,
@@ -76,13 +76,13 @@ export const sendEmail = async ({
                 ],
                 attachments: icalEventContent
                     ? [
-                        {
-                            type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
-                            name: 'invite.ics',
-                            // @ts-ignore
-                            content,
-                        },
-                    ]
+                          {
+                              type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
+                              name: 'invite.ics',
+                              // @ts-ignore
+                              content,
+                          },
+                      ]
                     : [],
             },
         };

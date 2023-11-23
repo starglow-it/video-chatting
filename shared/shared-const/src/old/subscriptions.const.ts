@@ -1,4 +1,5 @@
 import { MeetingRole, PlanKeys } from 'shared-types';
+import { emailTemplates } from './email-templates.const';
 
 export type PlanData = {
   name: PlanKeys;
@@ -7,6 +8,7 @@ export type PlanData = {
   description: string;
   features: {
     templatesLimit: number;
+    emailSlug?: keyof typeof emailTemplates;
     timeLimit: number;
     comissionFee: {
       [T in Exclude<MeetingRole, 'host'>]: number;
@@ -37,6 +39,7 @@ const professionalSubscription: PlanData = {
   priceInCents: 500,
   description: 'Monetize meetings + upload room',
   features: {
+    emailSlug: 'subscriptionSuccessful',
     templatesLimit: 20,
     timeLimit: null,
     comissionFee: {
@@ -54,11 +57,12 @@ const businessSubscription: PlanData = {
   priceInCents: 2500,
   description: 'Add Links to your content',
   features: {
+    emailSlug: 'subscriptionBusiness',
     templatesLimit: 50,
     timeLimit: null,
     comissionFee: {
       lurker: 0.5,
-      participant: 0
+      participant: 0,
     },
   },
 };
