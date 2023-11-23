@@ -60,5 +60,5 @@ export type CreateMeetingAvatarPayload = {
 };
 
 export type GetMeetingAvatarPayload = {
-  query: Partial<Omit<IMeetingAvatar, 'id'> & {_id: string}>
+  query: Partial<Omit<IMeetingAvatar, 'id'> & { _id: string }>;
 };

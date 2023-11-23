@@ -18,7 +18,8 @@ import { CoreService } from '../../services/core/core.service';
 import {
   DashboardNotificationTypes,
   ResponseSumType,
-  IDashboardNotification, PlanKeys,
+  IDashboardNotification,
+  PlanKeys,
 } from 'shared-types';
 
 @WebSocketGateway({ transports: ['websocket'] })
@@ -71,9 +72,11 @@ export class DashboardGateway extends BaseGateway {
         userId: targetTemplate.user.id,
       });
 
-      const isHandleTimeLimit =
-              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                .includes(user.subscriptionPlanKey);
+      const isHandleTimeLimit = ![
+        PlanKeys.Business,
+        PlanKeys.House,
+        PlanKeys.Professional,
+      ].includes(user.subscriptionPlanKey);
 
       if (!user.maxMeetingTime && isHandleTimeLimit) {
         return {

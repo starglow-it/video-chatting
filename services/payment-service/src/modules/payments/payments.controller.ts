@@ -489,7 +489,6 @@ export class PaymentsController {
         customer = await this.paymentService.createCustomer(user);
       }
 
-
       const session = await this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
         priceId: price.id as string,
@@ -709,11 +708,17 @@ export class PaymentsController {
       invoice.subscription,
     );
 
+    const productData = await this.paymentService.getStripeProduct(
+      subscription['plan'].product,
+    );
+
     const frontendUrl = await this.configService.get('frontendUrl');
 
     const user = await this.coreService.findUser({
       stripeSubscriptionId: subscription.id,
     });
+
+    const currentPlanName = plans[productData.name || PlanKeys.House];
 
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
@@ -727,13 +732,14 @@ export class PaymentsController {
 
     if (
       Boolean(user.isSubscriptionActive) === false &&
-      ['active', 'trialing'].includes(subscription.status)
+      ['active', 'trialing'].includes(subscription.status) &&
+      currentPlanName.features.emailSlug
     ) {
       console.log('send email');
 
       this.notificationsService.sendEmail({
         template: {
-          key: emailTemplates.subscriptionSuccessful,
+          key: emailTemplates[currentPlanName.features.emailSlug],
           data: [
             {
               name: 'BACKURL',

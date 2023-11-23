@@ -1,7 +1,4 @@
-import {
-  ICommonUser,
-  IUserTemplate,
-} from '../api-interfaces';
+import { ICommonUser, IUserTemplate } from '../api-interfaces';
 
 type IncreaseRoomTransactionStatisticPayload = {
   templateId: IUserTemplate['id'];

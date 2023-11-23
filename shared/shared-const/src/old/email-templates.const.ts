@@ -11,6 +11,7 @@ export const emailTemplates = {
   emailOldUpdated: 'email-old-changed',
   codeVerification: 'code-sent',
   subscriptionSuccessful: 'subscription-successful',
+  subscriptionBusiness: 'subscription-business',
   contactUs: 'contact-us',
   trialExpires: 'trial-expires',
   blockedAccount: 'account-was-blocked',

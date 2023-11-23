@@ -1,7 +1,7 @@
-import { Channel } from 'amqplib';
-import { IQueue } from '../../../types/broker';
-import { objectToJsonBuffer } from '../object/objectToJsonBuffer';
-import { getConnection } from './getConnection';
+import { Channel } from "amqplib";
+import { IQueue } from "../../../types/broker";
+import { objectToJsonBuffer } from "../object/objectToJsonBuffer";
+import { getConnection } from "./getConnection";
 
 let channelPromise: Promise<Channel>;
 
@@ -24,23 +24,23 @@ export const createPublisher =
         expirationInMs: dExpirationInMs,
         persistent: dPersistent = true,
     }: IGlobalArgs) =>
-        async (
-            data: any,
-            {
-                persistent = dPersistent,
-                expirationInMs = dExpirationInMs,
-            }: IArgs = {},
-        ): Promise<void> => {
-            const connection = await getConnection();
-            if (!channelPromise) {
+    async (
+        data: any,
+        {
+            persistent = dPersistent,
+            expirationInMs = dExpirationInMs,
+        }: IArgs = {}
+    ): Promise<void> => {
+        const connection = await getConnection();
+        if (!channelPromise) {
             // @ts-ignore
-                channelPromise = connection.createChannel();
-            }
-            const channel = await channelPromise;
-            const payload = objectToJsonBuffer(data);
+            channelPromise = connection.createChannel();
+        }
+        const channel = await channelPromise;
+        const payload = objectToJsonBuffer(data);
 
-            channel.publish(exchangeName, queue.binding, payload, {
-                persistent,
-                expiration: expirationInMs,
-            });
-        };
+        channel.publish(exchangeName, queue.binding, payload, {
+            persistent,
+            expiration: expirationInMs,
+        });
+    };

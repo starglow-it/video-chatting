@@ -1,4 +1,4 @@
-import { LoginTypes } from "shared-types";
+import { LoginTypes } from 'shared-types';
 
 export const USER_NOT_FOUND = { message: 'usund', errorCode: 100 };
 export const USER_EXISTS = { message: 'user.exits', errorCode: 101 };
@@ -35,18 +35,21 @@ export const USER_IS_BLOCKED = {
 export const USER_NOT_CONFIRM_EMAIL = {
   message: 'user.notConfirmEmail',
   errorCode: 109,
-}
+};
 
 export const USER_NOT_GOOGLE_ACCOUNT = {
   message: 'user.notGoogleAccount',
-  errorCode: 110
-}
+  errorCode: 110,
+};
 
 //#region functionals
 const PlatformErrorCode: { [K in LoginTypes]: number } = {
-  'local': 111,
-  'google': 112
-}
+  local: 111,
+  google: 112,
+};
 
-export const userLoginOtherPlatform = (platform: LoginTypes) => ({ message: `user.register.${platform}`, errorCode: PlatformErrorCode[platform] });
+export const userLoginOtherPlatform = (platform: LoginTypes) => ({
+  message: `user.register.${platform}`,
+  errorCode: PlatformErrorCode[platform],
+});
 //#endregion

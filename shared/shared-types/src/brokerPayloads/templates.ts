@@ -55,7 +55,7 @@ export type GetTemplatePaymentsPayload = {
 export type GetTemplatePaymentPayload = {
   paymentType: string;
   userTemplateId: string;
-  meetingRole: MeetingRole
+  meetingRole: MeetingRole;
 };
 
 export type UpdateTemplatePaymentPayload = {
