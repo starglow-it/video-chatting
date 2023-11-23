@@ -171,9 +171,7 @@ export const InviteGuestsDialog = () => {
                     className={styles.roleGroup}
                     ref={refRoleGroup}
                     onChangeValue={handleChangeRole}
-                    audienceClassName={
-                        isBlockAudiences ? styles.block : undefined
-                    }
+                    isBlockAudience={isBlockAudiences}
                 />
             </CustomGrid>
         </CustomDialog>
