@@ -14,7 +14,7 @@ import styles from './MeetingRoleGroup.module.scss';
 type RoleGroupProps = PropsWithClassName<{
     defaultValue?: MeetingRole;
     onChangeValue?: (value: MeetingRole) => void;
-    audienceClassName?: string;
+    isBlockAudience?: boolean;
 }>;
 
 export const MeetingRoleGroup = forwardRef(
@@ -23,7 +23,7 @@ export const MeetingRoleGroup = forwardRef(
             defaultValue = MeetingRole.Participant,
             onChangeValue,
             className,
-            audienceClassName,
+            isBlockAudience = false,
         }: RoleGroupProps,
         ref,
     ) => {
@@ -95,7 +95,9 @@ export const MeetingRoleGroup = forwardRef(
                 </CustomGrid>
 
                 <CustomGrid
-                    className={clsx(styles.roleItem, audienceClassName)}
+                    className={clsx(styles.roleItem, {
+                        [styles.block]: isBlockAudience,
+                    })}
                 >
                     <FormControlLabel
                         onClick={() => changeValue(MeetingRole.Lurker)}

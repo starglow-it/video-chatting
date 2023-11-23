@@ -23,7 +23,7 @@ import {
     addNotificationEvent,
     appDialogsApi,
 } from '../../../store';
-import { sendInviteEmailFx } from '../../../store/roomStores';
+import { $meetingStore, sendInviteEmailFx } from '../../../store/roomStores';
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
@@ -42,6 +42,7 @@ const Component = () => {
     const router = useRouter();
     const { inviteAttendeeByEmailDialog } = useStore($appDialogsStore);
     const isInviteEmailsSent = useStore(sendInviteEmailFx.pending);
+    const { isBlockAudiences } = useStore($meetingStore);
 
     const [userEmails, setUserEmails] = useState<string[]>([]);
 
@@ -124,6 +125,7 @@ const Component = () => {
                         <MeetingRoleGroup
                             className={styles.roleGroup}
                             ref={refRole}
+                            isBlockAudience={isBlockAudiences}
                         />
                         <CustomGrid container wrap="nowrap" gap={2}>
                             <CustomButton
