@@ -19,6 +19,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { Translation } from '@library/common/Translation/Translation';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { MeetingRole } from 'shared-types';
+import { $meetingStore } from 'src/store/roomStores';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -41,6 +42,7 @@ const Component = () => {
     );
 
     const { copyMeetingLinkDialog } = useStore($appDialogsStore);
+    const { isBlockAudiences } = useStore($meetingStore);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -124,6 +126,7 @@ const Component = () => {
                 <MeetingRoleGroup
                     onChangeValue={handleChangeValue}
                     className={styles.roleGroup}
+                    isBlockAudience={isBlockAudiences}
                 />
             </CustomGrid>
         </CustomDialog>

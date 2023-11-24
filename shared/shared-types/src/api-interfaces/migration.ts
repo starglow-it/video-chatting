@@ -1,12 +1,12 @@
-import { Environmens } from "./common"
+import { Environmens } from './common';
 
 export type EnvironmentMigration = {
-    [K in Environmens]?: () => Promise<void>
-}
+  [K in Environmens]?: () => Promise<void>;
+};
 
-export type MappingKey = { list: any[], object: Record<string, any> }
+export type MappingKey = { list: any[]; object: Record<string, any> };
 
 export type Collection = {
-    name: string,
-    records: Record<string, any>[]
-}
+  name: string;
+  records: Record<string, any>[];
+};

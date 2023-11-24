@@ -24,5 +24,5 @@ export enum UserBrokerPatterns {
   SearchUsers = 'search_users',
   ManageUserRights = 'manage_user_rights',
   CreateUserWithoutLogin = 'create_user_without_login',
-  DeleteGlobalUser = 'delete_global_user'
+  DeleteGlobalUser = 'delete_global_user',
 }

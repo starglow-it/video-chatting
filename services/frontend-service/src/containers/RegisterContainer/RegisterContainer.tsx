@@ -34,7 +34,6 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
-import { getClientMeetingUrl } from 'src/utils/urls';
 import { useRouter } from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
 import { RegisterType } from 'shared-types';
@@ -48,7 +47,6 @@ import styles from './RegisterContainer.module.scss';
 import {
     $authStore,
     $registerStore,
-    createMeetingFx,
     googleVerifyFx,
     registerUserFx,
     resetRegisterErrorEvent,

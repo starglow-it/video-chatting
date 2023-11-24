@@ -76,5 +76,4 @@ export class MeetingDto implements ICommonMeetingDTO {
   @IsOptional()
   @Type(() => MeetingUserDto)
   users: ICommonMeetingUserDTO[];
-
 }

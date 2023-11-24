@@ -33,6 +33,7 @@ import {
     $isOwner,
     $isOwnerInMeeting,
     $localUserStore,
+    $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
     joinLurkerMeetingSocketEvent,
@@ -63,6 +64,7 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const { isBlockAudiences } = useStore($meetingStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
@@ -143,7 +145,10 @@ const Component = () => {
             })}
         >
             <ConditionalRender
-                condition={!isJoinPaywall && (!isLurker || isOwnerInMeeting)}
+                condition={
+                    !isJoinPaywall &&
+                    (!isLurker || (isOwnerInMeeting && !isBlockAudiences))
+                }
             >
                 <CustomTypography
                     variant="h3bold"
@@ -228,7 +233,11 @@ const Component = () => {
                 ) : (
                     <>
                         <ConditionalRender
-                            condition={!isOwnerInMeeting && isHasMeeting}
+                            condition={
+                                !isOwnerInMeeting &&
+                                isHasMeeting &&
+                                !isBlockAudiences
+                            }
                         >
                             <CustomTypography
                                 variant="h3bold"
@@ -243,6 +252,16 @@ const Component = () => {
                                 nameSpace="meeting"
                                 textAlign="center"
                                 translation="meetingNotStarted.title"
+                            />
+                        </ConditionalRender>
+                        <ConditionalRender
+                            condition={!!isBlockAudiences && isHasMeeting}
+                        >
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                textAlign="center"
+                                translation="meetingPrivate"
                             />
                         </ConditionalRender>
                     </>

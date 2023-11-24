@@ -10,12 +10,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // styles
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import styles from './PasswordHints.module.scss';
 
 // types
 import { PasswordHintsProps } from './types';
-import { useStore } from 'effector-react';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 const HINTS = [
     {
@@ -93,7 +92,7 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
             isPasswordLengthPassed,
             isPasswordContentPassed,
             isSubmitted,
-            isMobile
+            isMobile,
         ],
     );
 

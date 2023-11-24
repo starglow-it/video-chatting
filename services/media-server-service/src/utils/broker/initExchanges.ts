@@ -1,7 +1,7 @@
-import { Connection } from 'amqplib';
-import * as exchangesList from '../../config/brokerExchanges';
-import { createChannel } from './createChannel';
-import { createExchange } from './createExchange';
+import { Connection } from "amqplib";
+import * as exchangesList from "../../config/brokerExchanges";
+import { createChannel } from "./createChannel";
+import { createExchange } from "./createExchange";
 
 interface IArgs {
     connection: Connection;
@@ -15,8 +15,8 @@ export const initExchanges = async ({ connection }: IArgs): Promise<void> => {
             createExchange({
                 channel,
                 exchange,
-            }),
-        ),
+            })
+        )
     );
     await channel.close();
 };

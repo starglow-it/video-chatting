@@ -1,12 +1,11 @@
-import { RoomServiceClient, Room } from 'livekit-server-sdk';
-import { getConfigVar } from '../services/config';
+import { RoomServiceClient, Room } from "livekit-server-sdk";
+import { getConfigVar } from "../services/config";
 
 export const startLiveKitServer = async () => {
     try {
-        const apiKey = await getConfigVar('livekitApiKey');
-        const apiSecret = await getConfigVar('livekitApiSecret');
-        const livekitHost = await getConfigVar('livekitHost');
-        
+        const apiKey = await getConfigVar("livekitApiKey");
+        const apiSecret = await getConfigVar("livekitApiSecret");
+        const livekitHost = await getConfigVar("livekitHost");
 
         const svc = new RoomServiceClient(livekitHost, apiKey, apiSecret);
 
@@ -14,7 +13,7 @@ export const startLiveKitServer = async () => {
             .then((rooms: Room[]) => {
                 rooms.forEach((room) => {
                     svc.deleteRoom(room.name).then(() => {
-                        console.log('room deleted');
+                        console.log("room deleted");
                     });
                 });
             })

@@ -23,6 +23,7 @@ import CustomButton from 'shared-frontend/library/custom/CustomButton/CustomButt
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { $meetingStore } from 'src/store/roomStores';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -86,8 +87,8 @@ type FormType = {
 const Component = () => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
-
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
+    const { isBlockAudiences } = useStore($meetingStore);
 
     const [activeSchedulePage, setActiveSchedulePage] = useState(
         schedulePages[0],
@@ -276,6 +277,7 @@ const Component = () => {
                                 <MeetingRoleGroup
                                     className={styles.roleGroup}
                                     ref={refRole}
+                                    isBlockAudience={isBlockAudiences}
                                 />
                             </ConditionalRender>
                             <CustomGrid

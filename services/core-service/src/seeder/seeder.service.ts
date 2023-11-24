@@ -509,28 +509,28 @@ export class SeederService {
         },
       });
 
-      const  getYouTubeVideoId = (videoUrl: string) => {
+      const getYouTubeVideoId = (videoUrl: string) => {
         try {
-            if (!videoUrl) return null;
-            const parsedUrl = new URL(videoUrl);
-            if (
-                parsedUrl.hostname === 'www.youtube.com' ||
-                parsedUrl.hostname === 'youtube.com'
-            ) {
-                return parsedUrl.searchParams.get('v');
-            }
-            if (parsedUrl.hostname === 'youtu.be') {
-                return parsedUrl.pathname.substr(1);
-            }
+          if (!videoUrl) return null;
+          const parsedUrl = new URL(videoUrl);
+          if (
+            parsedUrl.hostname === 'www.youtube.com' ||
+            parsedUrl.hostname === 'youtube.com'
+          ) {
+            return parsedUrl.searchParams.get('v');
+          }
+          if (parsedUrl.hostname === 'youtu.be') {
+            return parsedUrl.pathname.substr(1);
+          }
         } catch (error) {
-            console.error(error);
+          console.error(error);
         }
         return null;
-    }
+      };
 
       const utPromises = userTemplates.map((t) => async () => {
         const yId = getYouTubeVideoId(t.mediaLink.src);
-        if(yId) {
+        if (yId) {
           const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
           t.mediaLink = {
             src: t.mediaLink.src,
@@ -543,7 +543,7 @@ export class SeederService {
 
       const tPromises = templates.map((t) => async () => {
         const yId = getYouTubeVideoId(t.mediaLink.src);
-        if(yId) {
+        if (yId) {
           const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
           t.mediaLink = {
             src: t.mediaLink.src,
@@ -552,10 +552,9 @@ export class SeederService {
           };
           t.save();
         }
-        
       });
 
-      return executePromiseQueue([...tPromises,...utPromises]);
+      return executePromiseQueue([...tPromises, ...utPromises]);
     });
   }
 

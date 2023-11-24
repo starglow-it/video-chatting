@@ -64,7 +64,7 @@ export class ProfileTemplatesController {
   })
   async getProfileTemplates(
     @Request() req,
-    @Query() {skip, limit, categoryType}: GetProfileTemplatesQueryDto,
+    @Query() { skip, limit, categoryType }: GetProfileTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<IUserTemplate>>> {
     try {
       const templates = await this.userTemplatesService.getUserTemplates({

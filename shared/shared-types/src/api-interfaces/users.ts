@@ -9,12 +9,12 @@ import {
 export enum UserRoles {
   Admin = 'admin',
   User = 'user',
-  Anonymous = 'anonymous'
+  Anonymous = 'anonymous',
 }
 
 export enum LoginTypes {
   Local = 'local',
-  Google = 'google'
+  Google = 'google',
 }
 
 export interface ICommonUser {

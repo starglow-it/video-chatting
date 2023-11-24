@@ -7,9 +7,9 @@ export class CreateCommonTemplateRequestDto {
     type: String,
     required: false,
     default: <TemplateCategoryType>'default',
-    description: `${<TemplateCategoryType>'default'} or ${<TemplateCategoryType>(
-      'interior-design'
-    )}`,
+    description: `${<TemplateCategoryType>'default'} or ${<
+      TemplateCategoryType
+    >'interior-design'}`,
   })
   @IsOptional()
   @IsString({

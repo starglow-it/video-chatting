@@ -19,6 +19,10 @@
     width: rem(38px);
     height: rem(38px);
     border-radius: 10px;
+
+    &.inactive {
+        color: rgba($primary-white, 0.25);
+    }
 }
 
 .link {

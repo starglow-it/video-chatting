@@ -5,10 +5,12 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import {
     $isOwner,
+    $meetingStore,
     $meetingTemplateStore,
     toggleEditTemplateOpen,
     toggleLinksDrawerEvent,
     toggleMeetingInfoOpen,
+    updateMeetingSocketEvent,
 } from 'src/store/roomStores';
 
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -19,11 +21,14 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useCallback } from 'react';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 import styles from './MeetingHeader.module.scss';
 
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const { isBlockAudiences } = useStore($meetingStore);
 
     const { control } = useFormContext();
 
@@ -62,6 +67,37 @@ export const MeetingHeader = () => {
                 >
                     {isOwner ? companyName : meetingTemplate.companyName}
                 </CustomTypography>
+
+                <ConditionalRender condition={isOwner}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={10}
+                        className={clsx(styles.button, {
+                            [styles.link]: true,
+                            [styles.inactive]: isBlockAudiences,
+                        })}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={() =>
+                                updateMeetingSocketEvent({
+                                    isBlockAudiences: !isBlockAudiences,
+                                })
+                            }
+                            className={clsx(styles.button, {
+                                [styles.inactive]: isBlockAudiences,
+                            })}
+                            Icon={
+                                isBlockAudiences ? (
+                                    <LockIcon width="22px" height="22px" />
+                                ) : (
+                                    <UnlockIcon width="18px" height="18px" />
+                                )
+                            }
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+
                 <ConditionalRender condition={!!meetingTemplate.links?.length}>
                     <CustomPaper
                         variant="black-glass"
