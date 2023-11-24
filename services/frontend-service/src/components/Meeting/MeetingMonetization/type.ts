@@ -14,6 +14,7 @@ export type ChargeButtonProps = {
     tooltipButton: string | JSX.Element;
     onClose?(): void;
     onToggle?: (isToggle: boolean) => void;
+    transformOriginVertical?: number;
 };
 
 export enum TabsValues {

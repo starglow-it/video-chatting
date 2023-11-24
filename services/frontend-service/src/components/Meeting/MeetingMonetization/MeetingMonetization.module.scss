@@ -115,28 +115,17 @@
 }
 
 .deviceButton {
-  width: rem(42px);
-  height: rem(42px);
-  border-radius: 22.5%;
+  width: rem(35px);
+  height: rem(35px);
+  border-radius: 8px;
 
   &.inactive {
     color: rgba($primary-white, 0.25);
   }
 
-  &.mobile {
-    top: rem(55px);
-    right: rem(20px);
-    width: rem(34px);
-    height: rem(34px);
-    border-radius: rem(8px);
-  }
-
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 30%;
-  right: rem(20px);
 
   button {
     width: 100%;
@@ -150,16 +139,6 @@
 
 .popoverMonetization {
   background: transparent;
-
-  &.portrait {
-    top: rem(120px) !important;
-  }
-
-  &.landscape {
-    overflow: initial !important;
-    transform: scale(0.8) !important;
-  }
-
 }
 
 
