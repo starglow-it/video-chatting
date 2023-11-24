@@ -1,41 +1,31 @@
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import clsx from 'clsx';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
-import {
-    MouseEvent,
-    forwardRef,
-    useImperativeHandle,
-    useMemo,
-    useState,
-} from 'react';
+import { MouseEvent, forwardRef, useImperativeHandle, useState } from 'react';
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
-import { $isPortraitLayout } from 'src/store';
-import { useStore } from 'effector-react';
 import { useToggle } from '@hooks/useToggle';
 import styles from './MeetingMonetization.module.scss';
 import { ChargeButtonProps } from './type';
 
 export const ChargeButtonBase = forwardRef(
     (
-        { children, tooltipButton, onClose, onToggle }: ChargeButtonProps,
+        {
+            children,
+            tooltipButton,
+            onClose,
+            onToggle,
+            transformOriginVertical = 450,
+        }: ChargeButtonProps,
         ref,
     ) => {
-        const { isMobile } = useBrowserDetect();
-        const isPortraitLayout = useStore($isPortraitLayout);
         const {
             value: togglePopover,
             onToggleSwitch: handleTogglePopover,
             onSetSwitch: handleSetPopover,
         } = useToggle(false);
         const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-        const styleIcon = useMemo(() => {
-            if (isMobile) return { width: '26px', height: '26px' };
-            return { width: '32px', height: '32px' };
-        }, [isMobile]);
 
         const handleToggleButton = (e: MouseEvent<HTMLElement>) => {
             e.stopPropagation();
@@ -61,20 +51,21 @@ export const ChargeButtonBase = forwardRef(
 
         return (
             <>
-                <CustomTooltip title={tooltipButton} placement="left">
+                <CustomTooltip title={tooltipButton} placement="top">
                     <CustomPaper
                         variant="black-glass"
-                        className={clsx(styles.deviceButton, {
-                            [styles.mobile]: isMobile,
-                        })}
+                        className={clsx(styles.deviceButton)}
                         aria-describedby="monetization"
+                        borderRadius={8}
                     >
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleToggleButton}
-                            Icon={<MonetizationIcon {...styleIcon} />}
+                            Icon={
+                                <MonetizationIcon width="24px" height="24px" />
+                            }
                             style={{
-                                borderRadius: 12,
+                                borderRadius: 8,
                             }}
                         />
                     </CustomPaper>
@@ -87,17 +78,14 @@ export const ChargeButtonBase = forwardRef(
                     style={{ zIndex: 20 }}
                     anchorOrigin={{
                         vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'bottom',
                         horizontal: 'right',
                     }}
+                    transformOrigin={{
+                        vertical: transformOriginVertical,
+                        horizontal: 'left',
+                    }}
                     PaperProps={{
-                        className: clsx(styles.popoverMonetization, {
-                            [styles.portrait]: isPortraitLayout,
-                            [styles.landscape]: !isPortraitLayout && isMobile,
-                        }),
+                        className: clsx(styles.popoverMonetization),
                     }}
                 >
                     <CustomPaper

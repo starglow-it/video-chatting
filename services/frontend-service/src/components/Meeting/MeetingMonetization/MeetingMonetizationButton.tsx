@@ -75,6 +75,7 @@ export const MeetingMonetizationButton = () => {
                     }
                     onToggle={handleTogglePayment}
                     ref={managePaymentRef}
+                    transformOriginVertical={410}
                 >
                     <PaymentForm
                         onClose={handleCloseForm}
@@ -92,6 +93,7 @@ export const MeetingMonetizationButton = () => {
                     }
                     onToggle={handleTogglePayment}
                     ref={managePaymentRef}
+                    transformOriginVertical={410}
                 >
                     <PaymentForm
                         onClose={handleCloseForm}
