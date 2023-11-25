@@ -1,6 +1,8 @@
-import { combine } from 'effector-next';
+import { Store, attach, combine } from 'effector-next';
 
-import { Meeting } from '../../../types';
+import { $profileStore } from 'src/store/profile/profile/model';
+import { ICommonUser, IUserTemplate, MeetingRole } from 'shared-types';
+import { Meeting, MeetingUser, Profile } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
 import {
@@ -8,6 +10,9 @@ import {
     JoinMeetingFxPayload,
     JoinMeetingWithLurkerFxPayload,
 } from './types';
+import { joinWaitingRoomSocketEvent } from '../sockets/model';
+import { $meetingTemplateStore } from '../meetingTemplate/model';
+import { $meetingRoleStore } from '../meetingRole/model';
 
 const initialMeetingState: Meeting = {
     id: '',
@@ -60,9 +65,6 @@ export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
 export const joinMeetingEvent =
     meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');
 
-export const rejoinMeetingEvent =
-    meetingDomain.createEvent<void>('joinMeetingEvent');
-
 export const joinMeetingWithLurkerEvent = meetingDomain.createEvent(
     'joinMeetingWithLurkerEvent',
 );
@@ -75,3 +77,42 @@ export const joinMeetingWithLurkerFx = meetingDomain.createEffect<
 export const toggleLinksDrawerEvent = meetingDomain.createEvent<
     undefined | boolean
 >('toggleLinksDrawerEvent');
+
+export const rejoinMeetingEvent = attach<
+    void,
+    Store<{
+        profile: ICommonUser;
+        template: IUserTemplate;
+        localUser: MeetingUser;
+        meetingRole: MeetingRole;
+    }>,
+    typeof joinWaitingRoomSocketEvent
+>({
+    effect: joinWaitingRoomSocketEvent,
+    source: combine({
+        profile: $profileStore,
+        template: $meetingTemplateStore,
+        localUser: $localUserStore,
+        meetingRole: $meetingRoleStore,
+    }),
+    mapParams: (
+        data,
+        source: {
+            profile: Profile;
+            template: IUserTemplate;
+            localUser: MeetingUser;
+            meetingRole: MeetingRole;
+        },
+    ) => ({
+        profileId: source.profile?.id,
+        profileUserName: source?.profile?.fullName,
+        profileAvatar: source?.profile?.profileAvatar?.url,
+        templateId: source.template?.id,
+        meetingRole: source.meetingRole,
+        accessStatus: source.localUser.accessStatus,
+        isAuraActive: source.localUser.isAuraActive,
+        cameraStatus: source.localUser.cameraStatus,
+        micStatus: source.localUser.micStatus,
+        maxParticipants: source.template.maxParticipants,
+    }),
+});

@@ -29,6 +29,7 @@ import {
   EntityList,
   ICommonUser,
   KickUserReasons,
+  MeetingRole,
   ResponseSumType,
   UserRoles,
 } from 'shared-types';
@@ -480,6 +481,8 @@ export class UsersController {
         senderName = 'Anonymous';
       }
 
+      const acceptRoles = [MeetingRole.Lurker];
+
       this.notificationService.sendEmail({
         to: body.userEmails.map((email) => ({ email, name: email })),
         template: {
@@ -487,8 +490,8 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${body.meetingId}?role=${
-                body.role ?? ''
+              content: `${this.frontendUrl}/room/${body.meetingId}${
+                acceptRoles.includes(body.role) ? `?role=${body.role}` : ''
               }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
@@ -552,13 +555,15 @@ export class UsersController {
         id: body.templateId,
       });
 
+      const acceptRoles = [MeetingRole.Lurker];
+
       const startAt = parseDateObject(body.startAt);
       const endAt = parseDateObject(body.endAt);
 
       const tzOffset = getTzOffset(startAt, body.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${
         template.customLink || template.id
-      }?role=${body.role ?? ''}`;
+      }${acceptRoles.includes(body.role) ? `?role=${body.role}` : ''}`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,

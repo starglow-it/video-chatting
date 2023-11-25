@@ -72,7 +72,6 @@ import {
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
 import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
@@ -250,7 +249,6 @@ const Component = () => {
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
                     </ConditionalRender>
-                    <MeetingMonetizationButton />
                     <ConditionalRender condition={!isMobile}>
                         <MeetingManageAudio />
                     </ConditionalRender>

@@ -58,6 +58,7 @@ import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
+import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 
 const Component = () => {
     const router = useRouter();
@@ -183,6 +184,7 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
+            <MeetingMonetizationButton />
             <ConditionalRender condition={!isMobile && !isLurker}>
                 <CustomTooltip
                     title={
