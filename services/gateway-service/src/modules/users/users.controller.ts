@@ -483,9 +483,6 @@ export class UsersController {
 
       const acceptRoles = [MeetingRole.Lurker];
 
-      console.log(`?role='${body.role}`);
-      
-
       this.notificationService.sendEmail({
         to: body.userEmails.map((email) => ({ email, name: email })),
         template: {
