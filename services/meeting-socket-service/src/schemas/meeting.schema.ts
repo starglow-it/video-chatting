@@ -76,7 +76,7 @@ export class Meeting {
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
-    default: false,
+    default: true,
   })
   isBlockAudiences: boolean;
 
