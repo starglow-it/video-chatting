@@ -59,6 +59,14 @@ export const CustomYoutubePlayer = ({
         }
     };
 
+    const onError = (event: any) => {
+        console.log('#Duy Phan console error yb', event);
+    };
+
+    const onPause = (event: any) => {
+        console.log('#Duy Phan console pause yb', event);
+    }
+
     return (
         <YouTube
             videoId={yId ?? ''}
@@ -81,6 +89,8 @@ export const CustomYoutubePlayer = ({
                 },
             }}
             onReady={onReady}
+            onError={onError}
+            onPause={onPause}
         />
     );
 };
