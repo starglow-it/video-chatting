@@ -53,7 +53,8 @@ export const CustomYoutubePlayer = ({
 
     const onReady = (event: any) => {
         if (event?.target) {
-            event.target.playVideo();
+            // event.target.playVideo();
+            event.target.unMute();
             event.target.setVolume(isMute ? 0 : volume);
             playerRef.current = event.target;
         }
@@ -84,8 +85,9 @@ export const CustomYoutubePlayer = ({
                     rel: 0,
                     showinfo: 0,
                     modestbranding: 1,
-                    fs: 1,
+                    fs: 0,
                     allowfullscreen: 1,
+                    mute: 1
                 },
             }}
             onReady={onReady}
