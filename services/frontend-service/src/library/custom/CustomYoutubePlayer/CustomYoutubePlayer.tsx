@@ -53,9 +53,6 @@ export const CustomYoutubePlayer = ({
 
     const onReady = (event: any) => {
         if (event?.target) {
-            // event.target.playVideo();
-            event.target.unMute();
-            event.target.setVolume(isMute ? 0 : volume);
             playerRef.current = event.target;
         }
     };
@@ -66,7 +63,12 @@ export const CustomYoutubePlayer = ({
 
     const onPause = (event: any) => {
         console.log('#Duy Phan console pause yb', event);
-    }
+    };
+
+    const onPlay = (event: any) => {
+        event.target.setVolume(isMute ? 0 : volume);
+        event.target.unMute();
+    };
 
     return (
         <YouTube
@@ -87,10 +89,11 @@ export const CustomYoutubePlayer = ({
                     modestbranding: 1,
                     fs: 0,
                     allowfullscreen: 1,
-                    mute: 1
+                    mute: 1,
                 },
             }}
             onReady={onReady}
+            onPlay={onPlay}
             onError={onError}
             onPause={onPause}
         />
