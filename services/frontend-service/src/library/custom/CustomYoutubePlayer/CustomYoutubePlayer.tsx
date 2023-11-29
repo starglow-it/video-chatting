@@ -66,8 +66,9 @@ export const CustomYoutubePlayer = ({
     };
 
     const onPlay = (event: any) => {
-        event.target.setVolume(isMute ? 0 : volume);
-        event.target.unMute();
+        console.log('#Duy Phan console play', event)
+        // event.target.setVolume(isMute ? 0 : volume);
+        // event.target.unMute();
     };
 
     return (
