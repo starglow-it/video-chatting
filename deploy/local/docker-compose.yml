@@ -140,7 +140,6 @@ services:
       - ../../services/core-service/src:/app/services/core-service/src
       - /app/services/core-service/dist
       - /app/services/auth-service/node_modules
-      -  ../../services/images:/app/services/images
     networks:
       - liveoffice_local
 

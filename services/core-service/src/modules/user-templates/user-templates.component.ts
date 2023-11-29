@@ -38,6 +38,20 @@ export class UserTemplatesComponent {
     return template;
   }
 
+  async findOne(
+    query: FilterQuery<UserTemplateDocument>,
+    session: ITransactionSession,
+    populate?: CustomPopulateOptions,
+  ) {
+    const template = await this.userTemplatesService.findUserTemplate({
+      query,
+      session,
+      populatePaths: populate,
+    });
+    throwRpcError(!template, TemplateNativeErrorEnum.USER_TEMPLATE_NOT_FOUND);
+    return template;
+  }
+
   async createUserTemplate(
     data: Partial<UserTemplateDocument>,
     session: ITransactionSession,

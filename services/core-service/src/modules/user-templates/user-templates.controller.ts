@@ -880,8 +880,10 @@ export class UserTemplatesController {
       this.connection,
       async (session) => {
         try {
-          const userTemplate = await this.userTemplatesComponent.findById(
-            userTemplateId,
+          const userTemplate = await this.userTemplatesComponent.findOne(
+            isValidObjectId(userTemplateId)
+              ? { _id: new ObjectId(userTemplateId) }
+              : { customLink: userTemplateId },
             session,
           );
 
