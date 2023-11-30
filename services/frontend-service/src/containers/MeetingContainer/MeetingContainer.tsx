@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -50,6 +50,7 @@ import {
     $isMeetingSocketConnecting,
     $isOwner,
     $localUserStore,
+    $meetingConnectedStore,
     $meetingTemplateStore,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
@@ -69,6 +70,8 @@ import {
     setIsCameraActiveEvent,
     setRoleQueryUrlEvent,
     updateLocalUserEvent,
+    updateMeetingEvent,
+    updateMeetingSocketEvent,
 } from '../../store/roomStores';
 
 // types
@@ -133,11 +136,18 @@ const MeetingContainer = memo(() => {
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
     const { width, height } = useStore($windowSizeStore);
     const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
+    const isLoadingJoinWaitingRoom = useStore(
+        sendJoinWaitingRoomSocketEvent.pending,
+    );
+    const isMeetingConnected = useStore($meetingConnectedStore);
 
     const { isMobile } = useBrowserDetect();
 
-    const roleUrl = router.query?.role as string;
+    const roleUrl = router.query.role as string;
     const queryToken = router.query.token as string;
+    const isMuteYb = router.query.videoMute as string;
+
+    const isFirstime = useRef(true);
 
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
@@ -274,6 +284,32 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
+
+    useEffect(() => {
+        if (
+            meetingTemplate?.id &&
+            !isMeetingSocketConnecting &&
+            !isLoadingJoinWaitingRoom &&
+            isMeetingConnected &&
+            isFirstime.current &&
+            isOwner
+        ) {
+            const data: any = {
+                volume: !!isMuteYb ? 0 : 20,
+                isMute: !!isMuteYb,
+            };
+            updateMeetingEvent(data);
+            updateMeetingSocketEvent(data);
+            isFirstime.current = false;
+        }
+    }, [
+        meetingTemplate?.id,
+        isMuteYb,
+        isMeetingSocketConnecting,
+        isLoadingJoinWaitingRoom,
+        isMeetingConnected,
+        isOwner,
+    ]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (

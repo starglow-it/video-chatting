@@ -72,7 +72,10 @@ export const CustomYoutubePlayer = ({
 
     const onReady = (event: any) => {
         playerRef.current = event.target;
-    }
+        if (!isMute) {
+            playerRef.current.unMute();
+        }
+    };
 
     return (
         <YouTube

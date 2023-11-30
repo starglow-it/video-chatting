@@ -65,7 +65,7 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
-    const { isBlockAudiences } = useStore($meetingStore);
+    const { isBlockAudiences, id: meetingId } = useStore($meetingStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
@@ -158,7 +158,8 @@ const Component = () => {
                         !isLoadingFetchMeeting &&
                         isSocketConnected &&
                         !isMeetingSocketConnecting &&
-                        !isJoinWaitingRoomPending
+                        !isJoinWaitingRoomPending &&
+                        !!meetingId
                     }
                 >
                     <CustomTypography
@@ -168,7 +169,7 @@ const Component = () => {
                         translation="meetingHasEnded"
                     />
                 </ConditionalRender>
-                <ConditionalRender condition={isHasMeeting}>
+                <ConditionalRender condition={isHasMeeting || !meetingId}>
                     <CustomTypography
                         variant="h3bold"
                         nameSpace="meeting"
