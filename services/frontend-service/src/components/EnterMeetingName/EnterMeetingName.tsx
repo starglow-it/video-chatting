@@ -36,6 +36,7 @@ import {
     $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    getMeetingTemplateFx,
     joinLurkerMeetingSocketEvent,
     sendJoinWaitingRoomSocketEvent,
     updateLocalUserEvent,
@@ -74,6 +75,7 @@ const Component = () => {
                 user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
             ),
     });
+    const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
 
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
@@ -150,78 +152,99 @@ const Component = () => {
                     (!isLurker || (isOwnerInMeeting && !isBlockAudiences))
                 }
             >
-                <CustomTypography
-                    variant="h3bold"
-                    nameSpace="meeting"
-                    textAlign={isMobile ? 'center' : 'left'}
-                    translation="enterName.title"
-                />
-                <CustomGrid container direction="column" flex="1 1 auto">
-                    <CustomGrid
-                        container
-                        justifyContent={isMobile ? 'center' : 'left'}
-                    >
-                        <CustomTypography
-                            className={styles.title}
-                            nameSpace="meeting"
-                            translation="enterName.text.part1"
-                        />
-                        {!isAuthenticated && (
-                            <>
-                                &nbsp;
-                                <CustomTypography
-                                    nameSpace="meeting"
-                                    translation="enterName.text.part2"
-                                />
-                                &nbsp;
-                                <CustomLink
-                                    href="/login"
-                                    nameSpace="meeting"
-                                    translation="enterName.text.part3"
-                                />
-                                &nbsp;
-                                <CustomTypography
-                                    nameSpace="meeting"
-                                    translation="enterName.text.part4"
-                                />
-                            </>
-                        )}
-                    </CustomGrid>
+                <ConditionalRender
+                    condition={
+                        !isHasMeeting &&
+                        !isLoadingFetchMeeting &&
+                        isSocketConnected &&
+                        !isMeetingSocketConnecting &&
+                        !isJoinWaitingRoomPending
+                    }
+                >
+                    <CustomTypography
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        textAlign="center"
+                        translation="meetingHasEnded"
+                    />
+                </ConditionalRender>
+                <ConditionalRender condition={isHasMeeting}>
+                    <CustomTypography
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        textAlign={isMobile ? 'center' : 'left'}
+                        translation="enterName.title"
+                    />
+                    <CustomGrid container direction="column" flex="1 1 auto">
+                        <CustomGrid
+                            container
+                            justifyContent={isMobile ? 'center' : 'left'}
+                        >
+                            <CustomTypography
+                                className={styles.title}
+                                nameSpace="meeting"
+                                translation="enterName.text.part1"
+                            />
+                            {!isAuthenticated && (
+                                <>
+                                    &nbsp;
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="enterName.text.part2"
+                                    />
+                                    &nbsp;
+                                    <CustomLink
+                                        href="/login"
+                                        nameSpace="meeting"
+                                        translation="enterName.text.part3"
+                                    />
+                                    &nbsp;
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="enterName.text.part4"
+                                    />
+                                </>
+                            )}
+                        </CustomGrid>
 
-                    <form onSubmit={onSubmit} className={styles.formContent}>
-                        <CustomInput
-                            nameSpace="forms"
-                            translation="yourName"
-                            autoComplete="given-name"
-                            onChange={fullNameRegister.onChange}
-                            onBlur={fullNameRegister.onBlur}
-                            ref={fullNameRegister.ref}
-                            name={fullNameRegister.name}
-                            error={fullNameError}
-                        />
-                        <CustomButton
-                            disabled={
-                                !isSocketConnected ||
-                                isMeetingSocketConnecting ||
-                                isJoinWaitingRoomPending
-                            }
-                            className={clsx(styles.button, {
-                                [styles.mobile]: isMobile,
-                            })}
-                            type="submit"
-                            label={
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation={
-                                        isLurker
-                                            ? 'buttons.join'
-                                            : 'buttons.continue'
-                                    }
-                                />
-                            }
-                        />
-                    </form>
-                </CustomGrid>
+                        <form
+                            onSubmit={onSubmit}
+                            className={styles.formContent}
+                        >
+                            <CustomInput
+                                nameSpace="forms"
+                                translation="yourName"
+                                autoComplete="given-name"
+                                onChange={fullNameRegister.onChange}
+                                onBlur={fullNameRegister.onBlur}
+                                ref={fullNameRegister.ref}
+                                name={fullNameRegister.name}
+                                error={fullNameError}
+                            />
+                            <CustomButton
+                                disabled={
+                                    !isSocketConnected ||
+                                    isMeetingSocketConnecting ||
+                                    isJoinWaitingRoomPending
+                                }
+                                className={clsx(styles.button, {
+                                    [styles.mobile]: isMobile,
+                                })}
+                                type="submit"
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation={
+                                            isLurker
+                                                ? 'buttons.join'
+                                                : 'buttons.continue'
+                                        }
+                                    />
+                                }
+                            />
+                        </form>
+                    </CustomGrid>
+                </ConditionalRender>
             </ConditionalRender>
             <ConditionalRender condition={!isJoinPaywall && isLurker}>
                 {!(
@@ -251,7 +274,7 @@ const Component = () => {
                                 variant="h3bold"
                                 nameSpace="meeting"
                                 textAlign="center"
-                                translation="meetingNotStarted.title"
+                                translation="meetingHasEnded"
                             />
                         </ConditionalRender>
                         <ConditionalRender

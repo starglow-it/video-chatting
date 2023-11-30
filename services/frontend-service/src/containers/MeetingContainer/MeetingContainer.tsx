@@ -132,6 +132,7 @@ const MeetingContainer = memo(() => {
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
     const { width, height } = useStore($windowSizeStore);
+    const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
 
     const { isMobile } = useBrowserDetect();
 
@@ -174,12 +175,10 @@ const MeetingContainer = memo(() => {
 
             getSubscriptionWithDataFx({ subscriptionId: '' });
 
-            const data: any = await getMeetingTemplateFx({
+            await getMeetingTemplateFx({
                 templateId: queryToken,
                 subdomain: isSubdomain() ? window.location.origin : undefined,
             });
-
-            if (!data?.result && !data?.id) router.push(NotFoundRoute);
 
             updateLocalUserEvent({
                 accessStatus: MeetingAccessStatusEnum.EnterName,
@@ -388,6 +387,22 @@ const MeetingContainer = memo(() => {
                         <MeetingView />
                     </ConditionalRender>
                 </ConditionalRender>
+            )}
+            {!meetingTemplate?.id && !isLoadingFetchMeeting && (
+                <CustomBox
+                    className={clsx(styles.waitingRoomWrapper, {
+                        [styles.mobile]: isMobile,
+                    })}
+                >
+                    <CustomBox width="100%" textAlign="center">
+                        <CustomTypography
+                            variant="h2bold"
+                            nameSpace="meeting"
+                            textAlign="center"
+                            translation="roomHasBeenDeleted"
+                        />
+                    </CustomBox>
+                </CustomBox>
             )}
             <HostTimeExpiredDialog />
             <MeetingErrorDialog />

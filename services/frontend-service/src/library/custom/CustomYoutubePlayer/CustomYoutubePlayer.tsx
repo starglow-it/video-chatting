@@ -17,7 +17,7 @@ export const CustomYoutubePlayer = ({
 }>) => {
     const playerRef = useRef<any>(null);
 
-    function getYouTubeVideoId(videoUrl: string) {
+    const getYouTubeVideoId = (videoUrl: string) => {
         try {
             if (!videoUrl) return null;
             const parsedUrl = new URL(videoUrl);
@@ -34,15 +34,22 @@ export const CustomYoutubePlayer = ({
             console.error(error);
         }
         return null;
-    }
+    };
 
     const yId = getYouTubeVideoId(url);
 
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);
     };
+
     useEffect(() => {
-        isMute ? setVolume(0) : setVolume(volume);
+        if (playerRef.current) {
+            if (isMute) {
+                playerRef.current.mute();
+            } else {
+                playerRef.current.unMute();
+            }
+        }
     }, [isMute]);
 
     useEffect(() => {
@@ -50,12 +57,6 @@ export const CustomYoutubePlayer = ({
     }, [volume]);
 
     if (!yId) return null;
-
-    const onReady = (event: any) => {
-        if (event?.target) {
-            playerRef.current = event.target;
-        }
-    };
 
     const onError = (event: any) => {
         console.log('#Duy Phan console error yb', event);
@@ -66,10 +67,12 @@ export const CustomYoutubePlayer = ({
     };
 
     const onPlay = (event: any) => {
-        console.log('#Duy Phan console play', event)
-        // event.target.setVolume(isMute ? 0 : volume);
-        // event.target.unMute();
+        console.log('#Duy Phan console', event);
     };
+
+    const onReady = (event: any) => {
+        playerRef.current = event.target;
+    }
 
     return (
         <YouTube
@@ -93,8 +96,8 @@ export const CustomYoutubePlayer = ({
                     mute: 1,
                 },
             }}
-            onReady={onReady}
             onPlay={onPlay}
+            onReady={onReady}
             onError={onError}
             onPause={onPause}
         />
