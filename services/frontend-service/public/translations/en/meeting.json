@@ -28,6 +28,8 @@
     "title": "Meeting has not \nstarted yet",
     "text": "Please wait for the host arrival"
   },
+  "roomHasBeenDeleted": "This Room has been Deleted",
+  "meetingHasEnded": "This Meeting Has Ended",
   "hostLeftRoom": {
     "title": "Host has left the room",
     "text": "You can leave a message"

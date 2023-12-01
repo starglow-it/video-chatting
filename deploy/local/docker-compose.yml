@@ -86,7 +86,7 @@ services:
       args:
         - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
-      - "9000:9000"
+      - "9001:9001"
     env_file:
       - .env
     volumes:
