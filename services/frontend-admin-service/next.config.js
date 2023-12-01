@@ -39,13 +39,6 @@ module.exports = withTM(
                 'lh3.googleusercontent.com',
                 'img.youtube.com',
             ],
-            remotePatterns: [
-                {
-                    protocol: 'https',
-                    hostname: 'img.youtube.com',
-                    port: '',
-                },
-            ],
         },
         webpack(config, options) {
             if (!options.isServer) {

@@ -17,7 +17,6 @@ import {
 } from 'shared-frontend/validation';
 import { adjustUserPositions, getRandomNumber } from 'shared-utils';
 import {
-    CUSTOM_CATEROFY_BUSSINESS,
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
 } from 'shared-const';
