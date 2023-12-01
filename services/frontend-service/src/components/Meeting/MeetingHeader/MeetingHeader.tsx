@@ -23,12 +23,15 @@ import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon'
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
+import { addNotificationEvent } from 'src/store';
+import { NotificationType } from 'src/store/types';
 import styles from './MeetingHeader.module.scss';
 
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
     const { isBlockAudiences } = useStore($meetingStore);
+    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
 
     const { control } = useFormContext();
 
@@ -44,6 +47,19 @@ export const MeetingHeader = () => {
             toggleMeetingInfoOpen();
         }
     }, [isOwner]);
+
+    const handleTogglePublicMeeting = () => {
+        if (isAcceptNoLogin || subdomain) {
+            addNotificationEvent({
+                type: NotificationType.validationError,
+                message: 'meeting.disablePublicMeeting',
+            });
+        } else {
+            updateMeetingSocketEvent({
+                isBlockAudiences: !isBlockAudiences,
+            });
+        }
+    };
 
     return (
         <AppBar className={styles.container}>
@@ -79,11 +95,7 @@ export const MeetingHeader = () => {
                     >
                         <ActionButton
                             variant="transparentBlack"
-                            onAction={() =>
-                                updateMeetingSocketEvent({
-                                    isBlockAudiences: !isBlockAudiences,
-                                })
-                            }
+                            onAction={handleTogglePublicMeeting}
                             className={clsx(styles.button, {
                                 [styles.inactive]: isBlockAudiences,
                             })}

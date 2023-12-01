@@ -19,7 +19,8 @@
     "inviteSent": "The invitation has been sent",
     "uploadSuccess": "Upload background success",
     "deleteBackgroundSuccess": "Delete background success",
-    "deleteBackgroundError": "Delete background error"
+    "deleteBackgroundError": "Delete background error",
+    "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience."
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",

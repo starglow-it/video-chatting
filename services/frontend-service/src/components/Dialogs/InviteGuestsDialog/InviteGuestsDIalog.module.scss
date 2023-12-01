@@ -69,3 +69,17 @@
     justify-content: center;
     margin-bottom: 0px;
 }
+
+.disablePublic {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.popperTooltip {
+    z-index: 9999;
+  }
+
+  .containerTooltip {
+    height: auto;
+    white-space: inherit;
+  }
