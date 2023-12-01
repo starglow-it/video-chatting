@@ -41,6 +41,7 @@ import {
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
+    $meetingTemplateStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByLurkerEvent,
@@ -71,6 +72,7 @@ const Component = () => {
     const isLurker = useStore($isLurker);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -147,16 +149,24 @@ const Component = () => {
             <ConditionalRender condition={isOwner}>
                 <CustomTooltip
                     title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation={
-                                isBlockAudiences
-                                    ? 'lock.private'
-                                    : 'lock.public'
-                            }
-                        />
+                        isAcceptNoLogin || subdomain ? (
+                            <Translation
+                                nameSpace="meeting"
+                                translation="disablePublicMeeting"
+                            />
+                        ) : (
+                            <Translation
+                                nameSpace="meeting"
+                                translation={
+                                    isBlockAudiences
+                                        ? 'lock.private'
+                                        : 'lock.public'
+                                }
+                            />
+                        )
                     }
                     placement="top"
+                    tooltipClassName={styles.containerTooltip}
                 >
                     <CustomPaper
                         variant="black-glass"
@@ -173,6 +183,7 @@ const Component = () => {
                             className={clsx(styles.deviceButton, {
                                 [styles.inactive]: isBlockAudiences,
                             })}
+                            disabled={isAcceptNoLogin || !!subdomain}
                             Icon={
                                 isBlockAudiences ? (
                                     <LockIcon width="22px" height="22px" />
