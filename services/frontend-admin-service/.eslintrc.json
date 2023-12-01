@@ -16,7 +16,8 @@
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
+    "plugin:json/recommended"
   ],
   "plugins": [
     "jsx-a11y",
@@ -24,7 +25,8 @@
     "react-hooks",
     "@typescript-eslint",
     "prettier",
-    "destructuring-newline"
+    "destructuring-newline",
+    "json"
   ],
   "rules": {
     "react/prop-types": "off",
