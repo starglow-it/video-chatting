@@ -28,7 +28,9 @@ import { fullNameSchema } from '../../validation/users/fullName';
 import { $profileStore, $authStore, $isSocketConnected } from '../../store';
 import {
     $enabledPaymentPaywallLurker,
+    $isLoadingJoinWaitingRoom,
     $isLurker,
+    $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
     $isOwnerInMeeting,
@@ -38,7 +40,6 @@ import {
     $meetingUsersStore,
     getMeetingTemplateFx,
     joinLurkerMeetingSocketEvent,
-    sendJoinWaitingRoomSocketEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -59,14 +60,13 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isSocketConnected = useStore($isSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
-    const isJoinWaitingRoomPending = useStore(
-        sendJoinWaitingRoomSocketEvent.pending,
-    );
+    const isJoinWaitingRoomPending = useStore($isLoadingJoinWaitingRoom);
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
-    const { isBlockAudiences, id: meetingId } = useStore($meetingStore);
+    const { isBlockAudiences } = useStore($meetingStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -124,7 +124,6 @@ const Component = () => {
 
     const handlePaymentSuccess = useCallback(() => {
         joinLurkerMeetingSocketEvent();
-        // setIsJoinPaywall(false);
     }, []);
 
     const fullNameError = errors.fullName?.message;
@@ -138,6 +137,127 @@ const Component = () => {
         }
     }, []);
 
+    const EnterNameElement = (
+        <>
+            <CustomTypography
+                variant="h3bold"
+                nameSpace="meeting"
+                textAlign={isMobile ? 'center' : 'left'}
+                translation="enterName.title"
+            />
+            <CustomGrid container direction="column" flex="1 1 auto">
+                <CustomGrid
+                    container
+                    justifyContent={isMobile ? 'center' : 'left'}
+                >
+                    <CustomTypography
+                        className={styles.title}
+                        nameSpace="meeting"
+                        translation="enterName.text.part1"
+                    />
+                    {!isAuthenticated && (
+                        <>
+                            &nbsp;
+                            <CustomTypography
+                                nameSpace="meeting"
+                                translation="enterName.text.part2"
+                            />
+                            &nbsp;
+                            <CustomLink
+                                href="/login"
+                                nameSpace="meeting"
+                                translation="enterName.text.part3"
+                            />
+                            &nbsp;
+                            <CustomTypography
+                                nameSpace="meeting"
+                                translation="enterName.text.part4"
+                            />
+                        </>
+                    )}
+                </CustomGrid>
+
+                <form onSubmit={onSubmit} className={styles.formContent}>
+                    <CustomInput
+                        nameSpace="forms"
+                        translation="yourName"
+                        autoComplete="given-name"
+                        onChange={fullNameRegister.onChange}
+                        onBlur={fullNameRegister.onBlur}
+                        ref={fullNameRegister.ref}
+                        name={fullNameRegister.name}
+                        error={fullNameError}
+                    />
+                    <CustomButton
+                        disabled={
+                            !isSocketConnected ||
+                            isMeetingSocketConnecting ||
+                            isJoinWaitingRoomPending
+                        }
+                        className={clsx(styles.button, {
+                            [styles.mobile]: isMobile,
+                        })}
+                        type="submit"
+                        label={
+                            <Translation
+                                nameSpace="meeting"
+                                translation={
+                                    isLurker
+                                        ? 'buttons.join'
+                                        : 'buttons.continue'
+                                }
+                            />
+                        }
+                    />
+                </form>
+            </CustomGrid>
+        </>
+    );
+
+    const renderEnterName = () => {
+        if (
+            isLoadingFetchMeeting ||
+            !isMeetingSocketConnected ||
+            isJoinWaitingRoomPending
+        ) {
+            return <CustomLoader className={styles.loader} />;
+        }
+        if (!isHasMeeting) {
+            return (
+                <CustomTypography
+                    variant="h3bold"
+                    nameSpace="meeting"
+                    textAlign="center"
+                    translation="meetingHasEnded"
+                />
+            );
+        }
+        if (isLurker) {
+            if (isBlockAudiences) {
+                return (
+                    <CustomTypography
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        textAlign="center"
+                        translation="meetingPrivate"
+                    />
+                );
+            }
+            if (!isOwnerInMeeting) {
+                return (
+                    <CustomTypography
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        textAlign="center"
+                        translation="waitForTheHost"
+                    />
+                );
+            }
+            return EnterNameElement;
+        }
+        return EnterNameElement;
+    };
+
     return (
         <CustomGrid
             container
@@ -146,150 +266,8 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender
-                condition={
-                    !isJoinPaywall &&
-                    (!isLurker || (isOwnerInMeeting && !isBlockAudiences))
-                }
-            >
-                <ConditionalRender
-                    condition={
-                        !isHasMeeting &&
-                        !isLoadingFetchMeeting &&
-                        isSocketConnected &&
-                        !isMeetingSocketConnecting &&
-                        !isJoinWaitingRoomPending &&
-                        !!meetingId
-                    }
-                >
-                    <CustomTypography
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        textAlign="center"
-                        translation="meetingHasEnded"
-                    />
-                </ConditionalRender>
-                <ConditionalRender condition={isHasMeeting || !meetingId}>
-                    <CustomTypography
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        textAlign={isMobile ? 'center' : 'left'}
-                        translation="enterName.title"
-                    />
-                    <CustomGrid container direction="column" flex="1 1 auto">
-                        <CustomGrid
-                            container
-                            justifyContent={isMobile ? 'center' : 'left'}
-                        >
-                            <CustomTypography
-                                className={styles.title}
-                                nameSpace="meeting"
-                                translation="enterName.text.part1"
-                            />
-                            {!isAuthenticated && (
-                                <>
-                                    &nbsp;
-                                    <CustomTypography
-                                        nameSpace="meeting"
-                                        translation="enterName.text.part2"
-                                    />
-                                    &nbsp;
-                                    <CustomLink
-                                        href="/login"
-                                        nameSpace="meeting"
-                                        translation="enterName.text.part3"
-                                    />
-                                    &nbsp;
-                                    <CustomTypography
-                                        nameSpace="meeting"
-                                        translation="enterName.text.part4"
-                                    />
-                                </>
-                            )}
-                        </CustomGrid>
-
-                        <form
-                            onSubmit={onSubmit}
-                            className={styles.formContent}
-                        >
-                            <CustomInput
-                                nameSpace="forms"
-                                translation="yourName"
-                                autoComplete="given-name"
-                                onChange={fullNameRegister.onChange}
-                                onBlur={fullNameRegister.onBlur}
-                                ref={fullNameRegister.ref}
-                                name={fullNameRegister.name}
-                                error={fullNameError}
-                            />
-                            <CustomButton
-                                disabled={
-                                    !isSocketConnected ||
-                                    isMeetingSocketConnecting ||
-                                    isJoinWaitingRoomPending
-                                }
-                                className={clsx(styles.button, {
-                                    [styles.mobile]: isMobile,
-                                })}
-                                type="submit"
-                                label={
-                                    <Translation
-                                        nameSpace="meeting"
-                                        translation={
-                                            isLurker
-                                                ? 'buttons.join'
-                                                : 'buttons.continue'
-                                        }
-                                    />
-                                }
-                            />
-                        </form>
-                    </CustomGrid>
-                </ConditionalRender>
-            </ConditionalRender>
-            <ConditionalRender condition={!isJoinPaywall && isLurker}>
-                {!(
-                    isSocketConnected &&
-                    !isMeetingSocketConnecting &&
-                    !isJoinWaitingRoomPending
-                ) ? (
-                    <CustomLoader className={styles.loader} />
-                ) : (
-                    <>
-                        <ConditionalRender
-                            condition={
-                                !isOwnerInMeeting &&
-                                isHasMeeting &&
-                                !isBlockAudiences
-                            }
-                        >
-                            <CustomTypography
-                                variant="h3bold"
-                                nameSpace="meeting"
-                                textAlign="center"
-                                translation="waitForTheHost"
-                            />
-                        </ConditionalRender>
-                        <ConditionalRender condition={!isHasMeeting}>
-                            <CustomTypography
-                                variant="h3bold"
-                                nameSpace="meeting"
-                                textAlign="center"
-                                translation="meetingHasEnded"
-                            />
-                        </ConditionalRender>
-                        <ConditionalRender
-                            condition={!!isBlockAudiences && isHasMeeting}
-                        >
-                            <CustomTypography
-                                variant="h3bold"
-                                nameSpace="meeting"
-                                textAlign="center"
-                                translation="meetingPrivate"
-                            />
-                        </ConditionalRender>
-                    </>
-                )}
+            <ConditionalRender condition={!isJoinPaywall}>
+                {renderEnterName()}
             </ConditionalRender>
             <ConditionalRender condition={isJoinPaywall}>
                 <MeetingPaywall onPaymentSuccess={handlePaymentSuccess} />
