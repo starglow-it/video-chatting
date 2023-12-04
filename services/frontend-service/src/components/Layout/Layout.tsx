@@ -27,6 +27,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingEndDialog } from '@components/Dialogs/MeetingEndDialog/MeetingEndDialog';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
+import { HeaderRoomLink } from '@components/HeaderRoomLink/HeaderRoomLink';
 import { LayoutProps } from './types';
 
 // stores
@@ -377,6 +378,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                             condition={!isAuthenticated}
                                         >
                                             <AuthenticationLink />
+                                        </ConditionalRender>
+                                        <ConditionalRender
+                                            condition={
+                                                isRoomRoute && isAuthenticated
+                                            }
+                                        >
+                                            <HeaderRoomLink />
                                         </ConditionalRender>
                                     </CustomGrid>
                                 </CustomGrid>
