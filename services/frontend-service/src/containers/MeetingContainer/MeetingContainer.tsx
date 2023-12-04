@@ -334,6 +334,25 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
+            <ConditionalRender
+                condition={!meetingTemplate?.id && !isLoadingFetchMeeting}
+            >
+                <MeetingBackgroundVideo
+                    templateType="image"
+                    videoClassName={styles.wrapperBackgroundMedia}
+                    mediaLink={null}
+                    src="/images/room-has-been-deleted.jpg"
+                >
+                    <CustomImage
+                        src="/images/room-has-been-deleted.jpg"
+                        className={styles.wrapperBackgroundMedia}
+                        width={isMobile ? `${width}px` : '100%'}
+                        height={isMobile ? `${height}px` : '100%'}
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                </MeetingBackgroundVideo>
+            </ConditionalRender>
             <ConditionalRender condition={status === 'off'}>
                 <CustomGrid className={styles.networkStatus}>
                     <CustomTypography
@@ -430,7 +449,7 @@ const MeetingContainer = memo(() => {
                         [styles.mobile]: isMobile,
                     })}
                 >
-                    <CustomBox width="100%" textAlign="center">
+                    <CustomBox width="100%" textAlign="center" height="100%" display="flex" justifyContent="center" alignItems="center">
                         <CustomTypography
                             variant="h2bold"
                             nameSpace="meeting"
