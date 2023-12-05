@@ -7,6 +7,8 @@ import {
     MeetingAccessStatusEnum,
     MeetingRole,
 } from 'shared-types';
+import { meetingDomain } from 'src/store/domains';
+import { resetRoomStores } from 'src/store/root';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
@@ -141,6 +143,11 @@ export const sendJoinWaitingRoomSocketEvent = attach<
         maxParticipants: source.template.maxParticipants,
     }),
 });
+
+export const $isLoadingJoinWaitingRoom = meetingDomain
+    .createStore(true)
+    .on(joinWaitingRoomSocketEvent.finally, () => false)
+    .reset(resetRoomStores);
 
 export const sendStartMeetingSocketEvent = attach<
     void,

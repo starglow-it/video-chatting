@@ -28,6 +28,8 @@
     "title": "Meeting has not \nstarted yet",
     "text": "Please wait for the host arrival"
   },
+  "roomHasBeenDeleted": "This Room has been Deleted",
+  "meetingHasEnded": "This Meeting Has Ended",
   "hostLeftRoom": {
     "title": "Host has left the room",
     "text": "You can leave a message"
@@ -219,5 +221,6 @@
     "private": "Private Meeting. Only invited Participants",
     "public": "Public Meeting. Add an Audience"
   },
-  "meetingPrivate": "The Meeting is private"
+  "meetingPrivate": "The Meeting is private",
+  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience."
 }

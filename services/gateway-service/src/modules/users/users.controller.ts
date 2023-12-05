@@ -491,7 +491,9 @@ export class UsersController {
             {
               name: 'MEETINGURL',
               content: `${this.frontendUrl}/room/${body.meetingId}${
-                acceptRoles.includes(body.role) ? `?role=${body.role}` : ''
+                acceptRoles.includes(body.role)
+                  ? `?role=${body.role}&videoMute=1`
+                  : '?videoMute=1'
               }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
@@ -563,7 +565,11 @@ export class UsersController {
       const tzOffset = getTzOffset(startAt, body.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${
         template.customLink || template.id
-      }${acceptRoles.includes(body.role) ? `?role=${body.role}` : ''}`;
+      }${
+        acceptRoles.includes(body.role)
+          ? `?role=${body.role}&videoMute=1`
+          : '?videoMute=1'
+      }`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,

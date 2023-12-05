@@ -41,4 +41,4 @@ export const PARTICIPANT_POSITIONS = [
   },
 ];
 
-export const DEFAULT_MEETING_VOLUME = 20;
+export const DEFAULT_MEETING_VOLUME = 0;

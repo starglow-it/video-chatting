@@ -17,7 +17,7 @@ export const CustomYoutubePlayer = ({
 }>) => {
     const playerRef = useRef<any>(null);
 
-    function getYouTubeVideoId(videoUrl: string) {
+    const getYouTubeVideoId = (videoUrl: string) => {
         try {
             if (!videoUrl) return null;
             const parsedUrl = new URL(videoUrl);
@@ -34,15 +34,22 @@ export const CustomYoutubePlayer = ({
             console.error(error);
         }
         return null;
-    }
+    };
 
     const yId = getYouTubeVideoId(url);
 
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);
     };
+
     useEffect(() => {
-        isMute ? setVolume(0) : setVolume(volume);
+        if (playerRef.current) {
+            if (isMute) {
+                playerRef.current.mute();
+            } else {
+                playerRef.current.unMute();
+            }
+        }
     }, [isMute]);
 
     useEffect(() => {
@@ -51,11 +58,22 @@ export const CustomYoutubePlayer = ({
 
     if (!yId) return null;
 
+    const onError = (event: any) => {
+        console.log('#Duy Phan console error yb', event);
+    };
+
+    const onPause = (event: any) => {
+        console.log('#Duy Phan console pause yb', event);
+    };
+
+    const onPlay = (event: any) => {
+        console.log('#Duy Phan console', event);
+    };
+
     const onReady = (event: any) => {
-        if (event?.target) {
-            event.target.playVideo();
-            event.target.setVolume(isMute ? 0 : volume);
-            playerRef.current = event.target;
+        playerRef.current = event.target;
+        if (!isMute) {
+            playerRef.current.unMute();
         }
     };
 
@@ -76,11 +94,15 @@ export const CustomYoutubePlayer = ({
                     rel: 0,
                     showinfo: 0,
                     modestbranding: 1,
-                    fs: 1,
+                    fs: 0,
                     allowfullscreen: 1,
+                    mute: 1,
                 },
             }}
+            onPlay={onPlay}
             onReady={onReady}
+            onError={onError}
+            onPause={onPause}
         />
     );
 };

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -50,6 +50,7 @@ import {
     $isMeetingSocketConnecting,
     $isOwner,
     $localUserStore,
+    $meetingConnectedStore,
     $meetingTemplateStore,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
@@ -69,6 +70,8 @@ import {
     setIsCameraActiveEvent,
     setRoleQueryUrlEvent,
     updateLocalUserEvent,
+    updateMeetingEvent,
+    updateMeetingSocketEvent,
 } from '../../store/roomStores';
 
 // types
@@ -132,11 +135,19 @@ const MeetingContainer = memo(() => {
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
     const { width, height } = useStore($windowSizeStore);
+    const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
+    const isLoadingJoinWaitingRoom = useStore(
+        sendJoinWaitingRoomSocketEvent.pending,
+    );
+    const isMeetingConnected = useStore($meetingConnectedStore);
 
     const { isMobile } = useBrowserDetect();
 
-    const roleUrl = router.query?.role as string;
+    const roleUrl = router.query.role as string;
     const queryToken = router.query.token as string;
+    const isMuteYb = router.query.videoMute as string;
+
+    const isFirstime = useRef(true);
 
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
@@ -174,12 +185,10 @@ const MeetingContainer = memo(() => {
 
             getSubscriptionWithDataFx({ subscriptionId: '' });
 
-            const data: any = await getMeetingTemplateFx({
+            await getMeetingTemplateFx({
                 templateId: queryToken,
                 subdomain: isSubdomain() ? window.location.origin : undefined,
             });
-
-            if (!data?.result && !data?.id) router.push(NotFoundRoute);
 
             updateLocalUserEvent({
                 accessStatus: MeetingAccessStatusEnum.EnterName,
@@ -276,6 +285,32 @@ const MeetingContainer = memo(() => {
         })();
     }, [isMeetingSocketConnected, isOwner]);
 
+    useEffect(() => {
+        if (
+            meetingTemplate?.id &&
+            !isMeetingSocketConnecting &&
+            !isLoadingJoinWaitingRoom &&
+            isMeetingConnected &&
+            isFirstime.current &&
+            isOwner
+        ) {
+            const data: any = {
+                volume: !!isMuteYb ? 0 : 20,
+                isMute: !!isMuteYb,
+            };
+            updateMeetingEvent(data);
+            updateMeetingSocketEvent(data);
+            isFirstime.current = false;
+        }
+    }, [
+        meetingTemplate?.id,
+        isMuteYb,
+        isMeetingSocketConnecting,
+        isLoadingJoinWaitingRoom,
+        isMeetingConnected,
+        isOwner,
+    ]);
+
     const LoadingWaitingRoom = useMemo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
@@ -299,6 +334,25 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
+            <ConditionalRender
+                condition={!meetingTemplate?.id && !isLoadingFetchMeeting}
+            >
+                <MeetingBackgroundVideo
+                    templateType="image"
+                    videoClassName={styles.wrapperBackgroundMedia}
+                    mediaLink={null}
+                    src="/images/room-has-been-deleted.jpg"
+                >
+                    <CustomImage
+                        src="/images/room-has-been-deleted.jpg"
+                        className={styles.wrapperBackgroundMedia}
+                        width={isMobile ? `${width}px` : '100%'}
+                        height={isMobile ? `${height}px` : '100%'}
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                </MeetingBackgroundVideo>
+            </ConditionalRender>
             <ConditionalRender condition={status === 'off'}>
                 <CustomGrid className={styles.networkStatus}>
                     <CustomTypography
@@ -388,6 +442,22 @@ const MeetingContainer = memo(() => {
                         <MeetingView />
                     </ConditionalRender>
                 </ConditionalRender>
+            )}
+            {!meetingTemplate?.id && !isLoadingFetchMeeting && (
+                <CustomBox
+                    className={clsx(styles.waitingRoomWrapper, {
+                        [styles.mobile]: isMobile,
+                    })}
+                >
+                    <CustomBox width="100%" textAlign="center" height="100%" display="flex" justifyContent="center" alignItems="center">
+                        <CustomTypography
+                            variant="h2bold"
+                            nameSpace="meeting"
+                            textAlign="center"
+                            translation="roomHasBeenDeleted"
+                        />
+                    </CustomBox>
+                </CustomBox>
             )}
             <HostTimeExpiredDialog />
             <MeetingErrorDialog />
