@@ -607,6 +607,10 @@ export class UsersController {
                 ? `${senderUser.fullName} (${senderUser.email})`
                 : senderUser.email,
             },
+            {
+              name: 'PARTICIPANTS',
+              content: body.userEmails.join(', '),
+            },
           ],
         },
         to: body.userEmails.map((email) => ({ email, name: email })),
@@ -624,6 +628,10 @@ export class UsersController {
             },
             { name: 'DATE', content: startAtDate },
             { name: 'ROOMNAME', content: template.name },
+            {
+              name: 'PARTICIPANTS',
+              content: body.userEmails.join(', '),
+            },
           ],
         },
         to: [{ email: senderUser.email, name: senderUser.email }],
