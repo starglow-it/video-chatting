@@ -27,7 +27,7 @@ const houseSubscription: PlanData = {
     templatesLimit: 1,
     timeLimit: null,
     comissionFee: {
-      lurker: 0.1,
+      lurker: 0.3,
       participant: 0.1,
     },
   },
