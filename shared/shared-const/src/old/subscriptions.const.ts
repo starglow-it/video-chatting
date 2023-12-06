@@ -43,7 +43,7 @@ const professionalSubscription: PlanData = {
     templatesLimit: 20,
     timeLimit: null,
     comissionFee: {
-      lurker: 0.05,
+      lurker: 0.2,
       participant: 0.05,
     },
   },
@@ -61,7 +61,7 @@ const businessSubscription: PlanData = {
     templatesLimit: 50,
     timeLimit: null,
     comissionFee: {
-      lurker: 0.5,
+      lurker: 0.1,
       participant: 0,
     },
   },
