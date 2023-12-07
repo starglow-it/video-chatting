@@ -115,11 +115,11 @@ export class MeetingNotesGateway extends BaseGateway {
       try {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
-        const meetingNotes = await this.meetingNotesService.findMany(
-          { meeting: user.meeting },
+        const meetingNotes = await this.meetingNotesService.findMany({
+          query: { meeting: user.meeting },
           session,
-          'user',
-        );
+          populatePaths: 'user',
+        });
 
         const plainMeetingNotes = plainToInstance(
           MeetingNoteDTO,

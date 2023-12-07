@@ -13,7 +13,7 @@ export const withTransaction = async <T>(
   func: (session: ITransactionSession) => Promise<T>,
   { onRollback }: IWithTransactionOptions = {},
 ) => {
-  const session = await connection.startSession();
+  const session = await connection.startSession({});
 
   session.startTransaction();
   try {
