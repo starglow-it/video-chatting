@@ -222,17 +222,17 @@ const Component = () => {
         ) {
             return <CustomLoader className={styles.loader} />;
         }
-        if (!isHasMeeting) {
-            return (
-                <CustomTypography
-                    variant="h3bold"
-                    nameSpace="meeting"
-                    textAlign="center"
-                    translation="meetingHasEnded"
-                />
-            );
-        }
         if (isLurker) {
+            if (!isHasMeeting) {
+                return (
+                    <CustomTypography
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        textAlign="center"
+                        translation="meetingHasEnded"
+                    />
+                );
+            }
             if (isBlockAudiences) {
                 return (
                     <CustomTypography
