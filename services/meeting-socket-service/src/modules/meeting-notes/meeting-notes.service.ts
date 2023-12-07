@@ -7,6 +7,7 @@ import {
   MeetingNoteDocument,
 } from '../../schemas/meeting-note.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { GetModelMultipleQuery } from 'src/types/mongoose';
 
 @Injectable()
 export class MeetingNotesService {
@@ -25,7 +26,11 @@ export class MeetingNotesService {
     return;
   }
 
-  async findMany(query, { session }: ITransactionSession, populate) {
-    return this.meetingNote.find(query, {}, { session, populate }).exec();
+  async findMany({
+    query,
+    populatePaths,
+    session: {session},
+  }: GetModelMultipleQuery<MeetingNoteDocument>) {
+    return this.meetingNote.find(query, {}, { session, populate: populatePaths }).exec();
   }
 }

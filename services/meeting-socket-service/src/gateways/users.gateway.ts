@@ -229,11 +229,11 @@ export class UsersGateway extends BaseGateway {
           session,
         });
 
-        const meetingUpdated = await this.meetingsService.updateMeetingById(
-          user.meeting._id,
-          updateData,
+        const meetingUpdated = await this.meetingsService.updateMeetingById({
+          id: user.meeting._id,
+          data: updateData,
           session,
-        );
+        });
 
         await meetingUpdated.populate('users');
         const plainMeeting = meetingSerialization(meetingUpdated);
