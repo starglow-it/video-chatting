@@ -55,12 +55,13 @@ export const CustomYoutubePlayer = ({
         playerRef.current = event.target;
         if (!isMute) {
             playerRef.current.unMute();
+            setVolume(volume);
         }
     };
 
     return (
         <YouTube
-            videoId={yId ?? ''}
+            videoId={yId}
             iframeClassName={styles.fullPlayer}
             className={className}
             opts={{
