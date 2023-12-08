@@ -449,7 +449,14 @@ const MeetingContainer = memo(() => {
                         [styles.mobile]: isMobile,
                     })}
                 >
-                    <CustomBox width="100%" textAlign="center" height="100%" display="flex" justifyContent="center" alignItems="center">
+                    <CustomBox
+                        width="100%"
+                        textAlign="center"
+                        height="100%"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
                         <CustomTypography
                             variant="h2bold"
                             nameSpace="meeting"
