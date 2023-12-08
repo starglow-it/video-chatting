@@ -22,45 +22,51 @@ export class MeetingChatReactionsService {
 
   async create({
     data,
-    session: { session },
+    session = null,
   }: InsertModelSingleQuery<MeetingChatReaction>) {
     const [meetingChat] = await this.meetingChatReaction.create([data], {
-      session,
+      session: session?.session,
     });
     return meetingChat;
   }
 
   async deleteMany({
     query,
-    session: { session },
+    session = null,
   }: DeleteModelQuery<MeetingChatReactionDocument>): Promise<void> {
-    await this.meetingChatReaction.deleteMany(query, { session });
+    await this.meetingChatReaction.deleteMany(query, {
+      session: session?.session,
+    });
     return;
   }
 
   async findOne({
     query,
-    session: { session },
+    session = null,
   }: GetModelSingleQuery<MeetingChatReactionDocument>) {
-    return this.meetingChatReaction.findOne(query, {}, { session }).exec();
+    return this.meetingChatReaction
+      .findOne(query, {}, { session: session?.session })
+      .exec();
   }
 
   async findOneAndUpdate({
     query,
     data,
-    session: { session },
+    session = null,
   }: UpdateModelSingleQuery<MeetingChatReactionDocument>) {
     return this.meetingChatReaction.findOneAndUpdate(query, data, {
       new: true,
-      session,
+      session: session?.session,
     });
   }
 
   async deleteOne({
     query,
-    session: { session },
+    session = null,
   }: DeleteModelQuery<MeetingChatReactionDocument>): Promise<void> {
-    await this.meetingChatReaction.deleteOne(query, { session }).exec();
+    await this.meetingChatReaction
+      .deleteOne(query, { session: session?.session })
+      .exec();
     return;
   }
 
