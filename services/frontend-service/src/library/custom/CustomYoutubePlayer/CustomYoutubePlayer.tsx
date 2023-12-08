@@ -61,7 +61,7 @@ export const CustomYoutubePlayer = ({
 
     return (
         <YouTube
-            videoId={yId ?? ''}
+            videoId={yId}
             iframeClassName={styles.fullPlayer}
             className={className}
             opts={{
