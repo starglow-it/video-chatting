@@ -54,7 +54,7 @@ const Component = ({
                     />
                 </ConditionalRender>
 
-                <ConditionalRender condition={!isMobile()}>
+                <ConditionalRender condition={!isMobile() && !!mediaLink}>
                     <CustomYoutubePlayer
                         url={mediaLink?.src ?? ''}
                         className={styles.player}
