@@ -16,6 +16,7 @@ import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
 import { replaceItemInArray } from '../../utils/replaceItemInArray';
 import {
+  GetModelByIdQuery,
   GetModelMultipleQuery,
   UpdateModelSingleQuery,
 } from '../../types/mongoose';
@@ -77,8 +78,7 @@ export class UsersService {
   }
 
   async findById(
-    id: string,
-    session?: ITransactionSession,
+   {id, session = null}: GetModelByIdQuery<MeetingUserDocument>,
   ): Promise<MeetingUserDocument> {
     return this.meetingUser.findById(id, {}, { session: session?.session });
   }
@@ -87,11 +87,11 @@ export class UsersService {
     query,
     data,
     populatePaths,
-    session: { session },
+    session = null,
   }: UpdateModelSingleQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
     return this.meetingUser.findOneAndUpdate(query, data, {
       new: true,
-      session,
+      session: session?.session,
       populate: populatePaths,
     });
   }
@@ -117,12 +117,12 @@ export class UsersService {
   async findUsers({
     query,
     populatePaths,
-    session: { session },
+    session = null,
   }: GetModelMultipleQuery<MeetingUserDocument>): Promise<
     MeetingUserDocument[]
   > {
     return this.meetingUser
-      .find(query, {}, { session, populate: populatePaths })
+      .find(query, {}, { session: session?.session, populate: populatePaths })
       .exec();
   }
 

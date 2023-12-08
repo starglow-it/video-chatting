@@ -45,7 +45,7 @@ export type InserModelMultipleQuery<Entity> = {
 
 export type DeleteModelQuery<Entity> = {
   query: FilterQuery<Entity>;
-  session: ITransactionSession;
+  session?: ITransactionSession;
 };
 
 export type DeleteModelByIdQuery<Entity> = Omit<

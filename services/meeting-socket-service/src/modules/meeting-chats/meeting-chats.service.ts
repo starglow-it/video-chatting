@@ -20,52 +20,55 @@ export class MeetingChatsService {
     private meetingChat: Model<MeetingChatDocument>,
   ) {}
 
-  async create({
-    data,
-    session: { session },
-  }: InsertModelSingleQuery<MeetingChat>) {
-    const [meetingChat] = await this.meetingChat.create([data], { session });
+  async create({ data, session = null }: InsertModelSingleQuery<MeetingChat>) {
+    const [meetingChat] = await this.meetingChat.create([data], {
+      session: session?.session,
+    });
     return meetingChat;
   }
 
   async deleteMany({
     query,
-    session: { session },
+    session = null,
   }: DeleteModelQuery<MeetingChat>): Promise<void> {
-    await this.meetingChat.deleteMany(query, { session });
+    await this.meetingChat.deleteMany(query, { session: session?.session });
     return;
   }
 
   async findOne({
     query,
-    session: { session },
+    session = null,
   }: GetModelSingleQuery<MeetingChatDocument>) {
-    return this.meetingChat.findOne(query, {}, { session }).exec();
+    return this.meetingChat
+      .findOne(query, {}, { session: session?.session })
+      .exec();
   }
 
   async findOneAndUpdate({
     query,
     data,
-    session: { session },
+    session = null,
   }: UpdateModelSingleQuery<MeetingChatDocument>) {
     return this.meetingChat.findOneAndUpdate(query, data, {
       new: true,
-      session,
+      session: session?.session,
     });
   }
 
   async deleteOne({
     query,
-    session: { session },
+    session = null,
   }: DeleteModelQuery<MeetingChatDocument>): Promise<void> {
-    await this.meetingChat.deleteOne(query, { session }).exec();
+    await this.meetingChat
+      .deleteOne(query, { session: session?.session })
+      .exec();
     return;
   }
 
   async findMany({
     query,
     options,
-    session,
+    session = null,
     populatePaths,
   }: GetModelMultipleQuery<MeetingChatDocument>) {
     return this.meetingChat

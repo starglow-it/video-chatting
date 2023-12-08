@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { PropsWithClassName } from 'shared-frontend/types';
 import YouTube from 'react-youtube';
 
+import { getYoutubeId } from 'shared-utils';
 import styles from './CustomYoutubePlayer.module.scss';
 
 export const CustomYoutubePlayer = ({
@@ -16,27 +17,7 @@ export const CustomYoutubePlayer = ({
     isMute?: boolean;
 }>) => {
     const playerRef = useRef<any>(null);
-
-    const getYouTubeVideoId = (videoUrl: string) => {
-        try {
-            if (!videoUrl) return null;
-            const parsedUrl = new URL(videoUrl);
-            if (
-                parsedUrl.hostname === 'www.youtube.com' ||
-                parsedUrl.hostname === 'youtube.com'
-            ) {
-                return parsedUrl.searchParams.get('v');
-            }
-            if (parsedUrl.hostname === 'youtu.be') {
-                return parsedUrl.pathname.substr(1);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        return null;
-    };
-
-    const yId = getYouTubeVideoId(url);
+    const yId = getYoutubeId(url);
 
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);

@@ -5,6 +5,7 @@ import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types';
+import { UpdateModelByIdQuery } from 'src/types/mongoose';
 @Injectable()
 export class MeetingsService {
   constructor(
@@ -84,14 +85,14 @@ export class MeetingsService {
     return;
   }
 
-  async updateMeetingById(
-    meetingId,
+  async updateMeetingById({
+    id,
     data,
-    { session }: ITransactionSession,
-  ): Promise<MeetingDocument> {
+    session = null,
+  }: UpdateModelByIdQuery<MeetingDocument>): Promise<MeetingDocument> {
     return this.meeting
-      .findByIdAndUpdate(meetingId, data, {
-        session,
+      .findByIdAndUpdate(id, data, {
+        session: session?.session,
         new: true,
       })
       .exec();

@@ -37,7 +37,7 @@ import {
   PreviewImageDocument,
 } from '../schemas/preview-image.schema';
 import { TranscodeService } from '../modules/transcode/transcode.service';
-import { executePromiseQueue } from 'shared-utils';
+import { executePromiseQueue, getYoutubeId } from 'shared-utils';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
@@ -509,27 +509,8 @@ export class SeederService {
         },
       });
 
-      const getYouTubeVideoId = (videoUrl: string) => {
-        try {
-          if (!videoUrl) return null;
-          const parsedUrl = new URL(videoUrl);
-          if (
-            parsedUrl.hostname === 'www.youtube.com' ||
-            parsedUrl.hostname === 'youtube.com'
-          ) {
-            return parsedUrl.searchParams.get('v');
-          }
-          if (parsedUrl.hostname === 'youtu.be') {
-            return parsedUrl.pathname.substr(1);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        return null;
-      };
-
       const utPromises = userTemplates.map((t) => async () => {
-        const yId = getYouTubeVideoId(t.mediaLink.src);
+        const yId = getYoutubeId(t.mediaLink.src);
         if (yId) {
           const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
           t.mediaLink = {
@@ -542,7 +523,7 @@ export class SeederService {
       });
 
       const tPromises = templates.map((t) => async () => {
-        const yId = getYouTubeVideoId(t.mediaLink.src);
+        const yId = getYoutubeId(t.mediaLink.src);
         if (yId) {
           const replaceThumb = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
           t.mediaLink = {

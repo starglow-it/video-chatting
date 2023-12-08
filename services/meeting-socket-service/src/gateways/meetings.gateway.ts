@@ -472,11 +472,11 @@ export class MeetingsGateway
         );
 
         if (message.meetingRole == MeetingRole.Host) {
-          meeting = await this.meetingsService.updateMeetingById(
-            meeting._id,
-            { owner: user._id, hostUserId: user._id },
+          meeting = await this.meetingsService.updateMeetingById({
+            id: meeting._id,
+            data: { owner: user._id, hostUserId: user._id },
             session,
-          );
+          });
         }
 
         user.meeting = meeting._id;
@@ -1364,10 +1364,10 @@ export class MeetingsGateway
         );
 
         if (user?.meeting?.hostUserId?._id) {
-          const prevHostUser = await this.usersService.findById(
-            user.meeting.hostUserId._id,
+          const prevHostUser = await this.usersService.findById({
+            id: user.meeting.hostUserId._id,
             session,
-          );
+          });
 
           const prevProfileHostUser = await this.coreService.findUserById({
             userId: prevHostUser.profileId,
@@ -1407,13 +1407,13 @@ export class MeetingsGateway
           }
         }
 
-        const newMeeting = await this.meetingsService.updateMeetingById(
-          meeting.id,
-          {
+        const newMeeting = await this.meetingsService.updateMeetingById({
+          id: meeting.id,
+          data: {
             hostUserId: message.userId,
           },
           session,
-        );
+        });
 
         this.taskService.deleteTimeout({
           name: `meeting:timeLimit:${meeting.id}`,
@@ -1525,15 +1525,13 @@ export class MeetingsGateway
         subscribeWsError(socket);
         const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
-          session,
           populatePaths: 'meeting',
         });
 
-        const meeting = await this.meetingsService.updateMeetingById(
-          user?.meeting?._id,
-          message,
-          session,
-        );
+        const meeting = await this.meetingsService.updateMeetingById({
+          id: user?.meeting?._id,
+          data: message,
+        });
 
         const plainMeeting = meetingSerialization(meeting);
         const emitData = {
