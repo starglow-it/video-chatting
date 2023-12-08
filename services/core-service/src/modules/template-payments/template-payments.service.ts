@@ -53,11 +53,11 @@ export class TemplatePaymentsService
 
   async createMany({
     data,
-    session: { session },
+    session = null,
   }: InserModelMultipleQuery<TemplatePaymentDocument>): Promise<
     TemplatePaymentDocument[]
   > {
-    return this.templatePayment.create(data, { session });
+    return this.templatePayment.create(data, { session: session?.session });
   }
 
   async find({
@@ -90,13 +90,13 @@ export class TemplatePaymentsService
   async findByIdAndUpdate({
     id,
     data,
-    session: { session },
+    session = null,
     populatePaths,
   }: UpdateModelByIdQuery<TemplatePaymentDocument>): Promise<TemplatePaymentDocument> {
     return this.templatePayment
       .findByIdAndUpdate(id, data, {
         new: true,
-        session,
+        session: session?.session,
         populate: populatePaths,
       })
       .exec();
@@ -104,9 +104,9 @@ export class TemplatePaymentsService
 
   async deleteMany({
     query,
-    session: { session },
+    session = null,
   }: DeleteModelQuery<TemplatePaymentDocument>): Promise<void> {
-    await this.templatePayment.deleteMany(query, { session });
+    await this.templatePayment.deleteMany(query, { session: session?.session });
   }
 
   async findOneAndUpdate({
@@ -126,10 +126,10 @@ export class TemplatePaymentsService
 
   async findByIdAndDelete({
     id,
-    session: { session },
+    session = null,
   }: DeleteModelByIdQuery<TemplatePaymentDocument>) {
     return await this.templatePayment.findByIdAndRemove(id, {
-      session,
+      session: session?.session,
       new: true,
     });
   }
@@ -148,14 +148,14 @@ export class TemplatePaymentsService
   async updateMany({
     query,
     data,
-    session: { session },
+    session = null,
     options,
     populatePaths,
   }: UpdateModelMultipleQuery<TemplatePaymentDocument>): Promise<unknown> {
     return await this.templatePayment
       .updateMany(query, data, {
         ...options,
-        session,
+        session: session?.session,
         populate: populatePaths,
       })
       .exec();

@@ -88,11 +88,11 @@ export class MeetingsService {
   async updateMeetingById({
     id,
     data,
-    session: { session },
+    session = null,
   }: UpdateModelByIdQuery<MeetingDocument>): Promise<MeetingDocument> {
     return this.meeting
       .findByIdAndUpdate(id, data, {
-        session,
+        session: session?.session,
         new: true,
       })
       .exec();

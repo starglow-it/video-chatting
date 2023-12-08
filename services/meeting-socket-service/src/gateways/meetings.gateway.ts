@@ -1364,10 +1364,10 @@ export class MeetingsGateway
         );
 
         if (user?.meeting?.hostUserId?._id) {
-          const prevHostUser = await this.usersService.findById(
-            user.meeting.hostUserId._id,
+          const prevHostUser = await this.usersService.findById({
+            id: user.meeting.hostUserId._id,
             session,
-          );
+          });
 
           const prevProfileHostUser = await this.coreService.findUserById({
             userId: prevHostUser.profileId,

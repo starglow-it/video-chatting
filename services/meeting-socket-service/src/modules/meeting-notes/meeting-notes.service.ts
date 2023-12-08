@@ -29,8 +29,10 @@ export class MeetingNotesService {
   async findMany({
     query,
     populatePaths,
-    session: {session},
+    session = null,
   }: GetModelMultipleQuery<MeetingNoteDocument>) {
-    return this.meetingNote.find(query, {}, { session, populate: populatePaths }).exec();
+    return this.meetingNote
+      .find(query, {}, { session: session?.session, populate: populatePaths })
+      .exec();
   }
 }
