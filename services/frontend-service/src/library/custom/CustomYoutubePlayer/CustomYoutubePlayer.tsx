@@ -55,6 +55,7 @@ export const CustomYoutubePlayer = ({
         playerRef.current = event.target;
         if (!isMute) {
             playerRef.current.unMute();
+            setVolume(volume);
         }
     };
 
