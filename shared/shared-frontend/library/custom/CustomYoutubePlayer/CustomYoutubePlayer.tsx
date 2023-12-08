@@ -3,6 +3,7 @@ import YouTube from 'react-youtube';
 
 import styles from './CustomYoutubePlayer.module.scss';
 import { PropsWithClassName } from 'types';
+import { getYoutubeId } from 'shared-utils';
 
 export const CustomYoutubePlayer = ({
     url,
@@ -17,26 +18,7 @@ export const CustomYoutubePlayer = ({
 }>) => {
     const playerRef = useRef<any>(null);
 
-    function getYouTubeVideoId(videoUrl: string) {
-        try {
-            if (!videoUrl) return null;
-            const parsedUrl = new URL(videoUrl);
-            if (
-                parsedUrl.hostname === 'www.youtube.com' ||
-                parsedUrl.hostname === 'youtube.com'
-            ) {
-                return parsedUrl.searchParams.get('v');
-            }
-            if (parsedUrl.hostname === 'youtu.be') {
-                return parsedUrl.pathname.substr(1);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        return null;
-    }
-
-    const yId = getYouTubeVideoId(url);
+    const yId = getYoutubeId(url);
 
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);

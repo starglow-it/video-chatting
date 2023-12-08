@@ -6,7 +6,7 @@ const compression = require('compression');
 const apiPort = parseInt(process.env.GATEWAY_PORT || '3000', 10);
 const apiHost = process.env.GATEWAY_HOST || 'gateway-service';
 const apiProtocol = process.env.GATEWAY_PROTOCOL || 'http';
-const port = parseInt(process.env.INNER_FRONTEND_PORT || '9000', 10);
+const port = parseInt(process.env.INNER_FRONTEND_ADMIN_PORT || '9000', 10);
 const projectPath = process.env.PROJECT_PATH || '.';
 const env = process.env.NODE_ENV;
 
