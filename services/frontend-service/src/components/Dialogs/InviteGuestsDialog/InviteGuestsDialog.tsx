@@ -18,21 +18,15 @@ import { useTimer } from '@hooks/useTimer';
 import { isMobile } from 'shared-utils';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { MeetingRole } from 'shared-types';
-import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import {
-    $meetingStore,
-    $meetingTemplateStore,
-    updateMeetingSocketEvent,
-} from 'src/store/roomStores';
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { Translation } from '@library/common/Translation/Translation';
+import { $meetingStore } from 'src/store/roomStores';
+import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
     const router = useRouter();
     const { inviteGuestsDialog } = useStore($appDialogsStore);
     const { isBlockAudiences } = useStore($meetingStore);
-    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
+
     const [link, setLink] = useState<string>(
         getClientMeetingUrlWithDomain(router.query.token as string),
     );
@@ -101,10 +95,6 @@ export const InviteGuestsDialog = () => {
         );
     };
 
-    const onChangeSwitch = () => {
-        updateMeetingSocketEvent({ isBlockAudiences: !isBlockAudiences });
-    };
-
     return (
         <CustomDialog
             open={inviteGuestsDialog && !isMobile()}
@@ -158,49 +148,7 @@ export const InviteGuestsDialog = () => {
                         <span>Gmail</span>
                     </CustomGrid>
                 </CustomGrid>
-                <CustomTooltip
-                    placement="top"
-                    title={
-                        isAcceptNoLogin || subdomain ? (
-                            <Translation
-                                nameSpace="meeting"
-                                translation="disablePublicMeeting"
-                            />
-                        ) : (
-                            ''
-                        )
-                    }
-                    popperClassName={styles.popperTooltip}
-                    tooltipClassName={styles.containerTooltip}
-                >
-                    <CustomGrid
-                        display="flex"
-                        justifyContent="center"
-                        gap={1}
-                        margin="20px"
-                    >
-                        <CustomGrid
-                            gap={1}
-                            display="flex"
-                            justifyContent="center"
-                            className={
-                                isAcceptNoLogin || subdomain
-                                    ? styles.disablePublic
-                                    : undefined
-                            }
-                        >
-                            {!isBlockAudiences ? (
-                                <span>Public</span>
-                            ) : (
-                                <span>Private</span>
-                            )}
-                            <CustomSwitch
-                                onChange={onChangeSwitch}
-                                checked={!isBlockAudiences}
-                            />
-                        </CustomGrid>
-                    </CustomGrid>
-                </CustomTooltip>
+                <MeetingSwitchPrivate />
                 <MeetingRoleGroup
                     className={styles.roleGroup}
                     ref={refRoleGroup}

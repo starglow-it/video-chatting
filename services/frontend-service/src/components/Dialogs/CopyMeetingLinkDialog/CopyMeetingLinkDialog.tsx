@@ -20,6 +20,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { MeetingRole } from 'shared-types';
 import { $meetingStore } from 'src/store/roomStores';
+import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -123,6 +124,7 @@ const Component = () => {
                         />
                     </CopyToClipboard>
                 </CustomGrid>
+                <MeetingSwitchPrivate />
                 <MeetingRoleGroup
                     onChangeValue={handleChangeValue}
                     className={styles.roleGroup}

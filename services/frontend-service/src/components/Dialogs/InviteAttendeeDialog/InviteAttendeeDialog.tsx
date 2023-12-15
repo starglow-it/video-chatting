@@ -18,6 +18,7 @@ import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/Sch
 // stores
 import { Translation } from '@library/common/Translation/Translation';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
+import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -122,6 +123,7 @@ const Component = () => {
                             onDeleteUserEmail={handleDeleteUserEmail}
                             userEmails={userEmails}
                         />
+                        <MeetingSwitchPrivate />
                         <MeetingRoleGroup
                             className={styles.roleGroup}
                             ref={refRole}
