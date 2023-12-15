@@ -1,5 +1,5 @@
-API_VERSION=12.7.26
-APP_VERSION=12.7.26
+API_VERSION=0.0.27
+APP_VERSION=0.0.27
 RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
 RABBIT_MQ_SOCKET_QUEUE=rabbitMqSocketQueue
 RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
@@ -24,8 +24,13 @@ MEETING_SOCKET_URL=wss://socket.chatruume.com
 # LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
 LIVEKIT_API_KEY=APIGZAoRvLhzuaE
 LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
-LIVEKIT_HOST=https://livekit.chatruume.com
-LIVEKIT_WSS=wss://livekit.chatruume.com
+# This is env Livekit Server
+# LIVEKIT_HOST=https://livekit.chatruume.com
+# LIVEKIT_WSS=wss://livekit.chatruume.com
+
+# This is env Livekit Cloud
+LIVEKIT_HOST=https://ruume-psl3vadv.livekit.cloud
+LIVEKIT_WSS=wss://ruume-psl3vadv.livekit.cloud
 STRIPE_API_KEY=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
 STRIPE_PUBLIC_API_KEY=pk_live_51Lfm3wEZHTtCzRsJlFmLDds8y34LOlFu2BXjixB6vwrMRcJJlDg19Fvgngi8FxDrjIxhjxRrluonzzPU83s1k0VR00qYCp29g7
 STRIPE_WEBHOOK_SECRET=whsec_FKfBwK490EyISyXClJ0UtByXYJfBMEoi

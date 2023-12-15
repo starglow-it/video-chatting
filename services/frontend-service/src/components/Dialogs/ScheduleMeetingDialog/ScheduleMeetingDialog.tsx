@@ -24,6 +24,7 @@ import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { $meetingStore } from 'src/store/roomStores';
+import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -274,6 +275,7 @@ const Component = () => {
                                 </CustomFade>
                             </CustomGrid>
                             <ConditionalRender condition={isInviteOpen}>
+                                <MeetingSwitchPrivate />
                                 <MeetingRoleGroup
                                     className={styles.roleGroup}
                                     ref={refRole}
