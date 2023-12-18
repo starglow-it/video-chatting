@@ -70,7 +70,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             case 'image':
                 return (
                     <CustomImage
-                        src={previewImage?.url || ''}
+                        src={template?.url || ''}
                         width="334px"
                         height="190px"
                     />

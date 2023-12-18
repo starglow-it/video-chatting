@@ -41,6 +41,7 @@ import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/Invit
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import { isMobile as isMobileShared } from 'shared-utils';
+import { getPreviewImage } from 'src/utils/functions/getPreviewImage';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -192,9 +193,7 @@ const Component = () => {
         }
     }, []);
 
-    const previewImage = (meetingTemplate?.previewUrls || []).find(
-        image => image.resolution === 1080,
-    );
+    const previewImage = getPreviewImage(meetingTemplate);
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
@@ -204,18 +203,10 @@ const Component = () => {
                 mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender
-                        condition={
-                            !!previewImage?.url || !!meetingTemplate.mediaLink
-                        }
-                    >
+                    <ConditionalRender condition={!!previewImage}>
                         <CustomImage
                             className={styles.image}
-                            src={
-                                previewImage?.url ||
-                                meetingTemplate?.mediaLink?.thumb ||
-                                ''
-                            }
+                            src={previewImage}
                             width={isMobile ? `${width}px` : '100%'}
                             height={isMobile ? `${height}px` : '100%'}
                             layout="fill"

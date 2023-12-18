@@ -15,6 +15,7 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // stores
+import { getPreviewImage } from 'src/utils/functions/getPreviewImage';
 import {
     $profileStore,
     $profileTemplatesStore,
@@ -43,18 +44,16 @@ const MainInfo = memo(() => {
         getProfileTemplatesFx({ limit: 6, skip: 0 });
     }, []);
 
-    const previewImage = (lastProfileTemplate?.previewUrls || []).find(
-        image => image.resolution === 1080,
-    );
+    const previewImage = getPreviewImage(lastProfileTemplate);
 
     return (
         <CustomPaper className={styles.wrapper}>
             <CustomGrid container direction="column">
                 <SocialLinks />
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                    <ConditionalRender condition={Boolean(previewImage)}>
                         <CustomImage
-                            src={previewImage?.url ?? ''}
+                            src={previewImage}
                             width="100%"
                             height="100%"
                             layout="fill"

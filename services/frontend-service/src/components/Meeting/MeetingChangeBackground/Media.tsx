@@ -55,7 +55,7 @@ const Component = ({
         }
         return item.type === 'image' || isMobile() ? (
             <CustomImage
-                src={url}
+                src={item.url}
                 width={63}
                 height={63}
                 className={styles.image}
