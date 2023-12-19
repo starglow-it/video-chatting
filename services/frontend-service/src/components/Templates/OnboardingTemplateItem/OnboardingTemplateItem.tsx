@@ -13,6 +13,7 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // types
 import { ICommonTemplate } from 'shared-types';
+import { getPreviewImage } from 'src/utils/functions/getPreviewImage';
 import { AppDialogsEnum } from '../../../store/types';
 
 // stores
@@ -60,9 +61,7 @@ const OnboardingTemplateItem = memo(
             onChooseTemplate(template.id);
         }, []);
 
-        const previewImage = (template?.previewUrls || []).find(
-            preview => preview.resolution === 240,
-        );
+        const previewImage = getPreviewImage(template);
 
         return (
             <CustomGrid
@@ -73,15 +72,8 @@ const OnboardingTemplateItem = memo(
                 onMouseEnter={handleShowPreview}
                 onMouseLeave={handleHidePreview}
             >
-                <ConditionalRender
-                    condition={!!previewImage?.url || !!template.mediaLink}
-                >
-                    <CustomImage
-                        src={
-                            previewImage?.url ?? template.mediaLink?.thumb ?? ''
-                        }
-                        layout="fill"
-                    />
+                <ConditionalRender condition={!!previewImage}>
+                    <CustomImage src={previewImage} layout="fill" />
                 </ConditionalRender>
                 <TemplateMainInfo
                     show={!showPreview}

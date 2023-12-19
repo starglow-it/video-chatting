@@ -33,6 +33,7 @@ import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvat
 import { NotFoundRoute } from 'src/const/client-routes';
 import { useNetworkDetect } from '@hooks/useNetworkDetect';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { getPreviewImage } from 'src/utils/functions/getPreviewImage';
 import {
     $windowSizeStore,
     getSubscriptionWithDataFx,
@@ -328,9 +329,7 @@ const MeetingContainer = memo(() => {
         );
     }, []);
 
-    const previewImage = (meetingTemplate?.previewUrls || []).find(
-        image => image.resolution === 1080,
-    );
+    const previewImage = getPreviewImage(meetingTemplate);
 
     return (
         <>
@@ -372,25 +371,13 @@ const MeetingContainer = memo(() => {
             >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
-                    src={
-                        meetingTemplate.mediaLink?.src ??
-                        meetingTemplate.url ??
-                        ''
-                    }
+                    src={previewImage}
                     videoClassName={styles.wrapperBackgroundMedia}
                     mediaLink={null}
                 >
-                    <ConditionalRender
-                        condition={
-                            !!previewImage?.url || !!meetingTemplate.mediaLink
-                        }
-                    >
+                    <ConditionalRender condition={!!previewImage}>
                         <CustomImage
-                            src={
-                                meetingTemplate.mediaLink?.thumb ??
-                                previewImage?.url ??
-                                ''
-                            }
+                            src={previewImage}
                             className={styles.wrapperBackgroundMedia}
                             width={isMobile ? `${width}px` : '100%'}
                             height={isMobile ? `${height}px` : '100%'}
