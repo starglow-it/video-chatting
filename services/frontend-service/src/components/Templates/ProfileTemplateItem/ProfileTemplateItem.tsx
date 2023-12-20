@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { EllipsisIcon } from 'shared-frontend/icons/OtherIcons/EllipsisIcon';
-import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
@@ -221,32 +220,15 @@ const ProfileTemplateItem = memo(
                             />
                         </CustomGrid>
                         <ConditionalRender condition={template.type !== 'paid'}>
-                            {template.isPublic ? (
-                                <ActionButton
-                                    variant="transparent"
-                                    onAction={handleOpenDeleteDialog}
-                                    className={styles.deleteBtn}
-                                    Icon={
-                                        <DeleteIcon
-                                            width="22px"
-                                            height="22px"
-                                        />
-                                    }
-                                />
-                            ) : (
-                                <ActionButton
-                                    ref={actionButtonRef}
-                                    variant="transparent"
-                                    onAction={onShowMenu}
-                                    className={styles.menuButton}
-                                    Icon={
-                                        <EllipsisIcon
-                                            width="20px"
-                                            height="20px"
-                                        />
-                                    }
-                                />
-                            )}
+                            <ActionButton
+                                ref={actionButtonRef}
+                                variant="transparent"
+                                onAction={onShowMenu}
+                                className={styles.menuButton}
+                                Icon={
+                                    <EllipsisIcon width="20px" height="20px" />
+                                }
+                            />
                         </ConditionalRender>
                         <Menu
                             open={isMenuOpen}
