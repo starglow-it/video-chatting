@@ -608,8 +608,8 @@ export class UsersController {
                 : senderUser.email,
             },
             {
-              name: 'PARTICIPANTS',
-              content: body.userEmails.join(', '),
+              name: 'FILE',
+              content: icsLink,
             },
           ],
         },
