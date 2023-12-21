@@ -5,12 +5,11 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import {
     $isOwner,
-    $meetingStore,
     $meetingTemplateStore,
     toggleEditTemplateOpen,
     toggleLinksDrawerEvent,
     toggleMeetingInfoOpen,
-    updateMeetingSocketEvent,
+    updateMeetingTemplateFxWithData,
 } from 'src/store/roomStores';
 
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -30,8 +29,9 @@ import styles from './MeetingHeader.module.scss';
 export const MeetingHeader = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
-    const { isBlockAudiences } = useStore($meetingStore);
-    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
+    const { isAcceptNoLogin, subdomain, isPublishAudience } = useStore(
+        $meetingTemplateStore,
+    );
 
     const { control } = useFormContext();
 
@@ -55,8 +55,8 @@ export const MeetingHeader = () => {
                 message: 'meeting.disablePublicMeeting',
             });
         } else {
-            updateMeetingSocketEvent({
-                isBlockAudiences: !isBlockAudiences,
+            updateMeetingTemplateFxWithData({
+                isPublishAudience: !isPublishAudience,
             });
         }
     };
@@ -90,17 +90,17 @@ export const MeetingHeader = () => {
                         borderRadius={10}
                         className={clsx(styles.button, {
                             [styles.link]: true,
-                            [styles.inactive]: isBlockAudiences,
+                            [styles.inactive]: !isPublishAudience,
                         })}
                     >
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleTogglePublicMeeting}
                             className={clsx(styles.button, {
-                                [styles.inactive]: isBlockAudiences,
+                                [styles.inactive]: !isPublishAudience,
                             })}
                             Icon={
-                                isBlockAudiences ? (
+                                !isPublishAudience ? (
                                     <LockIcon width="22px" height="22px" />
                                 ) : (
                                     <UnlockIcon width="18px" height="18px" />
