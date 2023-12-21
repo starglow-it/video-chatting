@@ -40,7 +40,6 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
-    $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
@@ -51,7 +50,7 @@ import {
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
-    updateMeetingSocketEvent,
+    updateMeetingTemplateFxWithData,
 } from '../../../store/roomStores';
 
 // styles
@@ -71,7 +70,7 @@ const Component = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isLurker = useStore($isLurker);
     const isOwner = useStore($isOwner);
-    const meeting = useStore($meetingStore);
+    const meeting = useStore($meetingTemplateStore);
     const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
 
     const isThereNewRequests = useStoreMap({
@@ -89,7 +88,7 @@ const Component = () => {
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
-    const { isBlockAudiences } = meeting;
+    const { isPublishAudience } = meeting;
 
     const { isMobile } = useBrowserDetect();
 
@@ -158,7 +157,7 @@ const Component = () => {
                             <Translation
                                 nameSpace="meeting"
                                 translation={
-                                    isBlockAudiences
+                                    !isPublishAudience
                                         ? 'lock.private'
                                         : 'lock.public'
                                 }
@@ -176,16 +175,16 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={() =>
-                                updateMeetingSocketEvent({
-                                    isBlockAudiences: !isBlockAudiences,
+                                updateMeetingTemplateFxWithData({
+                                    isPublishAudience: !isPublishAudience,
                                 })
                             }
                             className={clsx(styles.deviceButton, {
-                                [styles.inactive]: isBlockAudiences,
+                                [styles.inactive]: !isPublishAudience,
                             })}
                             disabled={isAcceptNoLogin || !!subdomain}
                             Icon={
-                                isBlockAudiences ? (
+                                !isPublishAudience ? (
                                     <LockIcon width="22px" height="22px" />
                                 ) : (
                                     <UnlockIcon width="18px" height="18px" />
