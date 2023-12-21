@@ -197,7 +197,7 @@ const Component = () => {
                 onChooseTemplate={handleChooseCommonTemplate}
             />
             <DeleteTemplateDialog />
-            <ScheduleMeetingDialog />
+            <ScheduleMeetingDialog isScheduleDash />
             <DownloadIcsEventDialog />
         </MainProfileWrapper>
     );

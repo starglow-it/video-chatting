@@ -31,7 +31,7 @@ import {
     $profileStore,
     appDialogsApi,
     setDeleteTemplateIdEvent,
-    setScheduleTemplateIdEvent,
+    setScheduleTemplateEvent,
 } from '../../../store';
 
 // const
@@ -91,12 +91,15 @@ const ProfileTemplateItem = memo(
         }, [template.id]);
 
         const handleScheduleMeeting = useCallback(() => {
-            setScheduleTemplateIdEvent(template.id);
+            setScheduleTemplateEvent({
+                id: template.customLink || template.id,
+                isPublishAudience: template.isPublishAudience,
+            });
 
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
             });
-        }, []);
+        }, [template]);
 
         const handleEditMeeting = useCallback(() => {
             if (!isHouseSubscription) {

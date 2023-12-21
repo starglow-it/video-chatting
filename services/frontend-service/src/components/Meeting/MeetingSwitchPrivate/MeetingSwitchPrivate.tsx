@@ -3,19 +3,21 @@ import { Translation } from '@library/common/Translation/Translation';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 import {
-    $meetingStore,
     $meetingTemplateStore,
-    updateMeetingSocketEvent,
+    updateMeetingTemplateFxWithData,
 } from 'src/store/roomStores';
 import { useStore } from 'effector-react';
 import styles from './MeetingSwitchPrivate.module.scss';
 
 export const MeetingSwitchPrivate = () => {
-    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
-    const { isBlockAudiences } = useStore($meetingStore);
+    const { isAcceptNoLogin, subdomain, isPublishAudience } = useStore(
+        $meetingTemplateStore,
+    );
 
     const onChangeSwitch = () => {
-        updateMeetingSocketEvent({ isBlockAudiences: !isBlockAudiences });
+        updateMeetingTemplateFxWithData({
+            isPublishAudience: !isPublishAudience,
+        });
     };
 
     return (
@@ -50,14 +52,14 @@ export const MeetingSwitchPrivate = () => {
                             : undefined
                     }
                 >
-                    {!isBlockAudiences ? (
+                    {isPublishAudience ? (
                         <span>Public</span>
                     ) : (
                         <span>Private</span>
                     )}
                     <CustomSwitch
                         onChange={onChangeSwitch}
-                        checked={!isBlockAudiences}
+                        checked={isPublishAudience}
                     />
                 </CustomGrid>
             </CustomGrid>
