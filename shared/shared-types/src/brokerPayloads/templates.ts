@@ -3,6 +3,7 @@ import {
   ICommonUser,
   ITemplatePayment,
   IUpdateTemplate,
+  IUpdateUserTemplate,
   IUserTemplate,
   MeetingRole,
 } from '../api-interfaces';
@@ -36,7 +37,7 @@ export type GetUserTemplateByIdPayload = {
 export type UpdateUserTemplatePayload = {
   templateId: IUserTemplate['id'];
   userId: ICommonUser['id'];
-  data: Partial<IUpdateTemplate>;
+  data: Partial<IUpdateUserTemplate>;
 };
 
 export type UpdateTemplatePaymentsData = {

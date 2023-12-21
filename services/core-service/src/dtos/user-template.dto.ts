@@ -165,4 +165,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   categoryType: IUserTemplate['categoryType'];
+
+  @Expose()
+  isPublishAudience: IUserTemplate['isPublishAudience'];
 }

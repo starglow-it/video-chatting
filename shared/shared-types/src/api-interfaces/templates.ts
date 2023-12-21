@@ -94,6 +94,7 @@ export interface IUserTemplate extends ITemplate {
   isPublic: boolean;
   author?: string;
   isAcceptNoLogin?: boolean;
+  isPublishAudience: boolean;
 }
 
 export interface IUpdateTemplate {
@@ -128,6 +129,10 @@ export interface IUpdateTemplate {
   };
   templateType?: string;
   subdomain?: string;
+}
+
+export interface IUpdateUserTemplate extends IUpdateTemplate {
+  isPublishAudience: boolean;
 }
 
 export interface IUploadTemplateFile {
