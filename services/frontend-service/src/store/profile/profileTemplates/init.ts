@@ -42,18 +42,6 @@ $profileTemplatesStore
         ),
     }))
     .on(updateMeetingTemplateDashFx, (state, { templateId, data }) => {
-        console.log('#Duy Phan console', templateId, data);
-        console.log(
-            '#Duy Phan console',
-            state.list.map(template =>
-                template.id === templateId
-                    ? {
-                          ...template,
-                          isPublishAudience: data.isPublishAudience ?? false,
-                      }
-                    : template,
-            ),
-        );
         return {
             ...state,
             list: state.list.map(template =>
