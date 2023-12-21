@@ -20,11 +20,12 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import CustomDivider from 'shared-frontend/library/custom/CustomDivider/CustomDivider';
 import CustomFade from 'shared-frontend/library/custom/CustomFade/CustomFade';
 import CustomButton from 'shared-frontend/library/custom/CustomButton/CustomButton';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { PropsWithClassName, ValuesSwitcherItem } from 'shared-frontend/types';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { $meetingStore } from 'src/store/roomStores';
+import { $meetingTemplateStore } from 'src/store/roomStores';
 import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
+import { TemplateSwitchPrivate } from '@components/Templates/TemplateSwitchPrivate/TemplateSwitchPrivate';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -39,6 +40,8 @@ import {
     $scheduleTemplateIdStore,
     sendScheduleInviteFx,
     setScheduleTemplateIdEvent,
+    $scheduleTemplateStore,
+    setScheduleTemplateEvent,
 } from '../../../store';
 
 // types
@@ -85,11 +88,16 @@ type FormType = {
     currentUserEmail: string;
 };
 
-const Component = () => {
+const Component = ({
+    isScheduleDash = false,
+}: PropsWithClassName<{ isScheduleDash?: boolean }>) => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
+    const { isPublishAudience: isPublishAudienceDash } = useStore(
+        $scheduleTemplateStore,
+    );
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
-    const { isBlockAudiences } = useStore($meetingStore);
+    const { isPublishAudience } = useStore($meetingTemplateStore);
 
     const [activeSchedulePage, setActiveSchedulePage] = useState(
         schedulePages[0],
@@ -143,6 +151,7 @@ const Component = () => {
 
         reset();
         setScheduleTemplateIdEvent('');
+        setScheduleTemplateEvent({});
     }, []);
 
     const onSubmit = useCallback(
@@ -275,11 +284,19 @@ const Component = () => {
                                 </CustomFade>
                             </CustomGrid>
                             <ConditionalRender condition={isInviteOpen}>
-                                <MeetingSwitchPrivate />
+                                {isScheduleDash ? (
+                                    <TemplateSwitchPrivate />
+                                ) : (
+                                    <MeetingSwitchPrivate />
+                                )}
                                 <MeetingRoleGroup
                                     className={styles.roleGroup}
                                     ref={refRole}
-                                    isBlockAudience={isBlockAudiences}
+                                    isBlockAudience={
+                                        isScheduleDash
+                                            ? !isPublishAudienceDash
+                                            : !isPublishAudience
+                                    }
                                 />
                             </ConditionalRender>
                             <CustomGrid

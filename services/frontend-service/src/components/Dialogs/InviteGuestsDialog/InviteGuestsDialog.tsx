@@ -18,14 +18,14 @@ import { useTimer } from '@hooks/useTimer';
 import { isMobile } from 'shared-utils';
 import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import { MeetingRole } from 'shared-types';
-import { $meetingStore } from 'src/store/roomStores';
+import { $meetingTemplateStore } from 'src/store/roomStores';
 import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
     const router = useRouter();
     const { inviteGuestsDialog } = useStore($appDialogsStore);
-    const { isBlockAudiences } = useStore($meetingStore);
+    const { isPublishAudience } = useStore($meetingTemplateStore);
 
     const [link, setLink] = useState<string>(
         getClientMeetingUrlWithDomain(router.query.token as string),
@@ -153,7 +153,7 @@ export const InviteGuestsDialog = () => {
                     className={styles.roleGroup}
                     ref={refRoleGroup}
                     onChangeValue={handleChangeRole}
-                    isBlockAudience={isBlockAudiences}
+                    isBlockAudience={!isPublishAudience}
                 />
             </CustomGrid>
         </CustomDialog>

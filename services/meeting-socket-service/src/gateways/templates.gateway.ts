@@ -67,6 +67,13 @@ export class TemplatesGateway extends BaseGateway {
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: data.templateId },
         );
+
+        this.emitToRoom(
+          `waitingRoom:${data.templateId}`,
+          MeetingEmitEvents.UpdateMeetingTemplate,
+          { templateId: data.templateId },
+        );
+        
       } catch (err) {
         return wsError(socket, err);
       }

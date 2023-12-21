@@ -15,6 +15,7 @@ import {
     setActiveTabPanelEvent,
     $isToggleLinksDrawer,
     toggleLinksDrawerEvent,
+    updateMeetingTemplateDashFx,
 } from './model';
 import {
     $changeStreamStore,
@@ -34,6 +35,7 @@ import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWait
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingRoleStore } from '../meetingRole/model';
 import { handleJoinMeetingWithLurker } from './handlers/handleJoinMeetingWithLurker';
+import { handleUpdateMeetingTemplateDash } from './handlers/handleUpdateMeetingTemplateDash';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -56,6 +58,7 @@ $isToggleLinksDrawer
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
 joinMeetingWithLurkerFx.use(handleJoinMeetingWithLurker);
+updateMeetingTemplateDashFx.use(handleUpdateMeetingTemplateDash);
 
 sample({
     clock: joinMeetingEvent,

@@ -1,4 +1,5 @@
 import { setQueryProfileTemplatesEvent } from 'src/store/templates/model';
+import { updateMeetingTemplateDashFx } from 'src/store/roomStores';
 import {
     $deleteProfileTemplateId,
     $profileTemplatesCountStore,
@@ -40,6 +41,19 @@ $profileTemplatesStore
             template.id === data?.id ? data : template,
         ),
     }))
+    .on(updateMeetingTemplateDashFx, (state, { templateId, data }) => {
+        return {
+            ...state,
+            list: state.list.map(template =>
+                template.id === templateId
+                    ? {
+                          ...template,
+                          isPublishAudience: data.isPublishAudience ?? false,
+                      }
+                    : template,
+            ),
+        };
+    })
     .reset([setQueryProfileTemplatesEvent, clearProfileEvent]);
 
 $deleteProfileTemplateId.on(setDeleteTemplateIdEvent, (state, data) => data);

@@ -34,8 +34,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { v4 as uuidv4 } from 'uuid';
 import { USER_TEMPLATE_SCOPE } from 'shared-const';
-import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { UpdateUserTemplateRequest } from 'src/dtos/requests/update-user-template.request';
 
 @ApiTags('User templates')
 @Controller(USER_TEMPLATE_SCOPE)
@@ -143,7 +143,7 @@ export class UserTemplatesController {
   async updateUserTemplate(
     @Request() req,
     @Param('templateId') templateId: string,
-    @Body() templateData: UpdateTemplateRequest,
+    @Body() templateData: UpdateUserTemplateRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
