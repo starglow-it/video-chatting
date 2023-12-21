@@ -221,7 +221,7 @@ const ProfileTemplateItem = memo(
                             />
                         </CustomGrid>
                         <ConditionalRender condition={template.type !== 'paid'}>
-                            {template.isPublic ? (
+                            {template.author !== profile.id ? (
                                 <ActionButton
                                     variant="transparent"
                                     onAction={handleOpenDeleteDialog}
