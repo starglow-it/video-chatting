@@ -36,7 +36,7 @@ import { CoreService } from '../../services/core/core.service';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
-import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
+import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { CreateCommonTemplateRequestDto } from '../../dtos/requests/create-common-template.request';
 

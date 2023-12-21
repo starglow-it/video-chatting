@@ -263,6 +263,12 @@ export class UserTemplate {
     default: <TemplateCategoryType>'default',
   })
   categoryType: TemplateCategoryType;
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false
+  })
+  isPublishAudience: boolean;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;
