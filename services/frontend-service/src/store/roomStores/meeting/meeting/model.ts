@@ -2,6 +2,7 @@ import { Store, attach, combine } from 'effector-next';
 
 import { $profileStore } from 'src/store/profile/profile/model';
 import { ICommonUser, IUserTemplate, MeetingRole } from 'shared-types';
+import { $scheduleTemplateStore } from 'src/store/templates/model';
 import { Meeting, MeetingUser, Profile } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
@@ -114,5 +115,26 @@ export const rejoinMeetingEvent = attach<
         cameraStatus: source.localUser.cameraStatus,
         micStatus: source.localUser.micStatus,
         maxParticipants: source.template.maxParticipants,
+    }),
+});
+
+export const updateMeetingTemplateDashFx = meetingDomain.createEffect<
+    {
+        data: Partial<IUserTemplate>;
+        templateId: string;
+    },
+    void
+>('updateMeetingTemplateDashFx');
+
+export const sendUpdateMeetingTemplateEvent = attach<
+    Partial<IUserTemplate>,
+    Store<{ template: Partial<IUserTemplate> }>,
+    typeof updateMeetingTemplateDashFx
+>({
+    effect: updateMeetingTemplateDashFx,
+    source: combine({ template: $scheduleTemplateStore }),
+    mapParams: (params, { template }) => ({
+        templateId: template.id ?? '',
+        data: params,
     }),
 });

@@ -10,6 +10,7 @@ import {
     $replaceTemplateIdStore,
     $scheduleEventLinkStore,
     $scheduleTemplateIdStore,
+    $scheduleTemplateStore,
     $setUpTemplateStore,
     $templateDraft,
     $templatePreviewStore,
@@ -34,6 +35,7 @@ import {
     setQueryTemplatesEvent,
     setReplaceTemplateIdEvent,
     setScheduleEventLinkEvent,
+    setScheduleTemplateEvent,
     setScheduleTemplateIdEvent,
     uploadTemplateFileFx,
     uploadUserTemplateFileFx,
@@ -102,6 +104,11 @@ $discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({
     ...data,
 }));
 $scheduleTemplateIdStore.on(setScheduleTemplateIdEvent, (state, data) => data);
+$scheduleTemplateStore.on(setScheduleTemplateEvent, (state, data) => ({
+    ...state,
+    ...data,
+}));
+
 $scheduleEventLinkStore.on(setScheduleEventLinkEvent, (state, data) => {
     if (data) {
         appDialogsApi.openDialog({

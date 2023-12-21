@@ -35,7 +35,6 @@ import {
     $isOwner,
     $isOwnerInMeeting,
     $localUserStore,
-    $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
     getMeetingTemplateFx,
@@ -64,7 +63,6 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isLurker = useStore($isLurker);
     const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
-    const { isBlockAudiences } = useStore($meetingStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isHasMeeting = useStoreMap({
@@ -233,7 +231,7 @@ const Component = () => {
                     />
                 );
             }
-            if (isBlockAudiences) {
+            if (!meetingTemplate.isPublishAudience) {
                 return (
                     <CustomTypography
                         variant="h3bold"

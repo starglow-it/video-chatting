@@ -51,6 +51,9 @@ export const $discoveryTemplatesStore = templatesDomain.createStore<
 >(initialUserTemplatesStore);
 export const $scheduleTemplateIdStore =
     templatesDomain.createStore<IUserTemplate['id']>('');
+export const $scheduleTemplateStore = templatesDomain.createStore<
+    Partial<IUserTemplate>
+>({});
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
 export const $replaceTemplateIdStore =
     templatesDomain.createStore<ICommonTemplate['id']>('');
@@ -85,6 +88,9 @@ export const setPreviewTemplate = templatesDomain.event<ICommonTemplate | null>(
 export const setScheduleTemplateIdEvent = templatesDomain.event<string>(
     'setScheduleTemplateIdEvent',
 );
+export const setScheduleTemplateEvent = templatesDomain.event<
+    Partial<IUserTemplate>
+>('setScheduleTemplateEvent');
 export const setScheduleEventLinkEvent = templatesDomain.event<
     string | undefined
 >('setScheduleEventLinkEvent');
