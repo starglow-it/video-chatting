@@ -5,7 +5,7 @@ import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types';
-import { UpdateModelByIdQuery } from 'src/types/mongoose';
+import { GetModelByIdQuery, UpdateModelByIdQuery } from 'src/types/mongoose';
 @Injectable()
 export class MeetingsService {
   constructor(
@@ -30,11 +30,11 @@ export class MeetingsService {
     return this.meeting.findOne(query, {}, { session }).exec();
   }
 
-  async findById(
-    id: string,
-    session?: ITransactionSession,
-    populatePaths?: CustomPopulateOptions,
-  ): Promise<MeetingDocument> {
+  async findById({
+    id,
+    session,
+    populatePaths,
+  }: GetModelByIdQuery<MeetingDocument>): Promise<MeetingDocument> {
     return this.meeting
       .findById(id, {}, { populate: populatePaths, session: session?.session })
       .exec();
