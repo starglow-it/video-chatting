@@ -120,7 +120,10 @@ export class LurkersGateway extends BaseGateway {
           session,
         });
 
-        const meeting = await this.meetingsService.findById(meetingId, session);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         const host = await this.usersComponent.findOne({
@@ -163,7 +166,10 @@ export class LurkersGateway extends BaseGateway {
           session,
         });
 
-        const meeting = await this.meetingsService.findById(meetingId, session);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         await this.usersComponent.findOne({
@@ -247,7 +253,10 @@ export class LurkersGateway extends BaseGateway {
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        const meeting = await this.meetingsService.findById(meetingId);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         const user = await this.usersComponent.findOne({
@@ -320,7 +329,10 @@ export class LurkersGateway extends BaseGateway {
     return withTransaction(this.connection, async (session) => {
       try {
         subscribeWsError(socket);
-        const meeting = await this.meetingsService.findById(meetingId);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         const user = await this.usersComponent.findOne({
