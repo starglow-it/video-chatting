@@ -173,9 +173,10 @@ export class MeetingsGateway
       name: `meeting:finish:${meetingId}`,
       ts: 0,
       // ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-      callback: this.endMeeting.bind(this, {
-        meetingId,
-      }),
+      callback: async () =>
+        this.endMeeting.call(this, {
+          meetingId,
+        }),
     });
   }
 
@@ -400,7 +401,7 @@ export class MeetingsGateway
     @MessageBody() message: JoinMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
+    return await withTransaction(this.connection, async (session) => {
       subscribeWsError(socket);
       const waitingRoom = `waitingRoom:${message.templateId}`;
       const rejoinRoom = `rejoin:${message.templateId}`;
@@ -1074,10 +1075,10 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         console.log('session', session.session.id);
-        
+
         const meeting = await this.meetingsService.findById({
           id: message.meetingId,
-          session,
+          ...(socket && { session }),
         });
 
         if (!meeting) return;
@@ -1632,18 +1633,5 @@ export class MeetingsGateway
         },
       );
     });
-  }
-
-  @WsEvent('testTransaction')
-  async test(@ConnectedSocket() socket: Socket) {
-    return withTransaction(
-      this.connection,
-      async (s) => {
-        throwWsError(true, 'Throw Error');
-      },
-      {
-        onRollback: (err) => wsError(socket, err),
-      },
-    );
   }
 }
