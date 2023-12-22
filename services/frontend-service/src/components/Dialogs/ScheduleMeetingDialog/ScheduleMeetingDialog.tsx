@@ -93,6 +93,7 @@ const Component = ({
 }: PropsWithClassName<{ isScheduleDash?: boolean }>) => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
+    const scheduleTemplate = useStore($scheduleTemplateStore);
     const { isPublishAudience: isPublishAudienceDash } = useStore(
         $scheduleTemplateStore,
     );
@@ -164,7 +165,9 @@ const Component = ({
                 const parsedEndAt = parseTimestamp(endAtTime);
 
                 await sendScheduleInviteFx({
-                    templateId: scheduleTemplateId,
+                    templateId: isScheduleDash
+                        ? scheduleTemplate.id ?? ''
+                        : scheduleTemplateId,
                     startAt: parsedStartAt,
                     endAt: parsedEndAt,
                     comment: data.comment,
