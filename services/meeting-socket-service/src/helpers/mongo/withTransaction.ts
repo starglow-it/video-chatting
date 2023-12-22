@@ -15,19 +15,13 @@ export const withTransaction = async <T>(
   { onRollback, onFinaly }: IWithTransactionOptions = {},
 ) => {
   const session = await connection.startSession({});
-  console.log('connect', connection.id.toString());
-  console.log('sessionStart', session.id);
-
   session.startTransaction();
   try {
     const res = await func({ session });
-    console.log('session commit', session.id);
 
     await session.commitTransaction();
     return res;
   } catch (e) {
-    console.log('abort');
-
     await session.abortTransaction();
     if (onRollback) {
       await onRollback(e);
@@ -39,7 +33,6 @@ export const withTransaction = async <T>(
 
     throw e;
   } finally {
-    console.log('end session', session.id);
     await session.endSession();
   }
 };
