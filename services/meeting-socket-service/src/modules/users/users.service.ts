@@ -21,6 +21,7 @@ import {
   UpdateModelSingleQuery,
 } from '../../types/mongoose';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
+import { throwWsError } from 'src/utils/ws/wsError';
 
 @Injectable()
 export class UsersService {
@@ -155,7 +156,7 @@ export class UsersService {
       updateIndexParams[event].replaceItem,
     );
 
-    if (index <= -1) return;
+    throwWsError(index <= -1, updateIndexParams[event].errMessage);
 
     await this.coreService.updateUserTemplate({
       templateId: userTemplate.id,
