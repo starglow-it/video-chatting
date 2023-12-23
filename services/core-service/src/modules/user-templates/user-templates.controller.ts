@@ -416,7 +416,7 @@ export class UserTemplatesController {
     return withTransaction(this.connection, async (session) => {
       try {
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: { _id: id },
+          query: isValidObjectId(id) ? { _id: id } : { customLink: id },
           session,
           populatePaths: [
             { path: 'socials' },
@@ -572,7 +572,6 @@ export class UserTemplatesController {
           draftUrl: data.draftUrl,
           links: data.links,
           templateType: data.templateType,
-          isPublishAudience: data.isPublishAudience,
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {
