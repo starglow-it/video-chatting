@@ -1,40 +1,49 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types';
-import { UpdateModelByIdQuery } from 'src/types/mongoose';
+import {
+  GetModelByIdQuery,
+  GetModelSingleQuery,
+  InsertModelQuery,
+  UpdateModelByIdQuery,
+} from '../../types/mongoose';
 @Injectable()
 export class MeetingsService {
   constructor(
     @InjectModel(Meeting.name) private meeting: Model<MeetingDocument>,
   ) {}
 
-  private logger = new Logger(MeetingsService.name);
-
-  async createMeeting(
-    data: any,
-    { session }: ITransactionSession,
-  ): Promise<MeetingDocument> {
+  async createMeeting({
+    data,
+    session,
+  }: InsertModelQuery<MeetingDocument>): Promise<MeetingDocument> {
     const [meeting] = await this.meeting.create([data], { session });
 
     return meeting;
   }
 
-  async findOne(
-    query: any,
-    { session }: ITransactionSession,
-  ): Promise<MeetingDocument> {
-    return this.meeting.findOne(query, {}, { session }).exec();
+  async findOne({
+    query,
+    populatePaths,
+    session,
+  }: GetModelSingleQuery<MeetingDocument>): Promise<MeetingDocument> {
+    return this.meeting
+      .findOne(
+        query,
+        {},
+        { session: session?.session, populate: populatePaths },
+      )
+      .exec();
   }
 
-  async findById(
-    id: string,
-    session?: ITransactionSession,
-    populatePaths?: CustomPopulateOptions,
-  ): Promise<MeetingDocument> {
+  async findById({
+    id,
+    session,
+    populatePaths,
+  }: GetModelByIdQuery<MeetingDocument>): Promise<MeetingDocument> {
     return this.meeting
       .findById(id, {}, { populate: populatePaths, session: session?.session })
       .exec();
@@ -98,14 +107,16 @@ export class MeetingsService {
       .exec();
   }
 
-  async findByIdAndUpdate(
-    meetingId,
+  async findByIdAndUpdate({
+    id,
     data,
-    { session }: ITransactionSession,
-  ): Promise<MeetingDocument> {
+    populatePaths,
+    session,
+  }: UpdateModelByIdQuery<MeetingDocument>): Promise<MeetingDocument> {
     return this.meeting
-      .findByIdAndUpdate(meetingId, data, {
-        session,
+      .findByIdAndUpdate(id, data, {
+        session: session?.session,
+        populate: populatePaths,
         new: true,
       })
       .exec();

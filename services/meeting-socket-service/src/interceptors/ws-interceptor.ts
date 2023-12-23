@@ -44,6 +44,7 @@ export class WsInterceptor implements NestInterceptor {
         if (error instanceof WsValidationException) {
           throw new WsValidationException(error.errors);
         }
+        console.log('error interceptor');
 
         throw new WsBadRequestException(error);
       }),

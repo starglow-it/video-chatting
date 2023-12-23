@@ -130,10 +130,10 @@ export class UsersGateway extends BaseGateway {
           session,
         });
 
-        const meeting = await this.meetingsService.findById(
-          user.meeting._id,
+        const meeting = await this.meetingsService.findById({
+          id: user.meeting._id,
           session,
-        );
+        });
 
         await this.handleUpdateUsersTemplateVideoContainer({
           userTemplateId: meeting.templateId,
