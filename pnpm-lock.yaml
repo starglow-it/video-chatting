@@ -1327,9 +1327,6 @@ importers:
       '@nestjs/schedule':
         specifier: 2.1.0
         version: 2.1.0(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)(reflect-metadata@0.1.13)
-      '@nestjs/throttler':
-        specifier: ^5.1.1
-        version: 5.1.1(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)(reflect-metadata@0.1.13)
       '@nestjs/websockets':
         specifier: 9.0.11
         version: 9.0.11(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)(@nestjs/platform-socket.io@9.0.11)(reflect-metadata@0.1.13)(rxjs@7.5.6)
@@ -4164,19 +4161,6 @@ packages:
       '@nestjs/platform-express': 9.0.11(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)
       tslib: 2.4.0
     dev: true
-
-  /@nestjs/throttler@5.1.1(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)(reflect-metadata@0.1.13):
-    resolution: {integrity: sha512-0fJAGroqpQLnQlERslx2fG264YCXU35nMfiFhykY6/chgc56/W0QPM6BEEf9Q/Uca9lXh5IyjE0fqFToksbP/A==}
-    peerDependencies:
-      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-      reflect-metadata: ^0.1.13 || ^0.2.0
-    dependencies:
-      '@nestjs/common': 9.0.11(class-transformer@0.5.1)(class-validator@0.13.2)(reflect-metadata@0.1.13)(rxjs@7.5.6)
-      '@nestjs/core': 9.0.11(@nestjs/common@9.0.11)(@nestjs/microservices@9.0.11)(@nestjs/platform-express@9.0.11)(@nestjs/websockets@9.0.11)(reflect-metadata@0.1.13)(rxjs@7.5.6)
-      md5: 2.3.0
-      reflect-metadata: 0.1.13
-    dev: false
 
   /@nestjs/websockets@9.0.11(@nestjs/common@9.0.11)(@nestjs/core@9.0.11)(@nestjs/platform-socket.io@9.0.11)(reflect-metadata@0.1.13)(rxjs@7.5.6):
     resolution: {integrity: sha512-hrUfmiCajNsXS5i2g3siqxETv5whIpzY6BOW8CGSPn6Hm899aRm7BagCeNBAcpI77fHMchBQLTCuVO7h3oexsA==}
@@ -7097,10 +7081,6 @@ packages:
   /chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
 
-  /charenc@0.0.2:
-    resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
-    dev: false
-
   /chart.js@4.0.1:
     resolution: {integrity: sha512-5/8/9eBivwBZK81mKvmIwTb2Pmw4D/5h1RK9fBWZLLZ8mCJ+kfYNmV9rMrGoa5Hgy2/wVDBMLSUDudul2/9ihA==}
     engines: {pnpm: ^7.0.0}
@@ -7539,10 +7519,6 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  /crypt@0.0.2:
-    resolution: {integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==}
-    dev: false
 
   /crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -10632,10 +10608,6 @@ packages:
       has-tostringtag: 1.0.0
     dev: true
 
-  /is-buffer@1.1.6:
-    resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
-    dev: false
-
   /is-callable@1.2.7:
     resolution: {integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==}
     engines: {node: '>= 0.4'}
@@ -12027,14 +11999,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.15
       remove-accents: 0.4.2
-    dev: false
-
-  /md5@2.3.0:
-    resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
-    dependencies:
-      charenc: 0.0.2
-      crypt: 0.0.2
-      is-buffer: 1.1.6
     dev: false
 
   /media-typer@0.3.0:
