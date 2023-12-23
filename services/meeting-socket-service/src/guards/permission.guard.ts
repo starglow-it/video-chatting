@@ -6,7 +6,7 @@ import { PASS_AUTH_KEY } from '../utils/decorators/passAuth.decorator';
 import { ROLE } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
 import { UsersComponent } from '../modules/users/users.component';
-import { SocketData } from 'src/types';
+import { SocketData } from '../types';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {

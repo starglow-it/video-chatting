@@ -30,7 +30,6 @@ import { wsResult } from '../utils/ws/wsResult';
   },
 })
 export class MeetingNotesGateway extends BaseGateway {
-  private logger: Logger = new Logger(MeetingNotesGateway.name);
   constructor(
     private usersService: UsersService,
     private meetingNotesService: MeetingNotesService,
@@ -45,40 +44,36 @@ export class MeetingNotesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        subscribeWsError(socket);
-        const user = await this.usersService.findOne({
-          query: { socketId: socket.id },
-          session,
-          populatePaths: 'meeting',
-        });
+      subscribeWsError(socket);
+      const user = await this.usersService.findOne({
+        query: { socketId: socket.id },
+        session,
+        populatePaths: 'meeting',
+      });
 
-        const [newNote] = await this.meetingNotesService.create(
-          {
-            user: user._id,
-            meeting: user.meeting._id,
-            content: message.note,
-          },
-          session,
-        );
+      const [newNote] = await this.meetingNotesService.create(
+        {
+          user: user._id,
+          meeting: user.meeting._id,
+          content: message.note,
+        },
+        session,
+      );
 
-        const meetingNote = plainToInstance(MeetingNoteDTO, newNote, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+      const meetingNote = plainToInstance(MeetingNoteDTO, newNote, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
 
-        this.emitToRoom(
-          `meeting:${user.meeting._id}`,
-          MeetingEmitEvents.SendMeetingNote,
-          {
-            meetingNotes: [meetingNote],
-          },
-        );
+      this.emitToRoom(
+        `meeting:${user.meeting._id}`,
+        MeetingEmitEvents.SendMeetingNote,
+        {
+          meetingNotes: [meetingNote],
+        },
+      );
 
-        return wsResult();
-      } catch (err) {
-        return wsError(socket, err);
-      }
+      return wsResult();
     });
   }
 
@@ -88,54 +83,42 @@ export class MeetingNotesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        subscribeWsError(socket);
-        const user = this.getUserFromSocket(socket);
-        await this.meetingNotesService.deleteOne(
-          { _id: message.noteId },
-          session,
-        );
+      subscribeWsError(socket);
+      const user = this.getUserFromSocket(socket);
+      await this.meetingNotesService.deleteOne(
+        { _id: message.noteId },
+        session,
+      );
 
-        this.emitToRoom(
-          `meeting:${user.meeting.toString()}`,
-          MeetingEmitEvents.RemoveMeetingNote,
-          {
-            meetingNoteId: message.noteId,
-          },
-        );
-      } catch (err) {
-        return wsError(socket, err);
-      }
+      this.emitToRoom(
+        `meeting:${user.meeting.toString()}`,
+        MeetingEmitEvents.RemoveMeetingNote,
+        {
+          meetingNoteId: message.noteId,
+        },
+      );
     });
   }
 
   @WsEvent(MeetingSubscribeEvents.OnGetMeetingNotes)
   async getMeetingNotes(@ConnectedSocket() socket: Socket) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        subscribeWsError(socket);
-        const user = this.getUserFromSocket(socket);
-        const meetingNotes = await this.meetingNotesService.findMany({
-          query: { meeting: user.meeting },
-          session,
-          populatePaths: 'user',
-        });
+      subscribeWsError(socket);
+      const user = this.getUserFromSocket(socket);
+      const meetingNotes = await this.meetingNotesService.findMany({
+        query: { meeting: user.meeting },
+        session,
+        populatePaths: 'user',
+      });
 
-        const plainMeetingNotes = plainToInstance(
-          MeetingNoteDTO,
-          meetingNotes,
-          {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          },
-        );
+      const plainMeetingNotes = plainToInstance(MeetingNoteDTO, meetingNotes, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
 
-        return wsResult({
-          meetingNotes: plainMeetingNotes,
-        });
-      } catch (err) {
-        return wsError(socket, err);
-      }
+      return wsResult({
+        meetingNotes: plainMeetingNotes,
+      });
     });
   }
 }

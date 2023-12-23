@@ -16,8 +16,9 @@ import { UpdateMeetingTemplateRequestDto } from '../dtos/requests/templates/upda
 import { UpdatePaymentRequestDto } from '../dtos/requests/payment/update-payment.dto';
 import { Roles } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
-import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
+import { subscribeWsError, wsError } from '../utils/ws/wsError';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { wsResult } from '../utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -37,18 +38,14 @@ export class TemplatesGateway extends BaseGateway {
     @MessageBody() msg: UpdatePaymentRequestDto[],
   ) {
     return withTransaction(this.connection, async () => {
-      try {
-        subscribeWsError(socket);
-        const user = this.getUserFromSocket(socket);
-        this.emitToRoom(
-          `meeting:${user.meeting.toString()}`,
-          MeetingEmitEvents.UpdateTemplatePayments,
-          msg,
-        );
-        return;
-      } catch (err) {
-        return wsError(socket, err);
-      }
+      subscribeWsError(socket);
+      const user = this.getUserFromSocket(socket);
+      this.emitToRoom(
+        `meeting:${user.meeting.toString()}`,
+        MeetingEmitEvents.UpdateTemplatePayments,
+        msg,
+      );
+      return wsResult();
     });
   }
 
@@ -59,23 +56,20 @@ export class TemplatesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async () => {
-      try {
-        subscribeWsError(socket);
-        const user = this.getUserFromSocket(socket);
-        this.emitToRoom(
-          `meeting:${user.meeting.toString()}`,
-          MeetingEmitEvents.UpdateMeetingTemplate,
-          { templateId: data.templateId },
-        );
+      subscribeWsError(socket);
+      const user = this.getUserFromSocket(socket);
+      this.emitToRoom(
+        `meeting:${user.meeting.toString()}`,
+        MeetingEmitEvents.UpdateMeetingTemplate,
+        { templateId: data.templateId },
+      );
 
-        this.emitToRoom(
-          `waitingRoom:${data.templateId}`,
-          MeetingEmitEvents.UpdateMeetingTemplate,
-          { templateId: data.templateId },
-        );
-      } catch (err) {
-        return wsError(socket, err);
-      }
+      this.emitToRoom(
+        `waitingRoom:${data.templateId}`,
+        MeetingEmitEvents.UpdateMeetingTemplate,
+        { templateId: data.templateId },
+      );
+      return wsResult();
     });
   }
 }

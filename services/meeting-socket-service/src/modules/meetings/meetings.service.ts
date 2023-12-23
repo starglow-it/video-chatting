@@ -20,7 +20,9 @@ export class MeetingsService {
     data,
     session,
   }: InsertModelQuery<MeetingDocument>): Promise<MeetingDocument> {
-    const [meeting] = await this.meeting.create([data], { session });
+    const [meeting] = await this.meeting.create([data], {
+      session: session?.session,
+    });
 
     return meeting;
   }
