@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
   ICommonUser,
@@ -12,8 +12,6 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from './meetings.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
 import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';

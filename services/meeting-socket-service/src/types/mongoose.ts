@@ -38,8 +38,8 @@ export type InsertModelSingleQuery<Entity> = {
   session?: ITransactionSession;
 };
 
-export type InserModelMultipleQuery<Entity> = {
-  data: Partial<Entity>[];
+export type InsertModelQuery<Data> = {
+  data: Data extends Array<infer E> ? Partial<E>[] : Partial<Data>;
   session?: ITransactionSession;
 };
 

@@ -77,9 +77,10 @@ export class UsersService {
     return this.meetingUser.find(query).count().exec();
   }
 
-  async findById(
-   {id, session = null}: GetModelByIdQuery<MeetingUserDocument>,
-  ): Promise<MeetingUserDocument> {
+  async findById({
+    id,
+    session = null,
+  }: GetModelByIdQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
     return this.meetingUser.findById(id, {}, { session: session?.session });
   }
 
