@@ -6,7 +6,7 @@ import { InjectWsErrorHandler } from '../utils/decorators/injectWsErrorHandler.d
 import { InjectWsGlobalGuard } from '../utils/decorators/injectWsGlobalGuard.decorator';
 import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { UseInterceptors } from '@nestjs/common';
-import { WsInterceptor } from 'src/interceptors/ws-interceptor';
+import { WsInterceptor } from '../interceptors/ws-interceptor';
 
 @InjectWsGlobalGuard()
 @InjectWsErrorHandler()

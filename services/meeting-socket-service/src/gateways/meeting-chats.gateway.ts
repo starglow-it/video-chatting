@@ -108,7 +108,6 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() msg: SendMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         const meeting = await this.usersComponent.findMeetingFromPopulateUser(
@@ -137,9 +136,6 @@ export class MeetingChatsGateway extends BaseGateway {
         return wsResult({
           message: plainMeetingChat,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -149,7 +145,6 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() { skip, limit }: LoadMoreMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         const meeting = await this.usersComponent.findMeetingFromPopulateUser(
@@ -179,9 +174,6 @@ export class MeetingChatsGateway extends BaseGateway {
         return wsResult({
           messages: plainMeetingChats,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -191,7 +183,6 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() msg: ReactMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         const meeting = await this.usersComponent.findMeetingFromPopulateUser(
@@ -254,9 +245,6 @@ export class MeetingChatsGateway extends BaseGateway {
         return wsResult({
           reaction: plainReaction,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -266,7 +254,6 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() msg: UnReactMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         const meeting = await this.usersComponent.findMeetingFromPopulateUser(
@@ -318,9 +305,6 @@ export class MeetingChatsGateway extends BaseGateway {
         return wsResult({
           message: plainMessage,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 }

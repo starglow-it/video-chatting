@@ -107,7 +107,6 @@ export class LurkersGateway extends BaseGateway {
   ) {
     return withTransaction(this.connection, async (session) => {
       const { meetingId } = msg;
-      try {
         subscribeWsError(socket);
         const meetingUser = await this.usersComponent.findOneAndUpdate({
           query: {
@@ -143,9 +142,6 @@ export class LurkersGateway extends BaseGateway {
           emitterEvent: UserEmitEvents.RequestSwitchRoleByLurker,
           socketEmitterId: host.socketId,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -156,7 +152,6 @@ export class LurkersGateway extends BaseGateway {
   ) {
     return withTransaction(this.connection, async (session) => {
       const { meetingId, meetingUserId } = msg;
-      try {
         subscribeWsError(socket);
         const meetingUser = await this.usersService.findOne({
           query: {
@@ -186,9 +181,6 @@ export class LurkersGateway extends BaseGateway {
           emitterEvent: UserEmitEvents.RequestSwitchRoleByHost,
           socketEmitterId: meetingUser.socketId,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -251,7 +243,6 @@ export class LurkersGateway extends BaseGateway {
     { action, meetingUserId, meetingId }: AnswerSwitchRoleByHostRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const meeting = await this.meetingsService.findById({
           id: meetingId,
@@ -315,9 +306,6 @@ export class LurkersGateway extends BaseGateway {
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByHost,
           socketEmitterId: userUpdated.socketId,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 
@@ -327,7 +315,6 @@ export class LurkersGateway extends BaseGateway {
     @MessageBody() { action, meetingId }: AnswerSwitchRoleByLurkerRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
         subscribeWsError(socket);
         const meeting = await this.meetingsService.findById({
           id: meetingId,
@@ -393,9 +380,6 @@ export class LurkersGateway extends BaseGateway {
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByLurker,
           socketEmitterId: host.socketId,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
     });
   }
 }

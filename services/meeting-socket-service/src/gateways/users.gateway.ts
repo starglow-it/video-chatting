@@ -122,57 +122,53 @@ export class UsersGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        subscribeWsError(socket);
-        const user = await this.usersComponent.findOneAndUpdate({
-          query: message.id ? { _id: message.id } : { socketId: socket.id },
-          data: message,
-          session,
-        });
+      subscribeWsError(socket);
+      const user = await this.usersComponent.findOneAndUpdate({
+        query: message.id ? { _id: message.id } : { socketId: socket.id },
+        data: message,
+        session,
+      });
 
-        const meeting = await this.meetingsService.findById({
-          id: user.meeting._id,
-          session,
-        });
+      const meeting = await this.meetingsService.findById({
+        id: user.meeting._id,
+        session,
+      });
 
-        await this.handleUpdateUsersTemplateVideoContainer({
-          userTemplateId: meeting.templateId,
-          meetingUserId: user.id.toString(),
-          data: {
-            userPosition: message?.userPosition,
-            userSize: message?.userSize,
+      await this.handleUpdateUsersTemplateVideoContainer({
+        userTemplateId: meeting.templateId,
+        meetingUserId: user.id.toString(),
+        data: {
+          userPosition: message?.userPosition,
+          userSize: message?.userSize,
+        },
+        session,
+      });
+
+      await meeting.populate('users');
+
+      const plainUser = userSerialization(user);
+
+      const plainUsers = userSerialization(meeting.users);
+
+      this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
+        users: plainUsers.map((user) => ({
+          ...user,
+          ...(message.userSize &&
+            message.id == user.id && { userSize: message.userSize }),
+          ...(message.userPosition &&
+            message.id == user.id && { userPosition: message.userPosition }),
+        })),
+      });
+
+      return wsResult({
+        user: {
+          ...plainUser,
+          userPosition: {
+            ...plainUser.userPosition,
+            ...(message.userSize && { userSize: message?.userSize }),
           },
-          session,
-        });
-
-        await meeting.populate('users');
-
-        const plainUser = userSerialization(user);
-
-        const plainUsers = userSerialization(meeting.users);
-
-        this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
-          users: plainUsers.map((user) => ({
-            ...user,
-            ...(message.userSize &&
-              message.id == user.id && { userSize: message.userSize }),
-            ...(message.userPosition &&
-              message.id == user.id && { userPosition: message.userPosition }),
-          })),
-        });
-
-        return wsResult({
-          user: {
-            ...plainUser,
-            userPosition: {
-              ...plainUser.userPosition,
-              ...(message.userSize && { userSize: message?.userSize }),
-            },
-          },
-        });
-      } catch (err) {
-        return wsError(socket, err);
-      }
+        },
+      });
     });
   }
 
@@ -183,88 +179,85 @@ export class UsersGateway extends BaseGateway {
     @MessageBody() message: RemoveUserRequestDTO,
   ): Promise<ResponseSumType<void>> {
     return withTransaction(this.connection, async (session) => {
-      try {
-        subscribeWsError(socket);
-        const user = await this.usersComponent.findById({
-          id: message.id,
-          session,
-        });
+      subscribeWsError(socket);
+      const user = await this.usersComponent.findById({
+        id: message.id,
+        session,
+      });
 
-        const meeting = await this.usersComponent.findMeetingFromPopulateUser(
-          user,
-        );
+      const meeting = await this.usersComponent.findMeetingFromPopulateUser(
+        user,
+      );
 
-        const updateData = {
-          sharingUserId: user.meeting.sharingUserId,
-          hostUserId: user.meeting.hostUserId,
-        };
+      const updateData = {
+        sharingUserId: user.meeting.sharingUserId,
+        hostUserId: user.meeting.hostUserId,
+      };
 
-        if (user.meeting.sharingUserId === user.id) {
-          updateData.sharingUserId = null;
-        }
-
-        if (user.meeting.hostUserId === user.id) {
-          updateData.hostUserId = null;
-        }
-
-        const userTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        const u = await this.usersService.updateVideoContainer({
-          userTemplate,
-          userId: user._id.toString(),
-          event: UserActionInMeeting.Leave,
-        });
-
-        throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
-
-        await this.usersComponent.findOneAndUpdate({
-          query: {
-            _id: message.id,
-          },
-          data: {
-            accessStatus: MeetingAccessStatusEnum.Left,
-          },
-          session,
-        });
-
-        const meetingUpdated = await this.meetingsService.updateMeetingById({
-          id: user.meeting._id,
-          data: updateData,
-          session,
-        });
-
-        await meetingUpdated.populate('users');
-        const plainMeeting = meetingSerialization(meetingUpdated);
-
-        const userSocket = await this.getSocket(
-          `meeting:${meetingUpdated._id}`,
-          user.socketId,
-        );
-
-        userSocket.leave(`meeting:${meetingUpdated._id}`);
-
-        this.emitToRoom(
-          `meeting:${meetingUpdated._id}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-          },
-        );
-
-        this.emitToRoom(
-          `meeting:${user.meeting._id}`,
-          UserEmitEvents.RemoveUsers,
-          {
-            users: [user._id],
-          },
-        );
-
-        this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
-      } catch (err) {
-        return wsError(socket, err);
+      if (user.meeting.sharingUserId === user.id) {
+        updateData.sharingUserId = null;
       }
+
+      if (user.meeting.hostUserId === user.id) {
+        updateData.hostUserId = null;
+      }
+
+      const userTemplate = await this.coreService.findMeetingTemplateById({
+        id: meeting.templateId,
+      });
+
+      const u = await this.usersService.updateVideoContainer({
+        userTemplate,
+        userId: user._id.toString(),
+        event: UserActionInMeeting.Leave,
+      });
+
+      throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
+
+      await this.usersComponent.findOneAndUpdate({
+        query: {
+          _id: message.id,
+        },
+        data: {
+          accessStatus: MeetingAccessStatusEnum.Left,
+        },
+        session,
+      });
+
+      const meetingUpdated = await this.meetingsService.updateMeetingById({
+        id: user.meeting._id,
+        data: updateData,
+        session,
+      });
+
+      await meetingUpdated.populate('users');
+      const plainMeeting = meetingSerialization(meetingUpdated);
+
+      const userSocket = await this.getSocket(
+        `meeting:${meetingUpdated._id}`,
+        user.socketId,
+      );
+
+      userSocket.leave(`meeting:${meetingUpdated._id}`);
+
+      this.emitToRoom(
+        `meeting:${meetingUpdated._id}`,
+        MeetingEmitEvents.UpdateMeeting,
+        {
+          meeting: plainMeeting,
+        },
+      );
+
+      this.emitToRoom(
+        `meeting:${user.meeting._id}`,
+        UserEmitEvents.RemoveUsers,
+        {
+          users: [user._id],
+        },
+      );
+
+      this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
+      return wsResult();
     });
   }
 }
