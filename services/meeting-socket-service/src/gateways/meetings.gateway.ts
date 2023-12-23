@@ -5,7 +5,7 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, PopulateOptions, Types } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 
 import { BaseGateway } from './base.gateway';
@@ -56,12 +56,7 @@ import {
 import { MeetingsCommonService } from '../modules/meetings/meetings.common';
 import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { MeetingDocument } from '../schemas/meeting.schema';
-import {
-  WsError,
-  subscribeWsError,
-  throwWsError,
-  wsError,
-} from '../utils/ws/wsError';
+import { subscribeWsError, throwWsError, wsError } from '../utils/ws/wsError';
 import { ReconnectDto } from '../dtos/requests/recconnect.dto';
 import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../utils/ws/wsResult';
@@ -171,8 +166,7 @@ export class MeetingsGateway
 
     this.taskService.addTimeout({
       name: `meeting:finish:${meetingId}`,
-      ts: 0,
-      // ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+      ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
       callback: async () =>
         this.endMeeting.call(this, {
           meetingId,
@@ -414,16 +408,16 @@ export class MeetingsGateway
 
       throwWsError(!template, 'No template found');
 
-      let meeting = await this.meetingsService.findOne(
-        {
+      let meeting = await this.meetingsService.findOne({
+        query: {
           templateId: message.templateId,
         },
         session,
-      );
+      });
 
       if (message.meetingRole == MeetingRole.Host && !meeting) {
-        meeting = await this.meetingsService.createMeeting(
-          {
+        meeting = await this.meetingsService.createMeeting({
+          data: {
             isMonetizationEnabled: false,
             mode: 'together',
             ownerProfileId: message.profileId,
@@ -431,7 +425,7 @@ export class MeetingsGateway
             templateId: message.templateId,
           },
           session,
-        );
+        });
       }
 
       if (!meeting) {
@@ -1500,12 +1494,14 @@ export class MeetingsGateway
       subscribeWsError(socket);
       const user = await this.usersComponent.findOne({
         query: { socketId: socket.id },
+        session,
         populatePaths: 'meeting',
       });
 
       const meeting = await this.meetingsService.updateMeetingById({
         id: user?.meeting?._id,
         data: message,
+        session,
       });
 
       const plainMeeting = meetingSerialization(meeting);

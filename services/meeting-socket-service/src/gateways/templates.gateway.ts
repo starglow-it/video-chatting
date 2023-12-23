@@ -73,7 +73,6 @@ export class TemplatesGateway extends BaseGateway {
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: data.templateId },
         );
-        
       } catch (err) {
         return wsError(socket, err);
       }
