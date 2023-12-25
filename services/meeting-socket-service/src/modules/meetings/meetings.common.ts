@@ -3,6 +3,7 @@ import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
   ICommonUser,
   MeetingAccessStatusEnum,
+  MeetingRole,
   PlanKeys,
   TimeoutTypesEnum,
 } from 'shared-types';
@@ -114,25 +115,33 @@ export class MeetingsCommonService {
     });
   }
 
-  compareActiveWithMaxParicipants = async (
+  private getMembersQuantity = async (
     meeting: MeetingDocument,
-    role: 'lurker' | 'participant',
+    roles: MeetingRole[],
   ) => {
-    const c = await this.usersService.countMany({
+    return await this.usersService.countMany({
       meeting: meeting._id,
       accessStatus: {
         $in: [MeetingAccessStatusEnum.InMeeting],
       },
-      meetingRole: role,
+      meetingRole: {
+        $in: roles,
+      },
     });
+  };
 
-    if (role === 'participant') {
-      if (c === meeting.maxParticipants) return;
-    } else if (role === 'lurker') {
-      if (c >= 1000) return;
-    }
+  isMaxMembers = async (meeting: MeetingDocument, role: MeetingRole) => {
+    const condition =
+      role === MeetingRole.Lurker
+        ? { max: 1000, roles: [MeetingRole.Lurker] }
+        : {
+            max: meeting.maxParticipants,
+            roles: [MeetingRole.Host, MeetingRole.Participant],
+          };
 
-    return c;
+    const count = await this.getMembersQuantity(meeting, condition.roles);
+
+    return count >= condition.max;
   };
 
   checkCurrentUserPlain = (user: ICommonUser) => {

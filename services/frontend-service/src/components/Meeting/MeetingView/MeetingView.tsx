@@ -153,9 +153,11 @@ const Component = () => {
             ) {
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
-                updateMeetingTemplateFxWithData({
-                    isPublishAudience: meetingTemplate.isPublishAudience,
-                });
+                if (isOwner) {
+                    updateMeetingTemplateFxWithData({
+                        isPublishAudience: meetingTemplate.isPublishAudience,
+                    });
+                }
             }
         })();
     }, [
