@@ -18,6 +18,7 @@ import { Roles } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
 import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
+import { wsResult } from '../utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -36,8 +37,9 @@ export class TemplatesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UpdatePaymentRequestDto[],
   ) {
-    return withTransaction(this.connection, async () => {
-      try {
+    return withTransaction(
+      this.connection,
+      async () => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         this.emitToRoom(
@@ -45,11 +47,12 @@ export class TemplatesGateway extends BaseGateway {
           MeetingEmitEvents.UpdateTemplatePayments,
           msg,
         );
-        return;
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+        return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -58,8 +61,9 @@ export class TemplatesGateway extends BaseGateway {
     @MessageBody() data: UpdateMeetingTemplateRequestDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async () => {
-      try {
+    return withTransaction(
+      this.connection,
+      async () => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         this.emitToRoom(
@@ -73,10 +77,10 @@ export class TemplatesGateway extends BaseGateway {
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: data.templateId },
         );
-        
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 }

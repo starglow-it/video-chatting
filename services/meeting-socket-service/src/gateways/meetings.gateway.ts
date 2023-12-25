@@ -5,7 +5,7 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, PopulateOptions, Types } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 
 import { BaseGateway } from './base.gateway';
@@ -154,8 +154,8 @@ export class MeetingsGateway
   async setTimeoutFinishMeeting(meeting: MeetingDocument) {
     const meetingId = meeting._id.toString() as string;
     const endTimestamp = getTimeoutTimestamp({
-      type: TimeoutTypesEnum.Minutes,
-      value: 15,
+      type: TimeoutTypesEnum.Seconds,
+      value: 10,
     });
 
     const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
@@ -167,9 +167,10 @@ export class MeetingsGateway
     this.taskService.addTimeout({
       name: `meeting:finish:${meetingId}`,
       ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-      callback: this.endMeeting.bind(this, {
-        meetingId,
-      }),
+      callback: async () =>
+        this.endMeeting.call(this, {
+          meetingId,
+        }),
     });
   }
 
@@ -252,6 +253,8 @@ export class MeetingsGateway
     }
 
     if (isMeetingHost) {
+      console.log(session.session.id);
+
       await this.setTimeoutFinishMeeting(meeting);
     }
 
@@ -289,8 +292,9 @@ export class MeetingsGateway
   async handleDisconnect(client: Socket) {
     console.log(`handleDisconnect ${client.id}`);
 
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         const user = await this.usersService.findOne({
           query: { socketId: client.id },
           session,
@@ -378,10 +382,11 @@ export class MeetingsGateway
           user: userUpdated,
           userTemplate,
         });
-      } catch (error) {
-        return wsError(client, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(client, err),
+      },
+    );
   }
 
   @PassAuth()
@@ -390,8 +395,9 @@ export class MeetingsGateway
     @MessageBody() message: JoinMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return await withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const waitingRoom = `waitingRoom:${message.templateId}`;
         const rejoinRoom = `rejoin:${message.templateId}`;
@@ -404,16 +410,16 @@ export class MeetingsGateway
 
         throwWsError(!template, 'No template found');
 
-        let meeting = await this.meetingsService.findOne(
-          {
+        let meeting = await this.meetingsService.findOne({
+          query: {
             templateId: message.templateId,
           },
           session,
-        );
+        });
 
         if (message.meetingRole == MeetingRole.Host && !meeting) {
-          meeting = await this.meetingsService.createMeeting(
-            {
+          meeting = await this.meetingsService.createMeeting({
+            data: {
               isMonetizationEnabled: false,
               mode: 'together',
               ownerProfileId: message.profileId,
@@ -421,7 +427,7 @@ export class MeetingsGateway
               templateId: message.templateId,
             },
             session,
-          );
+          });
         }
 
         if (!meeting) {
@@ -445,12 +451,10 @@ export class MeetingsGateway
         }
 
         throwWsError(
-          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+          await this.meetingsCommonService.isMaxMembers(
             meeting,
-            message.meetingRole == MeetingRole.Lurker
-              ? 'lurker'
-              : 'participant',
-          )) === 'undefined',
+            message.meetingRole,
+          ),
           MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
         );
 
@@ -505,10 +509,11 @@ export class MeetingsGateway
           user: plainUser,
           users: plainUsers,
         });
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -517,17 +522,18 @@ export class MeetingsGateway
     @MessageBody() message: StartMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         this.taskService.deleteTimeout({
           name: `meeting:finish:${message.meetingId}`,
         });
 
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
           session,
-        );
+        });
 
         const template = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
@@ -673,10 +679,11 @@ export class MeetingsGateway
           meeting: plainMeeting,
           users: plainUsers,
         });
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Participant])
@@ -688,103 +695,99 @@ export class MeetingsGateway
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
-        try {
-          subscribeWsError(socket);
-          const {
-            user: { meetingAvatarId },
-          } = message;
+        subscribeWsError(socket);
+        const {
+          user: { meetingAvatarId },
+        } = message;
 
-          const updateData = {
-            accessStatus: MeetingAccessStatusEnum.RequestSent,
-            username: message.user.username,
-            isAuraActive: message.user.isAuraActive,
-            micStatus: message.user.micStatus,
-            cameraStatus: message.user.cameraStatus,
-            meetingAvatarId: meetingAvatarId === '' ? '' : undefined,
-          };
+        const updateData = {
+          accessStatus: MeetingAccessStatusEnum.RequestSent,
+          username: message.user.username,
+          isAuraActive: message.user.isAuraActive,
+          micStatus: message.user.micStatus,
+          cameraStatus: message.user.cameraStatus,
+          meetingAvatarId: meetingAvatarId === '' ? '' : undefined,
+        };
 
-          if (meetingAvatarId) {
-            const meetingAvatar = await this.coreService.findMeetingAvatar({
-              query: {
-                _id: meetingAvatarId,
-                status: MeetingAvatarStatus.Active,
-              },
-            });
-
-            if (!meetingAvatar) {
-              return wsError(socket, {
-                message: 'Meeting Avatar not found',
-              });
-            }
-            Object.assign(updateData, {
-              meetingAvatarId,
-            });
-          }
-
-          const user = await this.usersService.findOneAndUpdate({
-            query: { socketId: socket.id },
-            data: updateData,
-            session,
+        if (meetingAvatarId) {
+          const meetingAvatar = await this.coreService.findMeetingAvatar({
+            query: {
+              _id: meetingAvatarId,
+              status: MeetingAvatarStatus.Active,
+            },
           });
 
-          const meeting = await this.meetingsService.findById(
-            message.meetingId,
-            session,
-          );
-
-          throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
-          await meeting.populate(['owner', 'users', 'hostUserId']);
-
-          const meetingUsers = await this.getMeetingUsersInRoom(
-            meeting,
-            session,
-          );
-
-          throwWsError(
-            typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
-              meeting,
-              'participant',
-            )) === 'undefined',
-            MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
-          );
-
-          const plainUser = userSerialization(user);
-
-          const plainMeeting = meetingSerialization(meeting);
-
-          const plainUsers = userSerialization(meetingUsers);
-
-          if (
-            meeting?.hostUserId?.socketId &&
-            meeting?.hostUserId?.accessStatus ===
-              MeetingAccessStatusEnum.InMeeting
-          ) {
-            this.emitToSocketId(
-              meeting?.hostUserId?.socketId,
-              MeetingEmitEvents.ReceiveAccessRequest,
-              {
-                user: plainUser,
-              },
-            );
-
-            this.emitToSocketId(
-              meeting?.hostUserId?.socketId,
-              MeetingEmitEvents.PlaySound,
-              {
-                soundType: MeetingSoundsEnum.NewAttendee,
-              },
-            );
+          if (!meetingAvatar) {
+            return wsError(socket, {
+              message: 'Meeting Avatar not found',
+            });
           }
-
-          return wsResult({
-            user: plainUser,
-            meeting: plainMeeting,
-            users: plainUsers,
+          Object.assign(updateData, {
+            meetingAvatarId,
           });
-        } catch (error) {
-          return wsError(socket, error);
         }
+
+        const user = await this.usersService.findOneAndUpdate({
+          query: { socketId: socket.id },
+          data: updateData,
+          session,
+        });
+
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        await meeting.populate(['owner', 'users', 'hostUserId']);
+
+        const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
+
+        throwWsError(
+          await this.meetingsCommonService.isMaxMembers(
+            meeting,
+            user.meetingRole,
+          ),
+          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+        );
+
+        const plainUser = userSerialization(user);
+
+        const plainMeeting = meetingSerialization(meeting);
+
+        const plainUsers = userSerialization(meetingUsers);
+
+        if (
+          meeting?.hostUserId?.socketId &&
+          meeting?.hostUserId?.accessStatus ===
+            MeetingAccessStatusEnum.InMeeting
+        ) {
+          this.emitToSocketId(
+            meeting?.hostUserId?.socketId,
+            MeetingEmitEvents.ReceiveAccessRequest,
+            {
+              user: plainUser,
+            },
+          );
+
+          this.emitToSocketId(
+            meeting?.hostUserId?.socketId,
+            MeetingEmitEvents.PlaySound,
+            {
+              soundType: MeetingSoundsEnum.NewAttendee,
+            },
+          );
+        }
+
+        return wsResult({
+          user: plainUser,
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
       },
     );
   }
@@ -795,15 +798,16 @@ export class MeetingsGateway
     @MessageBody() message: EnterMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         if (!message.meetingId) return { success: true };
 
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
           session,
-        );
+        });
 
         const user = await this.usersComponent.findOneAndUpdate({
           query: { socketId: socket.id },
@@ -838,10 +842,11 @@ export class MeetingsGateway
           meeting: plainMeeting,
           users: plainUsers,
         });
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Lurker])
@@ -850,20 +855,23 @@ export class MeetingsGateway
     @MessageBody() msg: LurkerJoinMeetingDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
-        const meeting = await this.meetingsService.findById(
-          msg.meetingId,
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: msg.meetingId,
           session,
-        );
+        });
+
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         throwWsError(
-          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+          await this.meetingsCommonService.isMaxMembers(
             meeting,
-            'lurker',
-          )) === 'undefined',
+            user.meetingRole,
+          ),
           MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
         );
 
@@ -930,10 +938,11 @@ export class MeetingsGateway
           user: plainUser,
           users: plainUsers,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -942,13 +951,16 @@ export class MeetingsGateway
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
     @ConnectedSocket() socket: Socket,
   ): Promise<ResponseSumType<void>> {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
           session,
-        );
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         const template = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
@@ -967,9 +979,16 @@ export class MeetingsGateway
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,
             userTemplate: template,
+            errCallback: async (err) => {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.SendMeetingError,
+                {
+                  message: err,
+                },
+              );
+            },
           });
-
-          throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
           const lastOldMessage = await this.getLastOldMessageInMeeting(
             meeting._id.toString(),
@@ -1050,10 +1069,11 @@ export class MeetingsGateway
         this.emitToSocketId(user.socketId, MeetingEmitEvents.AcceptRequest, {
           user: plainUser,
         });
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   async updateTimeForHost(
@@ -1092,12 +1112,15 @@ export class MeetingsGateway
     @MessageBody() message: EndMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
-        );
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        console.log('session', session.session.id);
+
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
+          ...(socket && { session }),
+        });
 
         if (!meeting) return;
 
@@ -1133,10 +1156,18 @@ export class MeetingsGateway
         await this.updateTimeForHost(socket, meeting, session);
 
         return wsResult();
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => {
+          if (socket) {
+            return wsError(socket, err);
+          } else {
+            console.log(err);
+            return;
+          }
+        },
+      },
+    );
   }
 
   async handleTimeLimitForHost({ user, meeting, session }) {
@@ -1161,13 +1192,14 @@ export class MeetingsGateway
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: LeaveMeetingRequestDTO,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
           session,
-        );
+        });
 
         const user = await this.usersService.findOne({
           query: { socketId: socket.id },
@@ -1218,10 +1250,11 @@ export class MeetingsGateway
         }
 
         return wsResult();
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @PassAuth()
@@ -1230,8 +1263,9 @@ export class MeetingsGateway
     @MessageBody() msg: ReconnectDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const { meetingUserId } = msg;
 
@@ -1265,8 +1299,6 @@ export class MeetingsGateway
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,
           });
-
-          throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
           Object.assign(updateData, {
             userPosition: u.position,
@@ -1323,10 +1355,11 @@ export class MeetingsGateway
           user: plainUser,
           users: plainUsers,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -1335,8 +1368,9 @@ export class MeetingsGateway
     @MessageBody() message: ChangeHostDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersComponent.findById({
           id: message.userId,
@@ -1358,10 +1392,10 @@ export class MeetingsGateway
           'meeting.userHasNoTimeLeft',
         );
 
-        const meeting = await this.meetingsService.findById(
-          user.meeting._id,
+        const meeting = await this.meetingsService.findById({
+          id: user.meeting._id,
           session,
-        );
+        });
 
         if (user?.meeting?.hostUserId?._id) {
           const prevHostUser = await this.usersService.findById({
@@ -1509,10 +1543,11 @@ export class MeetingsGateway
             },
           );
         }
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @WsEvent(MeetingSubscribeEvents.OnUpdateMeeting)
@@ -1520,17 +1555,20 @@ export class MeetingsGateway
     @MessageBody() message: UpdateMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersComponent.findOne({
           query: { socketId: socket.id },
+          session,
           populatePaths: 'meeting',
         });
 
         const meeting = await this.meetingsService.updateMeetingById({
           id: user?.meeting?._id,
           data: message,
+          session,
         });
 
         const plainMeeting = meetingSerialization(meeting);
@@ -1549,10 +1587,11 @@ export class MeetingsGateway
           MeetingEmitEvents.UpdateMeeting,
           emitData,
         );
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   async sendTimeLimit({ meetingId, userId, mainUserId }) {
@@ -1599,7 +1638,7 @@ export class MeetingsGateway
         message,
       );
 
-      return;
+      return wsResult();
     } catch (err) {
       return wsError(socket, err);
     }
@@ -1636,8 +1675,7 @@ export class MeetingsGateway
         VideoChatEmitEvents.GetIceCandidate,
         message,
       );
-
-      return;
+      return wsResult();
     } catch (err) {
       return wsError(socket, err);
     }
@@ -1648,8 +1686,9 @@ export class MeetingsGateway
     @MessageBody() message: SendDevicesPermissionsRequestDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersComponent.findOneAndUpdate({
           query: {
@@ -1673,9 +1712,10 @@ export class MeetingsGateway
             user: plainUser,
           },
         );
-      } catch (error) {
-        return wsError(socket, error);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 }

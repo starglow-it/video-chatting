@@ -44,4 +44,7 @@ async function bootstrap() {
     console.log(`Meeting Socket Service listening at port: ${port}`),
   );
 }
+process.on('uncaughtException', (err, origin) => console.log(origin));
+
+process.on('unhandledRejection', (reason) => console.log(reason));
 bootstrap();

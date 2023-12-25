@@ -65,14 +65,13 @@ export class UsersGateway extends BaseGateway {
     super();
   }
 
-  private async handleUpdateUsersTemplateVideoContainer({
+  private async updateVideoContainer({
     userTemplateId,
-    meetingUserId,
+    user,
     data,
-    session,
   }: {
     userTemplateId: string;
-    meetingUserId: string;
+    user: MeetingUserDocument;
     data: Partial<MeetingUserDocument>;
     session: ITransactionSession;
   }) {
@@ -80,35 +79,28 @@ export class UsersGateway extends BaseGateway {
       id: userTemplateId,
     });
 
-    const updateUser = await this.usersService.findOne({
-      query: {
-        _id: meetingUserId,
-      },
-      session,
-    });
-
     const updateUsersPosistion = usersTemplate.usersPosition;
     const updateUsersSize = usersTemplate.usersSize;
 
-    const index = usersTemplate.indexUsers.indexOf(meetingUserId);
+    const index = usersTemplate.indexUsers.indexOf(user._id.toString());
     throwWsError(index <= -1, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
     if (data?.userPosition) {
-      updateUser.userPosition = data.userPosition;
+      user.userPosition = data.userPosition;
 
       updateUsersPosistion[index] = data.userPosition;
     }
 
     if (data?.userSize) {
-      updateUser.userSize = data.userSize;
+      user.userSize = data.userSize;
       updateUsersSize[index] = data.userSize;
     }
 
-    updateUser.save();
+    user.save();
 
     this.coreService.updateUserTemplate({
       templateId: userTemplateId,
-      userId: meetingUserId,
+      userId: user._id.toString(),
       data: {
         usersPosition: updateUsersPosistion,
         usersSize: updateUsersSize,
@@ -121,8 +113,9 @@ export class UsersGateway extends BaseGateway {
     @MessageBody() message: UpdateUserRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersComponent.findOneAndUpdate({
           query: message.id ? { _id: message.id } : { socketId: socket.id },
@@ -130,14 +123,14 @@ export class UsersGateway extends BaseGateway {
           session,
         });
 
-        const meeting = await this.meetingsService.findById(
-          user.meeting._id,
+        const meeting = await this.meetingsService.findById({
+          id: user.meeting._id,
           session,
-        );
+        });
 
-        await this.handleUpdateUsersTemplateVideoContainer({
+        await this.updateVideoContainer({
           userTemplateId: meeting.templateId,
-          meetingUserId: user.id.toString(),
+          user,
           data: {
             userPosition: message?.userPosition,
             userSize: message?.userSize,
@@ -170,10 +163,11 @@ export class UsersGateway extends BaseGateway {
             },
           },
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -182,8 +176,9 @@ export class UsersGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: RemoveUserRequestDTO,
   ): Promise<ResponseSumType<void>> {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersComponent.findById({
           id: message.id,
@@ -254,6 +249,14 @@ export class UsersGateway extends BaseGateway {
         );
 
         this.emitToRoom(
+          `waitingRoom:${meetingUpdated.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+          },
+        );
+
+        this.emitToRoom(
           `meeting:${user.meeting._id}`,
           UserEmitEvents.RemoveUsers,
           {
@@ -262,9 +265,11 @@ export class UsersGateway extends BaseGateway {
         );
 
         this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+        return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 }

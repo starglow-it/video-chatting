@@ -18,7 +18,6 @@ import { RemoveMeetingNoteRequestDTO } from '../dtos/requests/notes/remove-meeti
 import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../const/socket-events/emitters';
-import { Logger } from '@nestjs/common';
 import { subscribeWsError, wsError } from '../utils/ws/wsError';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { wsResult } from '../utils/ws/wsResult';
@@ -30,7 +29,6 @@ import { wsResult } from '../utils/ws/wsResult';
   },
 })
 export class MeetingNotesGateway extends BaseGateway {
-  private logger: Logger = new Logger(MeetingNotesGateway.name);
   constructor(
     private usersService: UsersService,
     private meetingNotesService: MeetingNotesService,
@@ -44,8 +42,9 @@ export class MeetingNotesGateway extends BaseGateway {
     @MessageBody() message: SendMeetingNoteRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = await this.usersService.findOne({
           query: { socketId: socket.id },
@@ -76,10 +75,11 @@ export class MeetingNotesGateway extends BaseGateway {
         );
 
         return wsResult();
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @WsEvent(MeetingSubscribeEvents.OnRemoveMeetingMote)
@@ -87,8 +87,9 @@ export class MeetingNotesGateway extends BaseGateway {
     @MessageBody() message: RemoveMeetingNoteRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         await this.meetingNotesService.deleteOne(
@@ -103,16 +104,18 @@ export class MeetingNotesGateway extends BaseGateway {
             meetingNoteId: message.noteId,
           },
         );
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @WsEvent(MeetingSubscribeEvents.OnGetMeetingNotes)
   async getMeetingNotes(@ConnectedSocket() socket: Socket) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    return withTransaction(
+      this.connection,
+      async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
         const meetingNotes = await this.meetingNotesService.findMany({
@@ -133,9 +136,10 @@ export class MeetingNotesGateway extends BaseGateway {
         return wsResult({
           meetingNotes: plainMeetingNotes,
         });
-      } catch (err) {
-        return wsError(socket, err);
-      }
-    });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 }
