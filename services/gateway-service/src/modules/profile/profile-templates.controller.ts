@@ -42,6 +42,7 @@ import { UserId } from '../../utils/decorators/user-id.decorator';
 import { CommonTemplatePaymentDto } from '../../dtos/response/common-template-payment.dto';
 import { GetProfileTemplatesQueryDto } from '../../dtos/query/get-profile-templates.query';
 import { TemplatesModule } from '../templates/templates.module';
+import { UpdateUserTemplateRequest } from 'src/dtos/requests/update-user-template.request';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -145,7 +146,7 @@ export class ProfileTemplatesController {
   )
   async updateProfileTemplate(
     @Request() req,
-    @Body() updateTemplateData: UpdateTemplateRequest,
+    @Body() updateTemplateData: UpdateUserTemplateRequest,
     @Param('templateId') templateId: ICommonTemplate['id'],
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IUserTemplate>> {
