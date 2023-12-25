@@ -115,7 +115,7 @@ export class MeetingsCommonService {
     });
   }
 
-  private countMemeberInMeeting = async (
+  private getMembersQuantity = async (
     meeting: MeetingDocument,
     roles: MeetingRole[],
   ) => {
@@ -139,7 +139,7 @@ export class MeetingsCommonService {
             roles: [MeetingRole.Host, MeetingRole.Participant],
           };
 
-    const count = await this.countMemeberInMeeting(meeting, condition.roles);
+    const count = await this.getMembersQuantity(meeting, condition.roles);
 
     return count >= condition.max;
   };

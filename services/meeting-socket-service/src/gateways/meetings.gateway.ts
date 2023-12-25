@@ -960,6 +960,8 @@ export class MeetingsGateway
           session,
         });
 
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
         const template = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
         });
@@ -977,6 +979,15 @@ export class MeetingsGateway
             userId: user._id.toString(),
             event: UserActionInMeeting.Join,
             userTemplate: template,
+            errCallback: async (err) => {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.SendMeetingError,
+                {
+                  message: err,
+                },
+              );
+            },
           });
 
           const lastOldMessage = await this.getLastOldMessageInMeeting(
@@ -1707,5 +1718,4 @@ export class MeetingsGateway
       },
     );
   }
-
 }

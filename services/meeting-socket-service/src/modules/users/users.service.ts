@@ -21,7 +21,7 @@ import {
   UpdateModelSingleQuery,
 } from '../../types/mongoose';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
-import { throwWsError } from 'src/utils/ws/wsError';
+import { WsBadRequestException } from '../../exceptions/ws.exception';
 
 @Injectable()
 export class UsersService {
@@ -132,10 +132,12 @@ export class UsersService {
     userTemplate,
     userId,
     event,
+    errCallback,
   }: {
     userTemplate: IUserTemplate;
     userId: string;
     event: UserActionInMeeting;
+    errCallback?: (err: string) => Promise<any>;
   }) {
     const updateIndexParams: UserActionInMeetingParams = {
       [UserActionInMeeting.Join]: {
@@ -156,7 +158,12 @@ export class UsersService {
       updateIndexParams[event].replaceItem,
     );
 
-    throwWsError(index <= -1, updateIndexParams[event].errMessage);
+    if (index <= -1) {
+      if (errCallback) {
+        await errCallback(updateIndexParams[event].errMessage);
+      }
+      throw new WsBadRequestException(updateIndexParams[event].errMessage);
+    }
 
     await this.coreService.updateUserTemplate({
       templateId: userTemplate.id,
