@@ -574,6 +574,9 @@ export class UserTemplatesController {
           templateType: data.templateType,
         } as UpdateQuery<UserTemplateDocument>;
 
+        console.log('update template', updateTemplateData);
+        
+
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
             const [existingCategory] =
