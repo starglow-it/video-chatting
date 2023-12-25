@@ -249,6 +249,14 @@ export class UsersGateway extends BaseGateway {
         );
 
         this.emitToRoom(
+          `waitingRoom:${meetingUpdated.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+          },
+        );
+
+        this.emitToRoom(
           `meeting:${user.meeting._id}`,
           UserEmitEvents.RemoveUsers,
           {
