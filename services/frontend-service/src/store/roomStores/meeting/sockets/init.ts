@@ -286,10 +286,14 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
     if (data?.users) updateMeetingUsersEvent({ users: data?.users });
 };
 
-const handleMeetingEventsError = (data: string) => {
+const handleMeetingEventsError = (data: string, isUpdateWaiting = true) => {
     if (data) {
         setMeetingErrorEvent(data);
-        updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Waiting });
+        if (isUpdateWaiting) {
+            updateLocalUserEvent({
+                accessStatus: MeetingAccessStatusEnum.Waiting,
+            });
+        }
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
@@ -298,7 +302,9 @@ const handleMeetingEventsError = (data: string) => {
 
 joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
-answerAccessMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
+answerAccessMeetingRequestSocketEvent.failData.watch(data =>
+    handleMeetingEventsError(data, false),
+);
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 startMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
