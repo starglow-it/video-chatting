@@ -147,40 +147,32 @@ export class ProfileTemplatesController {
   async updateProfileTemplate(
     @Request() req,
     @Body() updateTemplateData: UpdateUserTemplateRequest,
-    @Param('templateId') templateId: ICommonTemplate['id'],
+    @Param() { templateId }: TemplateIdParam,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      if (templateId) {
-        if (file) {
-          const { extension } = getFileNameAndExtension(file.originalname);
-          const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
+      if (file) {
+        const { extension } = getFileNameAndExtension(file.originalname);
+        const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
 
-          const url = await this.uploadService.uploadFile(
-            file.buffer,
-            uploadKey,
-          );
+        const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
-          await this.coreService.uploadProfileTemplateFile({
-            url,
-            id: templateId,
-            mimeType: file.mimetype,
-          });
-        }
-
-        const template = await this.userTemplatesService.updateUserTemplate({
-          templateId,
-          userId: req.user.userId,
-          data: updateTemplateData,
+        await this.coreService.uploadProfileTemplateFile({
+          url,
+          id: templateId,
+          mimeType: file.mimetype,
         });
-
-        return {
-          success: true,
-          result: template,
-        };
       }
+
+      const template = await this.userTemplatesService.updateUserTemplate({
+        templateId,
+        userId: req.user.userId,
+        data: updateTemplateData,
+      });
+
       return {
-        success: false,
+        success: true,
+        result: template,
       };
     } catch (err) {
       this.logger.error(

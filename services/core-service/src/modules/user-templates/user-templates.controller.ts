@@ -575,6 +575,9 @@ export class UserTemplatesController {
           isPublishAudience: data.isPublishAudience,
         } as UpdateQuery<UserTemplateDocument>;
 
+        console.log('update template', updateTemplateData);
+        
+
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
             const [existingCategory] =
