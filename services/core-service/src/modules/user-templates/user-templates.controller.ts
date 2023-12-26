@@ -574,6 +574,7 @@ export class UserTemplatesController {
           draftUrl: data.draftUrl,
           links: data.links,
           templateType: data.templateType,
+          isPublishAudience: data.isPublishAudience ,
         } as UpdateQuery<UserTemplateDocument>;
 
         console.log('update template', updateTemplateData);
