@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingChatDocument } from './meeting-chat.schema';
 
 @Schema()
@@ -92,7 +92,7 @@ export class MeetingUser {
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  meetingRole: string;
+  meetingRole: MeetingRole;
 
   @Prop({
     type: mongoose.Schema.Types.Number,

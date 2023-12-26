@@ -16,7 +16,7 @@ import { UpdateMeetingTemplateRequestDto } from '../dtos/requests/templates/upda
 import { UpdatePaymentRequestDto } from '../dtos/requests/payment/update-payment.dto';
 import { Roles } from '../utils/decorators/role.decorator';
 import { MeetingRole } from 'shared-types';
-import { subscribeWsError, wsError } from '../utils/ws/wsError';
+import { subscribeWsError, wsError } from 'src/utils/ws/wsError';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { wsResult } from '../utils/ws/wsResult';
 
@@ -37,16 +37,22 @@ export class TemplatesGateway extends BaseGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UpdatePaymentRequestDto[],
   ) {
-    return withTransaction(this.connection, async () => {
-      subscribeWsError(socket);
-      const user = this.getUserFromSocket(socket);
-      this.emitToRoom(
-        `meeting:${user.meeting.toString()}`,
-        MeetingEmitEvents.UpdateTemplatePayments,
-        msg,
-      );
-      return wsResult();
-    });
+    return withTransaction(
+      this.connection,
+      async () => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        this.emitToRoom(
+          `meeting:${user.meeting.toString()}`,
+          MeetingEmitEvents.UpdateTemplatePayments,
+          msg,
+        );
+        return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 
   @Roles([MeetingRole.Host])
@@ -55,21 +61,26 @@ export class TemplatesGateway extends BaseGateway {
     @MessageBody() data: UpdateMeetingTemplateRequestDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    return withTransaction(this.connection, async () => {
-      subscribeWsError(socket);
-      const user = this.getUserFromSocket(socket);
-      this.emitToRoom(
-        `meeting:${user.meeting.toString()}`,
-        MeetingEmitEvents.UpdateMeetingTemplate,
-        { templateId: data.templateId },
-      );
+    return withTransaction(
+      this.connection,
+      async () => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        this.emitToRoom(
+          `meeting:${user.meeting.toString()}`,
+          MeetingEmitEvents.UpdateMeetingTemplate,
+          { templateId: data.templateId },
+        );
 
-      this.emitToRoom(
-        `waitingRoom:${data.templateId}`,
-        MeetingEmitEvents.UpdateMeetingTemplate,
-        { templateId: data.templateId },
-      );
-      return wsResult();
-    });
+        this.emitToRoom(
+          `waitingRoom:${data.templateId}`,
+          MeetingEmitEvents.UpdateMeetingTemplate,
+          { templateId: data.templateId },
+        );
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
   }
 }

@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  FilterQuery,
-  Model,
-  PipelineStage,
-  QueryOptions,
-  UpdateQuery,
-} from 'mongoose';
+import { FilterQuery, Model, PipelineStage, QueryOptions } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';

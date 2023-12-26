@@ -9,7 +9,6 @@ const ObjectId = Types.ObjectId;
 
 //  const
 import {
-  CUSTOM_CATEROFY_BUSSINESS,
   MediaNativeErrorEnum,
   TEMPLATES_SERVICE,
   TemplateBrokerPatterns,
@@ -308,9 +307,18 @@ export class CommonTemplatesController {
           contactEmail: targetUser.contactEmail,
           languages: targetUser.languages.map((language) => language._id),
           socials: targetUser.socials.map((social) => social._id),
-          usersPosition: targetTemplate.usersPosition,
-          usersSize: targetTemplate.usersPosition.map(() => 0),
-          indexUsers: targetTemplate.usersPosition.map(() => null),
+          usersPosition: Array.from(
+            { length: targetTemplate.maxParticipants },
+            (_, i) => targetTemplate.usersPosition[i],
+          ),
+          usersSize: Array.from(
+            { length: targetTemplate.maxParticipants },
+            () => 0,
+          ),
+          indexUsers: Array.from(
+            { length: targetTemplate.maxParticipants },
+            () => null,
+          ),
           isAudioAvailable: targetTemplate.isAudioAvailable,
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,

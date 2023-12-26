@@ -19,7 +19,6 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
 import {
   IUserTemplate,
   ResponseSumType,
@@ -41,7 +40,7 @@ import { UpdateTemplatePaymentsRequest } from '../../dtos/requests/update-templa
 import { UserId } from '../../utils/decorators/user-id.decorator';
 import { CommonTemplatePaymentDto } from '../../dtos/response/common-template-payment.dto';
 import { GetProfileTemplatesQueryDto } from '../../dtos/query/get-profile-templates.query';
-import { TemplatesModule } from '../templates/templates.module';
+import { UpdateUserTemplateRequest } from '../../dtos/requests/update-user-template.request';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -145,41 +144,34 @@ export class ProfileTemplatesController {
   )
   async updateProfileTemplate(
     @Request() req,
-    @Body() updateTemplateData: UpdateTemplateRequest,
-    @Param('templateId') templateId: ICommonTemplate['id'],
+    @Body() updateTemplateData: UpdateUserTemplateRequest,
+    @Param() { templateId }: TemplateIdParam,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      if (templateId) {
-        if (file) {
-          const { extension } = getFileNameAndExtension(file.originalname);
-          const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
+      if (file) {
+        const { extension } = getFileNameAndExtension(file.originalname);
+        const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
 
-          const url = await this.uploadService.uploadFile(
-            file.buffer,
-            uploadKey,
-          );
+        const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
-          await this.coreService.uploadProfileTemplateFile({
-            url,
-            id: templateId,
-            mimeType: file.mimetype,
-          });
-        }
-
-        const template = await this.userTemplatesService.updateUserTemplate({
-          templateId,
-          userId: req.user.userId,
-          data: updateTemplateData,
+        await this.coreService.uploadProfileTemplateFile({
+          url,
+          id: templateId,
+          mimeType: file.mimetype,
         });
-
-        return {
-          success: true,
-          result: template,
-        };
       }
+
+
+      const template = await this.userTemplatesService.updateUserTemplate({
+        templateId,
+        userId: req.user.userId,
+        data: updateTemplateData,
+      });
+
       return {
-        success: false,
+        success: true,
+        result: template,
       };
     } catch (err) {
       this.logger.error(

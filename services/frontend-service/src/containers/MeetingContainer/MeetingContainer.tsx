@@ -256,10 +256,6 @@ const MeetingContainer = memo(() => {
                 await sendJoinWaitingRoomSocketEvent();
                 if (isOwner) {
                     if (isHasSettings) {
-                        updateLocalUserEvent({
-                            isAuraActive: savedSettings.auraSetting,
-                            accessStatus: MeetingAccessStatusEnum.InMeeting,
-                        });
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:
                                 savedSettings.backgroundAudioSetting,
@@ -268,9 +264,6 @@ const MeetingContainer = memo(() => {
                             needToRememberSettings: false,
                         });
                     } else {
-                        updateLocalUserEvent({
-                            accessStatus: MeetingAccessStatusEnum.InMeeting,
-                        });
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:
                                 isBackgroundAudioActive,
