@@ -40,7 +40,6 @@ export class BusinessCategoriesController {
   ): Promise<EntityList<IBusinessCategory>> {
     try {
       return withTransaction(this.connection, async (session) => {
-
         const businessCategories = await this.businessCategoriesService.find({
           query,
           options: { skip, limit },

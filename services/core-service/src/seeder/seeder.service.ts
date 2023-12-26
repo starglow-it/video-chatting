@@ -61,7 +61,6 @@ export class SeederService {
     private commonTemplatesService: CommonTemplatesService,
     private userTemplatesService: UserTemplatesService,
     private usersService: UsersService,
-    private businessCategoriesService: BusinessCategoriesService,
     private mediaService: MediaService,
     private languagesService: LanguagesService,
     private awsService: AwsConnectorService,

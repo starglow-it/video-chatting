@@ -552,7 +552,6 @@ export class UserTemplatesController {
           populatePaths: 'user',
         });
 
-
         const updateTemplateData = {
           fullName: data.fullName,
           position: data.position,
@@ -575,7 +574,6 @@ export class UserTemplatesController {
           templateType: data.templateType,
           isPublishAudience: data.isPublishAudience,
         } as UpdateQuery<UserTemplateDocument>;
-
 
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
