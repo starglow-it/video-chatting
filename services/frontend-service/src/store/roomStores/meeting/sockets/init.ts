@@ -313,9 +313,9 @@ const handleStartMeetingError = (data: string) => {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
-        // setTimeout(() => {
-        //     Router.push(dashboardRoute);
-        // }, 3000);
+        setTimeout(() => {
+            Router.push(dashboardRoute);
+        }, 3000);
     }
 };
 joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
