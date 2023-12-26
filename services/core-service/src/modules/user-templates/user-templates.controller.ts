@@ -552,6 +552,8 @@ export class UserTemplatesController {
           populatePaths: 'user',
         });
 
+        console.log('payload', data);
+
         const updateTemplateData = {
           fullName: data.fullName,
           position: data.position,
@@ -576,7 +578,6 @@ export class UserTemplatesController {
         } as UpdateQuery<UserTemplateDocument>;
 
         console.log('update template', updateTemplateData);
-        
 
         if ('businessCategories' in data) {
           const promises = data.businessCategories.map(async (category) => {
