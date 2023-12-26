@@ -100,35 +100,35 @@ export interface IUserTemplate extends ITemplate {
 export interface IUpdateTemplate {
   companyName: string;
   contactEmail: string;
-  name?: string;
+  name: string;
   description: string;
-  url?: string;
-  draftUrl?: string;
-  previewUrls?: string[];
+  url: string;
+  draftUrl: string;
+  previewUrls: string[];
   fullName: string;
   position: string;
   signBoard: string;
-  customLink?: string;
-  businessCategories?: IBusinessCategory[];
-  usersPosition?: { bottom: number; left: number }[];
-  usersSize?: number[];
-  indexUsers?: string[];
-  maxParticipants?: number;
-  languages?: string[];
-  isPublic?: boolean;
+  customLink: string;
+  businessCategories: IBusinessCategory[];
+  usersPosition: { bottom: number; left: number }[];
+  usersSize: number[];
+  indexUsers: string[];
+  maxParticipants: number;
+  languages: string[];
+  isPublic: boolean;
   meetingInstance?: IMeetingInstance;
-  mediaLink?: IMediaLink;
-  links?: TemplateLink[];
+  mediaLink: IMediaLink;
+  links: TemplateLink[];
   socials: {
-    youtube?: string;
-    facebook?: string;
-    instagram?: string;
-    linkedin?: string;
-    twitter?: string;
-    custom?: string;
+    youtube: string;
+    facebook: string;
+    instagram: string;
+    linkedin: string;
+    twitter: string;
+    custom: string;
   };
-  templateType?: string;
-  subdomain?: string;
+  templateType: string;
+  subdomain: string;
 }
 
 export interface IUpdateUserTemplate extends IUpdateTemplate {

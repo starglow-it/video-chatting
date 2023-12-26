@@ -19,7 +19,6 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
 import {
   IUserTemplate,
   ResponseSumType,
@@ -41,8 +40,7 @@ import { UpdateTemplatePaymentsRequest } from '../../dtos/requests/update-templa
 import { UserId } from '../../utils/decorators/user-id.decorator';
 import { CommonTemplatePaymentDto } from '../../dtos/response/common-template-payment.dto';
 import { GetProfileTemplatesQueryDto } from '../../dtos/query/get-profile-templates.query';
-import { TemplatesModule } from '../templates/templates.module';
-import { UpdateUserTemplateRequest } from 'src/dtos/requests/update-user-template.request';
+import { UpdateUserTemplateRequest } from '../../dtos/requests/update-user-template.request';
 
 @ApiTags('Profile/Templates')
 @Controller('profile/templates')
@@ -164,7 +162,6 @@ export class ProfileTemplatesController {
         });
       }
 
-      console.log('update template',updateTemplateData);
 
       const template = await this.userTemplatesService.updateUserTemplate({
         templateId,
