@@ -9,6 +9,13 @@ import {
 } from 'shared-types';
 import { meetingDomain } from 'src/store/domains';
 import { resetRoomStores } from 'src/store/root';
+import Router from 'next/router';
+import { dashboardRoute } from 'src/const/client-routes';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { SavedSettings } from 'src/types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
@@ -300,13 +307,40 @@ const handleMeetingEventsError = (data: string, isUpdateWaiting = true) => {
     }
 };
 
+const handleStartMeetingError = (data: string) => {
+    if (data) {
+        setMeetingErrorEvent(data);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
+        // setTimeout(() => {
+        //     Router.push(dashboardRoute);
+        // }, 3000);
+    }
+};
 joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
 answerAccessMeetingRequestSocketEvent.failData.watch(data =>
     handleMeetingEventsError(data, false),
 );
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
-startMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
+    const savedSettings = WebStorage.get<SavedSettings>({
+        key: StorageKeysEnum.meetingSettings,
+    });
+    const isHasSettings = Object.keys(savedSettings)?.length;
+
+    isHasSettings
+        ? updateLocalUserEvent({
+              isAuraActive: savedSettings.auraSetting,
+              accessStatus: MeetingAccessStatusEnum.InMeeting,
+          })
+        : updateLocalUserEvent({
+              accessStatus: MeetingAccessStatusEnum.InMeeting,
+          });
+    handleUpdateMeetingEntities(data);
+});
+startMeetingSocketEvent.failData.watch(handleStartMeetingError);
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,
