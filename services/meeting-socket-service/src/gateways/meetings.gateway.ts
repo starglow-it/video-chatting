@@ -108,11 +108,7 @@ export class MeetingsGateway
     emitToRoom: (...args: TEventEmitter) => void;
     meeting: MeetingDocument;
   }) => {
-    const meetingUsers = meeting.users.filter(
-      (u) => u.accessStatus === MeetingAccessStatusEnum.InMeeting,
-    );
-
-    const plainUsers = userSerialization(meetingUsers);
+    const plainUsers = userSerialization(meeting.users);
     const plainMeeting = meetingSerialization(meeting);
 
     emitToRoom(
@@ -154,8 +150,8 @@ export class MeetingsGateway
   async setTimeoutFinishMeeting(meeting: MeetingDocument) {
     const meetingId = meeting._id.toString() as string;
     const endTimestamp = getTimeoutTimestamp({
-      type: TimeoutTypesEnum.Seconds,
-      value: 10,
+      type: TimeoutTypesEnum.Minutes,
+      value: 90,
     });
 
     const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
@@ -186,8 +182,6 @@ export class MeetingsGateway
     meeting: MeetingDocument;
     userTemplate: IUserTemplate;
   }) {
-    await meeting.populate(['owner', 'users']);
-
     const userId = user?._id.toString();
 
     const commonTemplate =
@@ -204,7 +198,7 @@ export class MeetingsGateway
     }
 
     const meetingId = meeting._id.toString();
-    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
+    const isMeetingHost = meeting.hostUserId.toString() === userId;
 
     const activeParticipants = await this.usersService.countMany({
       meeting: meeting._id,
@@ -253,15 +247,38 @@ export class MeetingsGateway
     }
 
     if (isMeetingHost) {
-      console.log(session.session.id);
-
+      const prevHost = await this.getPreviousHost(meeting);
+      if (prevHost) {
+        meeting = await this.meetingsService.updateMeetingById({
+          id: meeting._id,
+          data: { owner: prevHost._id, hostUserId: prevHost._id },
+          session,
+        });
+      }
       await this.setTimeoutFinishMeeting(meeting);
     }
+
+    await meeting.populate(['owner', 'users']);
 
     await this.notifyParticipantsMeetingInfo({
       meeting,
       emitToRoom: this.emitToRoom.bind(this),
     });
+  }
+
+  private async getPreviousHost(meeting: MeetingDocument) {
+    const hosts = await this.usersService.findUsers({
+      query: {
+        meeting,
+        meetingRole: MeetingRole.Host,
+        accessStatus: MeetingAccessStatusEnum.InMeeting,
+      },
+      options: {
+        sort: { _id: -1 },
+        limit: 1,
+      },
+    });
+    return hosts[0];
   }
 
   private async getLastOldMessageInMeeting(
@@ -321,7 +338,7 @@ export class MeetingsGateway
             session,
           });
 
-          return;
+          return wsResult();
         }
 
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
@@ -355,6 +372,9 @@ export class MeetingsGateway
           data: updateData,
           session,
         });
+
+        if (isOwner) {
+        }
 
         if (
           !isOwner &&
@@ -467,7 +487,13 @@ export class MeetingsGateway
           session,
         );
 
-        if (message.meetingRole == MeetingRole.Host) {
+        if (
+          message.meetingRole == MeetingRole.Host &&
+          !(await this.meetingsCommonService.isMaxMembers(
+            meeting,
+            MeetingRole.Host,
+          ))
+        ) {
           meeting = await this.meetingsService.updateMeetingById({
             id: meeting._id,
             data: { owner: user._id, hostUserId: user._id },
