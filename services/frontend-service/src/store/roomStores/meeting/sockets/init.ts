@@ -9,8 +9,6 @@ import {
 } from 'shared-types';
 import { meetingDomain } from 'src/store/domains';
 import { resetRoomStores } from 'src/store/root';
-import Router from 'next/router';
-import { dashboardRoute } from 'src/const/client-routes';
 import {
     StorageKeysEnum,
     WebStorage,
@@ -307,17 +305,6 @@ const handleMeetingEventsError = (data: string, isUpdateWaiting = true) => {
     }
 };
 
-const handleStartMeetingError = (data: string) => {
-    if (data) {
-        setMeetingErrorEvent(data);
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.meetingErrorDialog,
-        });
-        setTimeout(() => {
-            Router.push(dashboardRoute);
-        }, 3000);
-    }
-};
 joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
 answerAccessMeetingRequestSocketEvent.failData.watch(data =>
@@ -340,7 +327,7 @@ startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
           });
     handleUpdateMeetingEntities(data);
 });
-startMeetingSocketEvent.failData.watch(handleStartMeetingError);
+startMeetingSocketEvent.failData.watch((data) =>handleMeetingEventsError(data, false));
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,
