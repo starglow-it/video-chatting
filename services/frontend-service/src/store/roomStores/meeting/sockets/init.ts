@@ -14,6 +14,8 @@ import {
     WebStorage,
 } from 'src/controllers/WebStorageController';
 import { SavedSettings } from 'src/types';
+import Router from 'next/router';
+import { dashboardRoute } from 'src/const/client-routes';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
@@ -327,7 +329,12 @@ startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
           });
     handleUpdateMeetingEntities(data);
 });
-startMeetingSocketEvent.failData.watch((data) =>handleMeetingEventsError(data, false));
+startMeetingSocketEvent.failData.watch(data => {
+    handleMeetingEventsError(data, false);
+    setTimeout(() => {
+        Router.push(dashboardRoute);
+    }, 3000);
+});
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,

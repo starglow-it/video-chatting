@@ -40,7 +40,7 @@ const Component = () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
-        if (error === MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER && isOwner) {
+        if (error === MeetingI18nErrorEnum.TIME_LIMIT) {
             router.push(isWithoutAuthen ? loginRoute : dashboardRoute);
         }
     }, [error, isOwner]);
