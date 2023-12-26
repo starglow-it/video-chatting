@@ -10,7 +10,6 @@ import {
   MEDIA_CATEGORIES,
   PaymentType,
   DEFAULT_PRICE,
-  BUSINESS_CATEGORIES,
 } from 'shared-const';
 import {
   Counters,
@@ -51,8 +50,8 @@ import { MediaService } from '../modules/medias/medias.service';
 import * as mime from 'mime';
 import { TemplatePaymentsService } from '../modules/template-payments/template-payments.service';
 import { OldUserTemplate } from './old-schema';
-import { InsertModelSingleQuery } from 'src/types/custom';
-import { TemplatePaymentDocument } from 'src/schemas/template-payment.schema';
+import { InsertModelSingleQuery } from '../types/custom';
+import { TemplatePaymentDocument } from '../schemas/template-payment.schema';
 
 // utils
 
@@ -62,7 +61,6 @@ export class SeederService {
     private commonTemplatesService: CommonTemplatesService,
     private userTemplatesService: UserTemplatesService,
     private usersService: UsersService,
-    private businessCategoriesService: BusinessCategoriesService,
     private mediaService: MediaService,
     private languagesService: LanguagesService,
     private awsService: AwsConnectorService,
@@ -492,7 +490,7 @@ export class SeederService {
   }
 
   async seedReplaceYoutubeThumb() {
-    return withTransaction(this.connection, async (session) => {
+    return withTransaction(this.connection, async () => {
       const userTemplates = await this.userTemplatesService.findUserTemplates({
         query: {
           mediaLink: {

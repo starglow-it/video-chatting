@@ -8,6 +8,8 @@ import {
   ValidateNested,
   IsNotEmpty,
   IsNumber,
+  Min,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
@@ -23,31 +25,31 @@ class SocialsDTO {
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
-  youtube?: string;
+  youtube: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
-  facebook?: string;
+  facebook: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
-  instagram?: string;
+  instagram: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
-  linkedin?: string;
+  linkedin: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
-  twitter?: string;
+  twitter: string;
 
   @ApiProperty()
   @IsOptional()
@@ -101,7 +103,7 @@ class BusinessCategoryDTO {
   })
   @IsOptional()
   @IsString({ message: 'Id must be string ' })
-  id?: string;
+  id: string;
 
   @ApiProperty({
     type: String,
@@ -150,7 +152,90 @@ class MediaLinkReqDto implements IMediaLink {
   platform: string;
 }
 
+class UserPositionDto {
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  bottom: number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  left: number;
+}
 export class UpdateTemplateRequest implements IUpdateTemplate {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString({ message: 'DraftUrl must be string' })
+  draftUrl: string;
+
+  @ApiProperty({
+    required: false,
+    type: [UserPositionDto],
+  })
+  @IsOptional()
+  @IsObject({ message: 'usersPosition is must be object', each: true })
+  @Type(() => UserPositionDto)
+  @ValidateNested()
+  usersPosition: IUpdateTemplate['usersPosition'];
+
+  @ApiProperty({
+    required: false,
+    type: [Number],
+  })
+  @IsOptional()
+  @IsNumber({}, { message: 'usersSize must be a number', each: true })
+  usersSize: number[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+  })
+  @IsOptional()
+  @IsString({ message: 'indexUsers must be string', each: true })
+  indexUsers: string[];
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString({ message: 'Name must be string' })
+  name: string;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsOptional()
+  @IsNumber({}, {message: 'maxParticipants must be number'})
+  @Min(2, { message: 'maxParticipants minimun of 2' })
+  maxParticipants: number;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'isPublic must be boolean' })
+  isPublic: boolean;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString({ message: 'Subdomain must be string' })
+  @IsUrl({}, { message: 'Subdomain must be a url' })
+  subdomain: string;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -266,7 +351,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   })
   @IsOptional()
   @Type(() => TemplateLinkDto)
-  links?: IUpdateTemplate['links'];
+  links: IUpdateTemplate['links'];
 
   @ApiProperty({
     required: false,

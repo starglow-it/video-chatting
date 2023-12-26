@@ -9,4 +9,5 @@ export enum MeetingNativeErrorEnum {
 export enum MeetingI18nErrorEnum {
   MAX_PARTICIPANTS_NUMBER = 'meeting.maxParticipantsNumber',
   ACCESS_REQUEST_DENINED = 'meeting.requestDenied',
+  TIME_LIMIT = 'meeting.timeLimit',
 }

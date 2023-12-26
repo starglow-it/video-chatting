@@ -74,8 +74,8 @@ import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
-import { WsBadRequestException } from 'src/exceptions/ws.exception';
-import { LeaveMeetingRequestDTO } from 'src/dtos/requests/leave-meeting.dto';
+import { WsBadRequestException } from '../exceptions/ws.exception';
+import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -446,17 +446,9 @@ export class MeetingsGateway
             mainUser &&
               mainUser.maxMeetingTime === 0 &&
               this.meetingsCommonService.checkCurrentUserPlain(mainUser),
-            'meeting.timeLimit',
+            MeetingI18nErrorEnum.TIME_LIMIT,
           );
         }
-
-        throwWsError(
-          await this.meetingsCommonService.isMaxMembers(
-            meeting,
-            message.meetingRole,
-          ),
-          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
-        );
 
         const user = await this.usersService.createUser(
           {
@@ -700,6 +692,23 @@ export class MeetingsGateway
           user: { meetingAvatarId },
         } = message;
 
+        const user = this.getUserFromSocket(socket);
+
+        const meeting = await this.meetingsService.findById({
+          id: message.meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        throwWsError(
+          await this.meetingsCommonService.isMaxMembers(
+            meeting,
+            user.meetingRole,
+          ),
+          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
+        );
+
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.RequestSent,
           username: message.user.username,
@@ -717,42 +726,24 @@ export class MeetingsGateway
             },
           });
 
-          if (!meetingAvatar) {
-            return wsError(socket, {
-              message: 'Meeting Avatar not found',
-            });
-          }
+          throwWsError(!meetingAvatar, 'Meeting Avatar not found');
+
           Object.assign(updateData, {
             meetingAvatarId,
           });
         }
 
-        const user = await this.usersService.findOneAndUpdate({
+        const userUpdated = await this.usersService.findOneAndUpdate({
           query: { socketId: socket.id },
           data: updateData,
           session,
         });
 
-        const meeting = await this.meetingsService.findById({
-          id: message.meetingId,
-          session,
-        });
-
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
         await meeting.populate(['owner', 'users', 'hostUserId']);
 
         const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
 
-        throwWsError(
-          await this.meetingsCommonService.isMaxMembers(
-            meeting,
-            user.meetingRole,
-          ),
-          MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER,
-        );
-
-        const plainUser = userSerialization(user);
+        const plainUser = userSerialization(userUpdated);
 
         const plainMeeting = meetingSerialization(meeting);
 
