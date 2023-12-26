@@ -266,7 +266,7 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
-    default: false
+    default: false,
   })
   isPublishAudience: boolean;
 }

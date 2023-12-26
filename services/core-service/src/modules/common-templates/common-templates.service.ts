@@ -4,7 +4,6 @@ import {
   Model,
   PipelineStage,
   QueryOptions,
-  UpdateQuery,
 } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
