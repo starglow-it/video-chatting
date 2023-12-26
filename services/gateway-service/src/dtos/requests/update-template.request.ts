@@ -202,7 +202,6 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'indexUsers must be string', each: true })
   indexUsers: string[];
 
-
   @ApiProperty({
     required: false,
     type: String,
@@ -216,8 +215,8 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
     type: Number,
   })
   @IsOptional()
-  @IsNumber()
-  @Min(2)
+  @IsNumber({}, {message: 'maxParticipants must be number'})
+  @Min(2, { message: 'maxParticipants minimun of 2' })
   maxParticipants: number;
 
   @ApiProperty({
