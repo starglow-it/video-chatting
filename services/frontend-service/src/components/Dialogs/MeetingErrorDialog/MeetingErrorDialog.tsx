@@ -15,6 +15,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
+import { MeetingI18nErrorEnum } from 'shared-const';
 import { $appDialogsStore, $authStore, appDialogsApi } from '../../../store';
 
 // types
@@ -25,7 +26,7 @@ import styles from './MeetingErrorDialog.module.scss';
 
 // const
 import { dashboardRoute, loginRoute } from '../../../const/client-routes';
-import { $meetingErrorStore } from '../../../store/roomStores';
+import { $isOwner, $meetingErrorStore } from '../../../store/roomStores';
 
 const Component = () => {
     const router = useRouter();
@@ -33,15 +34,16 @@ const Component = () => {
     const { meetingErrorDialog } = useStore($appDialogsStore);
     const error = useStore($meetingErrorStore);
     const { isWithoutAuthen } = useStore($authStore);
+    const isOwner = useStore($isOwner);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
-        if (error === 'meeting.timeLimit') {
+        if (error === MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER && isOwner) {
             router.push(isWithoutAuthen ? loginRoute : dashboardRoute);
         }
-    }, [error]);
+    }, [error, isOwner]);
 
     const { isMobile } = useBrowserDetect();
 
