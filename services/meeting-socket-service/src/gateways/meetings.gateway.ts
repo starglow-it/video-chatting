@@ -74,8 +74,8 @@ import { UsersComponent } from '../modules/users/users.component';
 import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
-import { WsBadRequestException } from 'src/exceptions/ws.exception';
-import { LeaveMeetingRequestDTO } from 'src/dtos/requests/leave-meeting.dto';
+import { WsBadRequestException } from '../exceptions/ws.exception';
+import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
