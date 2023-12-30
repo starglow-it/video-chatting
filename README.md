@@ -1,11 +1,10 @@
-#The LiveOffice
+# Ruume
 
-###Project Overview
+### Project Overview
 
-1. [Database Schemas](https://wiki.fora-soft.com/display/LO/Database+schemas)
-2. [Architecture](https://wiki.fora-soft.com/display/LO/Architechture)
+1. [Database Schemas](./documentation/assets/pdf/Ruume_db.pdf)
+2. [Architecture](./documentation/architecture.md)
 
 ### Documentation
 1. [Set local env development variables](./documentation/set_local_env_variables.md) **IMPORTANT**
-2. [Start project](./documentation/start_project.md)
-3. [Step by step to run local] (https://docs.google.com/document/d/1vy-zMRYJcdrbBJ14hgbn035knu3-DQmLpZNdflCy6OE/edit?usp=sharing)
+2. [Start project locally](./documentation/start_project.md)
