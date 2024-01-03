@@ -61,6 +61,10 @@ import styles from './DevicesSettingsDialog.module.scss';
 // validations
 import { BackgroundManager } from '../../../helpers/media/applyBlur';
 import { changeTracksState } from '../../../helpers/media/changeTrackState';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED, MEDIA_DEVICE_NOT_ACCESSIBLE, MEDIA_DEVICE_NOT_FOUND, MEDIA_GENERAL_ERROR, MEDIA_INVALID_CONSTRAINTS, MEDIA_NOT_ALLOWED_BY_BROWSER, MEDIA_NOT_ALLOWED_BY_SYSTEM, MEDIA_OPERATION_ABORTED, MEDIA_SECURITY_ERROR } from 'src/helpers/media/getMediaStream';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 const Component = () => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
@@ -78,6 +82,11 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const isAudioError = Boolean(audioError);
+    const isVideoError = Boolean(videoError);
+    const [showDeviceError, setShowDeviceError] = useState("");
+    const { isMobile } = useBrowserDetect();
+
     const {
         avatar: { list },
         avatarTmp,
@@ -152,20 +161,48 @@ const Component = () => {
         setVolume(backgroundAudioVolume);
     }, [backgroundAudioVolume]);
 
+    useEffect(() => {
+        if (isAudioError) {
+            setIsAudioActiveEvent(false); // This assumes setIsAudioActiveEvent will set isMicActive to false
+        }
+    }, [isAudioError]);
+
+    useEffect(() => {
+        if (isVideoError) {
+            setIsCameraActiveEvent(false); // This assumes setIsCameraActiveEvent will set isCameraActive to false
+        }
+    }, [isVideoError]);
+
     const handleToggleCamera = useCallback(() => {
-        changeTracksState({
-            enabled: !isNewCameraSettingActive,
-            tracks: changeStream?.getVideoTracks() ?? [],
-        });
-        handleToggleNewCameraSetting();
+        if (isVideoError) {
+            addNotificationEvent({
+                type: NotificationType.CamAction,
+                message: `meeting.deviceErrors.${videoError?.type}`,
+            });
+            setShowDeviceError('video');
+        } else {
+            changeTracksState({
+                enabled: !isNewCameraSettingActive,
+                tracks: changeStream?.getVideoTracks() ?? [],
+            });
+            handleToggleNewCameraSetting();
+        }
     }, [changeStream, isNewCameraSettingActive]);
 
     const handleToggleMic = useCallback(() => {
-        changeTracksState({
-            enabled: !isNewMicSettingActive,
-            tracks: changeStream?.getAudioTracks() ?? [],
-        });
-        handleToggleNewMicSetting();
+        if (isAudioError) {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.deviceErrors.${audioError?.type}`,
+            });
+            setShowDeviceError('audio');
+        } else {
+            changeTracksState({
+                enabled: !isNewMicSettingActive,
+                tracks: changeStream?.getAudioTracks() ?? [],
+            });
+            handleToggleNewMicSetting();
+        }
     }, [isNewMicSettingActive, changeStream]);
 
     const handleSaveSettings = useCallback(async () => {
@@ -220,6 +257,110 @@ const Component = () => {
         avatarTmp,
     ]);
 
+    const renderErrorContent = (src: string, translationKey: string) => (
+        <>
+            <ConditionalRender condition={Boolean(src)}>
+                <CustomImage
+                    src={src}
+                    width={10}
+                    height={100}
+                    unoptimized={false}
+                    objectFit="contain"
+                />
+            </ConditionalRender>
+            <CustomTypography
+                textAlign="center"
+                fontSize={14}
+                nameSpace="meeting"
+                translation={translationKey}
+                className={styles.devicesError}
+            />
+        </>
+    );
+
+    const openSystemSettings = (): void => {
+        const userAgent: string = navigator.userAgent;
+        const deviceSetting = showDeviceError === "video" ? 'camera' : 'microphone';
+
+        let preferencesURI: string;
+
+        if (/Mac|Macintosh|OS X/.test(userAgent)) {
+            const macSetting = deviceSetting === 'camera' ? 'Privacy_Camera' : 'Privacy_Microphone';
+            preferencesURI = `x-apple.systempreferences:com.apple.preference.security?${macSetting}`;
+        } else if (/Windows/.test(userAgent)) {
+            const windowsSetting = deviceSetting === 'camera' ? 'webcam' : 'microphone';
+            preferencesURI = `ms-settings:privacy-${windowsSetting}`;
+        } else {
+            // Default to Linux or other OS
+            preferencesURI = `gnome-control-center ${deviceSetting}`;
+        }
+
+        openPreferences(preferencesURI);
+    };
+    const openPreferences = (preferencesURI: string): void => {
+        try {
+            window.open(preferencesURI);
+        } catch (error) {
+            console.error("Failed to open preferences:", error);
+        }
+    };
+
+    const determineRenderContent = () => {
+        if (showDeviceError == "") {
+            return;
+        }
+        const error = showDeviceError == "audio" ? audioError : videoError;
+        if (error?.type == MEDIA_NOT_ALLOWED_BY_BROWSER) {
+            return renderErrorContent("/images/reset-permission.gif", "allowAccess.desktop.allowDevice");
+        }
+
+        if (error?.type == MEDIA_NOT_ALLOWED_BY_SYSTEM) {
+            return (
+                <>
+                    <CustomTypography
+                        textAlign="center"
+                        fontSize={14}
+                        nameSpace="meeting"
+                        translation="allowAccess.desktop.allowChromeDescription"
+                        className={styles.devicesError}
+                    />
+                    {renderErrorContent("", "allowAccess.desktop.allowChrome")}
+                    <CustomGrid
+                        container
+                        gap={1}
+                        wrap="nowrap" className={styles.openSystemSettingsButton}>
+                        <CustomButton
+                            onClick={openSystemSettings}
+                            variant="custom-primary"
+                            label={
+                                <Translation
+                                    nameSpace="common"
+                                    translation="buttons.openSystemSettings"
+                                />
+                            }
+                        />
+                    </CustomGrid>
+                </>
+            );
+        }
+
+        if (error?.type == MEDIA_DEVICE_NOT_FOUND) {
+            return renderErrorContent("", "allowAccess.desktop.notFoundDevice");
+        }
+
+        if (error?.type == MEDIA_GENERAL_ERROR) {
+            return renderErrorContent("", "allowAccess.desktop.errorDevice");
+        }
+        if (error?.type == MEDIA_OPERATION_ABORTED ||
+            error?.type == MEDIA_DEVICE_NOT_ACCESSIBLE ||
+            error?.type == MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED ||
+            error?.type == MEDIA_SECURITY_ERROR ||
+            error?.type == MEDIA_INVALID_CONSTRAINTS) {
+            return renderErrorContent("", error?.message || "");
+        }
+    };
+
+
     return (
         <CustomDialog
             open={devicesSettingsDialog}
@@ -230,8 +371,8 @@ const Component = () => {
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
                     <MediaPreview
-                        videoError={videoError}
-                        audioError={audioError}
+                        videoError={videoError || undefined}
+                        audioError={audioError || undefined}
                         videoDevices={videoDevices}
                         audioDevices={audioDevices}
                         isCameraActive={isNewCameraSettingActive}
@@ -242,14 +383,14 @@ const Component = () => {
                         profileAvatar={
                             avatarTmp
                                 ? list.find(item => item.id === avatarTmp)
-                                      ?.resouce?.url
+                                    ?.resouce?.url
                                 : isFirstime.current &&
-                                  localUser.meetingAvatarId
-                                ? list.find(
-                                      item =>
-                                          item.id === localUser.meetingAvatarId,
-                                  )?.resouce?.url
-                                : profile.profileAvatar?.url
+                                    localUser.meetingAvatarId
+                                    ? list.find(
+                                        item =>
+                                            item.id === localUser.meetingAvatarId,
+                                    )?.resouce?.url
+                                    : profile.profileAvatar?.url
                         }
                         userName={localUser?.username}
                         devicesSettingsDialog={devicesSettingsDialog}
@@ -286,6 +427,28 @@ const Component = () => {
                         />
                     </CustomGrid>
                 </CustomGrid>
+            </CustomGrid>
+            <CustomGrid container direction="column" wrap="nowrap" className={styles.errorContent}>
+                <ConditionalRender condition={isAudioError || isVideoError}>
+                    {determineRenderContent()}
+                    <ConditionalRender condition={isMobile}>
+                        <CustomImage
+                            src="/images/reload.svg"
+                            width={10}
+                            height={85}
+                            objectFit="contain"
+                            onClick={() => window.location.reload()}
+                        />
+                        <CustomTypography
+                            textAlign="center"
+                            fontSize={14}
+                            nameSpace="meeting"
+                            translation="allowAccess.mobile"
+                            className={styles.devicesError}
+                        />
+
+                    </ConditionalRender>
+                </ConditionalRender>
             </CustomGrid>
             <CustomButton
                 onClick={handleSaveSettings}

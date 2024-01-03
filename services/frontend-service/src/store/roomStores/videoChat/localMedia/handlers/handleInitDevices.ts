@@ -110,8 +110,8 @@ export const handleInitDevices = async ({
                 setChangeStreamEvent(changeStream);
             }
 
-            setAudioErrorEvent('');
-            setVideoErrorEvent('');
+            setAudioErrorEvent(null);
+            setVideoErrorEvent(null);
 
             if (audio.length) {
                 setAudioDevicesEvent(audio);
@@ -123,8 +123,8 @@ export const handleInitDevices = async ({
         }
 
         if (newAudioError || newVideoError) {
-            setAudioErrorEvent(newAudioError);
-            setVideoErrorEvent(newVideoError);
+            setAudioErrorEvent(newAudioError || null);
+            setVideoErrorEvent(newVideoError || null);
         }
 
         setIsStreamRequestedEvent(false);

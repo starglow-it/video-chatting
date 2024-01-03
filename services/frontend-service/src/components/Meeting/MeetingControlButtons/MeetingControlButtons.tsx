@@ -31,8 +31,9 @@ import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
-import { $authStore, deleteDraftUsers } from '../../../store';
+import { $authStore, addNotificationEvent, deleteDraftUsers } from '../../../store';
 import {
+    $audioErrorStore,
     $isHaveNewMessage,
     $isLurker,
     $isMeetingHostStore,
@@ -59,6 +60,7 @@ import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
+import { NotificationType } from 'src/store/types';
 
 const Component = () => {
     const router = useRouter();
@@ -81,10 +83,13 @@ const Component = () => {
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
                     user.accessStatus ===
-                        MeetingAccessStatusEnum.SwitchRoleSent,
+                    MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
     const isThereNewMessage = useStore($isHaveNewMessage);
+
+    const audioError = useStore($audioErrorStore);
+    const isAudioError = Boolean(audioError);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -95,6 +100,12 @@ const Component = () => {
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
     }, [isMeetingHost, isThereNewRequests]);
+
+    useEffect(() => {
+        if (isAudioError) {
+            setIsAudioActiveEvent(false); // This assumes setIsAudioActiveEvent will set isMicActive to false
+        }
+    }, [isAudioError]);
 
     const handleEndVideoChat = useCallback(async () => {
         disconnectFromVideoChatEvent();
@@ -116,14 +127,26 @@ const Component = () => {
     }, []);
 
     const handleToggleMic = useCallback(() => {
-        if (isMeetingConnected) {
-            updateLocalUserEvent({
-                micStatus: isMicActive ? 'inactive' : 'active',
+        if (isAudioError) {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.deviceErrors.${audioError?.type}`,
             });
-            setDevicesPermission({
-                isMicEnabled: !isMicActive,
-            });
-            setIsAudioActiveEvent(!isMicActive);
+        } else {
+            if (isMeetingConnected) {
+                updateLocalUserEvent({
+                    micStatus: isMicActive ? 'inactive' : 'active',
+                });
+                setDevicesPermission({
+                    isMicEnabled: !isMicActive,
+                });
+                setIsAudioActiveEvent(!isMicActive);
+            } else {
+                addNotificationEvent({
+                    type: NotificationType.validationError,
+                    message: `meeting.connectionError}`,
+                });
+            }
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 

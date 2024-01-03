@@ -10,6 +10,7 @@ import {
     ToggleDevicePayload,
     UseMediaDevices,
 } from '../types';
+import { MediaStreamError } from 'src/helpers/media/getMediaStream';
 
 export const $audioDevicesStore = videoChatDomain.createStore<
     UseMediaDevices['audioDevices']
@@ -25,11 +26,11 @@ export const $isCameraActiveStore = videoChatDomain.createStore<boolean>(true);
 export const $isMicActiveStore = videoChatDomain.createStore<boolean>(true);
 export const $isStreamRequestedStore =
     videoChatDomain.createStore<boolean>(false);
-export const $audioErrorStore = videoChatDomain.createStore<string | undefined>(
-    '',
+export const $audioErrorStore = videoChatDomain.createStore<MediaStreamError | null>(
+    null,
 );
-export const $videoErrorStore = videoChatDomain.createStore<string | undefined>(
-    '',
+export const $videoErrorStore = videoChatDomain.createStore<MediaStreamError | null>(
+    null,
 );
 export const $currentAudioDeviceStore = videoChatDomain.createStore<string>('');
 export const $currentVideoDeviceStore = videoChatDomain.createStore<string>('');
@@ -79,10 +80,10 @@ export const setActivePermissionsEvent =
         'setActivePermissionsEvent',
     );
 export const setAudioErrorEvent = videoChatDomain.createEvent<
-    string | undefined
+    MediaStreamError | null
 >('setAudioErrorEvent');
 export const setVideoErrorEvent = videoChatDomain.createEvent<
-    string | undefined
+    MediaStreamError | null
 >('setVideoErrorEvent');
 export const setCurrentAudioDeviceEvent = videoChatDomain.createEvent<string>(
     'setCurrentAudioDeviceEvent',

@@ -22,3 +22,22 @@
 .loader {
   margin: rem(28px auto 0 auto);
 }
+
+.blockAccess{
+  display: flex;
+  flex-direction: column;
+}
+
+.devicesError {
+  margin-top: rem(15px);
+}
+
+.openSystemSettingsButton {
+  width: 50%;
+  margin: auto;
+  margin-top: 10px;
+}
+
+.errorContent {
+  margin-top: rem(40px);
+}

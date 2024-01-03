@@ -18,7 +18,14 @@
     "remember": "Remember my settings"
   },
   "allowAccess": {
-    "desktop": "To Join Reset Your Mic & Cam",
+    "desktop": {
+      "allowDevice": "Please allow access to your microphone and camera.",
+      "allowChrome": "Allow Chrome to use your microphone.",
+      "allowChromeDescription": "In System Settings, open 'Privacy & security' and allow Chrome access to your microphone and camera",
+      "notFoundDevice": "Check your system settings to make sure that a camera is available. If not, plug one in. You might then need to restart your browser.",
+      "errorDevice": "There was an error accessing the media devices. Please reset your microphone and camera to join the meeting.",
+      "noDevice": "Will you be joining the meeting without a microphone and camera?"
+    },
     "mobile": "Reload & Allow Access to Mic & Cam"
   },
   "preview": {

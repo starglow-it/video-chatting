@@ -69,12 +69,11 @@ export const handleChangeStream = async ({
 
                 setChangeStreamEvent(stream);
             }
-
-            setAudioErrorEvent('');
-            setVideoErrorEvent('');
+            setAudioErrorEvent(newStream?.audioError || null);
+            setVideoErrorEvent(newStream?.videoError || null);
         }
-
-        if (newStream?.error) {
+        
+        if (newStream?.audioError != null && newStream?.videoError != null) {
             setAudioErrorEvent(newStream?.audioError);
             setVideoErrorEvent(newStream?.videoError);
             setChangeStreamEvent(null);

@@ -8,6 +8,13 @@
       "on": "Camera ON",
       "off": "Camera OFF"
     },
+    "deviceErrors": {
+      "notAllowedByBrowser": "Please allow access to your device in your browser.",
+      "notAllowedBySystem": "Allow Chrome to use your device in System Settings",
+      "deviceNotFound": "Can't find your device",
+      "deviceNotAccessible": "deviceNotAccessible",
+      "generalError": "There was an error accessing the media devices."
+    },
     "devices": {
       "saved": "New settings saved"
     },
@@ -20,7 +27,8 @@
     "uploadSuccess": "Upload background success",
     "deleteBackgroundSuccess": "Delete background success",
     "deleteBackgroundError": "Delete background error",
-    "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience."
+    "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
+    "connectionError": "Meeting is not connected."
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",

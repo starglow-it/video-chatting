@@ -145,7 +145,7 @@ const Component = () => {
 
     return (
         <>
-            <ConditionalRender condition={!isMobile && !!!videoError}>
+            <ConditionalRender condition={!isMobile && videoError == null}>
                 <Select
                     className={styles.selectDeviceInput}
                     value={currentVideoDevice}

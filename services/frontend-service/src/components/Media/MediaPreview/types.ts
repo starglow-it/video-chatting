@@ -1,3 +1,4 @@
+import { MediaStreamError } from 'src/helpers/media/getMediaStream';
 import { CustomMediaStream } from '../../../types';
 
 export type MediaPreviewProps = {
@@ -6,8 +7,8 @@ export type MediaPreviewProps = {
     userName: string;
     onToggleAudio?: () => void;
     onToggleVideo?: () => void;
-    videoError?: string;
-    audioError?: string;
+    videoError?: MediaStreamError;
+    audioError?: MediaStreamError;
     profileAvatar?: string;
     videoDevices: MediaDeviceInfo[];
     audioDevices: MediaDeviceInfo[];
