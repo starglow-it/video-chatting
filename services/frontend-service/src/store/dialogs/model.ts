@@ -5,6 +5,7 @@ export const initialDialogsState: AppDialogsState = {
     isUserRegisteredDialog: false,
     devicesSettingsDialog: false,
     endMeetingDialog: false,
+    meetingEndDialog: false,
     inviteAttendeeByEmailDialog: false,
     meetingErrorDialog: false,
     userToKickDialog: false,
