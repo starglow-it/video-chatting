@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo, useState } from 'react';
 import { Resizable } from 'react-resizable';
 import clsx from 'clsx';
 import { CustomResizableProps } from './type';
@@ -37,21 +37,35 @@ const Component = ({
     disabled = false,
     children,
     ...restProps
-}: CustomResizableProps) => (
-    <Resizable
+}: CustomResizableProps) => {
+    const [offsetParent, setOffsetParent] = useState<HTMLElement | null>(null);
+  
+    return (
+      <Resizable
         width={width}
         height={height}
         lockAspectRatio
         axis="x"
         draggableOpts={{
-            disabled,
-            offsetParent: document.body,
+          disabled,
+          offsetParent,
         }}
         className={styles['react-resizable']}
-        handle={<MyHandle disabled={disabled} />}
+        handle={
+          <MyHandle
+            handleAxis="x"
+            disabled={disabled}
+            ref={(handleRef) => {
+              if (handleRef) {
+                setOffsetParent(handleRef.parentElement);
+              }
+            }}
+          />
+        }
         {...restProps}
-    >
+      >
         {children}
-    </Resizable>
-);
+      </Resizable>
+    );
+  };
 export const CustomResizable = memo(Component);
