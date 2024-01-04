@@ -135,68 +135,70 @@ const Component = () => {
 
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
-            <FormProvider {...methods}>
-                <CustomPaper
-                    className={clsx(styles.commonOpenPanel, {
-                        [styles.mobile]: isMobile,
-                    })}
-                    variant="black-glass"
-                >
-                    <CustomGrid
-                        container
-                        alignItems="center"
-                        flexDirection="row"
-                        justifyContent="center"
+            <div>
+                <FormProvider {...methods}>
+                    <CustomPaper
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile,
+                        })}
+                        variant="black-glass"
                     >
-                        <ActionButton
-                            className={clsx(styles.actionButton, {
-                                [styles.disabled]: isLurker && !!!profile.id,
-                            })}
-                            Icon={<NotesIcon width="32px" height="32px" />}
-                            onClick={changeExpand}
-                        />
+                        <CustomGrid
+                            container
+                            alignItems="center"
+                            flexDirection="row"
+                            justifyContent="center"
+                        >
+                            <ActionButton
+                                className={clsx(styles.actionButton, {
+                                    [styles.disabled]: isLurker && !!!profile.id,
+                                })}
+                                Icon={<NotesIcon width="32px" height="32px" />}
+                                onClick={changeExpand}
+                            />
 
-                        <CustomGrid flex={1}>
-                            <ConditionalRender
-                                condition={!isLurker || !!profile.id}
-                            >
-                                <CustomInput
-                                    nameSpace="meeting"
-                                    translation="features.notes.input"
-                                    className={clsx(
-                                        materialStyles.textField,
-                                        styles.textField,
-                                        { [styles.expanded]: isExpand },
-                                    )}
-                                    onKeyDown={handleKeyDown}
-                                    {...restRegisterData}
-                                    onChange={handleChange}
-                                />
-                            </ConditionalRender>
-                            <ConditionalRender
-                                condition={isLurker && !!!profile.id}
-                            >
-                                <CustomGrid
-                                    className={styles.fieldNoLogin}
-                                    display="flex"
-                                    alignItems="center"
+                            <CustomGrid flex={1}>
+                                <ConditionalRender
+                                    condition={!isLurker || !!profile.id}
                                 >
-                                    <span>
-                                        <a
-                                            href={`${config.frontendUrl}/register`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Join
-                                        </a>{' '}
-                                        to Post a Sticky Note
-                                    </span>
-                                </CustomGrid>
-                            </ConditionalRender>
+                                    <CustomInput
+                                        nameSpace="meeting"
+                                        translation="features.notes.input"
+                                        className={clsx(
+                                            materialStyles.textField,
+                                            styles.textField,
+                                            { [styles.expanded]: isExpand },
+                                        )}
+                                        onKeyDown={handleKeyDown}
+                                        {...restRegisterData}
+                                        onChange={handleChange}
+                                    />
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={isLurker && !!!profile.id}
+                                >
+                                    <CustomGrid
+                                        className={styles.fieldNoLogin}
+                                        display="flex"
+                                        alignItems="center"
+                                    >
+                                        <span>
+                                            <a
+                                                href={`${config.frontendUrl}/register`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Join
+                                            </a>{' '}
+                                            to Post a Sticky Note
+                                        </span>
+                                    </CustomGrid>
+                                </ConditionalRender>
+                            </CustomGrid>
                         </CustomGrid>
-                    </CustomGrid>
-                </CustomPaper>
-            </FormProvider>
+                    </CustomPaper>
+                </FormProvider>
+            </div>
         </ClickAwayListener>
     );
 };
