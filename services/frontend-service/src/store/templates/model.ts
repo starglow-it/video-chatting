@@ -28,6 +28,16 @@ import {
     UploadUserTemplateFileResponse,
 } from './types';
 
+import {
+    editUserTemplateFx,
+    getProfileTemplatesFx,
+} from '../profile/profileTemplates/model';
+import { appDialogsApi } from '../dialogs/init';
+import { AppDialogsEnum } from '../types';
+import { googleVerifyFx, loginUserFx } from '../auth/model';
+import { clearProfileEvent } from '../profile/profile/model';
+
+
 const initialTemplatesStore: EntityList<ICommonTemplate> = {
     list: [],
     count: 0,
@@ -37,49 +47,6 @@ const initialUserTemplatesStore: EntityList<IUserTemplate> = {
     list: [],
     count: 0,
 };
-
-// stores
-export const $templatesStore = templatesDomain.createStore<
-    EntityList<ICommonTemplate>
->(initialTemplatesStore);
-export const $setUpTemplateStore =
-    templatesDomain.createStore<ICommonTemplate | null>(null);
-export const $templatePreviewStore =
-    templatesDomain.createStore<ICommonTemplate | null>(null);
-export const $discoveryTemplatesStore = templatesDomain.createStore<
-    EntityList<IUserTemplate>
->(initialUserTemplatesStore);
-export const $scheduleTemplateIdStore =
-    templatesDomain.createStore<IUserTemplate['id']>('');
-export const $scheduleTemplateStore = templatesDomain.createStore<
-    Partial<IUserTemplate>
->({});
-export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
-export const $replaceTemplateIdStore =
-    templatesDomain.createStore<ICommonTemplate['id']>('');
-export const $templateDraft = templatesDomain.createStore<
-    ICommonTemplate | IUserTemplate | null
->(null);
-export const $queryTemplatesStore =
-    templatesDomain.createStore<QueryGetTemplates>({
-        draft: false,
-        isPublic: true,
-        limit: 8,
-        skip: 0,
-        sort: 'maxParticipants',
-        direction: 1,
-        roomType: RoomType.Normal,
-    });
-
-export const $queryProfileTemplatesStore =
-    templatesDomain.createStore<QueryParams>({
-        limit: 8,
-        skip: 0,
-    });
-
-export const $modeTemplateStore = templatesDomain.createStore<
-    'private' | 'common'
->('private');
 
 // events
 export const setPreviewTemplate = templatesDomain.event<ICommonTemplate | null>(
@@ -212,3 +179,109 @@ export const deleteCommonTemplateFx = templatesDomain.effect<
 
 export const $isUploadTemplateBackgroundInProgress =
     uploadTemplateFileFx.pending;
+
+//Store
+
+export const $templatesStore = templatesDomain.createStore<
+    EntityList<ICommonTemplate>
+>(initialTemplatesStore)
+.on(getTemplatesFx.doneData, (state, data) => ({
+    ...data,
+    list: data.isReset
+        ? data.list
+        : [
+              ...state.list,
+              ...data.list.filter(item => !item.isAcceptNoLogin),
+          ],
+}))
+.reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
+
+export const $setUpTemplateStore =
+    templatesDomain.createStore<ICommonTemplate | null>(null)
+    .on(getTemplateFx.doneData, (state, data) => data);
+export const $templatePreviewStore =
+    templatesDomain.createStore<ICommonTemplate | null>(null)
+    .on(
+        setPreviewTemplate,
+        (_state, data: ICommonTemplate | null) => data,
+    );
+
+export const $discoveryTemplatesStore = templatesDomain.createStore<
+    EntityList<IUserTemplate>
+>(initialUserTemplatesStore)
+.on(getUsersTemplatesFx.doneData, (state, data) => ({
+    ...state,
+    ...data,
+}));
+
+export const $scheduleTemplateIdStore =
+    templatesDomain.createStore<IUserTemplate['id']>('')
+    .on(setScheduleTemplateIdEvent, (state, data) => data);
+export const $scheduleTemplateStore = templatesDomain.createStore<
+    Partial<IUserTemplate>
+>({})
+.on(setScheduleTemplateEvent, (state, data) => ({
+    ...state,
+    ...data,
+}));
+
+export const $scheduleEventLinkStore = templatesDomain.createStore<string>('')
+.on(setScheduleEventLinkEvent, (state, data) => {
+    if (data) {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+        });
+    } else {
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+        });
+    }
+
+    return data;
+});
+
+export const $replaceTemplateIdStore =
+    templatesDomain.createStore<ICommonTemplate['id']>('')
+    .on(setReplaceTemplateIdEvent, (state, data) => data);
+export const $templateDraft = templatesDomain.createStore<
+    ICommonTemplate | IUserTemplate | null
+>(null)
+.on(
+    [
+        createTemplateFx.doneData,
+        editTemplateFx.doneData,
+        getEditingTemplateFx.doneData,
+        editUserTemplateFx.doneData,
+    ],
+    (state, data) => data,
+)
+.reset(clearTemplateDraft);
+
+export const $queryTemplatesStore =
+    templatesDomain.createStore<QueryGetTemplates>({
+        draft: false,
+        isPublic: true,
+        limit: 8,
+        skip: 0,
+        sort: 'maxParticipants',
+        direction: 1,
+        roomType: RoomType.Normal,
+    })
+    .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
+    .on(getProfileTemplatesFx.doneData, (state, data) => ({
+        ...state,
+        skip: data?.skip || 0,
+    }))
+    .reset(setQueryTemplatesEvent);
+
+export const $queryProfileTemplatesStore =
+    templatesDomain.createStore<QueryParams>({
+        limit: 8,
+        skip: 0,
+    });
+
+export const $modeTemplateStore = templatesDomain.createStore<
+    'private' | 'common'
+>('private')
+.on(setQueryTemplatesEvent, () => 'common')
+    .on(setQueryProfileTemplatesEvent, () => 'private');
