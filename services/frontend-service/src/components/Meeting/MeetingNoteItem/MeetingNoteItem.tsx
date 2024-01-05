@@ -14,8 +14,8 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { useTimer } from '@hooks/useTimer';
-import { MAX_MILLISECOND_BLUR_NOTE } from 'src/const/time/common';
+// import { useTimer } from '@hooks/useTimer';
+// import { MAX_MILLISECOND_BLUR_NOTE } from 'src/const/time/common';
 
 // icons
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
@@ -33,6 +33,7 @@ import {
     $isMeetingHostStore,
     $localUserStore,
     $meetingUsersStore,
+    $isLurker,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
 } from '../../../store/roomStores';
@@ -52,6 +53,7 @@ const Component = ({
 }) => {
     const localUser = useStore($localUserStore);
     const isMeetingHost = useStore($isMeetingHostStore);
+    const isLurker = useStore($isLurker);
 
     const user = useStoreMap({
         store: $meetingUsersStore,
@@ -63,11 +65,11 @@ const Component = ({
 
     const yPosition = 250 + noteIndex * 124 + 20 * noteIndex;
 
-    const {
-        value: currentTime,
-        onStartTimer: handleStartCountDown,
-        onEndTimer: handleEndCountDown,
-    } = useTimer(true);
+    // const {
+    //     value: currentTime,
+    //     onStartTimer: handleStartCountDown,
+    //     onEndTimer: handleEndCountDown,
+    // } = useTimer(true);
 
     const {
         value: isDragging,
@@ -75,21 +77,23 @@ const Component = ({
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
 
-    useEffect(() => {
-        handleStartCountDown(0, MAX_MILLISECOND_BLUR_NOTE);
-    }, [note.id]);
+    // useEffect(() => {
+    //     handleStartCountDown(0, MAX_MILLISECOND_BLUR_NOTE);
+    // }, [note.id]);
 
     const handleUnpinNote = useCallback(() => {
-        removeLocalMeetingNoteEvent(note.id);
-        removeMeetingNoteSocketEvent({ noteId: note.id });
+        if (!isLurker) {
+            removeLocalMeetingNoteEvent(note.id);
+            removeMeetingNoteSocketEvent({ noteId: note.id });
+        }
     }, [note.id]);
 
-    useEffect(() => {
-        if (currentTime === MAX_MILLISECOND_BLUR_NOTE) {
-            handleUnpinNote();
-            handleEndCountDown();
-        }
-    }, [currentTime]);
+    // useEffect(() => {
+    //     if (currentTime === MAX_MILLISECOND_BLUR_NOTE) {
+    //         handleUnpinNote();
+    //         handleEndCountDown();
+    //     }
+    // }, [currentTime]);
 
     const handleStart = useCallback(() => {
         handleOnDragging();
