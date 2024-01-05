@@ -8,3 +8,4 @@
 ### Documentation
 1. [Set local env development variables](./documentation/set_local_env_variables.md) **IMPORTANT**
 2. [Start project locally](./documentation/start_project.md)
+3. [Deployment](./documentation/deployment.md)
