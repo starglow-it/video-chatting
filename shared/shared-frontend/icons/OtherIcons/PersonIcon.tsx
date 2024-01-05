@@ -1,15 +1,18 @@
-import React, { memo } from 'react';
+import React, { ForwardedRef, forwardRef, memo } from 'react';
 import { CommonIconProps } from '../types';
 import { SvgIconWrapper } from '../SvgIconWrapper';
 
-const PersonIcon = memo(({ width, height, className, onClick }: CommonIconProps) => (
+const Component = (
+    { width, height, ...rest }: CommonIconProps,
+    ref: ForwardedRef<SVGSVGElement>
+) => (
     <SvgIconWrapper
+        ref={ref}
         width={width}
         height={height}
-        className={className}
-        onClick={onClick}
         viewBox="0 0 24 24"
         fill="none"
+        { ...rest }
     >
         <path
             fillRule="evenodd"
@@ -18,6 +21,6 @@ const PersonIcon = memo(({ width, height, className, onClick }: CommonIconProps)
             fill="currentColor"
         />
     </SvgIconWrapper>
-));
+);
 
-export { PersonIcon };
+export const PersonIcon = memo(forwardRef(Component));
