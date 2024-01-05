@@ -217,6 +217,7 @@ const Component = () => {
             await updateUserSocketEvent({
                 isAuraActive: isAuraEnabled,
                 meetingAvatarId: avatarTmp ?? undefined,
+                cameraStatus: isNewCameraSettingActive ? 'active' : 'inactive',
             });
 
             if (isAuraEnabled) {
