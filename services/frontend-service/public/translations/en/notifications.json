@@ -12,7 +12,7 @@
       "notAllowedByBrowser": "Please allow access to your device in your browser.",
       "notAllowedBySystem": "Allow Chrome to use your device in System Settings",
       "deviceNotFound": "Can't find your device",
-      "deviceNotAccessible": "deviceNotAccessible",
+      "deviceNotAccessible": "Device is using in another application.",
       "generalError": "There was an error accessing the media devices."
     },
     "devices": {
