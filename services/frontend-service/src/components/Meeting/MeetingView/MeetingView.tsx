@@ -73,7 +73,7 @@ import {
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
+// import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomBarMobile';
 import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
 import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
@@ -246,7 +246,7 @@ const Component = () => {
                         <MeetingChangeBackground />
                     </ConditionalRender>
                     <ConditionalRender condition={!isMobile}>
-                        <MeetingManageAudio />
+                        {/* <MeetingManageAudio /> */}
                     </ConditionalRender>
 
                     <LeaveNoteForm />

@@ -114,7 +114,7 @@ const Component: React.FunctionComponent<
                 bottom: bottom !== undefined ? bottom : null,
             });
         }
-    }, [isScreenSharing, bottom, left, defaultPos, isDragging]);
+    }, [isScreenSharing, bottom, left,  isDragging]);
 
     return (
         <Draggable
