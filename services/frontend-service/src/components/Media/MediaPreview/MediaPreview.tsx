@@ -59,7 +59,6 @@ const Component = ({
             })}
         >
             <RoundedVideo
-                isLocal
                 isCameraActive={isCameraActive}
                 isVideoAvailable={!isVideoDisabled}
                 userName={userName}
