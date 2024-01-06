@@ -165,6 +165,7 @@ export type AppDialogsState = {
     inviteGuestsDialog: boolean;
     confirmBecomeParticipantDialog: boolean;
     meetingEndDialog: boolean;
+    hostDeviceRequireDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -195,6 +196,7 @@ export enum AppDialogsEnum {
     meetingEndDialog = 'meetingEndDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
     confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
+    hostDeviceRequireDialog = 'hostDeviceRequireDialog',
 }
 
 export type DialogActionPayload = {

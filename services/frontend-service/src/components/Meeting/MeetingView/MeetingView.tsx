@@ -52,6 +52,7 @@ import {
     checkIsPortraitLayoutEvent,
 } from '../../../store';
 import {
+    $audioErrorStore,
     $isOwner,
     $isOwnerInMeeting,
     $isScreenSharingStore,
@@ -61,6 +62,7 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     $serverTypeStore,
+    $videoErrorStore,
     getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
@@ -78,6 +80,7 @@ import { MeetingBottomBarMobile } from '../MeetingBottomBarMobile/MeetingBottomB
 import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
 import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
 import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
+import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
 // helpers
 
 const Component = () => {
@@ -92,6 +95,10 @@ const Component = () => {
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const { isMobile } = useBrowserDetect();
     const { width, height } = useStore($windowSizeStore);
+    const videoError = useStore($videoErrorStore);
+    const audioError = useStore($audioErrorStore);
+    const isAudioError = Boolean(audioError);
+    const isVideoError = Boolean(videoError);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -103,12 +110,18 @@ const Component = () => {
     const prevHostUserId = useRef<string>(meeting.hostUserId);
 
     useEffect(() => {
-        if (isOwner && !isMobile) {
+        if (isOwner && !isMobile && isAudioError) {
             appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.inviteGuestsDialog,
+                dialogKey: AppDialogsEnum.hostDeviceRequireDialog,
             });
+        } else {
+            if (isOwner && !isMobile) {
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.inviteGuestsDialog,
+                });
+            }
         }
-    }, [isOwner, isMobile]);
+    }, [isOwner, isMobile, isAudioError, isVideoError]);
 
     useEffect(() => {
         if (!isOwnerInMeeting && isMeetingConnected) {
@@ -279,6 +292,7 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
+            <HostDeviceRequrieDialog />
             <InviteGuestsDialog />
             <ConfirmBecomeParticipantDialog />
             <DownloadIcsEventDialog />

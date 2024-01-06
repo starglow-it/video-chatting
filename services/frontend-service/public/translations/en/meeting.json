@@ -19,9 +19,9 @@
   },
   "allowAccess": {
     "desktop": {
-      "allowDevice": "Please allow access to your microphone and camera.",
-      "allowChrome": "Allow Chrome to use your microphone.",
-      "allowChromeDescription": "In System Settings, open 'Privacy & security' and allow Chrome access to your microphone and camera",
+      "allowDevice": "Your settings are currently disabled. Please check that your microphone and video camera are enabled in your browser, then refresh the browser.",
+      "allowChrome": "There was an error processing your devices. Please double-check your microphone and video camera settings on your computer and authorize access.",
+      "allowChromeDescription": "In System Settings, open Privacy & Security and allow Chrome access to your microphone and camera.",
       "notFoundDevice": "Check your system settings to make sure that a camera is available. If not, plug one in. You might then need to restart your browser.",
       "errorDevice": "There was an error accessing the media devices. Please reset your microphone and camera to join the meeting.",
       "noDevice": "Will you be joining the meeting without a microphone and camera?"
@@ -69,13 +69,14 @@
     "kick": "Kick",
     "stay": "Stay",
     "lockUp": "Lock Up",
-    "yes": "Yes"
+    "yes": "Yes",
+    "goToSetting": "Go To Setting"
   },
   "devices": {
-    "turnOn":"Turn on",
-    "turnOff":"Turn off",
-    "switchOn":"Switch ON",
-    "switchOff":"Switch OFF",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "switchOn": "Switch ON",
+    "switchOff": "Switch OFF",
     "clickToSeeYourself": "Click to see yourself",
     "selfViewOff": "Self-View Off",
     "dragAndResize": "Drag & Resize",
@@ -210,7 +211,7 @@
     "tooltip": "People"
   },
   "lurker": {
-    "buttons" : {
+    "buttons": {
       "requestBecomeParticipant": "Become a Participant"
     }
   },
@@ -229,5 +230,7 @@
     "public": "Public Meeting. Add an Audience"
   },
   "meetingPrivate": "The Meeting is private",
-  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience."
+  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
+  "hostDeviceRequireTitle": "Microphone Requirement for Host",
+  "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?"
 }

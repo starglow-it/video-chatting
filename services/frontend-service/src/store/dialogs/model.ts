@@ -29,6 +29,7 @@ export const initialDialogsState: AppDialogsState = {
     meetingFinishedDialog: false,
     inviteGuestsDialog: false,
     confirmBecomeParticipantDialog: false,
+    hostDeviceRequireDialog: false,
 };
 
 export const $appDialogsStore =
