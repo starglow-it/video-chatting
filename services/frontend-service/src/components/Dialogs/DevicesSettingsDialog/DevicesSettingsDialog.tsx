@@ -312,7 +312,8 @@ const Component = () => {
         }
         const error = showDeviceError == "audio" ? audioError : videoError;
         if (error?.type == MEDIA_NOT_ALLOWED_BY_BROWSER) {
-            return renderErrorContent("/images/reset-permission.gif", "allowAccess.desktop.allowDevice");
+            // return renderErrorContent("/images/reset-permission.gif", "allowAccess.desktop.allowDevice");
+            return renderErrorContent("", "allowAccess.desktop.allowDevice");
         }
 
         if (error?.type == MEDIA_NOT_ALLOWED_BY_SYSTEM) {
