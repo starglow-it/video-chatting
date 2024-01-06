@@ -139,7 +139,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const profileTemplates = useStore($profileTemplatesStore);
     const mode = useStore($modeTemplateStore);
     const { height } = useStore($windowSizeStore);
-    // const isPortraitLayout = useStore($isPortraitLayout);
+    const [isDashboardRoomRoute, setIsDashboardRoomRoute] = useState(false);
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -148,9 +148,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         new RegExp(route).test(router.pathname),
     );
 
-    const isDashboardRoomRoute = DASHBOARD_ROOM_HEADER.some(route =>
-        new RegExp(route).test(router.pathname),
-    );
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
     const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
     const isNotFoundRoute = new RegExp(`${NotFoundRoute}`).test(
@@ -172,11 +169,32 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     );
 
     useEffect(() => {
+        const checkRoute = () => {
+            const matches = DASHBOARD_ROOM_HEADER.some(route =>
+                new RegExp(route).test(router.pathname),
+            );
+            setIsDashboardRoomRoute(matches);
+        };
+
+        // Check the route initially
+        checkRoute();
+
+        // Check the route whenever the pathname changes on the client side
+        const handleRouteChange = () => {
+            checkRoute();
+        };
+
+        router.events.on('routeChangeComplete', handleRouteChange);
+
         (async () => {
             if (isDashboardRoute || isRoomRoute || isBaseRoute) {
                 initiateSocketConnectionEvent();
             }
         })();
+
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
+        };
     }, [router.pathname]);
 
     useEffect(() => {
