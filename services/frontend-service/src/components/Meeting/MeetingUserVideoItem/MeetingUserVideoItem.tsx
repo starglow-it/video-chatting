@@ -22,7 +22,7 @@ import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable
 import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore, addNotificationEvent } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isCameraActiveStore, $isOwner, $tracksStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
+import { $isCameraActiveStore, $isOwner, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -69,16 +69,26 @@ const MeetingUserVideoChildCom = ({
     const [isVideoSelfView, setVideoSelfView] =
         useState<boolean>(isCameraEnabled);
     const isCameraActive = useStore($isCameraActiveStore);
+    const videoError = useStore($videoErrorStore);
+    const isVideoError = Boolean(videoError);
+
 
     const toggleSelfView = async () => {
-        setIsCameraActiveEvent(!isCameraActive);
-        await updateUserSocketEvent({
-            cameraStatus: !isCameraActive ? 'active' : 'inactive',
-        });
-        addNotificationEvent({
-            type: NotificationType.DevicesAction,
-            message: 'meeting.devices.saved',
-        });
+        if (isVideoError) {
+            addNotificationEvent({
+                type: NotificationType.CamAction,
+                message: `meeting.deviceErrors.${videoError?.type}`,
+            });
+        } else {
+            setIsCameraActiveEvent(!isCameraActive);
+            await updateUserSocketEvent({
+                cameraStatus: !isCameraActive ? 'active' : 'inactive',
+            });
+            addNotificationEvent({
+                type: NotificationType.DevicesAction,
+                message: 'meeting.devices.saved',
+            });
+        }
     };
 
 
