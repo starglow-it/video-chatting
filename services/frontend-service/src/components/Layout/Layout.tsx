@@ -246,7 +246,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const hanleStartFreeRoom = async () => {
         const { userWithoutLoginId, userTemplateId } = parseCookies();
         if (!userWithoutLoginId) await initUserWithoutTokenFx({});
-        else router.push(getClientMeetingUrl(userTemplateId));
+        else {
+            const newPageUrl = await getClientMeetingUrl(userTemplateId);
+
+            window.open(newPageUrl, '_blank');
+        }
     };
     // console.log('#Duy Phan console pt', isPortraitLayout, height)
     const heightFull = useMemo(() => {
@@ -327,7 +331,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     >
                         <ConditionalRender
                             condition={
-                                ( !isMobile && !isRoomRoute )
+                                !isMobile
                                     ? !isNotFoundRoute 
                                     : !isNotFoundRoute && !isRoomRoute
                             }
