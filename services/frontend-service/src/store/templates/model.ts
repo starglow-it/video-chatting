@@ -185,77 +185,77 @@ export const $isUploadTemplateBackgroundInProgress =
 export const $templatesStore = templatesDomain.createStore<
     EntityList<ICommonTemplate>
 >(initialTemplatesStore)
-.on(getTemplatesFx.doneData, (state, data) => ({
-    ...data,
-    list: data.isReset
-        ? data.list
-        : [
-              ...state.list,
-              ...data.list.filter(item => !item.isAcceptNoLogin),
-          ],
-}))
-.reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
+    .on(getTemplatesFx.doneData, (state, data) => ({
+        ...data,
+        list: data.isReset
+            ? data.list
+            : [
+                ...state.list,
+                ...data.list.filter(item => !item.isAcceptNoLogin),
+            ],
+    }))
+    .reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
 
 export const $setUpTemplateStore =
     templatesDomain.createStore<ICommonTemplate | null>(null)
-    .on(getTemplateFx.doneData, (state, data) => data);
+        .on(getTemplateFx.doneData, (state, data) => data);
 export const $templatePreviewStore =
     templatesDomain.createStore<ICommonTemplate | null>(null)
-    .on(
-        setPreviewTemplate,
-        (_state, data: ICommonTemplate | null) => data,
-    );
+        .on(
+            setPreviewTemplate,
+            (_state, data: ICommonTemplate | null) => data,
+        );
 
 export const $discoveryTemplatesStore = templatesDomain.createStore<
     EntityList<IUserTemplate>
 >(initialUserTemplatesStore)
-.on(getUsersTemplatesFx.doneData, (state, data) => ({
-    ...state,
-    ...data,
-}));
+    .on(getUsersTemplatesFx.doneData, (state, data) => ({
+        ...state,
+        ...data,
+    }));
 
 export const $scheduleTemplateIdStore =
     templatesDomain.createStore<IUserTemplate['id']>('')
-    .on(setScheduleTemplateIdEvent, (state, data) => data);
+        .on(setScheduleTemplateIdEvent, (state, data) => data);
 export const $scheduleTemplateStore = templatesDomain.createStore<
     Partial<IUserTemplate>
 >({})
-.on(setScheduleTemplateEvent, (state, data) => ({
-    ...state,
-    ...data,
-}));
+    .on(setScheduleTemplateEvent, (state, data) => ({
+        ...state,
+        ...data,
+    }));
 
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('')
-.on(setScheduleEventLinkEvent, (state, data) => {
-    if (data) {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-        });
-    } else {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-        });
-    }
+    .on(setScheduleEventLinkEvent, (state, data) => {
+        if (data) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+            });
+        } else {
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+            });
+        }
 
-    return data;
-});
+        return data;
+    });
 
 export const $replaceTemplateIdStore =
     templatesDomain.createStore<ICommonTemplate['id']>('')
-    .on(setReplaceTemplateIdEvent, (state, data) => data);
+        .on(setReplaceTemplateIdEvent, (state, data) => data);
 export const $templateDraft = templatesDomain.createStore<
     ICommonTemplate | IUserTemplate | null
 >(null)
-.on(
-    [
-        createTemplateFx.doneData,
-        editTemplateFx.doneData,
-        getEditingTemplateFx.doneData,
-        editUserTemplateFx.doneData,
-    ],
-    (state, data) => data,
-)
-.reset(clearTemplateDraft);
+    .on(
+        [
+            createTemplateFx.doneData,
+            editTemplateFx.doneData,
+            getEditingTemplateFx.doneData,
+            editUserTemplateFx.doneData,
+        ],
+        (state, data) => data,
+    )
+    .reset(clearTemplateDraft);
 
 export const $queryTemplatesStore =
     templatesDomain.createStore<QueryGetTemplates>({
@@ -267,21 +267,34 @@ export const $queryTemplatesStore =
         direction: 1,
         roomType: RoomType.Normal,
     })
-    .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
-    .on(getProfileTemplatesFx.doneData, (state, data) => ({
-        ...state,
-        skip: data?.skip || 0,
-    }))
-    .reset(setQueryTemplatesEvent);
+        .on(setQueryTemplatesEvent, (state, data) => ({
+            ...state,
+            ...data,
+        }))
+        .on(getTemplatesFx.doneData, (state, data) => ({
+            ...state,
+            skip: data.skip,
+        }))
+        .reset([
+            setQueryProfileTemplatesEvent,
+            loginUserFx.doneData,
+            googleVerifyFx.doneData,
+        ]);
 
 export const $queryProfileTemplatesStore =
     templatesDomain.createStore<QueryParams>({
         limit: 8,
         skip: 0,
-    });
+    }).on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
+        .on(getProfileTemplatesFx.doneData, (state, data) => ({
+            ...state,
+            skip: data?.skip || 0,
+        }))
+        .reset(setQueryTemplatesEvent);
+
 
 export const $modeTemplateStore = templatesDomain.createStore<
     'private' | 'common'
 >('private')
-.on(setQueryTemplatesEvent, () => 'common')
+    .on(setQueryTemplatesEvent, () => 'common')
     .on(setQueryProfileTemplatesEvent, () => 'private');
