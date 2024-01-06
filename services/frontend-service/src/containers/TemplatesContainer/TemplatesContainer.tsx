@@ -113,11 +113,11 @@ const Component = () => {
             const result = await createMeetingFx({ templateId });
 
             if (result.template) {
-                await router.push(
-                    getClientMeetingUrl(
-                        result.template?.customLink || result?.template?.id,
-                    ),
+                const newPageUrl = await getClientMeetingUrl(
+                    result.template?.customLink || result?.template?.id,
                 );
+
+                window.open(newPageUrl, '_blank');
             }
         },
         [],
