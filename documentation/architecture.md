@@ -66,15 +66,5 @@ Backend services communicate with each other using RabbitMQ
 Frontend services communicate with backend services using REST Api and WebSockets (socket.io)
 
 
-## Remote deploy
-- Install Docker
-- Install Gitlab runner
-- Add new gitlab runner to gitlab
-- Add new stage with gitlab runner tag (use pipelines/production.yml for reference)
-- Add new docker compose config  (use deploy/production for reference)
-- Setup env variables in Gitlab CI/CD Variables
-- Trigger pipeline to deploy new environment
-
-
 ## Architecture scheme
 - [Ruume.jpg](./assets/images/Ruume.jpg)
