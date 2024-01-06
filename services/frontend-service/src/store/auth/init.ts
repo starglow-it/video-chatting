@@ -93,9 +93,7 @@ initUserWithoutTokenFx.doneData.watch(
             subdomain,
         });
         if (template)
-            Router.push(
-                getClientMeetingUrl(template?.customLink || template?.id),
-            );
+            window.open(getClientMeetingUrl(template?.customLink || template?.id), '_blank');
     },
 );
 

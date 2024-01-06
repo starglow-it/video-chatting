@@ -45,7 +45,7 @@ const DiscoveryContainer = memo(() => {
 
     const handleEnterWaitingRoom = useCallback(
         (templateId: ICommonTemplate['id']) => {
-            router.push(getClientMeetingUrl(templateId));
+            window.open(getClientMeetingUrl(templateId), '_blank');
         },
         [],
     );

@@ -46,7 +46,8 @@ const DiscoverTemplateItem = memo(
         }, []);
 
         const handleEnterWaitingRoomTemplate = useCallback(() => {
-            router.push(getClientMeetingUrl(template.id));
+            const newPageUrl = getClientMeetingUrl(template.id);
+            window.open(newPageUrl, '_blank');
         }, []);
 
         const previewImage = (template?.previewUrls || []).find(
