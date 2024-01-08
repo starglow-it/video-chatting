@@ -73,6 +73,30 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             ),
         );
         socketInstance?.on(
+            UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByHost,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByHost,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByParticipant,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByParticipant,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByHost,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByHost,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByParticipant,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByParticipant,
+            ),
+        );
+        socketInstance?.on(
             UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
             getUsersSocketSubscribeHandler(
                 UsersSubscribeEvents.OnRequestSwitchRoleByLurker,

@@ -56,14 +56,14 @@ const Component = ({
                 isVideoActive &&
                 isVideoAvailable
             ) && (
-                <ProfileAvatar
-                    src={userProfilePhoto}
-                    className={styles.avatarOverlay}
-                    width={`${size}px`}
-                    height={`${size}px`}
-                    userName={userName}
-                />
-            )}
+                    <ProfileAvatar
+                        src={userProfilePhoto}
+                        className={styles.avatarOverlay}
+                        width={`${size}px`}
+                        height={`${size}px`}
+                        userName={userName}
+                    />
+                )}
             <ConditionalRender condition={isLocal && Boolean(onToggleVideo)}>
                 <CustomGrid
                     container
@@ -101,22 +101,25 @@ const Component = ({
                                         ? 'devices.switchOff'
                                         : 'devices.switchOn'
                                     : isVideoSelfView
-                                    ? 'devices.selfViewOff'
-                                    : 'devices.clickToSeeYourself'
+                                        ? 'devices.selfViewOff'
+                                        : 'devices.clickToSeeYourself'
                             }
                         />
                     </ConditionalRender>
                 </CustomGrid>
             </ConditionalRender>
-            <video
-                onLoadedData={handleVideoLoaded}
-                ref={videoRef}
-                className={clsx(styles.video, { [styles.mirror]: isLocal })}
-                style={style}
-                playsInline
-                muted
-                autoPlay
-            />
+            <ConditionalRender condition={videoRef}>
+                <video
+                    onLoadedData={handleVideoLoaded}
+                    ref={videoRef}
+                    className={clsx(styles.video, { [styles.mirror]: isLocal })}
+                    style={style}
+                    playsInline
+                    muted={true}
+                    autoPlay
+                />
+            </ConditionalRender>
+
         </CustomGrid>
     );
 };

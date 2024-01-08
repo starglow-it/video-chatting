@@ -144,6 +144,7 @@ export type AppDialogsState = {
     inviteAttendeeByEmailDialog: boolean;
     meetingErrorDialog: boolean;
     userToKickDialog: boolean;
+    userToAudienceDialog: boolean;
     templatePreviewDialog: boolean;
     editMeetingTemplateDialog: boolean;
     confirmChangeRouteDialog: boolean;
@@ -164,6 +165,7 @@ export type AppDialogsState = {
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
     confirmBecomeParticipantDialog: boolean;
+    confirmBecomeAudienceDialog: boolean;
     meetingEndDialog: boolean;
     hostDeviceRequireDialog: boolean;
 };
@@ -175,6 +177,7 @@ export enum AppDialogsEnum {
     inviteAttendeeByEmailDialog = 'inviteAttendeeByEmailDialog',
     meetingErrorDialog = 'meetingErrorDialog',
     userToKickDialog = 'userToKickDialog',
+    userToAudienceDialog = 'userToAudienceDialog',
     templatePreviewDialog = 'templatePreviewDialog',
     editMeetingTemplateDialog = 'editMeetingTemplateDialog',
     confirmChangeRouteDialog = 'confirmChangeRouteDialog',
@@ -196,6 +199,7 @@ export enum AppDialogsEnum {
     meetingEndDialog = 'meetingEndDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
     confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
+    confirmBecomeAudienceDialog = 'confirmBecomeAudienceDialog',
     hostDeviceRequireDialog = 'hostDeviceRequireDialog',
 }
 
@@ -277,6 +281,7 @@ export enum NotificationType {
     UploadBackgroundSuccess = 'upload_background_success',
     DeleteMedia = 'DeleteMedia',
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
+    RequestBecomeAudienceSuccess = 'request_become_audience_success',
 }
 
 export type Notification = {

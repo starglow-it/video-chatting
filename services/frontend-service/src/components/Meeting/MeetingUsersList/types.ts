@@ -9,6 +9,7 @@ export type MeetingUsersListItemProps = {
     onAcceptUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onDeleteUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onChangeHost?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
+    onChangeRoleToAudience?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onRequestLurker?:
         | ((data: { userId: MeetingUser['id'] }) => void)
         | undefined;

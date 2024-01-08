@@ -11,6 +11,7 @@ import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import {
   LurkersGateway,
+  ParticipantsGateway,
   MeetingChatsGateway,
   MeetingNotesGateway,
   MeetingsGateway,
@@ -38,6 +39,7 @@ import {
     MeetingsGateway,
     MeetingNotesGateway,
     LurkersGateway,
+    ParticipantsGateway,
     TemplatesGateway,
   ],
 })

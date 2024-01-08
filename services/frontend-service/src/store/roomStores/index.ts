@@ -6,6 +6,7 @@ import * as videoChatSFU from './videoChat/sfu/init';
 import * as localUser from './users/localUser/init';
 import * as meetingUsers from './users/meetingUsers/init';
 import * as userToKick from './users/userToKick/init';
+import * as moveUserToAudience from './users/moveUserToAudience/init';
 import * as audio from './audio/init';
 import * as meeting from './meeting/meeting/init';
 import * as meetingPayment from './meeting/meetingPayment/init';
@@ -29,6 +30,7 @@ export * from './videoChat/sfu/model';
 export * from './users/localUser/model';
 export * from './users/meetingUsers/model';
 export * from './users/userToKick/model';
+export * from './users/moveUserToAudience/model';
 export * from './audio/model';
 export * from './meeting/meeting/model';
 export * from './meeting/meetingPayment/model';
@@ -57,6 +59,7 @@ export default {
     localUser,
     meetingUsers,
     userToKick,
+    moveUserToAudience,
     audio,
     meeting,
     meetingPayment,

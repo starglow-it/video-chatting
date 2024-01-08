@@ -1,8 +1,9 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // components
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
@@ -17,6 +18,7 @@ import {
     $meetingUsersStore,
     changeHostSocketEvent,
     setUserToKickEvent,
+    setMoveUserToAudienceEvent
 } from '../../../store/roomStores';
 
 // types
@@ -29,6 +31,9 @@ const Component = () => {
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const isMeetingHost = useStore($isMeetingHostStore);
+    const refScroll = useRef<any>(null);
+
+    
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -40,6 +45,13 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Lurker,
             ),
     });
+
+    useEffect(() => {
+        if (users) {
+            if (refScroll.current)
+                refScroll.current.scrollTop = refScroll.current?.scrollHeight;
+        }
+    }, [users]);
 
     const handleKickUser = useCallback(({ userId }: { userId: string }) => {
         setUserToKickEvent(userId);
@@ -55,6 +67,16 @@ const Component = () => {
         [],
     );
 
+    const handleMoveToAudience = useCallback(
+        ({ userId }: { userId: string }) => {
+            setMoveUserToAudienceEvent(userId);
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.userToAudienceDialog,
+            });
+        },
+        [],
+    );
+
     const renderUsersList = useMemo(
         () =>
             users.map(user => (
@@ -65,19 +87,27 @@ const Component = () => {
                     isOwnerItem={meeting.owner === user.id}
                     onDeleteUser={isMeetingHost ? handleKickUser : undefined}
                     onChangeHost={isMeetingHost ? handleChangeHost : undefined}
+                    onChangeRoleToAudience={isMeetingHost ? handleMoveToAudience : undefined}
                 />
             )),
         [users, localUser, isMeetingHost, meeting.owner],
     );
 
     return (
-        <CustomGrid
-            className={styles.usersWrapper}
-            container
-            direction="column"
+        <CustomScroll
+            className={styles.scroll}
+            containerRef={(refS: any) => (refScroll.current = refS)}
         >
-            {renderUsersList}
-        </CustomGrid>
+            <CustomGrid
+                className={styles.usersWrapper}
+                container
+                direction="column"
+            >
+                {renderUsersList}
+            </CustomGrid>
+        </CustomScroll>
+
+
     );
 };
 

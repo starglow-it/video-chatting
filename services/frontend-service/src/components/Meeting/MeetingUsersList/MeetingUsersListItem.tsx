@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // custom
@@ -19,6 +20,7 @@ import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { $isMeetingHostStore } from '../../../store/roomStores';
 
@@ -35,11 +37,13 @@ const Component = ({
     onDeleteUser,
     onChangeHost,
     onRequestLurker,
+    onChangeRoleToAudience,
     isLocalItem,
     isOwnerItem,
     isLurkerRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
+
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
@@ -53,6 +57,10 @@ const Component = ({
 
     const handleDeleteRequest = () => {
         onDeleteUser?.({ userId: user.id });
+    };
+
+    const handleChangeRoleToAudienceRequest = () => {
+        onChangeRoleToAudience?.({ userId: user.id });
     };
 
     const handleChangeHost = () => {
@@ -128,12 +136,31 @@ const Component = ({
                         !isLocalItem && onDeleteUser && !isOwnerItem,
                     )}
                 >
-                    <ActionButton
-                        variant="decline"
-                        onAction={handleDeleteRequest}
-                        className={styles.deleteUser}
-                        Icon={<CloseIcon width="23px" height="23px" />}
-                    />
+                    <CustomTooltip
+                        title="Move user to audience"
+                        placement="bottom"
+                    >
+                        <ActionButton
+                            variant="decline"
+                            onAction={handleChangeRoleToAudienceRequest}
+                            className={styles.deleteUser}
+                            Icon={<ArrowDownIcon width="23px" height="23px" />}
+                        />
+                    </CustomTooltip>
+                    <CustomTooltip
+                        title="Kick user"
+                        placement="bottom"
+                    >
+                        <ActionButton
+                            variant="decline"
+                            onAction={handleDeleteRequest}
+                            className={styles.toAudienceBtn}
+                            Icon={<CloseIcon width="23px" height="23px" />}
+                        />
+                    </CustomTooltip>
+
+
+
                 </ConditionalRender>
             </CustomGrid>
         </CustomGrid>

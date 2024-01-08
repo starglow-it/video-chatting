@@ -86,10 +86,6 @@ const CustomApp = ({
         window.history.scrollRestoration = 'manual';
     }, []);
 
-    useEffect(() => {
-        window.history.scrollRestoration = 'manual';
-    }, []);
-
     return (
         <CacheProvider value={emotionCache}>
             <Head>

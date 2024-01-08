@@ -1,14 +1,18 @@
 @import "../../../styles/variables";
 @import "../../../styles/rem";
 
-.usersWrapper {
-  .userItem {
-    &:first-child {
-      margin: rem(0 0 5px 0);
-    }
-
-    &:not(:first-child) {
-      margin: rem(5px 0 5px 0);
-    }
+.userItem {
+  &:first-child {
+    margin: rem(0 0 5px 0);
   }
+
+  &:not(:first-child) {
+    margin: rem(5px 0 5px 0);
+  }
+}
+
+.scroll {
+  max-height: 285px;
+  height: 285px;
+  padding-right: 12px;
 }

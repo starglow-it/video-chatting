@@ -7,4 +7,8 @@ export enum UsersSubscribeEvents {
     OnRequestSwitchRoleByLurker = 'users:switchRole:lurker:request:receive',
     OnAnswerSwitchRoleByHost = 'users:switchRole:host:answer:receive',
     OnAnswerSwitchRoleByLurker = 'users:switchRole:lurker:answer:receive',
+    OnRequestSwitchFromParticipantToAudienceRoleByHost = 'users:switchRole:fromParticipant:toAudience:host:request:receive',
+    OnRequestSwitchFromParticipantToAudienceRoleByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:request:receive',
+    OnAnswerSwitchFromParticipantToAudienceRoleByHost = 'users:switchRole:fromParticipant:toAudience:host:answer:receive',
+    OnAnswerSwitchFromParticipantToAudienceRoleByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:answer:receive',
 }

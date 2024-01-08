@@ -350,7 +350,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         <ConditionalRender
                             condition={
                                 !isMobile
-                                    ? !isNotFoundRoute 
+                                    ? !isNotFoundRoute
                                     : !isNotFoundRoute && !isRoomRoute
                             }
                         >

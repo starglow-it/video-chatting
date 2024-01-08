@@ -39,6 +39,7 @@ import {
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
+import { ConfirmBecomeAudienceDialog } from '@components/Dialogs/ConfirmBecomeAudienceDialog/ConfirmBecomeAudienceDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import { isMobile as isMobileShared } from 'shared-utils';
 import { getPreviewImage } from 'src/utils/functions/getPreviewImage';
@@ -81,6 +82,7 @@ import { MeetingCarousel } from '../MeetingCarousel/MeetingCarousel';
 import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
 import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
+import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
 // helpers
 
 const Component = () => {
@@ -289,12 +291,14 @@ const Component = () => {
             <EndMeetingDialog />
             <InviteAttendeeDialog />
             <UserToKickDialog />
+            <UserToAudienceDialog />
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
             <HostDeviceRequrieDialog />
             <InviteGuestsDialog />
             <ConfirmBecomeParticipantDialog />
+            <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
         </CustomGrid>
     );

@@ -10,6 +10,7 @@ import { setMeetingErrorEvent } from '../meeting/meetingError/model';
 import { appDialogsApi } from '../../dialogs/init';
 import { createMeetingSocketEvent } from '../meetingSocket/model';
 import {
+    joinMeetingEvent,
     joinMeetingWithLurkerEvent,
     updateMeetingEvent,
 } from '../meeting/meeting/model';
@@ -40,6 +41,7 @@ export const changeHostSocketEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.ChangeHost);
 
+//add audience to paticipant
 export const requestSwitchRoleByHostEvent = createMeetingSocketEvent<
     { meetingId: string; meetingUserId: string },
     any
@@ -64,6 +66,32 @@ export const answerRequestByLurkerEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.AnswerRequestByLurker);
 
+//Send participant back to audience
+export const requestSwitchRoleFromParticipantToAudienceByHostEvent = createMeetingSocketEvent<
+    { meetingId: string; meetingUserId: string },
+    any
+>(UsersSocketEmitters.RequestRoleFromParticipantToAudienceByHost);
+
+export const requestSwitchRoleFromParticipantToAudienceByParticipantEvent = createMeetingSocketEvent<
+    { meetingId: string },
+    any
+>(UsersSocketEmitters.RequestRoleFromParticipantToAudienceByParticipant);
+
+export const answerRequestFromParticipantToAudienceByHostEvent = createMeetingSocketEvent<
+    {
+        meetingUserId: string;
+        action: AnswerSwitchRoleAction;
+        meetingId: string;
+    },
+    any
+>(UsersSocketEmitters.AnswerRequestFromParticipantToAudienceByHost);
+
+export const answerRequestFromParticipantToAudienceByParticipantEvent = createMeetingSocketEvent<
+    { action: AnswerSwitchRoleAction; meetingId: string },
+    any
+>(UsersSocketEmitters.AnswerRequestFromParticipantToAudienceByParticipant);
+
+//Socket events watch
 changeHostSocketEvent.failData.watch(data => {
     if (data) {
         setMeetingErrorEvent(data);
@@ -102,5 +130,27 @@ requestSwitchRoleByHostEvent.doneData.watch(data => {
             withSuccessIcon: true,
             type: NotificationType.RequestBecomeParticipantSuccess,
         });
+    }
+});
+
+requestSwitchRoleFromParticipantToAudienceByHostEvent.doneData.watch(data => {
+    if (data) {
+        addNotificationEvent({
+            message: `Moved user to audience`,
+            withSuccessIcon: true,
+            type: NotificationType.RequestBecomeAudienceSuccess,
+        });
+    }
+});
+
+answerRequestFromParticipantToAudienceByParticipantEvent.doneData.watch(async data => {
+    if (data) {
+        if (data?.action === AnswerSwitchRoleAction.Accept) {
+            setRoleQueryUrlEvent('lurker');
+            updateMeetingEvent({ meeting: data?.meeting });
+            updateMeetingUserEvent({ user: data?.user });
+            await initDevicesEventFxWithStore();
+            await joinMeetingEvent();
+        }
     }
 });

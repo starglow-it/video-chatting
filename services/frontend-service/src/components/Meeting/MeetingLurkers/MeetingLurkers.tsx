@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
@@ -6,6 +7,8 @@ import {
     $meetingUsersStore,
     requestSwitchRoleByHostEvent,
 } from 'src/store/roomStores';
+
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 import { useCallback, useMemo } from 'react';
 import styles from './MeetingLurker.module.scss';
@@ -23,6 +26,14 @@ export const MeetingLurkers = () => {
             ),
     });
     const meeting = useStore($meetingStore);
+    const refScroll = useRef<any>(null);
+
+    useEffect(() => {
+        if (users) {
+            if (refScroll.current)
+                refScroll.current.scrollTop = refScroll.current?.scrollHeight;
+        }
+    }, [users]);
 
     const handleRequestLurker = useCallback(
         ({ userId }: { userId: string }) => {
@@ -50,12 +61,18 @@ export const MeetingLurkers = () => {
     );
 
     return (
-        <CustomGrid
-            className={styles.usersWrapper}
-            container
-            direction="column"
+        <CustomScroll
+            className={styles.scroll}
+            containerRef={(refS: any) => (refScroll.current = refS)}
         >
-            {renderUsersList}
-        </CustomGrid>
+            <CustomGrid
+                className={styles.usersWrapper}
+                container
+                direction="column"
+            >
+                {renderUsersList}
+            </CustomGrid>
+        </CustomScroll>
+
     );
 };

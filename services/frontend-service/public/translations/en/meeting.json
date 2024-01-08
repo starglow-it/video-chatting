@@ -70,7 +70,8 @@
     "stay": "Stay",
     "lockUp": "Lock Up",
     "yes": "Yes",
-    "goToSetting": "Go To Setting"
+    "goToSetting": "Go To Setting",
+    "move": "Move"
   },
   "devices": {
     "turnOn": "Turn on",

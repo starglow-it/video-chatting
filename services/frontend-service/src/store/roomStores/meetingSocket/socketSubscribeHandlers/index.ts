@@ -13,6 +13,8 @@ import { handleReceiveAnswerSwitchRoleFromHost } from './handleReceiveAnswerSwit
 import { handleReceiveAnswerSwitchRoleFromLurker } from './handleReceiveAnswerSwitchRoleFromLurker';
 import { handleReceiveRequestSwitchRoleByHost } from './handleReceiveRequestSwitchRoleByHost';
 import { handleReceiveRequestSwitchRoleByLurker } from './handleReceiveRequestSwitchRoleByLurker';
+import { handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost } from './handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost';
+import { handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant } from './handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -41,9 +43,18 @@ const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
         UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
         { handler: handleReceiveRequestSwitchRoleByLurker },
     ],
+    [
+        UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByHost,
+        { handler: handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost },
+    ],
+    [
+        UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByParticipant,
+        { handler: handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant },
+    ],
 ]);
 
 export const getUsersSocketSubscribeHandler = (
     eventName: UsersSubscribeEvents,
-): SocketHandlerData['handler'] =>
-    USERS_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;
+): SocketHandlerData['handler'] => {
+    return USERS_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction
+};
