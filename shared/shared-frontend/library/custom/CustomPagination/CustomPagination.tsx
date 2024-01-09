@@ -1,12 +1,12 @@
-import React, {memo, useCallback, useMemo} from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import usePagination from "@mui/material/usePagination";
 
-import {CustomGrid} from "../../custom/CustomGrid";
-import {ActionButton} from "../../common/ActionButton";
+import { CustomGrid } from "../../custom/CustomGrid";
+import { ActionButton } from "../../common/ActionButton";
 import { ArrowRightIcon } from "../../../icons/OtherIcons/ArrowRightIcon";
 import { ArrowLeftIcon } from "../../../icons/OtherIcons/ArrowLeftIcon";
 
-import {CustomPaginationProps} from "./CustomPagination.types";
+import { CustomPaginationProps } from "./CustomPagination.types";
 
 import styles from './CustomPagination.module.scss';
 
@@ -40,9 +40,10 @@ const Component = ({
     }, [maxPages, page, onPageChange]);
 
     const renderPagesButtons = useMemo(() => {
-        return data.items.filter(({ type }) => !['previous', 'next'].includes(type)).map(({ onClick, selected, disabled, page, type }) => {
+        return data.items.filter(({ type }) => !['previous', 'next'].includes(type)).map(({ onClick, selected, disabled, page, type }, index:Number) => {
             return (
                 <ActionButton
+                    key={index}
                     disabled={isDisabled || disabled}
                     variant={selected ? 'black' : 'transparentPrimary'}
                     onAction={page ? onClick : undefined}
