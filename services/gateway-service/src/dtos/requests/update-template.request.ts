@@ -10,6 +10,7 @@ import {
   IsNumber,
   Min,
   IsBoolean,
+  Validate
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
@@ -167,6 +168,11 @@ class UserPositionDto {
   @IsNumber()
   left: number;
 }
+
+function isUrlOrEmptyString(value: string): boolean {
+  // Allow empty string or a valid URL
+  return value === '' || /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(value);
+}
 export class UpdateTemplateRequest implements IUpdateTemplate {
   @ApiProperty({
     required: false,
@@ -233,7 +239,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   })
   @IsOptional()
   @IsString({ message: 'Subdomain must be string' })
-  @IsUrl({}, { message: 'Subdomain must be a url' })
+  @Validate(isUrlOrEmptyString, { message: "Subdomain must be a url" })
   subdomain: string;
 
   @ApiProperty({
