@@ -28,8 +28,10 @@
     "@stripe/stripe-js": "1.38.1",
     "@types/cookie": "0.5.1",
     "@types/match-sorter": "6.0.0",
+    "@types/recordrtc": "^5.6.14",
     "@types/xregexp": "4.4.0",
     "@vkontakte/calls-video-effects": "1.0.6-beta.28",
+    "aws-sdk": "2.1218.0",
     "axios": "1.1.2",
     "bowser": "2.11.0",
     "clsx": "1.2.1",
@@ -69,6 +71,7 @@
     "react-resizable": "3.0.4",
     "react-slick": "0.29.0",
     "react-youtube": "10.1.0",
+    "recordrtc": "^5.6.2",
     "sass": "1.55.0",
     "shared-const": "workspace:*",
     "shared-frontend": "workspace:*",
@@ -80,7 +83,9 @@
     "ts-node": "10.9.1",
     "webrtc-adapter": "8.1.2",
     "xregexp": "5.1.1",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "@types/react-joyride": "2.0.5",
+    "react-joyride": "2.7.2"
   },
   "devDependencies": {
     "@types/compression": "1.7.2",

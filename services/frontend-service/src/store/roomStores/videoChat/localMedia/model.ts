@@ -1,7 +1,7 @@
 import { combine } from 'effector-next';
 
 import { videoChatDomain } from '../../../domains';
-import { CustomMediaStream } from '../../../../types';
+import { CustomMediaStream, VideoBlob } from '../../../../types';
 import {
     ChangeStreamPayload,
     InitDevicesPayload,
@@ -38,6 +38,14 @@ export const $isAuraActive = videoChatDomain.createStore<boolean>(true);
 export const $sharingStream =
     videoChatDomain.createStore<CustomMediaStream>(null);
 
+export const $recordingStream =
+    videoChatDomain.createStore<CustomMediaStream>(null);
+
+export const $recordedVideoBlobStore =
+    videoChatDomain.createStore<VideoBlob>(null);
+
+export const $isRecordingStore = videoChatDomain.createStore<boolean>(false);
+
 export const commonMediaStore = combine({
     audioDevices: $audioDevicesStore,
     videoDevices: $videoDevicesStore,
@@ -52,6 +60,8 @@ export const commonMediaStore = combine({
     currentAudioDevice: $currentAudioDeviceStore,
     currentVideoDevice: $currentVideoDeviceStore,
     isAuraActive: $isAuraActive,
+    recordedVideoBlob: $recordedVideoBlobStore,
+    isRecording: $isRecordingStore,
 });
 
 export const setAudioDevicesEvent = videoChatDomain.createEvent<
@@ -115,3 +125,15 @@ export const chooseSharingStreamFx = videoChatDomain.createEffect<
     void,
     CustomMediaStream
 >('chooseSharingStreamFx');
+export const startRecordStreamFx = videoChatDomain.createEffect<
+    void,
+    CustomMediaStream
+>('startRecordStreamFx');
+export const stopRecordStreamFx = videoChatDomain.createEffect<
+    VideoBlob,
+    VideoBlob
+>('stopRecordStreamFx');
+export const uploadToS3Fx = videoChatDomain.createEffect<
+    VideoBlob,
+    VideoBlob
+>('uploadToS3Fx');

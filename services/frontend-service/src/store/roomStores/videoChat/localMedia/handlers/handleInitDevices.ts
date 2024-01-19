@@ -47,8 +47,8 @@ export const handleInitDevices = async ({
         videoDeviceId: savedSettings.savedVideoDeviceId || currentVideoDevice,
     });
 
-    setAudioErrorEvent(initialAudioError);
-    setVideoErrorEvent(initialVideoError);
+    setAudioErrorEvent(initialAudioError || null);
+    setVideoErrorEvent(initialVideoError || null);
 
     if (initialAudioError && initialVideoError) {
         setIsStreamRequestedEvent(false);

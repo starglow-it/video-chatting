@@ -1,0 +1,39 @@
+@import "../../../styles/rem";
+@import "../../../styles/mixins";
+
+.content {
+  padding: rem(40px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    max-width: 100%;
+    @extend %text-ellips;
+    white-space: initial;
+    margin-bottom: 40px;
+  }
+  .description {
+    margin: 30px;
+    display: flex;
+    align-items: center;
+    svg {
+      color: #FF884E;
+      cursor: pointer;
+      &:hover {
+        color: #EE6F32;
+      }
+    }
+  }
+}
+
+.buttonsWrapper {
+  margin: rem(20px 0 0 0);
+
+  .button {
+
+    &:first-child {
+      margin: rem(0 10px 0 0);
+    }
+  }
+}

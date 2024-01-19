@@ -1,6 +1,7 @@
 import { videoChatDomain } from '../../domains';
 import { ServerTypes, TrackKind } from '../../../const/webrtc';
 import { ConnectionsStore, TracksStore } from './types';
+import { VideoBlob } from 'src/types';
 
 export const $serverTypeStore = videoChatDomain.createStore(ServerTypes.P2P);
 export const $connectionsStore = videoChatDomain.createStore<ConnectionsStore>(
@@ -35,3 +36,8 @@ export const startScreenSharing = videoChatDomain.createEvent<void>('');
 export const stopScreenSharing = videoChatDomain.createEvent<void>('');
 export const disconnectFromVideoChatEvent =
     videoChatDomain.createEvent<void>('');
+export const startRecordMeeting = videoChatDomain.createEvent<void>('');
+export const stopRecordMeeting = videoChatDomain.createEvent<VideoBlob>('');
+export const trackEndedEvent = videoChatDomain.createEvent<void>();
+export const resetRecordedVideoBlobStore = videoChatDomain.createEvent<void>('');
+export const uploadToS3Event = videoChatDomain.createEvent<VideoBlob>('');
