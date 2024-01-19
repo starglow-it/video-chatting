@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren, useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { memo, PropsWithChildren, useState, useEffect, useMemo, useRef, createRef, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -22,10 +22,11 @@ import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { profileRoute } from '../../const/client-routes';
 import { IconButton, Menu, MenuItem } from '@mui/material';
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { TemplatesIcon } from 'shared-frontend/icons/OtherIcons/TemplatesIcon';
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+
 
 import { Footer } from '@components/Footer/Footer';
 
@@ -48,6 +49,7 @@ import {
     $profileTemplatesStore,
     $templatesStore,
     $windowSizeStore,
+    
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -140,6 +142,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const mode = useStore($modeTemplateStore);
     const { height } = useStore($windowSizeStore);
     const [isDashboardRoomRoute, setIsDashboardRoomRoute] = useState(false);
+    
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -270,7 +273,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             window.open(newPageUrl, '_blank');
         }
     };
-    // console.log('#Duy Phan console pt', isPortraitLayout, height)
+
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
@@ -303,6 +306,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const handleLogout = useCallback(async () => {
         handleMenuClose();
         logoutUserFx();
+        localStorage.removeItem("isFirstDashboardVisit");
     }, []);
 
     return (
@@ -458,6 +462,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         >
                                             <div>
                                                 <IconButton
+                                                    id="profileAvatarIcon"
                                                     onClick={handleAvatarClick}
                                                     className={styles.iconButton}
                                                 >
@@ -546,7 +551,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     </ConditionalRender>
                 </CustomGrid>
             </ScrollParent>
-        </CustomBox>
+        </CustomBox >
     );
 };
 

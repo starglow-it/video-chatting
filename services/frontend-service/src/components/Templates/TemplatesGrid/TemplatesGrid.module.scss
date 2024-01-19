@@ -80,4 +80,8 @@
   z-index: 10;
   height: rem(190px);
   cursor: pointer;
+
+  &.addItemMobile {
+    height: 115px;
+  }
 }

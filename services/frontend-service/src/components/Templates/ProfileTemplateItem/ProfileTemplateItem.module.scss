@@ -13,6 +13,11 @@
 
   z-index: 10;
 
+  &.mobile {
+    width: 45%;
+    height: 115px;
+  }
+
   &:after {
     content: "";
     position: absolute;

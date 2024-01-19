@@ -5,13 +5,13 @@
   position: absolute;
   inset: 0;
   padding: rem(18px 15px);
-  grid: "avatar avatar" min-content
-        "avatar avatar" min-content
-        "emptySpace emptySpace" 1fr
-        "businessInfo  businessInfo" min-content
-        / min-content auto;
+  grid: "avatar avatar" min-content "avatar avatar" min-content "emptySpace emptySpace" 1fr "businessInfo  businessInfo" min-content / min-content auto;
   grid-template-columns: 1fr fit-content(20%);
   z-index: 10;
+
+  &.mobile {
+    padding: 12px;
+  }
 
   .avatar {
     width: 100%;

@@ -3,6 +3,7 @@ import { Fade, Menu, MenuItem } from '@mui/material';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -46,6 +47,7 @@ import { AppDialogsEnum } from '../../../store/types';
 
 const ProfileTemplateItem = memo(
     ({ template, onChooseTemplate }: ProfileTemplateProps) => {
+        const { isMobile } = useBrowserDetect();
         const profile = useStore($profileStore);
         const isBusinessSubscription = useStore($isBusinessSubscription);
         const isProfSubscription = useStore($isProfessionalSubscription);
@@ -150,7 +152,7 @@ const ProfileTemplateItem = memo(
 
         return (
             <CustomGrid
-                className={styles.templateContent}
+                className={clsx(styles.templateContent, { [styles.mobile]: isMobile })}
                 container
                 justifyContent="center"
                 alignItems="center"
