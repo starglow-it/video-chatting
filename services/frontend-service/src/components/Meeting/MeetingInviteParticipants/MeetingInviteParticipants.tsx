@@ -2,7 +2,11 @@
 import { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
+import clsx from 'clsx';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -13,6 +17,8 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
+import Button from '@mui/material/Button';
+
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
@@ -21,10 +27,12 @@ import { appDialogsApi, setScheduleTemplateIdEvent } from '../../../store';
 import {
     $localUserStore,
     $meetingTemplateStore,
+    $meetingUsersStore,
 } from '../../../store/roomStores';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 
 // utils
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
@@ -32,11 +40,41 @@ import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 // styles
 import styles from './MeetingInviteParticipants.module.scss';
 
-const Component = ({ onAction }: { onAction?: () => void }) => {
+const Component = ({
+    isParticipantPanelShow,
+    onAction, 
+    handleParticipantPanel
+}: {
+    isParticipantPanelShow:Boolean,
+    onAction?: () => void, 
+    handleParticipantPanel: (data: Boolean) => void
+}) => {
     const router = useRouter();
 
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+
+    const participants = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Audience,
+            ),
+    });
+
+    const audiences = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole === MeetingRole.Audience,
+            ),
+    });
 
     const handleOpenEmailInvite = useCallback(() => {
         appDialogsApi.openDialog({
@@ -63,9 +101,43 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
         <>
             <CustomGrid
                 container
-                className={styles.meetingInvitesWrapper}
                 alignItems="center"
             >
+                <CustomGrid
+                    container
+                    alignItems="center"
+                >
+                    <Button
+                        variant="text"
+                        className={clsx(styles.title, styles.attendeeBtn, {
+                            [styles.activeBtn]: !isParticipantPanelShow
+                        })}
+                        onClick={() => handleParticipantPanel(false)}
+                    >Audiences</Button>
+                    <ConditionalRender condition={!localUser.isGenerated}>
+                        <div className={styles.statistics}>
+                            {audiences.length}
+                        </div>
+                    </ConditionalRender>
+                </CustomGrid>
+                <CustomGrid
+                    container
+                    className={clsx(styles.meetingInvitesWrapper, styles.attendeesStatistics)}
+                    alignItems="center"
+                >
+                    <Button
+                        variant="text"
+                        className={clsx(styles.title, styles.attendeeBtn, {
+                            [styles.activeBtn]: isParticipantPanelShow
+                        })}
+                        onClick={() => handleParticipantPanel(true)}
+                    >Participants</Button>
+                    <ConditionalRender condition={!localUser.isGenerated}>
+                        <div className={styles.statistics}>
+                            {participants.length}
+                        </div>
+                    </ConditionalRender>
+                </CustomGrid>
                 <CustomTypography
                     color="common.white"
                     className={styles.title}

@@ -22,6 +22,7 @@ const Component = ({
     return (
         <CustomGrid
             container
+            id="featuredTemplates"
             direction="column"
             className={styles.featuredWrapper}
             sx={{

@@ -13,6 +13,7 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { useCallback, useMemo } from 'react';
 import styles from './MeetingLurker.module.scss';
 import { MeetingUsersListItem } from '../MeetingUsersList/MeetingUsersListItem';
+import Typography from '@mui/material/Typography';
 
 export const MeetingLurkers = () => {
     const users = useStoreMap({
@@ -22,7 +23,7 @@ export const MeetingLurkers = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole === MeetingRole.Lurker,
+                    user.meetingRole === MeetingRole.Audience,
             ),
     });
     const meeting = useStore($meetingStore);
@@ -47,16 +48,22 @@ export const MeetingLurkers = () => {
 
     const renderUsersList = useMemo(
         () =>
-            users.map(user => (
-                <MeetingUsersListItem
-                    key={user.id}
-                    user={user}
-                    isLocalItem={false}
-                    isOwnerItem={false}
-                    isLurkerRequest
-                    onRequestLurker={handleRequestLurker}
-                />
-            )),
+            {
+                if (users.length) {
+                    return users.map(user => (
+                        <MeetingUsersListItem
+                            key={user.id}
+                            user={user}
+                            isLocalItem={false}
+                            isOwnerItem={false}
+                            isLurkerRequest
+                            onRequestLurker={handleRequestLurker}
+                        />
+                    ));
+                } else {
+                    return <Typography varient="body1" className={styles.noAudience}>No audience...</Typography>
+                }
+            },
         [users],
     );
 

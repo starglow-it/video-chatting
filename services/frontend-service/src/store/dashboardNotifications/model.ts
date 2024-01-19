@@ -1,6 +1,6 @@
 import { appDomain } from '../domains';
 import { createSocketEvent } from '../socket/model';
-import { DashboardNotification } from '../types';
+import { DashboardNotification, welcomeTour, joyride } from '../types';
 import { DashboardSocketEmitters } from '../../const/socketEvents/emitters';
 import {
     GetDashboardNotificationPayload,
@@ -10,6 +10,13 @@ import {
 export const $dashboardNotificationsStore = appDomain.createStore<
     DashboardNotification[]
 >([]);
+
+export const $joyrideStore = appDomain.createStore<joyride>({ runDashboardJoyride:false, runMeetingJoyride: false });
+export const emitDashboardJoyrideEvent = appDomain.createEvent<joyride>("emitDashboardJoyrideEvent");
+export const emitMeetingJoyrideEvent = appDomain.createEvent<joyride>("emitMeetingJoyrideEvent");
+export const $welcomeTourStore = appDomain.createStore<welcomeTour>({ status: false });
+export const enableWelcomeTourEvent = appDomain.createEvent<welcomeTour>("enableWelcomeTourEvent");
+
 export const setDashboardNotifications =
     appDomain.createEvent<DashboardNotification[]>();
 

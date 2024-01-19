@@ -1,27 +1,13 @@
-import { useStore, useStoreMap } from 'effector-react';
-import {
-    $activeTabPanel,
-    $isLurker,
-    $isMeetingHostStore,
-    $meetingUsersStore,
-    resetHaveNewMessageEvent,
-    setActiveTabPanelEvent,
-} from 'src/store/roomStores';
-import Tab from '@mui/material/Tab';
+import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useCallback } from 'react';
-import { Tabs } from '@mui/material';
+import { ReactNode } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
-import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
-import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
-import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
+import { Typography } from '@mui/material';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -55,121 +41,15 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 };
 
 export const MeetingPeople = () => {
-    const isMeetingHost = useStore($isMeetingHostStore);
-    const isLurker = useStore($isLurker);
     const isPortraitLayout = useStore($isPortraitLayout);
-
-    const participants = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
-            ),
-    });
-
-    const lurkers = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole === MeetingRole.Lurker,
-            ),
-    });
-
-    const value = useStore($activeTabPanel);
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setActiveTabPanelEvent(newValue);
-    };
-
-    const handleResetNewMessage = (tab: string) => {
-        if (tab === 'Chat') {
-            resetHaveNewMessageEvent();
-        }
-    };
-
-    const a11yProps = useCallback((index: number) => {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }, []);
-
-    const tabs = !isLurker
-        ? [
-              !participants.length
-                  ? 'Participants'
-                  : `Participants(${participants.length})`,
-              !lurkers.length ? 'Audience' : `Audience(${lurkers.length})`,
-              'Chat',
-          ]
-        : ['Chat'];
-
     return (
         <CustomGrid
             display="flex"
             flexDirection="column"
             height={isMobile() && !isPortraitLayout ? '250px' : '400px'}
         >
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="lab API tabs example"
-                variant={isMobile() ? 'scrollable' : undefined}
-                scrollButtons={isMobile()}
-                allowScrollButtonsMobile={isMobile()}
-                TabScrollButtonProps={{
-                    classes: { root: styles.buttonScroll },
-                }}
-                classes={{
-                    root: styles.tabs,
-                }}
-            >
-                {tabs.map((tab, index) => (
-                    <Tab
-                        key={tab}
-                        label={tab}
-                        value={index}
-                        {...a11yProps(index)}
-                        classes={{ root: styles.tab }}
-                        onClick={() => handleResetNewMessage(tab)}
-                    />
-                ))}
-            </Tabs>
-            <ConditionalRender condition={!isLurker}>
-                <CustomTabPanel value={value} index={0}>
-                    <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        {isMeetingHost && <MeetingAccessRequests />}
-                        <MeetingUsersList />
-                    </CustomGrid>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
-                    <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        <MeetingLurkers />
-                    </CustomGrid>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    <MeetingChat />
-                </CustomTabPanel>
-            </ConditionalRender>
-            <ConditionalRender condition={isLurker}>
-                <CustomTabPanel value={value} index={0}>
-                    <MeetingChat />
-                </CustomTabPanel>
-            </ConditionalRender>
+            <Typography variant="body1" className={styles.chatCaption}>Chat</Typography>
+            <MeetingChat />
         </CustomGrid>
     );
 };

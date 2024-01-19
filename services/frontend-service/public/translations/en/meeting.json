@@ -71,7 +71,9 @@
     "lockUp": "Lock Up",
     "yes": "Yes",
     "goToSetting": "Go To Setting",
-    "move": "Move"
+    "move": "Move",
+    "download": "download",
+    "upload": "upload & share"
   },
   "devices": {
     "turnOn": "Turn on",
@@ -81,7 +83,8 @@
     "clickToSeeYourself": "Click to see yourself",
     "selfViewOff": "Self-View Off",
     "dragAndResize": "Drag & Resize",
-    "microphone": "Mic on/off"
+    "microphone": "Mic on/off",
+    "stickyNotes": "Sticky Notes"
   },
   "endMeeting": {
     "forHost": "Leave?",
@@ -97,7 +100,9 @@
     "copyMeetingInfo": "Copy meeting info",
     "inviteButton": "Invite with email",
     "sendInvitation": "Send invitations",
-    "tooltip": "Add Callers"
+    "tooltip": "Add Callers",
+    "participants": "Participants",
+    "audiences": "Audiences"
   },
   "enterName": {
     "title": "Welcome",
@@ -136,6 +141,10 @@
       "busy": "Someone is already sharing screen",
       "selfSharing": "You are sharing screen now"
     }
+  },
+  "recordMeeting": {
+    "start": "Start Recording",
+    "stop": "Stop Recording"
   },
   "features": {
     "blurBackground": "Background blur",
@@ -211,7 +220,7 @@
   "people": {
     "tooltip": "People"
   },
-  "lurker": {
+  "audience": {
     "buttons": {
       "requestBecomeParticipant": "Become a Participant"
     }
@@ -233,5 +242,7 @@
   "meetingPrivate": "The Meeting is private",
   "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
   "hostDeviceRequireTitle": "Microphone Requirement for Host",
-  "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?"
+  "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?",
+  "recordVideoDownloadTitle": "Save your recording",
+  "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?"
 }

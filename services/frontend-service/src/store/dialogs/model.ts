@@ -29,6 +29,7 @@ export const initialDialogsState: AppDialogsState = {
     downgradedSubscriptionDialog: false,
     meetingFinishedDialog: false,
     inviteGuestsDialog: false,
+    inviteGuestsDialogCountTimeStart: false,
     confirmBecomeParticipantDialog: false,
     confirmBecomeAudienceDialog: false,
     hostDeviceRequireDialog: false,

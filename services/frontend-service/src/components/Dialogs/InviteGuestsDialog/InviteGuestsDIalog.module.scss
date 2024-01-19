@@ -69,3 +69,61 @@
     justify-content: center;
     margin-bottom: 0px;
 }
+
+.paper {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    background-color: #9243B7;
+    color: white;
+    max-width: 100%;
+    padding: 25px 50px;
+    z-index: 1301;
+}
+
+.mobilePaper {
+    width: 320px;
+    padding: 20px;
+    display: none;
+}
+
+.closeBtn {
+    color: white;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    transition: all 0.3;
+
+    &:hover {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+
+    &:focus {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+}
+
+.actionBtn {
+    color: white;
+    padding: 0px;
+    width: auto;
+    justify-content: flex-start;
+    transition: all 0.3;
+
+    &:hover {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+
+    &:focus {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+}
+
+.disableWelcomeMeeting {
+    display: none;
+}

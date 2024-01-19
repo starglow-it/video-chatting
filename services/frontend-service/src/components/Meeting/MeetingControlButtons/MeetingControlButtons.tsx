@@ -1,4 +1,6 @@
-import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import RecordRTC, { MediaStreamRecorder } from 'recordrtc';
+
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -22,6 +24,7 @@ import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
+import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -31,25 +34,33 @@ import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
-import { $authStore, addNotificationEvent, deleteDraftUsers } from '../../../store';
+import { $authStore, addNotificationEvent, appDialogsApi, deleteDraftUsers } from '../../../store';
 import {
     $audioErrorStore,
     $isHaveNewMessage,
     $isLurker,
     $isMeetingHostStore,
     $isOwner,
+    $isRecordingStore,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $recordingStream,
+    $meetingNotesVisibilityStore,
+    setMeetingNotesVisibilityEvent,
+    $meetingStore,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     setIsAudioActiveEvent,
+    startRecordMeeting,
+    stopRecordMeeting,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
+    trackEndedEvent,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
 } from '../../../store/roomStores';
@@ -60,7 +71,9 @@ import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
-import { NotificationType } from 'src/store/types';
+import { AppDialogsEnum, NotificationType } from 'src/store/types';
+import { PlayIcon } from 'shared-frontend/icons/OtherIcons/PlayIcon';
+import { PauseIcon } from 'shared-frontend/icons/OtherIcons/PauseIcon';
 
 const Component = () => {
     const router = useRouter();
@@ -72,7 +85,7 @@ const Component = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isLurker = useStore($isLurker);
     const isOwner = useStore($isOwner);
-    const meeting = useStore($meetingTemplateStore);
+    const meeting = useStore($meetingStore);
     const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
 
     const isThereNewRequests = useStoreMap({
@@ -96,6 +109,11 @@ const Component = () => {
     const { isPublishAudience } = meeting;
 
     const { isMobile } = useBrowserDetect();
+    const { isVisible } = useStore($meetingNotesVisibilityStore);
+
+    const [recorder, setRecorder] = useState<RecordRTC | null>(null);
+    const recordingStream = useStore($recordingStream);
+    const isRecording = useStore($isRecordingStore);
 
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
@@ -106,6 +124,38 @@ const Component = () => {
             setIsAudioActiveEvent(false); // This assumes setIsAudioActiveEvent will set isMicActive to false
         }
     }, [isAudioError]);
+
+    useEffect(() => {
+        if (recordingStream && isRecording) {
+            const options: RecordRTC.Options = {
+                type: 'video',
+                mimeType: 'video/mp4', // Attempt to set mimeType to MP4
+                recorderType: MediaStreamRecorder
+            };
+
+            const newRecorder = new RecordRTC(recordingStream, options);
+            newRecorder.startRecording();
+            setRecorder(newRecorder);
+        }
+    }, [recordingStream, isRecording]);
+
+    const stopRecording = () => {
+        if (recorder) {
+            recorder.stopRecording(() => {
+                const blob = recorder.getBlob();
+                stopRecordMeeting(blob);
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
+                });
+            });
+        }
+    };
+
+    useEffect(() => {
+        // Subscribe to trackEndedEvent
+        trackEndedEvent.watch(stopRecording);
+    }, [recorder]);
+
 
     const handleEndVideoChat = useCallback(async () => {
         disconnectFromVideoChatEvent();
@@ -162,12 +212,54 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
-    const handleRequestToBecomeParticipant = () => {
+    const handleRequestToBecomeParticipant = useCallback(() => {
         requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
-    };
+    }, []);
 
+    const handleRecordMeeting = async () => {
+        if (!isRecording) {
+            startRecordMeeting();
+        } else {
+            stopRecording();
+        }
+    };
+    const handleSetStickyNotesVisible = () => {
+        console.log(isVisible);
+        setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
+    };
     return (
-        <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
+        <CustomGrid id="menuBar" container gap={1.5} className={styles.devicesWrapper}>
+            <ConditionalRender condition={!isMobile && !isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="devices.stickyNotes"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleSetStickyNotesVisible}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
+                            Icon={
+                                <NotesIcon
+                                    width="22px"
+                                    height="22px"
+                                />
+                            }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
             <ConditionalRender condition={isOwner}>
                 <CustomTooltip
                     title={
@@ -308,7 +400,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation="lurker.buttons.requestBecomeParticipant"
+                            translation="audience.buttons.requestBecomeParticipant"
                         />
                     }
                     placement="top"
@@ -327,6 +419,38 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
+
+            <CustomTooltip
+                title={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="recordMeeting.start"
+                    />
+                }
+                placement="top"
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={handleRecordMeeting}
+                        className={clsx(styles.deviceButton)}
+                        Icon={
+                            !isRecording ?
+                                <PlayIcon
+                                    width="22px"
+                                    height="22px"
+                                /> : <PauseIcon
+                                    width="22px"
+                                    height="22px"
+                                />
+                        }
+                    />
+                </CustomPaper>
+            </CustomTooltip>
             <CustomTooltip
                 title={
                     <Translation

@@ -9,6 +9,10 @@ export const $meetingNotesStore = meetingDomain.createStore<MeetingNote[]>(
     initialMeetingsNotesState,
 );
 
+export const $meetingNotesVisibilityStore = meetingDomain.createStore<{ isVisible: boolean }>({ isVisible: false });
+
+export const setMeetingNotesVisibilityEvent = meetingDomain.createEvent<{ isVisible: boolean }>('setMeetingNotesVisibilityEvent');
+
 export const setMeetingNotesEvent = meetingDomain.createEvent<MeetingNote[]>(
     'setMeetingNotesEvent',
 );

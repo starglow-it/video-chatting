@@ -54,6 +54,11 @@
 
 .scroll {
   max-height: 285px;
-  height: 285px;
+  height: auto;
   padding-right: 12px;
+}
+
+.block {
+  opacity: 0.5;
+  pointer-events: none;
 }

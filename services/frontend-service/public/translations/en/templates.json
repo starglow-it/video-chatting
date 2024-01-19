@@ -45,6 +45,9 @@
     "downloadIcsTitle": "An email reminder was sent to you and the other party",
     "downloadIcs": "Download ICS"
   },
+  "welcomeTour": {
+    "title": "How about a house tour?"
+  },
   "createRoom": "Create room",
   "addYourDesign": "Add your design",
   "featuredRooms": {

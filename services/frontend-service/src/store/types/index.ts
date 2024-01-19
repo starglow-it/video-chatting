@@ -38,6 +38,11 @@ export type MeetingUser = {
     meetingRole: MeetingRole;
 };
 
+export type joyride = {
+    runDashboardJoyride: boolean,
+    runMeetingJoyride: boolean
+};
+
 export type Meeting = {
     id: string;
     isMonetizationEnabled?: boolean;
@@ -137,6 +142,10 @@ export type DashboardNotification = {
     status: DashboardNotificationReadStatus;
 };
 
+export type welcomeTour = {
+    status: boolean;
+};
+
 export type AppDialogsState = {
     isUserRegisteredDialog: boolean;
     devicesSettingsDialog: boolean;
@@ -164,10 +173,12 @@ export type AppDialogsState = {
     downgradedSubscriptionDialog: boolean;
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
+    inviteGuestsDialogCountTimeStart: boolean,
     confirmBecomeParticipantDialog: boolean;
     confirmBecomeAudienceDialog: boolean;
     meetingEndDialog: boolean;
     hostDeviceRequireDialog: boolean;
+    recordVideoDownloadDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -198,9 +209,11 @@ export enum AppDialogsEnum {
     meetingFinishedDialog = 'meetingFinishedDialog',
     meetingEndDialog = 'meetingEndDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
+    inviteGuestsDialogCountTimeStart = 'inviteGuestsDialogCountTimeStart',
     confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
     confirmBecomeAudienceDialog = 'confirmBecomeAudienceDialog',
     hostDeviceRequireDialog = 'hostDeviceRequireDialog',
+    recordVideoDownloadDialog = 'recordVideoDownloadDialog',
 }
 
 export type DialogActionPayload = {

@@ -11,7 +11,7 @@ export const handleJoinMeetingWithLurker = async ({
     isCameraActive,
     changeStream,
 }: JoinMeetingWithLurkerFxPayload) => {
-    updateLocalUserEvent({
+    await updateLocalUserEvent({
         micStatus: isMicActive ? 'active' : 'inactive',
         cameraStatus: isCameraActive ? 'active' : 'inactive',
         isAuraActive,
@@ -20,14 +20,14 @@ export const handleJoinMeetingWithLurker = async ({
     const clonedStream = changeStream?.clone();
 
     if (!isMobile()) {
-        BackgroundManager.applyBlur(clonedStream);
+        await BackgroundManager.applyBlur(clonedStream);
 
-        BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
+        await BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
             setActiveStreamEvent(stream);
         });
     } else {
         setActiveStreamEvent(clonedStream);
     }
 
-    publishTracksEvent();
+    await publishTracksEvent();
 };

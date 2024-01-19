@@ -1,5 +1,7 @@
 import {
     $meetingNotesStore,
+    $meetingNotesVisibilityStore,
+    setMeetingNotesVisibilityEvent,
     getMeetingNotesSocketEvent,
     setMeetingNotesEvent,
     removeLocalMeetingNoteEvent,
@@ -16,3 +18,8 @@ $meetingNotesStore
         state.filter(note => note.id !== data),
     )
     .reset(resetRoomStores);
+
+$meetingNotesVisibilityStore.on(setMeetingNotesVisibilityEvent, (state, { isVisible }) => ({
+    ...state,
+    isVisible: isVisible
+}));

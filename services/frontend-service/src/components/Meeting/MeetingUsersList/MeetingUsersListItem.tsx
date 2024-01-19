@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -23,6 +23,7 @@ import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { $isMeetingHostStore } from '../../../store/roomStores';
+import { $meetingTemplateStore } from 'src/store/roomStores';
 
 // types
 import { MeetingUsersListItemProps } from './types';
@@ -43,6 +44,8 @@ const Component = ({
     isLurkerRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
+    const { isPublishAudience } = useStore($meetingTemplateStore);
+    console.log(isPublishAudience);
 
     const {
         avatar: { list },
@@ -143,7 +146,9 @@ const Component = ({
                         <ActionButton
                             variant="decline"
                             onAction={handleChangeRoleToAudienceRequest}
-                            className={styles.deleteUser}
+                            className={clsx(styles.toAudienceBtn, { 
+                                [styles.block]: !isPublishAudience
+                             })}
                             Icon={<ArrowDownIcon width="23px" height="23px" />}
                         />
                     </CustomTooltip>
@@ -154,13 +159,10 @@ const Component = ({
                         <ActionButton
                             variant="decline"
                             onAction={handleDeleteRequest}
-                            className={styles.toAudienceBtn}
+                            className={clsx(styles.deleteUser)}
                             Icon={<CloseIcon width="23px" height="23px" />}
                         />
                     </CustomTooltip>
-
-
-
                 </ConditionalRender>
             </CustomGrid>
         </CustomGrid>

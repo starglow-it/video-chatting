@@ -1,5 +1,7 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
+import dynamic from "next/dynamic";
+const MeetingJoyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -24,6 +26,7 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // shared
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
@@ -48,6 +51,8 @@ import styles from './MeetingView.module.scss';
 // stores
 import {
     $windowSizeStore,
+    $joyrideStore,
+    emitMeetingJoyrideEvent,
     addNotificationEvent,
     appDialogsApi,
     checkIsPortraitLayoutEvent,
@@ -83,6 +88,7 @@ import { MeetingHeader } from '../MeetingHeader/MeetingHeader';
 import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
 import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
+import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
 // helpers
 
 const Component = () => {
@@ -101,6 +107,8 @@ const Component = () => {
     const audioError = useStore($audioErrorStore);
     const isAudioError = Boolean(audioError);
     const isVideoError = Boolean(videoError);
+    const { runMeetingJoyride } = useStore($joyrideStore);
+    const [ stepIndex, setStepIndex ] = useState(0);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -110,6 +118,66 @@ const Component = () => {
     });
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
+    const [welcomeMeetingDialog, setWelcomeMeetingDialog] = useState(false);
+
+    const createContentWithLineBreaks = text => {
+        return text.split('\n').map((line, index, array) => (
+            <span key={index}>
+              {line}
+              {index !== array.length - 1 && <br />}
+            </span>
+          ));
+    };
+
+    const joyrideStyleOptions = {
+        arrowColor: "#FF884E",
+        backgroundColor: "#9243B7",
+        textColor: "#fff",
+        fontSize: "20px",
+        width: "fit-content",
+        zIndex: 9999,
+        primaryColor: "#FF884E",
+
+    };
+
+    const joyrideSteps = [
+        {
+            target: "#inviteGuests",
+            title: "invite guests",
+            content: createContentWithLineBreaks("invite participants and attendees to your ruume via link or email."),
+            placement: "right",
+            disableBeacon: true
+        },
+        {
+            target: "#privatePublicSetting",
+            title: "private/public setting",
+            content: createContentWithLineBreaks("set your ruume to private or public.\n\n only participants can access a private ruume. \n\n public allows audience members to join without permissions,\n chat and ask questions."),
+            placement: "bottom",
+            disableBeacon: true
+
+        },
+        {
+            target: "#selectGuests",            
+            title: "select your guests",
+            content: createContentWithLineBreaks("once you've determined if your ruume is private or public,\n select the audience you would like to invite then click the\n 'link' icon.\n\n participants and audience members have their own link."),
+            placement: "left",
+            disableBeacon: true
+        },
+        {
+            target: "#menuBar",
+            title: "menu bar",
+            content: createContentWithLineBreaks("enjoy engaging functionality for you to customize and\n interact with participants in your ruume.\n\n post sticky notes, record your ruume, start transcripts and \n more. take a moment to hover over each icon to understand \n your new menu bar."),
+            placement: "top",
+            disableBeacon: true
+        },
+        {
+            target: "#changeBackground",
+            title: "set the scene",
+            content: createContentWithLineBreaks("change backgrounds with a selection or presets or from your \n own collection. \n\n with a business subscriptioin, you can embed youtube \n videos directly into your ruume, audio included!"),
+            placement: "left",
+            disableBeacon: true
+        },
+    ];
 
     useEffect(() => {
         if (isOwner && !isMobile && isAudioError) {
@@ -205,6 +273,19 @@ const Component = () => {
         }
     }, [isMobile]);
 
+    useEffect(() => {
+        const isFirstMeeting = localStorage.getItem("isFirstMeeting");
+
+        if (isFirstMeeting) {
+            setWelcomeMeetingDialog(true);
+            localStorage.removeItem("isFirstMeeting");
+        } else {
+            if (welcomeMeetingDialog) {
+                setWelcomeMeetingDialog(false);
+            }
+        }
+    }, []);
+
     const handleUpdateMeetingTemplate = useCallback(async (updateData: any) => {
         if (updateData) {
             await updateMeetingTemplateFxWithData(updateData.data);
@@ -213,10 +294,70 @@ const Component = () => {
         }
     }, []);
 
+    const handleJoyrideCallback = (data) => {
+        const { action, index, type } = data;
+        const joyrideEl = document.querySelector(".react-joyride__overlay");
+
+        if (joyrideEl) {
+            if (index <= joyrideSteps.length - 1) {
+                joyrideEl.addEventListener("click", () => setStepIndex(index + 1));
+            } else {
+                emitMeetingJoyrideEvent({ runMeetingJoyride: false });
+            }
+        }
+
+        if (type === 'step:after') {
+            setStepIndex(index + 1);
+        }
+
+        
+
+        if (type === 'tour:end' || action === 'close') {
+            emitMeetingJoyrideEvent({ runMeetingJoyride: false });
+
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.inviteGuestsDialogCountTimeStart
+            });
+        }
+    };
+
     const previewImage = getPreviewImage(meetingTemplate);
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
+            <MeetingJoyride
+                callback={handleJoyrideCallback}
+                steps={joyrideSteps}
+                stepIndex={stepIndex}
+                run={runMeetingJoyride}
+                continuous={true}
+                disableOverlayClose={true}
+                styles={{
+                    tooltip: {
+                        borderRadius: 20,
+                        padding: "20px"
+                    },
+                    tooltipTitle: {
+                        marginLeft: "10px",
+                        fontSize: "20px",
+                        textAlign: "left"
+                    },
+                    tooltipContent: {
+                        fontSize: "20px",
+                        textAlign: "left"
+                    },
+                    tooltipFooter: {
+                        justifyContent: "flex-start",
+                        paddingLeft: "10px"
+                    },
+                    tooltipFooterSpacer: {
+                        display: "none"
+                    },
+                    options: { ...joyrideStyleOptions }
+                }}
+                hideBackButton
+                locale={{ next: <ArrowForwardIosIcon fontSize="small" />, last: "finish" }}
+            />
             <MeetingBackgroundVideo
                 templateType={meetingTemplate.templateType}
                 src={meetingTemplate.url}
@@ -300,6 +441,7 @@ const Component = () => {
             <ConfirmBecomeParticipantDialog />
             <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
+            <RecordVideoDownloadDialog />
         </CustomGrid>
     );
 };

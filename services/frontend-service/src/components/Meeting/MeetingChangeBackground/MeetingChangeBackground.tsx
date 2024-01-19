@@ -106,6 +106,7 @@ const Component = () => {
             disableHoverListener={isExpand}
         >
             <CustomPaper
+                id="changeBackground"
                 className={clsx(styles.commonOpenPanel, {
                     [styles.expanded]: isExpand,
                     [styles.mobile]: isExpand && isMobile,

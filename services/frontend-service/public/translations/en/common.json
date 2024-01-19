@@ -62,7 +62,9 @@
     "homePage": "Homepage",
     "getStartedGoogle": "Get Started with Google",
     "getStartedEmail": "Get Started with Email",
-    "openSystemSettings": "Open System Settings"
+    "openSystemSettings": "Open System Settings",
+    "letsgo": "Let's go",
+    "next": "next"
   },
   "login": {
     "welcome": "Welcome back",

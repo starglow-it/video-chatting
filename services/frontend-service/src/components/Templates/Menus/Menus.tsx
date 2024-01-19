@@ -45,6 +45,7 @@ const Component = () => {
     return (
         <CustomGrid
             container
+            id="templatesMenu"
             direction="row"
             alignItems="center"
             justifyContent="center"
