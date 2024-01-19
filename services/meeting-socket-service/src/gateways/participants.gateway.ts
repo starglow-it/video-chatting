@@ -297,7 +297,7 @@ export class ParticipantsGateway extends BaseGateway {
                     throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
                     Object.assign(updateData, {
-                        meetingRole: MeetingRole.Lurker,
+                        meetingRole: MeetingRole.Audience,
                         userPosition: u.position,
                         userSize: u.size,
                         isAuraActive: false,
@@ -370,7 +370,7 @@ export class ParticipantsGateway extends BaseGateway {
                     throwWsError(!u, MeetingI18nErrorEnum.MAX_PARTICIPANTS_NUMBER);
 
                     Object.assign(updateData, {
-                        meetingRole: MeetingRole.Lurker,
+                        meetingRole: MeetingRole.Audience,
                         userPosition: u.position,
                         userSize: u.size,
                         isAuraActive: false,

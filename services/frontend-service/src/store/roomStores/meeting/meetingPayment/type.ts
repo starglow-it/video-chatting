@@ -17,7 +17,7 @@ export type MeetingPayment = PaymentItem[];
 export type UpdatePaymentMeetingParams = {
     [K in PaymentType]: {
         [MeetingRole.Participant]: PaymentBase;
-        [MeetingRole.Lurker]: PaymentBase;
+        [MeetingRole.Audience]: PaymentBase;
     };
 };
 

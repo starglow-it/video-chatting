@@ -113,7 +113,7 @@ export class LurkersGateway extends BaseGateway {
         const meetingUser = await this.usersComponent.findOneAndUpdate({
           query: {
             socketId: socket.id,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
           },
           data: {
             accessStatus: MeetingAccessStatusEnum.SwitchRoleSent,
@@ -164,7 +164,7 @@ export class LurkersGateway extends BaseGateway {
         const meetingUser = await this.usersService.findOne({
           query: {
             _id: new ObjectId(meetingUserId),
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
           },
           session,
         });
@@ -267,7 +267,7 @@ export class LurkersGateway extends BaseGateway {
         const user = await this.usersComponent.findOne({
           query: {
             _id: new ObjectId(meetingUserId),
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
             accessStatus: {
               $in: [MeetingAccessStatusEnum.SwitchRoleSent],
             },
@@ -345,7 +345,7 @@ export class LurkersGateway extends BaseGateway {
         const user = await this.usersComponent.findOne({
           query: {
             socketId: socket.id,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
           },
           session,
         });

@@ -77,7 +77,7 @@ export class ScheduleRequestDto {
   })
   @IsNotEmpty()
   @IsString()
-  role: MeetingRole.Participant | MeetingRole.Lurker;
+  role: MeetingRole.Participant | MeetingRole.Audience;
 
   @ApiProperty({
     type: [String],

@@ -75,10 +75,10 @@ export class UserTemplatesComponent {
       [K in Exclude<MeetingRole, 'host'>]: Partial<TemplatePaymentDocument>;
     } = {
       participant: { ...defaultPayment },
-      lurker: {
+      audience: {
         ...defaultPayment,
-        meetingRole: MeetingRole.Lurker,
-        price: DEFAULT_PRICE.lurker,
+        meetingRole: MeetingRole.Audience,
+        price: DEFAULT_PRICE.audience,
       },
     };
 
@@ -90,11 +90,11 @@ export class UserTemplatesComponent {
         },
         {
           type: PaymentType.Paywall,
-          ...meetingPaymentRoleData['lurker'],
+          ...meetingPaymentRoleData['audience'],
         },
         {
           type: PaymentType.Meeting,
-          ...meetingPaymentRoleData['lurker'],
+          ...meetingPaymentRoleData['audience'],
         },
         {
           type: PaymentType.Paywall,

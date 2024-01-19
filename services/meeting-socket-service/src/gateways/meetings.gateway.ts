@@ -301,7 +301,7 @@ export class MeetingsGateway
   }
 
   isChangeVideoContainer = (user: MeetingUserDocument) =>
-    user.meetingRole !== MeetingRole.Lurker &&
+    user.meetingRole !== MeetingRole.Audience &&
     [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Left].includes(
       user.accessStatus as MeetingAccessStatusEnum,
     );
@@ -866,7 +866,7 @@ export class MeetingsGateway
     );
   }
 
-  @Roles([MeetingRole.Lurker])
+  @Roles([MeetingRole.Audience])
   @WsEvent(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
   async joinMeetingWithLurker(
     @MessageBody() msg: LurkerJoinMeetingDto,
@@ -925,7 +925,7 @@ export class MeetingsGateway
         const mU = await this.usersComponent.findOneAndUpdate({
           query: {
             socketId: socket.id,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
           },
           data: updateData,
           session,
@@ -1308,7 +1308,7 @@ export class MeetingsGateway
         throwWsError(!userTemplate, 'No user template found');
 
         if (
-          user.meetingRole !== MeetingRole.Lurker &&
+          user.meetingRole !== MeetingRole.Audience &&
           user.accessStatus === MeetingAccessStatusEnum.Disconnected
         ) {
           const u = await this.usersService.updateVideoContainer({

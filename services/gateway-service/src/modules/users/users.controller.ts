@@ -481,7 +481,7 @@ export class UsersController {
         senderName = 'Anonymous';
       }
 
-      const acceptRoles = [MeetingRole.Lurker];
+      const acceptRoles = [MeetingRole.Audience];
 
       this.notificationService.sendEmail({
         to: body.userEmails.map((email) => ({ email, name: email })),
@@ -557,7 +557,7 @@ export class UsersController {
         id: body.templateId,
       });
 
-      const acceptRoles = [MeetingRole.Lurker];
+      const acceptRoles = [MeetingRole.Audience];
 
       const startAt = parseDateObject(body.startAt);
       const endAt = parseDateObject(body.endAt);

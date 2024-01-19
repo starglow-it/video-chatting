@@ -33,8 +33,6 @@ const Component = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const refScroll = useRef<any>(null);
 
-    
-
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -42,7 +40,7 @@ const Component = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
 
@@ -106,8 +104,6 @@ const Component = () => {
                 {renderUsersList}
             </CustomGrid>
         </CustomScroll>
-
-
     );
 };
 

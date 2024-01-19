@@ -66,7 +66,7 @@ const Component = () => {
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     localUser.id !== user.id &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
 

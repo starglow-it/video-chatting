@@ -55,7 +55,7 @@ class QueryTemplatePaymentsRequest
   })
   @IsNotEmpty()
   @Type(() => UpdateTemplatePaymentsData)
-  lurker: UpdateTemplatePaymentsData;
+  audience: UpdateTemplatePaymentsData;
 }
 
 export class UpdateTemplatePaymentsRequest {

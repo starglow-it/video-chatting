@@ -157,7 +157,7 @@ const MeetingContainer = memo(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
-        if (!!roleUrl && roleUrl !== MeetingRole.Lurker) {
+        if (!!roleUrl && roleUrl !== MeetingRole.Audience) {
             router.push(NotFoundRoute);
         }
     }, [roleUrl]);

@@ -40,6 +40,7 @@ export const MeetingRoleGroup = forwardRef(
 
         return (
             <CustomGrid
+                id="selectGuests"
                 display="flex"
                 alignItems="center"
                 marginBottom={2}
@@ -100,14 +101,14 @@ export const MeetingRoleGroup = forwardRef(
                     })}
                 >
                     <FormControlLabel
-                        onClick={() => changeValue(MeetingRole.Lurker)}
+                        onClick={() => changeValue(MeetingRole.Audience)}
                         label="Audience"
                         classes={{
                             root: clsx(styles.label, {
-                                [styles.active]: value === MeetingRole.Lurker,
+                                [styles.active]: value === MeetingRole.Audience,
                             }),
                         }}
-                        checked={value === MeetingRole.Lurker}
+                        checked={value === MeetingRole.Audience}
                         control={
                             <CustomRadio
                                 icon={

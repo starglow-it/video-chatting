@@ -582,8 +582,8 @@ export class SeederService {
             },
             {
               ...defaultMeetingPayment,
-              price: DEFAULT_PRICE.lurker,
-              meetingRole: MeetingRole.Lurker,
+              price: DEFAULT_PRICE.audience,
+              meetingRole: MeetingRole.Audience,
             },
             {
               ...defaultPaywallPayment,
@@ -592,8 +592,8 @@ export class SeederService {
             },
             {
               ...defaultPaywallPayment,
-              price: DEFAULT_PRICE.lurker,
-              meetingRole: MeetingRole.Lurker,
+              price: DEFAULT_PRICE.audience,
+              meetingRole: MeetingRole.Audience,
             },
           ];
         }, Promise.resolve([]));

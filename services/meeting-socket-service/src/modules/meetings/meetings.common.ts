@@ -132,8 +132,8 @@ export class MeetingsCommonService {
 
   isMaxMembers = async (meeting: MeetingDocument, role: MeetingRole) => {
     const condition =
-      role === MeetingRole.Lurker
-        ? { max: 1000, roles: [MeetingRole.Lurker] }
+      role === MeetingRole.Audience
+        ? { max: 1000, roles: [MeetingRole.Audience] }
         : {
             max: meeting.maxParticipants,
             roles: [MeetingRole.Host, MeetingRole.Participant],

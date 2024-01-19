@@ -117,7 +117,7 @@ export const $enabledPaymentMeetingLurker = combine({
         isLurker &&
         meetingPayment.some(
             item =>
-                item.meetingRole === MeetingRole.Lurker &&
+                item.meetingRole === MeetingRole.Audience &&
                 item.enabled &&
                 item.type === PaymentType.Meeting &&
                 item.price > 0,
@@ -132,7 +132,7 @@ export const $enabledPaymentPaywallLurker = combine({
         isLurker &&
         meetingPayment.some(
             item =>
-                item.meetingRole === MeetingRole.Lurker &&
+                item.meetingRole === MeetingRole.Audience &&
                 item.enabled &&
                 item.type === PaymentType.Paywall &&
                 item.price > 0,
@@ -160,13 +160,13 @@ export const $paymentMeetingLurker = $meetingPaymentStore.map(
         payments.find(
             item =>
                 item.type === PaymentType.Meeting &&
-                item.meetingRole === MeetingRole.Lurker,
+                item.meetingRole === MeetingRole.Audience,
         ) ??
         ({
             enabled: false,
             price: 5,
             type: PaymentType.Meeting,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
             currency: DEFAULT_PAYMENT_CURRENCY,
         } as PaymentItem),
 );
@@ -192,13 +192,13 @@ export const $paymentPaywallLurker = $meetingPaymentStore.map(
         payments.find(
             item =>
                 item.type === PaymentType.Paywall &&
-                item.meetingRole === MeetingRole.Lurker,
+                item.meetingRole === MeetingRole.Audience,
         ) ??
         ({
             enabled: false,
             price: 5,
             type: PaymentType.Paywall,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
             currency: DEFAULT_PAYMENT_CURRENCY,
         } as PaymentItem),
 );

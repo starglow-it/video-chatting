@@ -54,7 +54,7 @@ const Component = ({ isAllowBack = true }) => {
                 user =>
                     user.id !== localUserId &&
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
 

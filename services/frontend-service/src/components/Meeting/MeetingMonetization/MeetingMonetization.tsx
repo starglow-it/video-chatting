@@ -155,7 +155,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         paymentParticipant?.templateCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
-                lurker: {
+                audience: {
                     enabled: paymentAudience?.enabledMeeting ?? false,
                     price: paymentAudience?.templatePrice ?? 5,
                     currency:
@@ -171,7 +171,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         paymentParticipant?.paywallCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
-                lurker: {
+                audience: {
                     enabled: paymentAudience?.enabledPaywall ?? false,
                     price: paymentAudience?.paywallPrice ?? 5,
                     currency:

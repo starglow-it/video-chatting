@@ -146,7 +146,7 @@ requestSwitchRoleFromParticipantToAudienceByHostEvent.doneData.watch(data => {
 answerRequestFromParticipantToAudienceByParticipantEvent.doneData.watch(async data => {
     if (data) {
         if (data?.action === AnswerSwitchRoleAction.Accept) {
-            setRoleQueryUrlEvent('lurker');
+            setRoleQueryUrlEvent('audience');
             updateMeetingEvent({ meeting: data?.meeting });
             updateMeetingUserEvent({ user: data?.user });
             await initDevicesEventFxWithStore();
