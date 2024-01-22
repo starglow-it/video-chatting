@@ -116,7 +116,7 @@ const Component = () => {
     const isRecording = useStore($isRecordingStore);
 
     useEffect(() => {
-        if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
+        if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
     }, [isMeetingHost, isThereNewRequests]);
 
     useEffect(() => {
@@ -152,7 +152,6 @@ const Component = () => {
     };
 
     useEffect(() => {
-        // Subscribe to trackEndedEvent
         trackEndedEvent.watch(stopRecording);
     }, [recorder]);
 
@@ -360,7 +359,12 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleToggleSchedulePanel}
-                            className={clsx(styles.actionButton)}
+                            className={clsx(styles.actionButton, {
+                                [styles.active]: isUsersOpen,
+                                [styles.newRequests]:
+                                    (isThereNewRequests && isMeetingHost),
+                                [styles.mobile]: isMobile,
+                            })}
                             Icon={<PersonPlusIcon width="18px" height="18px" />}
                         />
                     </CustomPaper>
@@ -386,9 +390,7 @@ const Component = () => {
                         onAction={handleToggleUsersPanel}
                         className={clsx(styles.actionButton, {
                             [styles.active]: isUsersOpen,
-                            [styles.newRequests]:
-                                (isThereNewRequests && isMeetingHost) ||
-                                !!isThereNewMessage,
+                            [styles.newRequests]: !!isThereNewMessage,
                             [styles.mobile]: isMobile,
                         })}
                         Icon={<ChatIcon width="18px" height="18px" />}

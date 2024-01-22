@@ -133,12 +133,9 @@ const Component = ({
                         Icon={<HostIcon width="23px" height="23px" />}
                     />
                 </ConditionalRender>
-
-                <ConditionalRender
-                    condition={Boolean(
-                        !isLocalItem && onDeleteUser && !isOwnerItem,
-                    )}
-                >
+                <ConditionalRender condition={Boolean(
+                    !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest
+                )}>
                     <CustomTooltip
                         title="Move user to audience"
                         placement="bottom"
@@ -146,12 +143,19 @@ const Component = ({
                         <ActionButton
                             variant="decline"
                             onAction={handleChangeRoleToAudienceRequest}
-                            className={clsx(styles.toAudienceBtn, { 
+                            className={clsx(styles.toAudienceBtn, {
                                 [styles.block]: !isPublishAudience
-                             })}
+                            })}
                             Icon={<ArrowDownIcon width="23px" height="23px" />}
                         />
                     </CustomTooltip>
+                </ConditionalRender>
+                <ConditionalRender
+                    condition={Boolean(
+                        !isLocalItem && onDeleteUser && !isOwnerItem,
+                    )}
+                >
+
                     <CustomTooltip
                         title="Kick user"
                         placement="bottom"
