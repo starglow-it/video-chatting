@@ -1,5 +1,6 @@
 import { meetingScope, serverUrl } from './baseData';
 import { HttpMethods } from '../../store/types';
+import { uploadScope } from 'shared-const';
 
 export const CREATE_MEETING_URL = `${meetingScope}`;
 export const GET_MEETING_URL = `${meetingScope}`;
@@ -40,4 +41,10 @@ export const getSFUTokenUrl = {
 export const getAvatarsMeetingUrl = {
     url: `${serverUrl}/${CREATE_MEETING_URL}/avatars?skip=0&limit=20`,
     method: HttpMethods.Get,
+};
+
+
+export const uploadRecordVideoUrl = {
+    url: `${serverUrl}/${uploadScope}/recordvideo`,
+    method: HttpMethods.Post,
 };

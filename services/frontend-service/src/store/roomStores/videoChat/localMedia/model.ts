@@ -45,6 +45,7 @@ export const $recordedVideoBlobStore =
     videoChatDomain.createStore<VideoBlob>(null);
 
 export const $isRecordingStore = videoChatDomain.createStore<boolean>(false);
+export const $uploadVideoToS3Store = videoChatDomain.createStore<string>('');
 
 export const commonMediaStore = combine({
     audioDevices: $audioDevicesStore,
@@ -62,6 +63,7 @@ export const commonMediaStore = combine({
     isAuraActive: $isAuraActive,
     recordedVideoBlob: $recordedVideoBlobStore,
     isRecording: $isRecordingStore,
+    uploadVideoToS3Store: $uploadVideoToS3Store,
 });
 
 export const setAudioDevicesEvent = videoChatDomain.createEvent<
@@ -135,5 +137,5 @@ export const stopRecordStreamFx = videoChatDomain.createEffect<
 >('stopRecordStreamFx');
 export const uploadToS3Fx = videoChatDomain.createEffect<
     VideoBlob,
-    VideoBlob
+    string
 >('uploadToS3Fx');
