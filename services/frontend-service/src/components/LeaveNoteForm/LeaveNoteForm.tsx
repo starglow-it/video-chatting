@@ -163,8 +163,7 @@ const Component = () => {
                                         condition={!isLurker || !!profile.id}
                                     >
                                         <CustomInput
-                                            nameSpace="meeting"
-                                            translation="features.notes.input"
+                                            placeholder="post a sticky notes"
                                             className={clsx(
                                                 materialStyles.textField,
                                                 styles.textField,
