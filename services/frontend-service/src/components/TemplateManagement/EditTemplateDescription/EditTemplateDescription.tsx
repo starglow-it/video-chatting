@@ -242,7 +242,7 @@ const Component = ({
                 open={Boolean(anchorEl)}
                 onClose={handleCloseButton}
                 anchorEl={anchorEl}
-                style={{ zIndex: 20 }}
+                style={{ zIndex: 20, left: '70px', top: '-25px' }}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',

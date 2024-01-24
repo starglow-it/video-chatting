@@ -413,7 +413,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
             >
                 <CustomGrid
                     container
-                    gap={1.5}
+                    gap={3}
                     flexWrap="nowrap"
                     justifyContent="center"
                     className={styles.buttonsGroup}

@@ -38,7 +38,7 @@
 
 .buttonsGroup {
   position: absolute;
-  bottom: rem(28px);
+  bottom: 15%;
   left: 50%;
   transform: translate(-50%);
   z-index: 999;
@@ -89,4 +89,6 @@
   margin-top: 16px;
   padding: 4px 8px;
   width: 120px;
+  background: transparent;
+  border: 1px solid #FFA552;
 }

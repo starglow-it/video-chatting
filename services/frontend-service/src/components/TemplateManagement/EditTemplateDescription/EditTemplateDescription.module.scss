@@ -67,7 +67,7 @@
 
 .buttonsGroup {
   position: absolute;
-  bottom: rem(28px);
+  bottom: 15%;
   left: 50%;
   transform: translate(-50%);
 
@@ -159,4 +159,8 @@
 
 .popoverMonetization {
   background: transparent;
+}
+
+.commonOpenPanel:after {
+  background: #333333;
 }
