@@ -228,7 +228,8 @@
   "chat": {
     "tooltip": "Chat"
   },
-  "youtubeVideo": "Youtube Video",
+  "youtubeVideo": "youtube video",
+  "connect": "connect a ",
   "originalVideoSound": "Original video sound",
   "role": {
     "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",

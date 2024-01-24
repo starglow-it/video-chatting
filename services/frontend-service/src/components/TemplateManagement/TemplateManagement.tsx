@@ -31,6 +31,7 @@ import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttend
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/TemplateLinks';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -142,6 +143,8 @@ const Component = ({
     template,
     onCancel,
     onSubmit,
+    onSubmitAndEnterMeeting,
+    onSubmitAndScheduleMeeting,
     onUploadFile,
     onUpgradePlan,
     isFileUploading,
@@ -207,11 +210,11 @@ const Component = ({
     const { value: isTemplateDataWasSet, onSwitchOn: onSetTemplateData } =
         useToggle(false);
 
-    useEffect(() => {
-        if (!isBusinessSubscription && !isProfessionalSubscription) {
-            router.push(dashboardRoute);
-        }
-    }, [isBusinessSubscription, isProfessionalSubscription]);
+    // useEffect(() => {
+    //     if (!isBusinessSubscription && !isProfessionalSubscription) {
+    //         router.push(dashboardRoute);
+    //     }
+    // }, [isBusinessSubscription, isProfessionalSubscription]);
 
     useEffect(() => {
         if (!background) {
@@ -352,6 +355,34 @@ const Component = ({
         [onSubmit, isFileUploading],
     );
 
+    const handleSaveAndEnterMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndEnterMeeting(data);
+        }),
+        [onSubmitAndEnterMeeting, isFileUploading],
+    );
+
+    const handleSaveAndScheduleMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndScheduleMeeting(data);
+        }),
+        [onSubmitAndScheduleMeeting, isFileUploading],
+    );
+
     const handleUpgradePlanClick = useCallback(
         onSubmitForm(async data => {
             if (isFileUploading) {
@@ -476,6 +507,8 @@ const Component = ({
                                 onSubmit={handleSubmit}
                                 onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
+                                handleEnterMeeting={handleSaveAndEnterMeeting}
+                                handleScheduleMeeting={handleSaveAndScheduleMeeting}
                                 template={template}
                             />
                         </ConditionalRender>
@@ -633,6 +666,7 @@ const Component = ({
                     </TemplateBackgroundPreview>
                 </form>
             </FormProvider>
+            <ScheduleMeetingDialog />
             <ConfirmCancelRoomCreationDialog onConfirm={onCancel} />
         </CustomGrid>
     );

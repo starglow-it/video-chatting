@@ -94,7 +94,8 @@ const Component = ({
             container
             className={styles.wrapper}
             alignItems="center"
-            justifyContent="center"
+            direction="column"
+            justifyContent="flex-start"
         >
             <ConditionalRender condition={!isBusinessSubscription}>
                 <CustomPaper
@@ -110,42 +111,16 @@ const Component = ({
                         height="100%"
                         padding={4}
                     >
-                        <CustomTypography
-                            variant="h2"
-                            fontSize={30}
-                            color="colors.white.primary"
-                        >
+                        <CustomTypography color="colors.white.primary" className={styles.linkDescription}>
                             <Translation
                                 nameSpace="createRoom"
-                                translation="upgrade.embedYourLinks"
+                                translation="upgrade.linkDescription1"
                             />
                         </CustomTypography>
-                        <CustomTypography
-                            variant="h4"
-                            marginTop={7}
-                            color="colors.white.primary"
-                        >
+                        <CustomTypography color="colors.white.primary" className={clsx(styles.linkDescription, styles.linkDescription2)}>
                             <Translation
                                 nameSpace="createRoom"
-                                translation="upgrade.businessMembership"
-                            />
-                        </CustomTypography>
-                        <CustomTypography
-                            marginTop={4}
-                            color="colors.white.primary"
-                        >
-                            <Translation
-                                nameSpace="createRoom"
-                                translation="upgrade.embedLinks"
-                            />
-                        </CustomTypography>
-                        <CustomTypography color="colors.white.primary">
-                            +
-                        </CustomTypography>
-                        <CustomTypography color="colors.white.primary">
-                            <Translation
-                                nameSpace="createRoom"
-                                translation="upgrade.commission"
+                                translation="upgrade.linkDescription2"
                             />
                         </CustomTypography>
                         <CustomButton
@@ -202,13 +177,13 @@ const Component = ({
                 <ActionButton
                     variant="gray"
                     Icon={<ArrowLeftIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonPrev}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
                     Icon={<ArrowRightIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonNext}
                     onAction={handleClickNextStep}
                 />
             </CustomGrid>
