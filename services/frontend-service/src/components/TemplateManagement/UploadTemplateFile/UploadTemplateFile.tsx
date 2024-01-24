@@ -406,7 +406,6 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     </Paper>
                 </CustomGrid>
             </ConditionalRender>
-
             <ConditionalRender
                 condition={
                     Boolean(background) || Boolean(url) || isHasYoutubeUrl

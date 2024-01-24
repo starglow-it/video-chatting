@@ -1,7 +1,6 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { memo, useEffect, useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { useStore } from 'effector-react';
-import clsx from 'clsx';
 
 import { useNavigation } from '@hooks/useNavigation';
 
@@ -18,11 +17,9 @@ import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChalkboardUser, faFolderClosed, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // components
 import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/types';
-import { OptionItem } from '@components/TemplateManagement/EditPrivacy/OptionItem/OptionItem';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
@@ -35,11 +32,9 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
 
-
 // store
 import { useRouter } from 'next/router';
-import { $businessCategoriesStore, $isTrial } from '../../../store';
-import frontendConfig from '../../../const/config';
+import { $businessCategoriesStore } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
@@ -68,18 +63,15 @@ const Component = ({
     handleEnterMeeting,
     handleScheduleMeeting,
     onPreviousStep,
-    onUpgradePlan,
 }: EditPrivacyProps) => {
-    const isTrial = useStore($isTrial);
     const router = useRouter();
     const isCustom = !!router.query.tags;
     const businessCategories = useStore($businessCategoriesStore);
 
     const { control, register, setValue, watch, formState: { errors } } = useFormContext();
 
-    const { activeTab, onChange } = useNavigation({ tabs: options });
+    const { onChange } = useNavigation({ tabs: options });
     const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
-    const customLink = useWatch({ control, name: 'customLink' });
     const customLinkInputProps = useMemo(
         () => ({
             startAdornment: <CustomLinkIcon width="24px" height="24px" />,
@@ -104,47 +96,6 @@ const Component = ({
         }
     }, []);
 
-    const handleChangeActiveOption = useCallback(
-        (value: string) => {
-            onChange(value);
-            setValue('isPublic', value === options[1].value);
-        },
-        [onChange],
-    );
-
-    const optionItems = useMemo(
-        () =>
-            options.map(
-                ({
-                    id,
-                    value,
-                    translationKey,
-                    Icon,
-                    availableWithTrial,
-                    withUpgradeButton,
-                }) =>
-                    isCustom && id === '1' ? null : (
-                        <OptionItem
-                            key={id}
-                            onClick={() => handleChangeActiveOption(value)}
-                            isActive={activeTab.value === value}
-                            nameSpace="createRoom"
-                            translationKey={translationKey}
-                            Icon={Icon}
-                            disabled={!availableWithTrial && isTrial}
-                            onUpgradeClick={
-                                withUpgradeButton &&
-                                    !availableWithTrial &&
-                                    isTrial
-                                    ? onUpgradePlan
-                                    : undefined
-                            }
-                        />
-                    ),
-            ),
-        [options, activeTab, handleChangeActiveOption, isTrial, onUpgradePlan],
-    );
-
     const businessCategoriesOptions = useMemo(
         () =>
             businessCategories.list.map(item => ({
@@ -154,64 +105,7 @@ const Component = ({
         [businessCategories.list],
     );
 
-    // const textWithLinks = useMemo(
-    //     () =>
-    //         !isTrial
-    //             ? translation(`editPrivacy.link`, {
-    //                   termsLink: `${frontendConfig.frontendUrl}/agreements`,
-    //                   privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
-    //               })
-    //             : translation('editPrivacy.upgradePlan'),
-    //     [isTrial],
-    // );
-
     return (
-        // <CustomGrid container className={styles.wrapper} justifyContent="flex-start">
-        //     <CustomTypography
-        //         variant="body2"
-        //         fontSize={48}
-        //         color="colors.white.primary"
-        //         nameSpace="createRoom"
-        //         translation="editPrivacy.title"
-        //         className={styles.editPrivacyTitle}
-        //     />
-        //     <CustomPaper variant="black-glass" className={styles.paper}>
-        //         <CustomGrid container direction="column" gap={3}>
-        //             <CustomTypography
-        //                 variant="h4bold"
-        //                 color="colors.white.primary"
-        //                 nameSpace="createRoom"
-        //                 translation="editPrivacy.title"
-        //             />
-        //             {optionItems}
-        //         </CustomGrid>
-        //     </CustomPaper>
-
-        //     <CustomGrid
-        //         container
-        //         gap={1.5}
-        //         flexWrap="nowrap"
-        //         justifyContent="center"
-        //         className={styles.buttonsGroup}
-        //     >
-        //         <ActionButton
-        //             variant="gray"
-        //             Icon={<ArrowLeftIcon width="32px" height="32px" />}
-        //             className={styles.actionButton}
-        //             onAction={onPreviousStep}
-        //         />
-        //         <CustomButton
-        //             label={
-        //                 <Translation
-        //                     nameSpace="createRoom"
-        //                     translation="actions.submit"
-        //                 />
-        //             }
-        //             onClick={onSubmit}
-        //             className={styles.button}
-        //         />
-        //     </CustomGrid>
-        // </CustomGrid>
         <CustomGrid
             container
             alignItems="center"
@@ -219,7 +113,6 @@ const Component = ({
             direction="column"
             className={styles.wrapper}
         >
-            
             <CustomPaper variant="black-glass" className={styles.paper}>
                 <CustomGrid container direction="column">
                     <CustomGrid
@@ -236,12 +129,6 @@ const Component = ({
                             translation="editDescription.form.link"
                             className={styles.linkLabel}
                         />
-                        {/* <CustomTypography
-                            variant="body3"
-                            className={styles.customLinkPreview}
-                        >
-                            {`${frontendConfig.frontendUrl}/.../${customLink}`}
-                        </CustomTypography> */}
                     </CustomGrid>
                     <CustomInput
                         autoComplete="off"
@@ -315,7 +202,6 @@ const Component = ({
                                 className={styles.eventBtn}
                             />
                         </CustomTooltip>
-
                     </CustomGrid>
                     <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
                         <CustomTypography className={styles.eventIconWrapper}>
@@ -337,7 +223,6 @@ const Component = ({
                                 className={styles.eventBtn}
                             />
                         </CustomTooltip>
-
                     </CustomGrid>
                     <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
                         <CustomTypography className={styles.eventIconWrapper}>
@@ -359,7 +244,6 @@ const Component = ({
                                 className={styles.eventBtn}
                             />
                         </CustomTooltip>
-
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

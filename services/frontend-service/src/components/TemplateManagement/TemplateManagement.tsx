@@ -511,7 +511,6 @@ const Component = ({
                                 template={template}
                             />
                         </ConditionalRender>
-
                         <ConditionalRender
                             condition={activeValue === TabsValues.Links}
                         >
@@ -577,7 +576,6 @@ const Component = ({
                                                     className={styles.name}
                                                 />
                                             )}
-
                                             <CustomGrid
                                                 container
                                                 wrap="nowrap"
