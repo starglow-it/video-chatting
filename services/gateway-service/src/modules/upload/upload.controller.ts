@@ -65,4 +65,39 @@ export class UploadController {
       result: uploadUrl,
     };
   }
+
+  // @UseGuards(JwtAuthGuard)
+  @Post('/recordvideo')
+  @ApiOperation({ summary: 'Get Templates' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Get Templates Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @UseInterceptors(FileInterceptor('meetingRecordVideo'))
+  async getRecordVideoUrl(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseSumType<string>> {
+    const { fileName, extension } = getFileNameAndExtension(file.originalname);
+    const uploadId = uuidv4();
+
+    const key = `uploads/record-video/${uploadId}/${fileName}.${extension}`;
+
+    await this.uploadService.uploadFile(file.buffer, key, 'video/mp4');
+
+    const vultrUploadBucket = await this.configService.get('vultrUploadBucket');
+    const vultrStorageHostname = await this.configService.get(
+      'vultrStorageHostname',
+    );
+
+    const uploadUrl = `https://${vultrStorageHostname}/${vultrUploadBucket}/${key}`;
+
+    return {
+      success: true,
+      result: uploadUrl,
+    };
+  }
 }

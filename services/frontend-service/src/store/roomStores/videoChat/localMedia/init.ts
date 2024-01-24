@@ -42,6 +42,7 @@ import {
     $recordedVideoBlobStore,
     $isRecordingStore,
     uploadToS3Fx,
+    $uploadVideoToS3Store,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { sendDevicesPermissionSocketEvent } from '../sockets/model';
@@ -63,7 +64,7 @@ import { resetRoomStores } from '../../../root';
 import { clearStreamStore } from '../../../../helpers/media/clearStreamStore';
 import { setNewStream } from '../../../../helpers/media/setNewStream';
 import { handleStartRecordingStream, handleStopRecordingStream } from './handlers/handleRecordingStream';
-import { resetRecordedVideoBlobStore, startRecordMeeting, stopRecordMeeting } from '../model';
+import { resetRecordedVideoBlobStore, resetUploadVideoToS3Store, startRecordMeeting, stopRecordMeeting } from '../model';
 import { handleUploadToS3 } from './handlers/handleUploadToS3';
 
 $audioDevicesStore
@@ -122,16 +123,20 @@ $recordedVideoBlobStore
     .on(resetRecordedVideoBlobStore, () => null);
 
 $isRecordingStore
-    .on(startRecordMeeting, () => true)
+    .on(startRecordStreamFx.doneData, (state, data) => Boolean(data))
     .on(stopRecordMeeting, () => false);
 
+
+$uploadVideoToS3Store
+    .on(uploadToS3Fx.doneData, (state, data) => data)
+    .on(resetUploadVideoToS3Store, () => '');
 
 initDevicesEventFx.use(handleInitDevices);
 changeStreamFx.use(handleChangeStream);
 chooseSharingStreamFx.use(handleChooseSharingStream);
 startRecordStreamFx.use(handleStartRecordingStream);
 stopRecordStreamFx.use(handleStopRecordingStream)
-// uploadToS3Fx.use(handleUploadToS3)
+uploadToS3Fx.use(handleUploadToS3)
 
 export const initDevicesEventFxWithStore = attach<
     void,

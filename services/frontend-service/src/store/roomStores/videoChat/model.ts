@@ -41,3 +41,4 @@ export const stopRecordMeeting = videoChatDomain.createEvent<VideoBlob>('');
 export const trackEndedEvent = videoChatDomain.createEvent<void>();
 export const resetRecordedVideoBlobStore = videoChatDomain.createEvent<void>('');
 export const uploadToS3Event = videoChatDomain.createEvent<VideoBlob>('');
+export const resetUploadVideoToS3Store = videoChatDomain.createEvent<void>('');

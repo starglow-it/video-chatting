@@ -1,5 +1,6 @@
 @import "../../../styles/rem";
 @import "../../../styles/mixins";
+@import "../../../styles/variables";
 
 .content {
   padding: rem(40px);
@@ -25,15 +26,38 @@
       }
     }
   }
-}
+  .wrapper {
+    width: 450px;
+    height: 250px;
+  }
 
-.buttonsWrapper {
-  margin: rem(20px 0 0 0);
-
-  .button {
-
-    &:first-child {
-      margin: rem(0 10px 0 0);
+  .buttonsWrapper {
+    margin: rem(20px 0 0 0);
+  
+    .button {
+  
+      &:first-child {
+        margin: rem(0 10px 0 0);
+      }
     }
+  }
+  
+  .loader {
+    margin: auto;
+  }
+  
+  .linkText {
+    @extend %text-ellips;
+  }
+  
+  
+  .linkWrapper {
+    background: $light-gray-scale;
+    border: 1px solid rgba($normal-gray-scale, 0.6);
+    border-radius: rem(10px);
+    padding: rem(12px 10px);
+    max-width: rem(320px);
+    height: fit-content;
+    margin: auto;
   }
 }

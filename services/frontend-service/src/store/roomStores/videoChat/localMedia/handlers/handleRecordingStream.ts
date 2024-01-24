@@ -6,13 +6,12 @@ export const handleStartRecordingStream = async (): Promise<CustomMediaStream | 
     try {
         const recordingStream = await getRecordingStream();
         const sharingTrack = recordingStream?.getVideoTracks()?.[0];
-
         if (sharingTrack) {
             sharingTrack.onended = () => {
-                console.log('asdfasdfadsfasdf')
                 trackEndedEvent();
             };
         }
+        console.log(recordingStream)
         return recordingStream;
     } catch (e) {
         console.error(e);
