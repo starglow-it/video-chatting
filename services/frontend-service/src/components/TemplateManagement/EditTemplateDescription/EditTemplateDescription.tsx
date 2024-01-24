@@ -2,7 +2,6 @@ import { memo, useCallback, useState, useEffect, useMemo, useRef, MouseEvent } f
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
-import { useToggle } from '@hooks/useToggle';
 
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
@@ -13,19 +12,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
-import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
-import { Translation } from '@library/common/Translation/Translation';
-import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import { MonetizationSwitchComponent } from '@library/custom/CustomSwitch/MonetizationSwitchComponent';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { MeetingMonetization } from '../../Meeting/MeetingMonetization/MeetingMonetization';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
@@ -46,7 +37,6 @@ import {
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
 } from '../../../const/templates/info';
-import frontendConfig from '../../../const/config';
 
 // styles
 import styles from './EditTemplateDescription.module.scss';
@@ -83,9 +73,6 @@ const Component = ({
         errors?.description?.[0]?.message || '';
     const aboutTheHostErrorMessage: string =
         errors?.aboutTheHost?.[0]?.message || '';
-    const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
-    const customLinkErrorMessage: string =
-        errors?.customLink?.[0]?.message || '';
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [ enableMonetization, setEnableMonetization ] = useState(false);
 
@@ -134,8 +121,6 @@ const Component = ({
         );
     }, []);
 
-
-
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
             'name',
@@ -172,7 +157,6 @@ const Component = ({
         () => register('name'),
         [],
     );
-    const customLinkProps = useMemo(() => register('customLink'), []);
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
         () => register('description', { required: false }),
         [],
@@ -234,26 +218,10 @@ const Component = ({
         onChangeName(event);
     }, []);
 
-    const customLinkInputProps = useMemo(
-        () => ({
-            startAdornment: <CustomLinkIcon width="24px" height="24px" />,
-        }),
-        [],
-    );
-
-    const businessCategoriesOptions = useMemo(
-        () =>
-            businessCategories.list.map(item => ({
-                ...item,
-                label: item.value,
-            })),
-        [businessCategories.list],
-    );
-
     const toggleSelected = (e: MouseEvent<HTMLElement>) => {
         setEnableMonetization(prev => !prev);
 
-        if (enableMonetization) {
+        if (!enableMonetization) {
             setAnchorEl(e.currentTarget);
         }
     };
@@ -399,21 +367,21 @@ const Component = ({
                     </CustomGrid>
                     <CustomGrid item md={4} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
                         <div className={styles.customSwitchContainer} onClick={toggleSelected}>
-                            <div className={clsx(styles.dialogButton, { [styles.disabledButton]: enableMonetization })} />
+                            <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
                         </div>
                         {enableMonetization
                             ? <CustomTypography
                                 variant="body2"
                                 color="colors.white.primary"
                                 nameSpace="createRoom"
-                                translation="editDescription.form.monetizationContentOn"
+                                translation="editDescription.form.monetizationContentOff"
                                 className={styles.monetizationContentToggleValue}
                             />
                             : <CustomTypography
                                 variant="body2"
                                 color="colors.white.primary"
                                 nameSpace="createRoom"
-                                translation="editDescription.form.monetizationContentOff"
+                                translation="editDescription.form.monetizationContentOn"
                                 className={styles.monetizationContentToggleValue}
                             />}
                     </CustomGrid>

@@ -9,7 +9,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // components
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -29,7 +28,6 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // style
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { InputAdornment } from '@mui/material';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { hasYoutubeUrlRegex } from 'shared-frontend/const/regexp';

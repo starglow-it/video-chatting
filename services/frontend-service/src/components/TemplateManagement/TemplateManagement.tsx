@@ -31,7 +31,6 @@ import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttend
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/TemplateLinks';
-import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -210,11 +209,11 @@ const Component = ({
     const { value: isTemplateDataWasSet, onSwitchOn: onSetTemplateData } =
         useToggle(false);
 
-    // useEffect(() => {
-    //     if (!isBusinessSubscription && !isProfessionalSubscription) {
-    //         router.push(dashboardRoute);
-    //     }
-    // }, [isBusinessSubscription, isProfessionalSubscription]);
+    useEffect(() => {
+        if (!isBusinessSubscription && !isProfessionalSubscription) {
+            router.push(dashboardRoute);
+        }
+    }, [isBusinessSubscription, isProfessionalSubscription]);
 
     useEffect(() => {
         if (!background) {
@@ -666,7 +665,6 @@ const Component = ({
                     </TemplateBackgroundPreview>
                 </form>
             </FormProvider>
-            <ScheduleMeetingDialog />
             <ConfirmCancelRoomCreationDialog onConfirm={onCancel} />
         </CustomGrid>
     );
