@@ -87,7 +87,7 @@ export type SendReconnectMeetingPayload = {
     meetingUserId: string;
 };
 
-export type JoinLurkerMeetingPayload = {
+export type JoinAudienceMeetingPayload = {
     meetingId: string;
     username: string;
     meetingAvatarId?: string;

@@ -131,7 +131,7 @@ export const MeetingRoleGroup = forwardRef(
                     />
                     <CustomTooltip
                         placement="top"
-                        translation="role.tooltipLurker"
+                        translation="role.tooltipAudience"
                         nameSpace="meeting"
                         popperClassName={styles.popperTooltip}
                         tooltipClassName={styles.containerTooltip}

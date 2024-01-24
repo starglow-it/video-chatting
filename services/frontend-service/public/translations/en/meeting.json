@@ -73,7 +73,8 @@
     "goToSetting": "Go To Setting",
     "move": "Move",
     "download": "download",
-    "upload": "upload & share"
+    "upload": "upload & share",
+    "close": "Close"
   },
   "devices": {
     "turnOn": "Turn on",
@@ -232,7 +233,7 @@
   "originalVideoSound": "Original video sound",
   "role": {
     "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
-    "tooltipLurker": "Invite up to 1000 Audience members. They view & hear Participants."
+    "tooltipAudience": "Invite up to 1000 Audience members. They view & hear Participants."
   },
   "waitForTheHost": "Waiting for the Host",
   "lock": {

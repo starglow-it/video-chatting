@@ -38,7 +38,7 @@ import { $authStore, addNotificationEvent, appDialogsApi, deleteDraftUsers } fro
 import {
     $audioErrorStore,
     $isHaveNewMessage,
-    $isLurker,
+    $isAudience,
     $isMeetingHostStore,
     $isOwner,
     $isRecordingStore,
@@ -52,7 +52,7 @@ import {
     setMeetingNotesVisibilityEvent,
     $meetingStore,
     disconnectFromVideoChatEvent,
-    requestSwitchRoleByLurkerEvent,
+    requestSwitchRoleByAudienceEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     setIsAudioActiveEvent,
@@ -83,7 +83,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
     const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
@@ -212,7 +212,7 @@ const Component = () => {
     };
 
     const handleRequestToBecomeParticipant = useCallback(() => {
-        requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
+        requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
     }, []);
 
     const handleRecordMeeting = async () => {
@@ -228,7 +228,7 @@ const Component = () => {
     };
     return (
         <CustomGrid id="menuBar" container gap={1.5} className={styles.devicesWrapper}>
-            <ConditionalRender condition={!isMobile && !isLurker}>
+            <ConditionalRender condition={!isMobile && !isAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -309,7 +309,7 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
             <MeetingMonetizationButton />
-            <ConditionalRender condition={!isMobile && !isLurker}>
+            <ConditionalRender condition={!isMobile && !isAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -341,7 +341,7 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={!isLurker}>
+            <ConditionalRender condition={!isAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -397,7 +397,7 @@ const Component = () => {
                     />
                 </CustomPaper>
             </CustomTooltip>
-            <ConditionalRender condition={isLurker}>
+            <ConditionalRender condition={isAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -469,7 +469,7 @@ const Component = () => {
                     Icon={<HangUpIcon width="22px" height="22px" />}
                 />
             </CustomTooltip>
-            <ConditionalRender condition={!isLurker}>
+            <ConditionalRender condition={!isAudience}>
                 <MeetingControlCollapse />
             </ConditionalRender>
         </CustomGrid>

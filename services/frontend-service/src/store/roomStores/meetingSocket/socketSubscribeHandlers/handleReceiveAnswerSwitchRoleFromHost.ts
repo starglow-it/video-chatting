@@ -4,7 +4,7 @@ import { NotificationType } from 'src/store/types';
 import { AnswerSwitchRolePayload } from '../types';
 import { updateMeetingUserEvent } from '../../users/meetingUsers/model';
 import {
-    joinMeetingWithLurkerEvent,
+    joinMeetingWithAudienceEvent,
     updateMeetingEvent,
 } from '../../meeting/meeting/model';
 import { initDevicesEventFxWithStore } from '../../videoChat/localMedia/init';
@@ -19,7 +19,7 @@ export const handleReceiveAnswerSwitchRoleFromHost = async (
             updateMeetingEvent({ meeting: data?.meeting });
             updateMeetingUserEvent({ user: data?.user });
             await initDevicesEventFxWithStore();
-            await joinMeetingWithLurkerEvent();
+            await joinMeetingWithAudienceEvent();
             break;
         case AnswerSwitchRoleAction.Rejected:
             addNotificationEvent({

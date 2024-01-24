@@ -33,7 +33,7 @@ import { NotificationType } from 'src/store/types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import styles from './LeaveNoteForm.module.scss';
 import {
-    $isLurker,
+    $isAudience,
     $meetingNotesStore,
     $meetingNotesVisibilityStore,
     sendMeetingNoteSocketEvent,
@@ -87,7 +87,7 @@ const Component = () => {
     const { isMobile } = useBrowserDetect();
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const profile = useStore($profileStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
     const { isVisible } = useStore($meetingNotesVisibilityStore);
@@ -160,7 +160,7 @@ const Component = () => {
                             >
                                 <CustomGrid flex={1}>
                                     <ConditionalRender
-                                        condition={!isLurker || !!profile.id}
+                                        condition={!isAudience || !!profile.id}
                                     >
                                         <CustomInput
                                             placeholder="post a sticky notes"
@@ -175,7 +175,7 @@ const Component = () => {
                                         />
                                     </ConditionalRender>
                                     <ConditionalRender
-                                        condition={isLurker && !!!profile.id}
+                                        condition={isAudience && !!!profile.id}
                                     >
                                         <CustomGrid
                                             className={styles.fieldNoLogin}
@@ -197,7 +197,7 @@ const Component = () => {
                                 </CustomGrid>
                                 <ActionButton
                                     className={clsx(styles.actionButton, {
-                                        [styles.disabled]: isLurker && !!!profile.id,
+                                        [styles.disabled]: isAudience && !!!profile.id,
                                     })}
                                     Icon={<SendIcon width="24px" height="24px" />}
                                     onClick={sendNote}

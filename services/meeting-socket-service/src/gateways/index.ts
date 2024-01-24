@@ -1,5 +1,5 @@
 export * from './base.gateway';
-export * from './lurkers.gateway';
+export * from './audiences.gateway';
 export * from './participants.gateway';
 export * from './meeting-chats.gateway';
 export * from './meeting-notes.gateway';

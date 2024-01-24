@@ -26,7 +26,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
-    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingAudience,
     $enabledPaymentMeetingParticipant,
     $isOwner,
     $isScreenSharingStore,
@@ -36,7 +36,7 @@ import {
     $isToggleUsersPanel,
     $meetingUsersStore,
     $paymentIntent,
-    $paymentMeetingLurker,
+    $paymentMeetingAudience,
     $paymentMeetingParticipant,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
@@ -67,9 +67,9 @@ const Component = () => {
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
-    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
-    const paymentMeetingLurker = useStore($paymentMeetingLurker);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
 
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
@@ -198,11 +198,11 @@ const Component = () => {
                                     />
                                 </ConditionalRender>
                                 <ConditionalRender
-                                    condition={enabledPaymentMeetingLurker}
+                                    condition={enabledPaymentMeetingAudience}
                                 >
                                     <PaymentForm
                                         onClose={handleCloseForm}
-                                        payment={paymentMeetingLurker}
+                                        payment={paymentMeetingAudience}
                                     />
                                 </ConditionalRender>
                             </CustomPaper>

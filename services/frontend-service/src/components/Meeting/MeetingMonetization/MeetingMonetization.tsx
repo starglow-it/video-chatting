@@ -27,9 +27,9 @@ import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
 import { isMobile } from 'shared-utils';
 import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
 import {
-    $paymentMeetingLurker,
+    $paymentMeetingAudience,
     $paymentMeetingParticipant,
-    $paymentPaywallLurker,
+    $paymentPaywallAudience,
     $paymentPaywallParticipant,
     updatePaymentMeetingEvent,
 } from '../../../store/roomStores';
@@ -131,8 +131,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
-    const paymentMeetingLurker = useStore($paymentMeetingLurker);
-    const paymentPaywallLurker = useStore($paymentPaywallLurker);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
+    const paymentPaywallAudience = useStore($paymentPaywallAudience);
     const isConnectedStripe = useStore($isConnectedStripe);
 
     const { activeItem, onValueChange } = useValueSwitcher<
@@ -243,8 +243,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                 />
                 <MeetingMonezationForm
                     enableForm={activeItem.value === TabsValues.Audience}
-                    paymentMeeting={paymentMeetingLurker}
-                    paymentPaywall={paymentPaywallLurker}
+                    paymentMeeting={paymentMeetingAudience}
+                    paymentPaywall={paymentPaywallAudience}
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formAudienceRef}

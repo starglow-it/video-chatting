@@ -12,8 +12,8 @@ import {
     createPaymentIntentWithData,
     $paymentIntent,
     $enabledPaymentPaywallParticipant,
-    $enabledPaymentPaywallLurker,
-    $paymentPaywallLurker,
+    $enabledPaymentPaywallAudience,
+    $paymentPaywallAudience,
     $paymentPaywallParticipant,
 } from '../../../store/roomStores';
 
@@ -32,15 +32,15 @@ const Component = ({ onPaymentSuccess }: Props) => {
     const enabledPaymentPaywallParticipant = useStore(
         $enabledPaymentPaywallParticipant,
     );
-    const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const enabledPaymentPaywallAudience = useStore($enabledPaymentPaywallAudience);
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
-    const paymentPaywallLurker = useStore($paymentPaywallLurker);
+    const paymentPaywallAudience = useStore($paymentPaywallAudience);
 
     const initStripe = () => {
         if (!isCreatePaymentIntentPending && !intentId) {
             if (
                 enabledPaymentPaywallParticipant ||
-                enabledPaymentPaywallLurker
+                enabledPaymentPaywallAudience
             ) {
                 createPaymentIntentWithData({
                     paymentType: PaymentType.Paywall,
@@ -77,10 +77,10 @@ const Component = ({ onPaymentSuccess }: Props) => {
                     }
                 />
             </ConditionalRender>
-            <ConditionalRender condition={enabledPaymentPaywallLurker}>
+            <ConditionalRender condition={enabledPaymentPaywallAudience}>
                 <PaymentForm
                     onClose={onPaymentSuccess}
-                    payment={paymentPaywallLurker}
+                    payment={paymentPaywallAudience}
                     subLabel={
                         <CustomTypography
                             nameSpace="subscriptions"

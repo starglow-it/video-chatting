@@ -38,6 +38,6 @@ export const $isParticipant = combine({
     role: $meetingRoleStore,
 }).map(({ role }) => role === MeetingRole.Participant);
 
-export const $isLurker = combine({
+export const $isAudience = combine({
     role: $meetingRoleStore,
 }).map(({ role }) => role === MeetingRole.Audience);

@@ -1,13 +1,19 @@
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
-import { Typography } from '@mui/material';
+import { Tab, Tabs, Typography } from '@mui/material';
+import { $activeTabPanel, $isAudience, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
+import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -42,14 +48,121 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 
 export const MeetingPeople = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
+    const isMeetingHost = useStore($isMeetingHostStore);
+
+    const isAudience = useStore($isAudience);
+
+    const participants = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Audience,
+            ),
+    });
+
+    const audiences = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole === MeetingRole.Audience,
+            ),
+    });
+
+    const value = useStore($activeTabPanel);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setActiveTabPanelEvent(newValue);
+    };
+
+    const handleResetNewMessage = (tab: string) => {
+        if (tab === 'Chat') {
+            resetHaveNewMessageEvent();
+        }
+    };
+
+    const a11yProps = useCallback((index: number) => {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
+    }, []);
+
+    const tabs = !isAudience
+        ? [
+            !participants.length
+                ? 'Participants'
+                : `Participants(${participants.length})`,
+            !audiences.length ? 'Audience' : `Audience(${audiences.length})`,
+            'Chat',
+        ]
+        : ['Chat'];
+
     return (
         <CustomGrid
             display="flex"
             flexDirection="column"
             height={isMobile() && !isPortraitLayout ? '250px' : '400px'}
         >
-            <Typography variant="body1" className={styles.chatCaption}>Chat</Typography>
-            <MeetingChat />
+            <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="lab API tabs example"
+                variant={isMobile() ? 'scrollable' : undefined}
+                scrollButtons={isMobile()}
+                allowScrollButtonsMobile={isMobile()}
+                TabScrollButtonProps={{
+                    classes: { root: styles.buttonScroll },
+                }}
+                classes={{
+                    root: styles.tabs,
+                }}
+            >
+                {tabs.map((tab, index) => (
+                    <Tab
+                        key={tab}
+                        label={tab}
+                        value={index}
+                        {...a11yProps(index)}
+                        classes={{ root: styles.tab }}
+                        onClick={() => handleResetNewMessage(tab)}
+                    />
+                ))}
+            </Tabs>
+            <ConditionalRender condition={!isAudience}>
+                <CustomTabPanel value={value} index={0}>
+                    <CustomGrid
+                        display="flex"
+                        flexDirection="column"
+                        paddingTop={1}
+                    >
+                        {isMeetingHost && <MeetingAccessRequests />}
+                        <MeetingUsersList />
+                    </CustomGrid>
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <CustomGrid
+                        display="flex"
+                        flexDirection="column"
+                        paddingTop={1}
+                    >
+                        <MeetingAudiences />
+                    </CustomGrid>
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <MeetingChat />
+                </CustomTabPanel>
+            </ConditionalRender>
+            <ConditionalRender condition={isAudience}>
+                <CustomTabPanel value={value} index={0}>
+                    <MeetingChat />
+                </CustomTabPanel>
+            </ConditionalRender>
         </CustomGrid>
     );
 };

@@ -9,8 +9,8 @@ import {
     joinMeetingFx,
     joinMeetingEvent,
     joinMeetingInWaitingRoomFx,
-    joinMeetingWithLurkerFx,
-    joinMeetingWithLurkerEvent,
+    joinMeetingWithAudienceFx,
+    joinMeetingWithAudienceEvent,
     $activeTabPanel,
     setActiveTabPanelEvent,
     $isToggleLinksDrawer,
@@ -34,7 +34,7 @@ import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingRoleStore } from '../meetingRole/model';
-import { handleJoinMeetingWithLurker } from './handlers/handleJoinMeetingWithLurker';
+import { handleJoinMeetingWithAudience } from './handlers/handleJoinMeetingWithAudience';
 import { handleUpdateMeetingTemplateDash } from './handlers/handleUpdateMeetingTemplateDash';
 
 $meetingStore
@@ -57,7 +57,7 @@ $isToggleLinksDrawer
 
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
-joinMeetingWithLurkerFx.use(handleJoinMeetingWithLurker);
+joinMeetingWithAudienceFx.use(handleJoinMeetingWithAudience);
 updateMeetingTemplateDashFx.use(handleUpdateMeetingTemplateDash);
 
 sample({
@@ -82,14 +82,14 @@ sample({
 });
 
 sample({
-    clock: joinMeetingWithLurkerEvent,
+    clock: joinMeetingWithAudienceEvent,
     source: combine({
         isMicActive: $isMicActiveStore,
         isCameraActive: $isCameraActiveStore,
         changeStream: $changeStreamStore,
         isAuraActive: $isAuraActive,
     }),
-    target: joinMeetingWithLurkerFx,
+    target: joinMeetingWithAudienceFx,
 });
 
 /**

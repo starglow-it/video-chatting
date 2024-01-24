@@ -10,7 +10,7 @@ import { UsersModule } from './modules/users/users.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import {
-  LurkersGateway,
+  AudiencesGateway,
   ParticipantsGateway,
   MeetingChatsGateway,
   MeetingNotesGateway,
@@ -38,7 +38,7 @@ import {
     UsersGateway,
     MeetingsGateway,
     MeetingNotesGateway,
-    LurkersGateway,
+    AudiencesGateway,
     ParticipantsGateway,
     TemplatesGateway,
   ],
