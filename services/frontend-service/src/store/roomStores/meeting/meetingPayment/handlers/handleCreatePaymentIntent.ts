@@ -5,6 +5,7 @@ import { createIntentUrl } from '../../../../../utils/urls';
 export const handleCreatePaymentIntent = async (data: {
     templateId: IUserTemplate['id'];
 }) => {
+    console.log(data);
     const response = await sendRequestWithCredentials<
         { paymentIntent: { clientSecret: string; id: string } },
         ErrorState

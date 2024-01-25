@@ -35,7 +35,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
+const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -100,7 +100,7 @@ const Component = ({ onClose, subLabel, payment }: PaymentFormProps) => {
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+            {!isCreatePaymentIntentPending && paymentIntent.clientSecret || isPreEvent ? (
                 <CustomGrid
                     container
                     direction="column"

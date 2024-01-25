@@ -43,9 +43,13 @@
   "editDescription": {
     "form": {
       "roomName": "Room Name",
-      "description": "Description",
+      "description": "description",
       "tags": "Tags (Up to 6)",
-      "link": "Custom link"
+      "link": "Custom link",
+      "prePaidCodeLabel": "If you pre-paid enter code:",
+      "yourCard": "Your card",
+      "paymentTitle": "Payment is required before entering",
+      "preMeetingNtfText": "you’ll be able to join at the indicated time"
     }
   },
   "editPositions": {

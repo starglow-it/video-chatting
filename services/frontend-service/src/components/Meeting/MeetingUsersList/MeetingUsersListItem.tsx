@@ -44,8 +44,6 @@ const Component = ({
     isLurkerRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
-    const { isPublishAudience } = useStore($meetingTemplateStore);
-    console.log(isPublishAudience);
 
     const {
         avatar: { list },
@@ -143,9 +141,7 @@ const Component = ({
                         <ActionButton
                             variant="decline"
                             onAction={handleChangeRoleToAudienceRequest}
-                            className={clsx(styles.toAudienceBtn, {
-                                [styles.block]: !isPublishAudience
-                            })}
+                            className={clsx(styles.toAudienceBtn)}
                             Icon={<ArrowDownIcon width="23px" height="23px" />}
                         />
                     </CustomTooltip>
