@@ -3,14 +3,14 @@ import { isMobile } from 'shared-utils';
 import { BackgroundManager } from 'src/helpers/media/applyBlur';
 import { setActiveStreamEvent } from 'src/store/roomStores/videoChat/localMedia/model';
 import { publishTracksEvent } from 'src/store/roomStores/videoChat/sfu/model';
-import { JoinMeetingWithLurkerFxPayload } from '../types';
+import { JoinMeetingWithAudienceFxPayload } from '../types';
 
-export const handleJoinMeetingWithLurker = async ({
+export const handleJoinMeetingWithAudience = async ({
     isAuraActive = false,
     isMicActive,
     isCameraActive,
     changeStream,
-}: JoinMeetingWithLurkerFxPayload) => {
+}: JoinMeetingWithAudienceFxPayload) => {
     await updateLocalUserEvent({
         micStatus: isMicActive ? 'active' : 'inactive',
         cameraStatus: isCameraActive ? 'active' : 'inactive',

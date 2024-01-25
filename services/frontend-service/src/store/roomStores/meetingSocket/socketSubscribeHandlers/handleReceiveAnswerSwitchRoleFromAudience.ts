@@ -5,7 +5,7 @@ import { AnswerSwitchRolePayload } from '../types';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { updateMeetingEvent } from '../../meeting/meeting/model';
 
-export const handleReceiveAnswerSwitchRoleFromLurker = async (
+export const handleReceiveAnswerSwitchRoleFromAudience = async (
     data: AnswerSwitchRolePayload,
 ) => {
     switch (data.action) {

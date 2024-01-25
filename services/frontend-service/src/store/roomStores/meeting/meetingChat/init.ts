@@ -16,7 +16,7 @@ import {
     $isToggleUsersPanel,
     toggleUsersPanelEvent,
 } from '../../users/meetingUsers/model';
-import { $isLurker } from '../meetingRole/model';
+import { $isAudience } from '../meetingRole/model';
 
 $meetingChat
     .on(addMessageToChatEvent, (state, message) => ({
@@ -50,11 +50,11 @@ sample({
         localUser: $localUserStore,
         activeTab: $activeTabPanel,
         isOpenPanel: $isToggleUsersPanel,
-        isLurker: $isLurker,
+        isAudience: $isAudience,
     }),
-    filter: ({ localUser, activeTab, isOpenPanel, isLurker }, message) =>
+    filter: ({ localUser, activeTab, isOpenPanel, isAudience }, message) =>
         localUser.id !== message?.sender?.id &&
-        ((activeTab !== 2 && !isLurker) || !isOpenPanel),
+        ((activeTab !== 2 && !isAudience) || !isOpenPanel),
     fn: () => Date.now(),
     target: setCountNewMessageEvent,
 });
@@ -64,10 +64,10 @@ sample({
     source: combine({
         activeTab: $activeTabPanel,
         isOpenPanel: $isToggleUsersPanel,
-        isLurker: $isLurker,
+        isAudience: $isAudience,
     }),
-    filter: ({ activeTab, isOpenPanel, isLurker }) =>
-        (isOpenPanel && activeTab === 2) || isOpenPanel || isLurker,
+    filter: ({ activeTab, isOpenPanel, isAudience }) =>
+        (isOpenPanel && activeTab === 2) || isOpenPanel || isAudience,
     fn: () => 0,
     target: setCountNewMessageEvent,
 });

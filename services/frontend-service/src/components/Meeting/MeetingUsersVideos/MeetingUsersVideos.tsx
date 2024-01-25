@@ -24,7 +24,7 @@ import {
 } from '../../../store';
 import {
     $activeStreamStore,
-    $isLurker,
+    $isAudience,
     $isOwner,
     $isScreenSharingStore,
     $localUserStore,
@@ -55,7 +55,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
     const isOwner = useStore($isOwner);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const { isMobile } = useBrowserDetect();
 
     const users = useStoreMap({
@@ -147,7 +147,7 @@ const Component = () => {
                     </ClickAwayListener>
                 </ConditionalRender>
                 {renderUsers}
-                <ConditionalRender condition={!isLurker}>
+                <ConditionalRender condition={!isAudience}>
                     <MeetingUserVideoItem
                         key={localUser.id}
                         userId={localUser.id}
@@ -181,7 +181,7 @@ const Component = () => {
             id="drag-warpper"
         >
             {renderUsers}
-            <ConditionalRender condition={!isLurker}>
+            <ConditionalRender condition={!isAudience}>
                 <MeetingUserVideoItem
                     userId={localUser.id}
                     key={localUser.id}

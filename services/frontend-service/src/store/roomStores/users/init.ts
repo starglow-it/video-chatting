@@ -11,7 +11,7 @@ import { appDialogsApi } from '../../dialogs/init';
 import { createMeetingSocketEvent } from '../meetingSocket/model';
 import {
     joinMeetingEvent,
-    joinMeetingWithLurkerEvent,
+    joinMeetingWithAudienceEvent,
     updateMeetingEvent,
 } from '../meeting/meeting/model';
 import { updateMeetingUserEvent } from './meetingUsers/model';
@@ -47,10 +47,10 @@ export const requestSwitchRoleByHostEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.RequestRoleByHost);
 
-export const requestSwitchRoleByLurkerEvent = createMeetingSocketEvent<
+export const requestSwitchRoleByAudienceEvent = createMeetingSocketEvent<
     { meetingId: string },
     any
->(UsersSocketEmitters.RequestRoleByLurker);
+>(UsersSocketEmitters.RequestRoleByAudience);
 
 export const answerRequestByHostEvent = createMeetingSocketEvent<
     {
@@ -61,10 +61,10 @@ export const answerRequestByHostEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.AnswerRequestByHost);
 
-export const answerRequestByLurkerEvent = createMeetingSocketEvent<
+export const answerRequestByAudienceEvent = createMeetingSocketEvent<
     { action: AnswerSwitchRoleAction; meetingId: string },
     any
->(UsersSocketEmitters.AnswerRequestByLurker);
+>(UsersSocketEmitters.AnswerRequestByAudience);
 
 //Send participant back to audience
 export const requestSwitchRoleFromParticipantToAudienceByHostEvent = createMeetingSocketEvent<
@@ -101,19 +101,19 @@ changeHostSocketEvent.failData.watch(data => {
     }
 });
 
-answerRequestByLurkerEvent.doneData.watch(async data => {
+answerRequestByAudienceEvent.doneData.watch(async data => {
     if (data) {
         if (data?.action === AnswerSwitchRoleAction.Accept) {
             setRoleQueryUrlEvent(null);
             updateMeetingEvent({ meeting: data?.meeting });
             updateMeetingUserEvent({ user: data?.user });
             await initDevicesEventFxWithStore();
-            await joinMeetingWithLurkerEvent();
+            await joinMeetingWithAudienceEvent();
         }
     }
 });
 
-requestSwitchRoleByLurkerEvent.doneData.watch(data => {
+requestSwitchRoleByAudienceEvent.doneData.watch(data => {
     if (data) {
         addNotificationEvent({
             message: `Request sent to Host. Please wait for Host to approve`,

@@ -9,7 +9,7 @@ import { $localUserStore } from '../../users/localUser/model';
 import {
     JoinMeetingEventPayload,
     JoinMeetingFxPayload,
-    JoinMeetingWithLurkerFxPayload,
+    JoinMeetingWithAudienceFxPayload,
 } from './types';
 import { joinWaitingRoomSocketEvent } from '../sockets/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
@@ -66,14 +66,14 @@ export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
 export const joinMeetingEvent =
     meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');
 
-export const joinMeetingWithLurkerEvent = meetingDomain.createEvent(
-    'joinMeetingWithLurkerEvent',
+export const joinMeetingWithAudienceEvent = meetingDomain.createEvent(
+    'joinMeetingWithAudienceEvent',
 );
 
-export const joinMeetingWithLurkerFx = meetingDomain.createEffect<
-    JoinMeetingWithLurkerFxPayload,
+export const joinMeetingWithAudienceFx = meetingDomain.createEffect<
+    JoinMeetingWithAudienceFxPayload,
     void
->('joinMeetingWithLurkerFx');
+>('joinMeetingWithAudienceFx');
 
 export const toggleLinksDrawerEvent = meetingDomain.createEvent<
     undefined | boolean

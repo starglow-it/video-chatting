@@ -11,11 +11,11 @@ import {
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 import { useCallback, useMemo } from 'react';
-import styles from './MeetingLurker.module.scss';
+import styles from './MeetingAudience.module.scss';
 import { MeetingUsersListItem } from '../MeetingUsersList/MeetingUsersListItem';
 import Typography from '@mui/material/Typography';
 
-export const MeetingLurkers = () => {
+export const MeetingAudiences = () => {
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -36,7 +36,7 @@ export const MeetingLurkers = () => {
         }
     }, [users]);
 
-    const handleRequestLurker = useCallback(
+    const handleRequestAudience = useCallback(
         ({ userId }: { userId: string }) => {
             requestSwitchRoleByHostEvent({
                 meetingId: meeting.id,
@@ -56,8 +56,8 @@ export const MeetingLurkers = () => {
                             user={user}
                             isLocalItem={false}
                             isOwnerItem={false}
-                            isLurkerRequest
-                            onRequestLurker={handleRequestLurker}
+                            isAudienceRequest
+                            onRequestAudience={handleRequestAudience}
                         />
                     ));
                 } else {

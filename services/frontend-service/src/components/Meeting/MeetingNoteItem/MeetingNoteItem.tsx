@@ -33,7 +33,7 @@ import {
     $isMeetingHostStore,
     $localUserStore,
     $meetingUsersStore,
-    $isLurker,
+    $isAudience,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
 } from '../../../store/roomStores';
@@ -53,7 +53,7 @@ const Component = ({
 }) => {
     const localUser = useStore($localUserStore);
     const isMeetingHost = useStore($isMeetingHostStore);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
 
     const user = useStoreMap({
         store: $meetingUsersStore,
@@ -82,7 +82,7 @@ const Component = ({
     // }, [note.id]);
 
     const handleUnpinNote = useCallback(() => {
-        if (!isLurker) {
+        if (!isAudience) {
             removeLocalMeetingNoteEvent(note.id);
             removeMeetingNoteSocketEvent({ noteId: note.id });
         }

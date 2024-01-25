@@ -1,7 +1,7 @@
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import {
-    $isLurker,
+    $isAudience,
     $isMeetingHostStore,
 } from 'src/store/roomStores';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -12,7 +12,7 @@ import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingAttendeesList.module.scss';
-import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
+import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -47,7 +47,7 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 
 export const MeetingAttendeesList = ({ isParticipantPanelShow }: { isParticipantPanelShow: Boolean }) => {
     const isMeetingHost = useStore($isMeetingHostStore);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
 
     return (
         <CustomGrid
@@ -55,7 +55,7 @@ export const MeetingAttendeesList = ({ isParticipantPanelShow }: { isParticipant
             flexDirection="column"
             height="auto"
         >
-            <ConditionalRender condition={!isLurker}>
+            <ConditionalRender condition={!isAudience}>
                 <div className={clsx({[styles.listPanelHidden]: !isParticipantPanelShow})}>
                 <CustomGrid
                     display="flex"
@@ -72,7 +72,7 @@ export const MeetingAttendeesList = ({ isParticipantPanelShow }: { isParticipant
                 flexDirection="column"
                 paddingTop={1}
             >
-                <MeetingLurkers />
+                <MeetingAudiences />
             </CustomGrid>
         </div>
             </ConditionalRender >

@@ -20,7 +20,7 @@ import {
     UpdateMeetingTemplatePayload,
     EnterWaitingRoomPayload,
     SendReconnectMeetingPayload,
-    JoinLurkerMeetingPayload,
+    JoinAudienceMeetingPayload,
     SendMessageChatPayload,
     SendMessageChatResponse,
     SendReactionMessagePayload,
@@ -86,10 +86,10 @@ export const sendReconnectMeetingEvent = createMeetingSocketEvent<
     SendReconnectMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.SendReconnectMeeting);
-export const joinMeetingLurkerEvent = createMeetingSocketEvent<
-    JoinLurkerMeetingPayload,
+export const joinMeetingAudienceEvent = createMeetingSocketEvent<
+    JoinAudienceMeetingPayload,
     EnterMeetingRequestResponse
->(MeetingSocketEmitters.JoinWithLurker);
+>(MeetingSocketEmitters.JoinWithAudience);
 
 export const sendMeetingChatEvent = createMeetingSocketEvent<
     SendMessageChatPayload,
