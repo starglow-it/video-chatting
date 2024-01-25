@@ -142,6 +142,8 @@ const Component = ({
     template,
     onCancel,
     onSubmit,
+    onSubmitAndEnterMeeting,
+    onSubmitAndScheduleMeeting,
     onUploadFile,
     onUpgradePlan,
     isFileUploading,
@@ -352,6 +354,34 @@ const Component = ({
         [onSubmit, isFileUploading],
     );
 
+    const handleSaveAndEnterMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndEnterMeeting(data);
+        }),
+        [onSubmitAndEnterMeeting, isFileUploading],
+    );
+
+    const handleSaveAndScheduleMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndScheduleMeeting(data);
+        }),
+        [onSubmitAndScheduleMeeting, isFileUploading],
+    );
+
     const handleUpgradePlanClick = useCallback(
         onSubmitForm(async data => {
             if (isFileUploading) {
@@ -476,10 +506,11 @@ const Component = ({
                                 onSubmit={handleSubmit}
                                 onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
+                                handleEnterMeeting={handleSaveAndEnterMeeting}
+                                handleScheduleMeeting={handleSaveAndScheduleMeeting}
                                 template={template}
                             />
                         </ConditionalRender>
-
                         <ConditionalRender
                             condition={activeValue === TabsValues.Links}
                         >
@@ -545,7 +576,6 @@ const Component = ({
                                                     className={styles.name}
                                                 />
                                             )}
-
                                             <CustomGrid
                                                 container
                                                 wrap="nowrap"

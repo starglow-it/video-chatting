@@ -27,4 +27,8 @@
     transform: translate(-50%, -50%);
     padding: rem(24px);
   }
+
+  .loader:after {
+    background: #333333;
+  }
 }

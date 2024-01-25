@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
@@ -9,10 +9,17 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
+import { IBusinessCategory } from 'shared-types';
+import { AutocompleteType } from 'shared-frontend/types';
+import { CustomInput } from '@library/custom/CustomInput/CustomInput';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChalkboardUser, faFolderClosed, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // components
 import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/types';
-import { OptionItem } from '@components/TemplateManagement/EditPrivacy/OptionItem/OptionItem';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
@@ -22,10 +29,12 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 // const
 import { Translation } from '@library/common/Translation/Translation';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
 
 // store
 import { useRouter } from 'next/router';
-import { $isTrial } from '../../../store';
+import { $businessCategoriesStore } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
@@ -51,16 +60,27 @@ const options = [
 
 const Component = ({
     onSubmit,
+    handleEnterMeeting,
+    handleScheduleMeeting,
     onPreviousStep,
-    onUpgradePlan,
 }: EditPrivacyProps) => {
-    const isTrial = useStore($isTrial);
     const router = useRouter();
     const isCustom = !!router.query.tags;
+    const businessCategories = useStore($businessCategoriesStore);
 
-    const { setValue, watch } = useFormContext();
+    const { control, register, setValue, watch, formState: { errors } } = useFormContext();
 
-    const { activeTab, onChange } = useNavigation({ tabs: options });
+    const { onChange } = useNavigation({ tabs: options });
+    const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
+    const customLinkInputProps = useMemo(
+        () => ({
+            startAdornment: <CustomLinkIcon width="24px" height="24px" />,
+        }),
+        [],
+    );
+    const customLinkErrorMessage: string =
+        errors?.customLink?.[0]?.message || '';
+    const customLinkProps = useMemo(() => register('customLink'), []);
 
     useEffect(() => {
         const isPublic = watch('isPublic');
@@ -76,75 +96,160 @@ const Component = ({
         }
     }, []);
 
-    const handleChangeActiveOption = useCallback(
-        (value: string) => {
-            onChange(value);
-            setValue('isPublic', value === options[1].value);
-        },
-        [onChange],
-    );
-
-    const optionItems = useMemo(
+    const businessCategoriesOptions = useMemo(
         () =>
-            options.map(
-                ({
-                    id,
-                    value,
-                    translationKey,
-                    Icon,
-                    availableWithTrial,
-                    withUpgradeButton,
-                }) =>
-                    isCustom && id === '1' ? null : (
-                        <OptionItem
-                            key={id}
-                            onClick={() => handleChangeActiveOption(value)}
-                            isActive={activeTab.value === value}
-                            nameSpace="createRoom"
-                            translationKey={translationKey}
-                            Icon={Icon}
-                            disabled={!availableWithTrial && isTrial}
-                            onUpgradeClick={
-                                withUpgradeButton &&
-                                !availableWithTrial &&
-                                isTrial
-                                    ? onUpgradePlan
-                                    : undefined
-                            }
-                        />
-                    ),
-            ),
-        [options, activeTab, handleChangeActiveOption, isTrial, onUpgradePlan],
+            businessCategories.list.map(item => ({
+                ...item,
+                label: item.value,
+            })),
+        [businessCategories.list],
     );
-
-    // const textWithLinks = useMemo(
-    //     () =>
-    //         !isTrial
-    //             ? translation(`editPrivacy.link`, {
-    //                   termsLink: `${frontendConfig.frontendUrl}/agreements`,
-    //                   privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
-    //               })
-    //             : translation('editPrivacy.upgradePlan'),
-    //     [isTrial],
-    // );
 
     return (
-        <CustomGrid container className={styles.wrapper}>
+        <CustomGrid
+            container
+            alignItems="center"
+            justifyContent="flex-start"
+            direction="column"
+            className={styles.wrapper}
+        >
             <CustomPaper variant="black-glass" className={styles.paper}>
-                <CustomGrid container direction="column" gap={3}>
+                <CustomGrid container direction="column">
+                    <CustomGrid
+                        container
+                        gap={2}
+                        flexWrap="nowrap"
+                        justifyContent="space-between"
+                        className={styles.label}
+                    >
+                        <CustomTypography
+                            variant="body3"
+                            color="colors.white.primary"
+                            nameSpace="createRoom"
+                            translation="editDescription.form.link"
+                            className={styles.linkLabel}
+                        />
+                    </CustomGrid>
+                    <CustomInput
+                        autoComplete="off"
+                        color="secondary"
+                        InputProps={customLinkInputProps}
+                        error={customLinkErrorMessage}
+                        {...customLinkProps}
+                    />
                     <CustomTypography
-                        variant="h4bold"
+                        variant="body3"
                         color="colors.white.primary"
                         nameSpace="createRoom"
-                        translation="editPrivacy.title"
+                        translation="editDescription.form.tags"
+                        className={styles.label}
                     />
-                    {optionItems}
+                    <CustomAutocomplete<AutocompleteType<IBusinessCategory>>
+                        multiple
+                        freeSolo
+                        includeInputInList
+                        disableClearable
+                        autoHighlight
+                        options={businessCategoriesOptions}
+                        control={control}
+                        classes={{
+                            inputRoot: isCustom
+                                ? styles.disabledTags
+                                : undefined,
+                        }}
+                        name="tags"
+                        autoComplete
+                        disabled={isCustom}
+                        error={tagsErrorMessage}
+                        errorComponent={
+                            <ConditionalRender
+                                condition={Boolean(tagsErrorMessage)}
+                            >
+                                <ErrorMessage error={Boolean(tagsErrorMessage)}>
+                                    <Translation
+                                        nameSpace="errors"
+                                        translation={tagsErrorMessage}
+                                    />
+                                </ErrorMessage>
+                            </ConditionalRender>
+                        }
+                    />
                 </CustomGrid>
             </CustomPaper>
-
+            <CustomPaper variant="black-glass" className={styles.eventPaper}>
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="space-around"
+                >
+                    <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
+                        <CustomTypography className={styles.eventIconWrapper}>
+                            <FontAwesomeIcon icon={faFolderClosed} className={styles.eventIcon} />
+                        </CustomTypography>
+                        <CustomTooltip
+                            nameSpace="createRoom"
+                            translation="editPrivacy.eventBtns.tooltips.saveRuume"
+                            placement="bottom"
+                        >
+                            <CustomButton
+                                label={
+                                    <Translation
+                                        nameSpace="createRoom"
+                                        translation="editPrivacy.eventBtns.buttons.saveRuume"
+                                    />
+                                }
+                                onClick={onSubmit}
+                                className={styles.eventBtn}
+                            />
+                        </CustomTooltip>
+                    </CustomGrid>
+                    <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
+                        <CustomTypography className={styles.eventIconWrapper}>
+                            <FontAwesomeIcon icon={faChalkboardUser} className={styles.eventIcon} />
+                        </CustomTypography>
+                        <CustomTooltip
+                            nameSpace="createRoom"
+                            translation="editPrivacy.eventBtns.tooltips.enter"
+                            placement="bottom"
+                        >
+                            <CustomButton
+                                label={
+                                    <Translation
+                                        nameSpace="createRoom"
+                                        translation="editPrivacy.eventBtns.buttons.enter"
+                                    />
+                                }
+                                onClick={handleEnterMeeting}
+                                className={styles.eventBtn}
+                            />
+                        </CustomTooltip>
+                    </CustomGrid>
+                    <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
+                        <CustomTypography className={styles.eventIconWrapper}>
+                            <FontAwesomeIcon icon={faCalendarDays} className={styles.eventIcon} />
+                        </CustomTypography>
+                        <CustomTooltip
+                            nameSpace="createRoom"
+                            translation="editPrivacy.eventBtns.tooltips.schedule"
+                            placement="bottom"
+                        >
+                            <CustomButton
+                                label={
+                                    <Translation
+                                        nameSpace="createRoom"
+                                        translation="editPrivacy.eventBtns.buttons.schedule"
+                                    />
+                                }
+                                onClick={handleScheduleMeeting}
+                                className={styles.eventBtn}
+                            />
+                        </CustomTooltip>
+                    </CustomGrid>
+                </CustomGrid>
+            </CustomPaper>
             <CustomGrid
                 container
-                gap={1.5}
+                gap={3}
                 flexWrap="nowrap"
                 justifyContent="center"
                 className={styles.buttonsGroup}
@@ -155,18 +260,8 @@ const Component = ({
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
-                <CustomButton
-                    label={
-                        <Translation
-                            nameSpace="createRoom"
-                            translation="actions.submit"
-                        />
-                    }
-                    onClick={onSubmit}
-                    className={styles.button}
-                />
             </CustomGrid>
-        </CustomGrid>
+        </CustomGrid >
     );
 };
 

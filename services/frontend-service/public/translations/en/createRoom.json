@@ -17,24 +17,27 @@
   },
   "templateLinks": {
     "title": "Drag & Drop circles to the right places / Click on link to edit",
-    "form" : {
+    "form": {
       "title": "Title",
       "link": "Link"
     }
   },
   "uploadBackground": {
     "title": "Upload your Room background",
-    "description": "Drag & Drop file here or click button",
+    "description": "upload or drop and drag a file",
     "tip": {
       "title": "Image/Video",
-      "resolution": "16:9 (ex. 1920 x 1080)",
-      "imageRestricts": ".jpg, .heic or .png / Up to {{maxSize}} MB",
-      "videoRestricts": ".mp4 / Up to {{maxSize}} MB"
+      "resolution": "16:9 or 1920 x 1080",
+      "imageRestricts": "image: .jpeg, .heic, .png (up to {{maxSize}} MB)",
+      "videoRestricts": "video: .mp4(up to {{maxSize}} MB)"
     },
     "actions": {
       "upload": "Upload",
       "change": "Change"
     }
+  },
+  "customizeBackground": {
+    "title": "customize your background"
   },
   "youtubeBackground": {
     "title": "Use a Youtube url for your Room background",
@@ -42,10 +45,15 @@
   },
   "editDescription": {
     "form": {
-      "roomName": "Room Name",
-      "description": "Description",
-      "tags": "Tags (Up to 6)",
-      "link": "Custom link"
+      "roomName": "ruume or event name *",
+      "description": "description",
+      "tags": "tags (optional)",
+      "link": "custom URL (optional)",
+      "aboutTheHost": "about the host",
+      "monetizationTitle": "monetization: ",
+      "monetizationContent": " collect entry fees, donations or payments",
+      "monetizationContentOn": "On",
+      "monetizationContentOff": "Off"
     }
   },
   "editPositions": {
@@ -54,7 +62,7 @@
     "user": "User {{index}}"
   },
   "editPrivacy": {
-    "title": "What kind of Room?",
+    "title": "publish",
     "private": {
       "title": "Create Private Room",
       "availability": "the Room will be available for you in My Rooms",
@@ -71,7 +79,19 @@
       "upgrade": "Upgrade"
     },
     "link": "Please be respectful of our <a href=\"{{termsLink}}\" target=\"_blank\">Terms</a>. Public rooms must be <a href=\"{{privacyLink}}\" target=\"_blank\">safe for work</a>",
-    "upgradePlan": "To create public rooms, you should upgrade to Professional plan or Business plan. Upgrade now or create a private room, upgrade your plan later and then change your private room into a public one."
+    "upgradePlan": "To create public rooms, you should upgrade to Professional plan or Business plan. Upgrade now or create a private room, upgrade your plan later and then change your private room into a public one.",
+    "eventBtns": {
+      "buttons": {
+        "saveRuume": "save ruume",
+        "enter": "enter",
+        "schedule": "schedule"
+      },
+      "tooltips": {
+        "saveRuume": "publish your ruume for later use",
+        "enter": "enter your new ruume now",
+        "schedule": "schedule a meeting in your new ruume"
+      }
+    }
   },
   "preview": {
     "about": "About this room:",
@@ -82,11 +102,13 @@
     }
   },
   "addLink": "Add Link",
-  "upgrade" : {
+  "upgrade": {
     "button": "Upgrade",
-    "embedYourLinks": "Embed Your Links",
+    "embedYourLinks": "embed links",
     "businessMembership": "Business Membership",
     "embedLinks": "Embed Links",
-    "commission": "0% Commission on Payments"
+    "commission": "0% Commission on Payments",
+    "linkDescription1": "book links, merchandise, newsletters, websites",
+    "linkDescription2": "place links anywhere in the ruume for high clickthrough rates"
   }
 }

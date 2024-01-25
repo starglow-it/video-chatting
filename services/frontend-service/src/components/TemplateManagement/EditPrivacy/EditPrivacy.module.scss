@@ -2,18 +2,25 @@
 @import "src/styles/variables";
 
 .wrapper {
-  width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0;
+  padding-top: 8%;
+}
+
+.title {
+  color: black;
 }
 
 .paper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin-top: 3%;
   padding: rem(32px);
-  max-width: rem(610px);
+  max-width: 32%;
   width: 100%;
+}
+
+.paper:after {
+  background-color: #333333;
 }
 
 .policiesLink {
@@ -31,7 +38,7 @@
 
 .buttonsGroup {
   position: absolute;
-  bottom: rem(28px);
+  bottom: 15%;
   left: 50%;
   transform: translate(-50%);
   z-index: 999;
@@ -43,9 +50,45 @@
   }
 
   .actionButton {
+    background-color: #333333;
     width: rem(46px);
     height: rem(46px);
     border-radius: rem(12px);
     padding: rem(6px);
   }
+}
+
+.label {
+  margin: rem(24px 0 4px);
+  &:first-child {
+    margin: rem(0 0 4px);
+  }
+}
+
+.eventPaper {
+  margin-top: 3%;
+  max-width: 32%;
+  width: 100%;
+  padding: 30px;
+}
+
+.eventPaper:after {
+  background-color: #333333;
+}
+
+.eventIconWrapper {
+  color: white;
+  text-align: center;
+}
+
+.eventIcon {
+  font-size: 35px;
+}
+
+.eventBtn {
+  margin-top: 16px;
+  padding: 4px 8px;
+  width: 120px;
+  background: transparent;
+  border: 1px solid #FFA552;
 }

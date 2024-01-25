@@ -10,6 +10,7 @@ export interface IUploadTemplateFormData {
     background?: File;
     name: string;
     description: string;
+    aboutTheHost: string;
     url: string;
     youtubeUrl: string;
     previewUrls: string[];
