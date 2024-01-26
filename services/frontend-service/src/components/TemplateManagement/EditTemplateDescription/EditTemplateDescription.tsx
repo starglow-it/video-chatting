@@ -5,6 +5,7 @@ import clsx from 'clsx';
 
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -52,6 +53,7 @@ const Component = ({
     const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
     const profileStore = useStore($profileStore);
+    const { isMobile } = useBrowserDetect();
 
     const {
         register,
@@ -234,15 +236,15 @@ const Component = ({
         <CustomGrid
             container
             alignItems="center"
-            justifyContent="flex-start"
-            className={styles.wrapper}
+            justifyContent="center"
+            className={clsx(styles.wrapper)}
         >
             <CustomPopover
                 id="monetization"
                 open={Boolean(anchorEl)}
                 onClose={handleCloseButton}
                 anchorEl={anchorEl}
-                style={{ zIndex: 20, left: '70px', top: '-25px' }}
+                style={{ zIndex: 20, left: isMobile ? "-10px" :'70px', top: isMobile ? "-25px" : '-40px' }}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
@@ -262,7 +264,7 @@ const Component = ({
                     <MeetingMonetization onUpdate={handleCloseButton} />
                 </CustomPaper>
             </CustomPopover>
-            <CustomPaper variant="black-glass" className={styles.paper}>
+            <CustomPaper variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>
                 <CustomGrid container direction="column">
                     <CustomTypography
                         variant="body1bold"
@@ -344,7 +346,7 @@ const Component = ({
                     />
                 </CustomGrid>
             </CustomPaper>
-            <CustomPaper variant="black-glass" className={styles.monetizationPanel}>
+            <CustomPaper variant="black-glass" className={clsx(styles.monetizationPanel, { [styles.mobile]: isMobile })}>
                 <CustomGrid
                     container
                     alignItems="center"
@@ -392,7 +394,7 @@ const Component = ({
                 gap={1.5}
                 flexWrap="nowrap"
                 justifyContent="center"
-                className={styles.buttonsGroup}
+                className={clsx(styles.buttonsGroup, { [styles.mobile]: isMobile })}
             >
                 <ActionButton
                     variant="gray"

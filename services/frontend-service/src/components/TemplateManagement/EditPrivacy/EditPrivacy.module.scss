@@ -5,7 +5,8 @@
   height: 100%;
   position: absolute;
   top: 0;
-  padding-top: 8%;
+  padding: rem(100px 30px);
+  min-height: 800px;
 }
 
 .title {
@@ -13,10 +14,15 @@
 }
 
 .paper {
-  margin-top: 3%;
   padding: rem(32px);
-  max-width: 32%;
-  width: 100%;
+  min-width: rem(600px);
+  width: 40%;
+
+  &.mobile {
+    min-width: rem(400px);
+    width: 100%;
+    margin-top: rem(40px);
+  }
 }
 
 .paper:after {
@@ -37,10 +43,7 @@
 }
 
 .buttonsGroup {
-  position: absolute;
-  bottom: 15%;
-  left: 50%;
-  transform: translate(-50%);
+  margin-top: rem(100px);
   z-index: 999;
 
   .button {
@@ -66,10 +69,15 @@
 }
 
 .eventPaper {
-  margin-top: 3%;
-  max-width: 32%;
-  width: 100%;
+  margin-top: rem(60px);
+  min-width: rem(500px);
+  width: 30%;
   padding: 30px;
+
+  &.mobile {
+    min-width: rem(400px);
+    width: 100%;
+  }
 }
 
 .eventPaper:after {

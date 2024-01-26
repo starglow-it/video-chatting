@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 import { getRandomNumber } from 'shared-utils';
 
@@ -34,6 +35,7 @@ const Component = ({
 }: TemplatesLinksProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const { control, trigger } = useFormContext();
+    const { isMobile } = useBrowserDetect();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -95,11 +97,11 @@ const Component = ({
             className={styles.wrapper}
             alignItems="center"
             direction="column"
-            justifyContent="flex-start"
+            justifyContent="center"
         >
             <ConditionalRender condition={!isBusinessSubscription}>
                 <CustomPaper
-                    className={styles.paperUpgrade}
+                    className={clsx(styles.paperUpgrade, { [styles.mobile]: isMobile })}
                     variant="black-glass"
                 >
                     <CustomGrid
