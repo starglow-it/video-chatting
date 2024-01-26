@@ -204,6 +204,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                 alignItems="center"
                 marginBottom={2}
                 maxWidth={isMobile() ? undefined : '340px'}
+                minWidth={isMobile() ? undefined : '340px'}
             >
                 <CustomGrid
                     display="flex"

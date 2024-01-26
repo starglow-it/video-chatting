@@ -1,8 +1,10 @@
 import { memo, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 import { useNavigation } from '@hooks/useNavigation';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -17,6 +19,7 @@ import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChalkboardUser, faFolderClosed, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import IconButton from '@mui/material/IconButton';
 
 // components
 import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/types';
@@ -67,6 +70,7 @@ const Component = ({
     const router = useRouter();
     const isCustom = !!router.query.tags;
     const businessCategories = useStore($businessCategoriesStore);
+    const { isMobile } = useBrowserDetect();
 
     const { control, register, setValue, watch, formState: { errors } } = useFormContext();
 
@@ -109,11 +113,11 @@ const Component = ({
         <CustomGrid
             container
             alignItems="center"
-            justifyContent="flex-start"
+            justifyContent="center"
             direction="column"
             className={styles.wrapper}
         >
-            <CustomPaper variant="black-glass" className={styles.paper}>
+            <CustomPaper variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>
                 <CustomGrid container direction="column">
                     <CustomGrid
                         container
@@ -176,74 +180,102 @@ const Component = ({
                     />
                 </CustomGrid>
             </CustomPaper>
-            <CustomPaper variant="black-glass" className={styles.eventPaper}>
+            <CustomPaper variant="black-glass" className={clsx(styles.eventPaper, { [styles.mobile]: isMobile })}>
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="space-around"
                 >
                     <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
-                        <CustomTypography className={styles.eventIconWrapper}>
-                            <FontAwesomeIcon icon={faFolderClosed} className={styles.eventIcon} />
-                        </CustomTypography>
-                        <CustomTooltip
-                            nameSpace="createRoom"
-                            translation="editPrivacy.eventBtns.tooltips.saveRuume"
-                            placement="bottom"
-                        >
-                            <CustomButton
-                                label={
-                                    <Translation
+
+                        {
+                            !isMobile
+                                ? <>
+                                    <CustomTypography className={styles.eventIconWrapper}>
+                                        <FontAwesomeIcon icon={faFolderClosed} className={styles.eventIcon} />
+                                    </CustomTypography>
+                                    <CustomTooltip
                                         nameSpace="createRoom"
-                                        translation="editPrivacy.eventBtns.buttons.saveRuume"
-                                    />
-                                }
-                                onClick={onSubmit}
-                                className={styles.eventBtn}
-                            />
-                        </CustomTooltip>
+                                        translation="editPrivacy.eventBtns.tooltips.saveRuume"
+                                        placement="bottom"
+                                    >
+                                        <CustomButton
+                                            label={
+                                                <Translation
+                                                    nameSpace="createRoom"
+                                                    translation="editPrivacy.eventBtns.buttons.saveRuume"
+                                                />
+                                            }
+                                            onClick={onSubmit}
+                                            className={styles.eventBtn}
+                                        />
+                                    </CustomTooltip>
+                                </>
+                                : <IconButton style={{ color: 'white' }} aria-label="add an alarm" onClick={onSubmit}>
+                                    <FontAwesomeIcon icon={faFolderClosed} className={styles.eventIcon} />
+                                </IconButton>
+
+                        }
                     </CustomGrid>
                     <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
-                        <CustomTypography className={styles.eventIconWrapper}>
-                            <FontAwesomeIcon icon={faChalkboardUser} className={styles.eventIcon} />
-                        </CustomTypography>
-                        <CustomTooltip
-                            nameSpace="createRoom"
-                            translation="editPrivacy.eventBtns.tooltips.enter"
-                            placement="bottom"
-                        >
-                            <CustomButton
-                                label={
-                                    <Translation
+
+                        {
+                            !isMobile
+                                ? <>
+                                    <CustomTypography className={styles.eventIconWrapper}>
+                                        <FontAwesomeIcon icon={faChalkboardUser} className={styles.eventIcon} />
+                                    </CustomTypography>
+                                    <CustomTooltip
                                         nameSpace="createRoom"
-                                        translation="editPrivacy.eventBtns.buttons.enter"
-                                    />
-                                }
-                                onClick={handleEnterMeeting}
-                                className={styles.eventBtn}
-                            />
-                        </CustomTooltip>
+                                        translation="editPrivacy.eventBtns.tooltips.enter"
+                                        placement="bottom"
+                                    >
+                                        <CustomButton
+                                            label={
+                                                <Translation
+                                                    nameSpace="createRoom"
+                                                    translation="editPrivacy.eventBtns.buttons.enter"
+                                                />
+                                            }
+                                            onClick={handleEnterMeeting}
+                                            className={styles.eventBtn}
+                                        />
+                                    </CustomTooltip>
+                                </>
+                                : <IconButton style={{ color: 'white' }} aria-label="add an alarm" onClick={handleEnterMeeting}>
+                                    <FontAwesomeIcon icon={faChalkboardUser} className={styles.eventIcon} />
+                                </IconButton>
+                        }
                     </CustomGrid>
                     <CustomGrid item xs container alignItems="center" justifyContent="center" direction="column">
-                        <CustomTypography className={styles.eventIconWrapper}>
-                            <FontAwesomeIcon icon={faCalendarDays} className={styles.eventIcon} />
-                        </CustomTypography>
-                        <CustomTooltip
-                            nameSpace="createRoom"
-                            translation="editPrivacy.eventBtns.tooltips.schedule"
-                            placement="bottom"
-                        >
-                            <CustomButton
-                                label={
-                                    <Translation
+
+                        {
+                            !isMobile
+                                ? <>
+                                    <CustomTypography className={styles.eventIconWrapper}>
+                                        <FontAwesomeIcon icon={faCalendarDays} className={styles.eventIcon} />
+                                    </CustomTypography>
+                                    <CustomTooltip
                                         nameSpace="createRoom"
-                                        translation="editPrivacy.eventBtns.buttons.schedule"
-                                    />
-                                }
-                                onClick={handleScheduleMeeting}
-                                className={styles.eventBtn}
-                            />
-                        </CustomTooltip>
+                                        translation="editPrivacy.eventBtns.tooltips.schedule"
+                                        placement="bottom"
+                                    >
+                                        <CustomButton
+                                            label={
+                                                <Translation
+                                                    nameSpace="createRoom"
+                                                    translation="editPrivacy.eventBtns.buttons.schedule"
+                                                />
+                                            }
+                                            onClick={handleScheduleMeeting}
+                                            className={styles.eventBtn}
+                                        />
+                                    </CustomTooltip>
+                                </>
+                                : <IconButton style={{ color: 'white' }} aria-label="add an alarm" onClick={handleScheduleMeeting}>
+                                    <FontAwesomeIcon icon={faCalendarDays} className={styles.eventIcon} />
+                                </IconButton>
+                        }
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

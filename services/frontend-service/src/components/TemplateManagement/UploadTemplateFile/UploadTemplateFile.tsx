@@ -3,6 +3,7 @@ import { FileRejection, useDropzone } from 'react-dropzone';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -65,6 +66,8 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
         control,
         name: 'background',
     });
+
+    const { isMobile } = useBrowserDetect();
     const url = useWatch<IUploadTemplateFormData>({ control, name: 'url' });
 
     const { onChange: onChangeYoutubeUrl, ...youtubeUrlProps } =
@@ -205,6 +208,8 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     return (
         <CustomGrid
             container
+            alignContent="center"
+            justifyContent="center"
             className={clsx(styles.container, {
                 [styles.active]: isDragActive,
             })}
@@ -247,19 +252,21 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 <CustomGrid
                     container
                     alignItems="center"
-                    justifyContent="flex-start"
+                    justifyContent="center"
                     direction="column"
-                    gap={10}
-                    className={styles.uploadBackground}
+                    className={clsx(styles.uploadBackground, { [styles.mobile]: isMobile })}
                 >
                     <Paper
-                        className={styles.uploadBackgroundContentWrapper}
+                        className={clsx(styles.uploadBackgroundContentWrapper, {
+                            [styles.mobile]: isMobile
+                        })}
                     >
                         <CustomGrid
                             container
-                            direction="row"
+                            direction={ isMobile ? "column" : "row" }
+                            gap={isMobile ? 8 : 1.5}
                             alignItems="flex-start"
-                            justifyContent="center"
+                            justifyContent="space-between"
                             className={styles.innerUploadBackgroundContent}
                         >
                             <ConditionalRender
@@ -412,11 +419,15 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 }
             >
                 <CustomGrid
+                    item
                     container
                     gap={3}
                     flexWrap="nowrap"
                     justifyContent="center"
-                    className={styles.buttonsGroup}
+                    alignItems="center"
+                    className={clsx(styles.buttonsGroup, {
+                        [styles.isBackgroundUploaded]: !isShowBox
+                    })}
                 >
                     <ConditionalRender
                         condition={
