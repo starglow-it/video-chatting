@@ -201,7 +201,7 @@ async function injectRoomSelect(roomList) {
   window.addEventListener("click", function (e) {
     try {
       const select = document.querySelector(".custom-select");
-      if (!select.contains(e.target)) {
+      if (select && !select.contains(e.target)) {
         select.classList.remove("open");
       }
     } catch (error) {
