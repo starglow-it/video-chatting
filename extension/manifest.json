@@ -17,8 +17,7 @@
   ],
   "host_permissions": [
     "https://www.googleapis.com/",
-    "https://stg-my.chatruume.com/*",
-    "http://192.168.29.20:8000/*"
+    "https://stg-my.chatruume.com/*"
   ],
   "web_accessible_resources": [
     {
