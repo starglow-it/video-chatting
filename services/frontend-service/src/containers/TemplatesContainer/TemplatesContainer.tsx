@@ -89,21 +89,21 @@ const Component = () => {
         },
         {
             target: "#templatesMenu",
-            title: "ruume's",
-            content: createContentWithLineBreaks("browser pre-made ruume's \n by category."),
+            title: "ruume categories",
+            content: createContentWithLineBreaks("browse ruumes by category. \n we update categories, so send us your suggestions!"),
             disableBeacon: true
 
         },
         {
             target: "#templateCreate",
             title: "create a ruume",
-            content: createContentWithLineBreaks("personalize your very own \n ruume. \n\n create a unique aesthetic and \n vid eo calling experience to your \n preference."),
+            content: createContentWithLineBreaks("personalize your very own \n ruume. \n\n create a unique aesthetic and \n video calling experience to your \n preference."),
             disableBeacon: true
         },
         {
             target: "#featuredTemplates",
             title: "featured ruumes",
-            content: createContentWithLineBreaks("enjoy using seasonal, exclusive backgrounds for your ruume."),
+            content: createContentWithLineBreaks("seasonal and exclusive backgrounds for your ruumes and events."),
             disableBeacon: true
         },
     ];
@@ -284,7 +284,6 @@ const Component = () => {
         if (type === 'tour:end' || action === 'close') {
             emitDashboardJoyrideEvent({ runDashboardJoyride: false });
         }
-
     };
 
     return (
@@ -315,6 +314,10 @@ const Component = () => {
                     },
                     tooltipFooterSpacer: {
                         display: "none"
+                    },
+                    buttonNext: {
+                        marginLeft: 'auto',
+                        marginRight: 10
                     },
                     options: { ...joyrideStyleOptions }
                 }}

@@ -151,7 +151,12 @@ const Component = () => {
         {
             target: "#privatePublicSetting",
             title: "private/public setting",
-            content: createContentWithLineBreaks("set your ruume to private or public.\n\n only participants can access a private ruume. \n\n public allows audience members to join without permissions,\n chat and ask questions."),
+            content: (
+                <>
+                    <b>Private ruume: </b> all callers are Participants & need your permission to join. <br />
+                    <b>Public ruume: </b> also allow an Audience who can join without permission but can only watch & interact in chat. <br />
+                </>
+            ),
             placement: "bottom",
             disableBeacon: true
 
@@ -173,7 +178,7 @@ const Component = () => {
         {
             target: "#changeBackground",
             title: "set the scene",
-            content: createContentWithLineBreaks("change backgrounds with a selection or presets or from your \n own collection. \n\n with a business subscriptioin, you can embed youtube \n videos directly into your ruume, audio included!"),
+            content: createContentWithLineBreaks("Change backgrounds to keep the audience interested. \n\n Select from the presets, paste a youtube video, or upload your own images \n and videos. \n\n with a Business subscription you can also embed links anywhere in the scene!"),
             placement: "left",
             disableBeacon: true
         },
@@ -282,6 +287,7 @@ const Component = () => {
         } else {
             if (welcomeMeetingDialog) {
                 setWelcomeMeetingDialog(false);
+                
             }
         }
     }, []);
@@ -309,8 +315,6 @@ const Component = () => {
         if (type === 'step:after') {
             setStepIndex(index + 1);
         }
-
-        
 
         if (type === 'tour:end' || action === 'close') {
             emitMeetingJoyrideEvent({ runMeetingJoyride: false });
@@ -352,6 +356,10 @@ const Component = () => {
                     },
                     tooltipFooterSpacer: {
                         display: "none"
+                    },
+                    buttonNext: {
+                        marginLeft: 'auto',
+                        marginRight: 10
                     },
                     options: { ...joyrideStyleOptions }
                 }}
