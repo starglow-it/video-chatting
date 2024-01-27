@@ -14,6 +14,7 @@ import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
+import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -93,15 +94,11 @@ export const MeetingPeople = () => {
         };
     }, []);
 
-    const tabs = !isAudience
-        ? [
-            !participants.length
-                ? 'Participants'
-                : `Participants(${participants.length})`,
-            !audiences.length ? 'Audience' : `Audience(${audiences.length})`,
-            'Chat',
-        ]
-        : ['Chat'];
+    const tabs = [
+        'chat',
+        'questions',
+        'transcript',
+    ]
 
     return (
         <CustomGrid
@@ -136,6 +133,12 @@ export const MeetingPeople = () => {
             </Tabs>
             <ConditionalRender condition={!isAudience}>
                 <CustomTabPanel value={value} index={0}>
+                    <MeetingChat />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <MeetingQuestionAnswer />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
                     <CustomGrid
                         display="flex"
                         flexDirection="column"
@@ -145,22 +148,13 @@ export const MeetingPeople = () => {
                         <MeetingUsersList />
                     </CustomGrid>
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
-                    <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        <MeetingAudiences />
-                    </CustomGrid>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    <MeetingChat />
-                </CustomTabPanel>
             </ConditionalRender>
             <ConditionalRender condition={isAudience}>
                 <CustomTabPanel value={value} index={0}>
                     <MeetingChat />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <MeetingQuestionAnswer />
                 </CustomTabPanel>
             </ConditionalRender>
         </CustomGrid>

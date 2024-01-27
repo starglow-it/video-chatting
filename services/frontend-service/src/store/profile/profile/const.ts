@@ -14,7 +14,7 @@ export const initialProfileState = {
     companyName: '',
     email: '',
     contactEmail: '',
-    description: 'abcsdfds',
+    description: '',
     languages: [],
     socials: [],
     businessCategories: [],

@@ -63,6 +63,7 @@ import {
     trackEndedEvent,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
+    $isToggleSchedulePanel,
 } from '../../../store/roomStores';
 
 // styles
@@ -83,6 +84,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
@@ -246,7 +248,9 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleSetStickyNotesVisible}
-                            className={styles.deviceButton}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
                             Icon={
                                 <NotesIcon
                                     width="22px"
@@ -358,7 +362,7 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={handleToggleSchedulePanel}
                             className={clsx(styles.actionButton, {
-                                [styles.active]: isUsersOpen,
+                                [styles.active]: isSchedulePannelOpen,
                                 [styles.newRequests]:
                                     (isThereNewRequests && isMeetingHost),
                                 [styles.mobile]: isMobile,

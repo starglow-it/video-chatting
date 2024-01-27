@@ -467,6 +467,25 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveQuestion,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveQuestion,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveQuestionReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveQuestionReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
+        ),
+    );
+
+    socketInstance?.on(
         TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         getMeetingTemplateSocketSubscribeHandler(
             TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
