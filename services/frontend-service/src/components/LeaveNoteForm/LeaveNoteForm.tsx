@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme: Theme) =>
                     color: theme.palette.colors.black.primary,
                 },
                 height: '35px',
-                border: '1px solid #c2bdbd'
             },
             '& .MuiOutlinedInput-notchedOutline': {
                 borderRadius: '8px',
