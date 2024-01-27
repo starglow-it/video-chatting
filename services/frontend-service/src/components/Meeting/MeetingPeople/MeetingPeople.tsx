@@ -1,6 +1,6 @@
 import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
@@ -8,7 +8,7 @@ import { isMobile } from 'shared-utils';
 import styles from './MeetingPeople.module.scss';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
 import { Tab, Tabs, Typography } from '@mui/material';
-import { $activeTabPanel, $isAudience, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
+import { $activeTabPanel, $isAudience, $isHaveNewMessage, $isHaveNewQuestion, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, resetHaveNewQuestionEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
@@ -77,13 +77,28 @@ export const MeetingPeople = () => {
 
     const value = useStore($activeTabPanel);
 
+    const isThereNewMessage = useStore($isHaveNewMessage);
+    const isThereNewQuestion = useStore($isHaveNewQuestion);
+
+    useEffect(()=> {
+        if (isThereNewMessage) {
+            setActiveTabPanelEvent(0);
+        }
+        if (isThereNewMessage) {
+            setActiveTabPanelEvent(1);
+        }
+    }, [isThereNewMessage, isThereNewQuestion])
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTabPanelEvent(newValue);
     };
 
     const handleResetNewMessage = (tab: string) => {
-        if (tab === 'Chat') {
+        if (tab === 'chat') {
             resetHaveNewMessageEvent();
+        }
+        if (tab === 'questions') {
+            resetHaveNewQuestionEvent();
         }
     };
 

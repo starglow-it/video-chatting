@@ -64,6 +64,7 @@ import {
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
     $isToggleSchedulePanel,
+    $isHaveNewQuestion,
 } from '../../../store/roomStores';
 
 // styles
@@ -102,6 +103,7 @@ const Component = () => {
             ),
     });
     const isThereNewMessage = useStore($isHaveNewMessage);
+    const isThereNewQuestion = useStore($isHaveNewQuestion);
 
     const audioError = useStore($audioErrorStore);
     const isAudioError = Boolean(audioError);
@@ -392,7 +394,7 @@ const Component = () => {
                         onAction={handleToggleUsersPanel}
                         className={clsx(styles.actionButton, {
                             [styles.active]: isUsersOpen,
-                            [styles.newRequests]: !!isThereNewMessage,
+                            [styles.newRequests]: !!isThereNewMessage || !!isThereNewQuestion,
                             [styles.mobile]: isMobile,
                         })}
                         Icon={<ChatIcon width="18px" height="18px" />}
