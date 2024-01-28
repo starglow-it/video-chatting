@@ -23,6 +23,8 @@ import { MeetingPreEvent } from '@components/Meeting/MeetingPreEvent/MeetingPreE
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
+
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
@@ -455,6 +457,7 @@ const MeetingContainer = memo(() => {
             )}
             <HostTimeExpiredDialog />
             <MeetingErrorDialog />
+            <DownloadIcsEventDialog />
         </>
     );
 });

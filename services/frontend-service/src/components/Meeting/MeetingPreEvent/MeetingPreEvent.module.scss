@@ -28,7 +28,7 @@
   border: 1px solid $primary-white;
 
   &:not(:first-child) {
-    margin: rem(0  0 0 -15px);
+    margin: rem(0 0 0 -15px);
   }
 }
 
@@ -110,6 +110,10 @@
   border-radius: 5px;
   padding: 8px;
   height: 100px;
+
+  &.mobile {
+    width: 100%;
+  }
 }
 
 .invitedText {
@@ -122,6 +126,10 @@
   text-align: left;
   width: 80%;
   margin-bottom: 4px;
+
+  &.mobile {
+    width: 100%;
+  }
 }
 
 .buttonsGroup {
@@ -176,8 +184,33 @@
   text-align: center;
   color: #929292;
   margin-top: 16px;
+
+  &.mobile {
+    width: 100%;
+  }
 }
 
 .addLinkButton {
   margin-top: 16px;
+}
+
+.cardField {
+  width: rem(352px);
+  flex: 1 1 100%;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.borderFieldBlack {
+  border-color: #ccc
+}
+
+.dateField {
+  flex: 0 1 168px;
+}
+
+.cvcField {
+  flex: 0 1 168px;
 }

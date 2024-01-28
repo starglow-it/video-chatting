@@ -266,7 +266,7 @@ const Component = () => {
 
     const handleJoyrideCallback = (data) => {
         const { action, index, type } = data;
-        const joyrideEl = document.querySelector(".react-joyride__overlay")
+        const joyrideEl = document.querySelector(".react-joyride__overlay");
 
         if (joyrideEl) {
             if (index <= joyrideSteps.length - 1) {

@@ -35,7 +35,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFormProps) => {
+const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -58,9 +58,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFo
         });
     }, []);
 
-    const colorMain = `colors.${
-        payment.type === PaymentType.Paywall ? 'black' : 'white'
-    }.primary`;
+    const colorMain = `colors.${payment.type === PaymentType.Paywall ? 'black' : 'white'}.primary`;
 
     return (
         <CustomGrid container direction="column">
@@ -78,7 +76,17 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFo
                 className={styles.title}
             >
                 {subLabel ? <>{subLabel} </> : null}
-                <CustomTypography variant="h3bold" color={colorMain}>
+                <CustomTypography
+                    variant={isPreEvent ? 'body3' : 'h3bold'}
+                    color={isPreEvent ? 'black' : colorMain}>
+                    Please Pay
+                </CustomTypography>
+                &nbsp;
+                <CustomTypography
+                    sx={{
+                        color: `rgba(${colorMain}, 0.6)`,
+                    }}
+                >
                     {currencySigns[payment.currency]}
                     {payment.price}
                 </CustomTypography>
@@ -92,6 +100,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFo
                 </CustomTypography>
                 &nbsp;
                 <CustomTypography
+                    variant={isPreEvent ? 'body3' : 'h4'}
                     nameSpace="meeting"
                     translation="payments.perSession"
                     sx={{
@@ -115,8 +124,8 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFo
                     }}
                 >
                     <CustomTypography
-                        variant="body1bold"
-                        color={colorMain}
+                        variant={isPreEvent ? "body3bold" : "body1bold"}
+                        color={isPreEvent ? 'black' : colorMain}
                         nameSpace="meeting"
                         translation="payments.yourCard"
                         className={styles.titleCard}
@@ -131,8 +140,10 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment }: PaymentFo
                     />
                     <StripeElement secret={paymentIntent.clientSecret}>
                         <CardDataForm
+                            isPreEvent={isPreEvent}
                             onSubmit={handleSubmit}
                             onError={handleSubmitError}
+                            setMeetingPreviewShow={setMeetingPreviewShow}
                             paymentIntentSecret={paymentIntent.clientSecret}
                             colorForm={
                                 payment.type === PaymentType.Paywall

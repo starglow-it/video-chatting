@@ -7,8 +7,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: rem(650px);
-  height: 90%;
-  max-width: 80%;
+  min-width: rem(600px);
 
   &.mobile {
     position: relative;

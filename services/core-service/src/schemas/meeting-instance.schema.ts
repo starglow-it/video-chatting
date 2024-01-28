@@ -32,6 +32,21 @@ export class MeetingInstance {
     ref: 'User',
   })
   owner: UserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  startAt: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  aboutTheHost: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  content: string;
 }
 
 export type MeetingInstanceDocument = MeetingInstance & Document;

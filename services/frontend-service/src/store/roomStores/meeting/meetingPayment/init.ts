@@ -32,6 +32,10 @@ $paymentIntent
         id: data.id,
         clientSecret: data.clientSecret,
     }))
+    .on(createPaymentIntentFx.doneData, (state, data) => ({
+        id: data.id,
+        clientSecret: data.clientSecret,
+    }))
     .on(cancelPaymentIntentFx.doneData, () => ({
         id: '',
         clientSecret: '',

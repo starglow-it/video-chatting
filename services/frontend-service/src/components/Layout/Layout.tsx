@@ -352,11 +352,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         })}
                     >
                         <ConditionalRender
-                            condition={
-                                !isMobile
-                                    ? !isNotFoundRoute
-                                    : !isNotFoundRoute && !isRoomRoute
-                            }
+                            condition={!isNotFoundRoute && !isRoomRoute}
                         >
                             <CustomBox
                                 className={clsx(styles.header, {

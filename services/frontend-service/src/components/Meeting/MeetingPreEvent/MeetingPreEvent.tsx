@@ -3,7 +3,6 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import Router, { useRouter } from 'next/router';
 
-
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
@@ -11,27 +10,29 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { StripeElement } from '@components/Stripe/StripeElement/StripeElement';
-import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 //const
 import { PaymentType } from 'shared-const';
+import { MeetingRole } from 'shared-types';
+
+//helper
+import { parseCustomDateString } from '../../../helpers/parseCustomDateString';
+
+import {
+    downloadIcsFileFx
+} from '../../../store';
 
 import {
     $isOwner,
-    $paymentIntent,
-    $localUserStore,
     $meetingTemplateStore,
     $paymentMeetingParticipant,
-    createPaymentIntentWithData
+    createPaymentIntentFx
 } from '../../../store/roomStores';
 
 // styles
@@ -39,6 +40,16 @@ import styles from './MeetingPreEvent.module.scss';
 
 // const
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+
+const timeDifference = (targetDate: string | undefined): boolean => {
+    if (targetDate) {
+        const now = new Date();
+        const target = new Date(targetDate);
+        const timeDifference = target - now;
+        const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+        return minutesDifference < 60;
+    } else return false;
+}
 
 const Component = ({
     isAllowBack = true,
@@ -49,9 +60,16 @@ const Component = ({
     isShow: boolean,
     handleSetMeetingPreviewShow: () => void
 }) => {
-
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const startMeetingAt =
+        meetingTemplate !== null &&
+            meetingTemplate.meetingInstance !== null &&
+            meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? parseCustomDateString(meetingTemplate.meetingInstance.startAt)?.formattedDate : '';
+    const isMeetingStartWithInFiveMin = timeDifference(parseCustomDateString(meetingTemplate.meetingInstance.startAt)?.formattedDateWithYear);
+    const aboutTheHost = meetingTemplate !== null &&
+        meetingTemplate.meetingInstance !== null &&
+        meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? meetingTemplate.meetingInstance.aboutTheHost : '';
 
     const { isMobile } = useBrowserDetect();
 
@@ -62,19 +80,35 @@ const Component = ({
     }, [router]);
 
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
-    const paymentIntent = useStore($paymentIntent);
-    const localUserStore = useStore($localUserStore);
 
     useEffect(() => {
-        console.log(paymentIntent);
-        console.log(localUserStore);
-    }, [paymentIntent, localUserStore]);
+        const fetchData = async () => {
+            try {
+                const meetingRole = !!router.query.role ? MeetingRole.Audience : MeetingRole.Participant;
 
-    useEffect(() => {
-        createPaymentIntentWithData({
-            paymentType: PaymentType.Paywall
-        });
-    }, []);
+                if (meetingTemplate.type !== 'free') {
+                    await createPaymentIntentFx({
+                        templateId: meetingTemplate.id,
+                        meetingRole: meetingRole,
+                        paymentType: PaymentType.Paywall
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [meetingTemplate.id, meetingTemplate.type]);
+
+    const handleDownloadInviteICSFile = async () => {
+        if (!!meetingTemplate.id && !!meetingTemplate.meetingInstance.content) {
+            await downloadIcsFileFx({
+                templateId: meetingTemplate.id,
+                content: meetingTemplate.meetingInstance.content
+            });
+        }
+    };
 
     return (
         <CustomGrid width="100%">
@@ -142,21 +176,24 @@ const Component = ({
                             fontSize={isMobile ? 18 : 30}
                             lineHeight={isMobile ? '24px' : '44px'}
                         >
-                            {/* {meetingTemplate.name} */}
-                            Thursday 10 May 14:00 PST
+                            {startMeetingAt}
                         </CustomTypography>
                         <CustomTypography
                             variant="h6"
                             color="colors.white.primary"
                             nameSpace="createRoom"
                             translation="editDescription.form.description"
-                            className={styles.descriptionLabel}
+                            className={clsx(styles.descriptionLabel, {
+                                [styles.mobile]: isMobile
+                            })}
                         />
                         <CustomTypography
                             variant="body1"
                             textAlign="center"
                             color="colors.white.primary"
-                            className={styles.description}
+                            className={clsx(styles.description, {
+                                [styles.mobile]: isMobile
+                            })}
                             fontSize={isMobile ? 12 : 16}
                             lineHeight={isMobile ? '18px' : '24px'}
                         >
@@ -166,19 +203,23 @@ const Component = ({
                         <CustomTypography
                             variant="h6"
                             color="colors.white.primary"
-                            className={styles.descriptionLabel}
+                            className={clsx(styles.descriptionLabel, {
+                                [styles.mobile]: isMobile
+                            })}
                         >about {meetingTemplate.companyName}</CustomTypography>
                         <CustomTypography
                             variant="body1"
                             textAlign="center"
                             color="colors.white.primary"
-                            className={styles.description}
+                            className={clsx(styles.description, {
+                                [styles.mobile]: isMobile
+                            })}
                             fontSize={isMobile ? 12 : 16}
                             lineHeight={isMobile ? '18px' : '24px'}
                         >
-                            {meetingTemplate.description}
+                            {aboutTheHost}
                         </CustomTypography>
-                        <ConditionalRender condition={meetingTemplate.type !== 'free' || true}>
+                        <ConditionalRender condition={meetingTemplate.type !== 'free'}>
                             <CustomPaper className={styles.payPaper}>
                                 <CustomTypography
                                     variant="body2bold"
@@ -186,42 +227,15 @@ const Component = ({
                                     translation="editDescription.form.paymentTitle"
                                     className={styles.paymentTitle}
                                 />
-                                <CustomTypography
-                                    variant="body3"
-                                    className={styles.paymentDescription}
-                                >Please Pay <b>$3 &middot;</b> per session</CustomTypography>
-                                <hr />
-                                <CustomTypography
-                                    variant="body3bold"
-                                    nameSpace="createRoom"
-                                    translation="editDescription.form.yourCard"
-                                    className={styles.yourCardTitle}
-                                />
-                                <CustomGrid container className={styles.cardDetail}>
-                                    <PaymentForm
-                                        onClose={() => {}}
-                                        payment={paymentMeetingParticipant}
-                                    />
-                                </CustomGrid>
-                                <CustomButton
-                                    onClick={() => { }}
-                                    className={clsx(styles.addLinkButton)}
-                                    label={
-                                        <CustomTypography
-                                            variant="body3"
-                                            className={styles.secureWithStripeText}
-                                        >
-                                            <CustomTypography
-                                                variant="body3bold"
-                                                className={styles.stripeIcon}
-                                            >S</CustomTypography>
-                                            Secure Pay with <b> Stripe</b>
-                                        </CustomTypography>
-                                    }
+                                <PaymentForm
+                                    isPreEvent={true}
+                                    onClose={() => { }}
+                                    payment={paymentMeetingParticipant}
+                                    setMeetingPreviewShow={handleSetMeetingPreviewShow}
                                 />
                             </CustomPaper>
                         </ConditionalRender>
-                        <ConditionalRender condition={meetingTemplate.type === 'free' && false}>
+                        <ConditionalRender condition={meetingTemplate.type === 'free'}>
                             <CustomGrid
                                 container
                                 gap={4}
@@ -245,19 +259,26 @@ const Component = ({
                                 <CustomGrid item xs>
                                     <ActionButton
                                         variant="accept"
-                                        label="Join Now"
+                                        label={isMeetingStartWithInFiveMin ? 'Join Now' : 'add to Calendar'}
                                         className={styles.actionButton}
-                                        onAction={() => handleSetMeetingPreviewShow()}
+                                        onAction={() =>
+                                            isMeetingStartWithInFiveMin
+                                                ? handleSetMeetingPreviewShow()
+                                                : handleDownloadInviteICSFile()
+                                        }
                                     />
-                                    <CustomTypography
-                                        variant="body3"
-                                        nameSpace="createRoom"
-                                        translation="editDescription.form.preMeetingNtfText"
-                                        className={styles.preMeetingNtfText}
-                                    />
+                                    {!isMeetingStartWithInFiveMin &&
+                                        <CustomTypography
+                                            variant="body3"
+                                            nameSpace="createRoom"
+                                            translation="editDescription.form.preMeetingNtfText"
+                                            className={clsx(styles.preMeetingNtfText, {
+                                                [styles.mobile]: isMobile
+                                            })}
+                                        />
+                                    }
                                 </CustomGrid>
                             </CustomGrid>
-
                         </ConditionalRender>
                     </CustomGrid>
                 </CustomGrid>

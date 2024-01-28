@@ -6,4 +6,5 @@ export type PaymentFormProps = {
     onClose?: () => void;
     subLabel?: ReactNode;
     payment: PaymentItem;
+    setMeetingPreviewShow?: () => void;
 };
