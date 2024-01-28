@@ -223,7 +223,6 @@ const Component = () => {
         }
     };
     const handleSetStickyNotesVisible = () => {
-        console.log(isVisible);
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
     return (

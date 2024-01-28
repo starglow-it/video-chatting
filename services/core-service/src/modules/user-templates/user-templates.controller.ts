@@ -855,10 +855,10 @@ export class UserTemplatesController {
             populatePaths: 'userTemplate',
           });
 
-          // throwRpcError(
-          //   !templatePayment.enabled,
-          //   TemplateNativeErrorEnum.TEMPLATE_PAYMENT_DISABLED,
-          // );
+          throwRpcError(
+            !templatePayment.enabled,
+            TemplateNativeErrorEnum.TEMPLATE_PAYMENT_DISABLED,
+          );
 
           return templatePaymentSerialization(templatePayment);
         } catch (err) {
