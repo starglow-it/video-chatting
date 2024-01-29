@@ -84,15 +84,14 @@ const Component = () => {
         {
             target: "#profileAvatarIcon",
             title: "profile",
-            content: createContentWithLineBreaks("edit your profiel and avatar,\n manage your sucscription \n and monetization here."),
+            content: createContentWithLineBreaks("edit your profile and avatar,\n manage your subscription \n and monetization here."),
             disableBeacon: true
         },
         {
             target: "#templatesMenu",
-            title: "ruume categories",
-            content: createContentWithLineBreaks("browse ruumes by category. \n we update categories, so send us your suggestions!"),
+            title: "ruumes",
+            content: createContentWithLineBreaks("browse pre-made ruume's \n by category."),
             disableBeacon: true
-
         },
         {
             target: "#templateCreate",
@@ -103,7 +102,8 @@ const Component = () => {
         {
             target: "#featuredTemplates",
             title: "featured ruumes",
-            content: createContentWithLineBreaks("seasonal and exclusive backgrounds for your ruumes and events."),
+            content: createContentWithLineBreaks("enjoy using seasonal, exclusive backgrounds for your ruume."),
+            placement: "top",
             disableBeacon: true
         },
     ];
@@ -258,10 +258,6 @@ const Component = () => {
 
     const handleSetVisitedDashboard = () => {
         setIsFirstDashboardVisit(false);
-
-        if (localStorage.getItem("isFirstDashboardVisit")) {
-            localStorage.removeItem("isFirstDashboardVisit");
-        }
     };
 
     const handleJoyrideCallback = (data) => {
