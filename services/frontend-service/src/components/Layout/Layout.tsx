@@ -307,6 +307,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         handleMenuClose();
         logoutUserFx();
         localStorage.removeItem("isFirstDashboardVisit");
+        localStorage.removeItem("isFirstMeeting");
     }, []);
 
     return (
