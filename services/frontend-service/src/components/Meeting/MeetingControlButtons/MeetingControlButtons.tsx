@@ -63,6 +63,8 @@ import {
     trackEndedEvent,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
+    $isToggleSchedulePanel,
+    $isHaveNewQuestion,
 } from '../../../store/roomStores';
 
 // styles
@@ -83,6 +85,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
@@ -100,6 +103,7 @@ const Component = () => {
             ),
     });
     const isThereNewMessage = useStore($isHaveNewMessage);
+    const isThereNewQuestion = useStore($isHaveNewQuestion);
 
     const audioError = useStore($audioErrorStore);
     const isAudioError = Boolean(audioError);
@@ -246,7 +250,9 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleSetStickyNotesVisible}
-                            className={styles.deviceButton}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
                             Icon={
                                 <NotesIcon
                                     width="22px"
@@ -358,7 +364,7 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={handleToggleSchedulePanel}
                             className={clsx(styles.actionButton, {
-                                [styles.active]: isUsersOpen,
+                                [styles.active]: isSchedulePannelOpen,
                                 [styles.newRequests]:
                                     (isThereNewRequests && isMeetingHost),
                                 [styles.mobile]: isMobile,
@@ -388,7 +394,7 @@ const Component = () => {
                         onAction={handleToggleUsersPanel}
                         className={clsx(styles.actionButton, {
                             [styles.active]: isUsersOpen,
-                            [styles.newRequests]: !!isThereNewMessage,
+                            [styles.newRequests]: !!isThereNewMessage || !!isThereNewQuestion,
                             [styles.mobile]: isMobile,
                         })}
                         Icon={<ChatIcon width="18px" height="18px" />}

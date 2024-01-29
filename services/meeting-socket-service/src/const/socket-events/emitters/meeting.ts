@@ -14,4 +14,7 @@ export enum MeetingEmitEvents {
   ReceiveReaction = 'meeting:chat:reaction:receive',
   RejoinWaitingRoom = 'meeting:rejoin',
   ReceiveUnReaction = 'meeting:chat:unreaction:receive',
+  ReceiveQuestion = 'meeting:question:question:receive',
+  ReceiveQuestionReaction = 'meeting:question:reaction:receive',
+  ReceiveQuestionUnReaction = 'meeting:question:unreaction:receive',
 }

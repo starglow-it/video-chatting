@@ -9,6 +9,7 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
 import { UsersModule } from './modules/users/users.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
+import { MeetingQuestionAnswersModule } from './modules/meeting-question-answer/meeting-question-answer.module';
 import {
   AudiencesGateway,
   ParticipantsGateway,
@@ -17,6 +18,7 @@ import {
   MeetingsGateway,
   TemplatesGateway,
   UsersGateway,
+  MeetingQuestionAnswersGateway
 } from './gateways';
 
 @Module({
@@ -31,6 +33,7 @@ import {
     UsersModule,
     MeetingNotesModule,
     MeetingTimeModule,
+    MeetingQuestionAnswersModule,
   ],
   controllers: [],
   providers: [
@@ -41,6 +44,7 @@ import {
     AudiencesGateway,
     ParticipantsGateway,
     TemplatesGateway,
+    MeetingQuestionAnswersGateway,
   ],
 })
-export class AppModule {}
+export class AppModule { }

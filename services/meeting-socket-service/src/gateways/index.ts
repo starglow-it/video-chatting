@@ -6,3 +6,4 @@ export * from './meeting-notes.gateway';
 export * from './meetings.gateway';
 export * from './templates.gateway';
 export * from './users.gateway';
+export * from './meeting-question-answer.gateway';
