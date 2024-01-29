@@ -1,25 +1,26 @@
 body {
-  width: 370px;
-  /* height: 300px; */
-  padding: 20px;
+  width: 400px;
+  height: fit-content;
+  padding: 15px;
   font-size: 1rem;
   line-height: 1.5rem;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 400;
 }
 .container {
   border: 2px rgb(255, 136, 78) solid;
   border-radius: 15px;
-  padding: 40px 60px 60px;
+  padding: 40px 30px 30px;
 }
 .title {
   margin: 0px;
+  padding: 0 60px;
   font-size: 1.5rem;
   line-height: 2.25rem;
   font-weight: 600;
   color: rgb(15, 15, 16);
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom:30px;
 }
 #scheduleMeeting,
 #signinMeeting,
@@ -50,21 +51,24 @@ body {
     box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  border: 2px solid rgb(255, 136, 78);
+  /* border: 2px solid rgb(255, 136, 78); */
   border-radius: 10px;
   text-transform: initial;
-  padding: 17px 20px;
+  /* padding: 17px 20px; */
+  padding: 14px 14px;
   width: 100%;
   background: rgb(255, 136, 78);
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
+  color: white;
 }
 #enterMeeting {
-  border: 2px solid rgb(255, 136, 78);
+  /* border: 2px solid rgb(255, 136, 78); */
   background-color: white;
 }
 #scheduleMeeting:hover,
 #signinMeeting:hover {
   background: rgb(238, 111, 50);
+  border-color: rgb(238, 111, 50);
 }
 #enterMeeting:hover {
   background: rgba(238, 111, 50, 0.3);
@@ -75,4 +79,225 @@ body {
   line-height: 1.5rem;
   font-family: Poppins, sans-serif;
   font-weight: 400;
+}
+
+.google-login {
+  cursor: pointer;
+    transition: box-shadow .2s linear;
+    padding: 0.5rem 1rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-height: 3.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgba(189, 200, 211, 0.4);
+    box-shadow: rgba(15, 15, 16, 0.1) 0px 12px 24px -4px;
+    border-radius: 10px;
+}
+
+.google-login:hover {
+  box-shadow: rgba(15, 15, 16, 0.24) 0px 12px 24px -4px;
+}
+
+.google-login-text {
+  margin: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-family: "Poppins",sans-serif;
+    font-weight: 400;
+}
+
+.google-login-icon {
+  box-sizing: border-box; display: inline-block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: relative; max-width: 100%;
+}
+
+.google-login-icon-inner {
+  box-sizing: border-box; display: block; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; max-width: 100%;
+}
+
+.or-div {
+  box-sizing: border-box;
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.or-span {
+  margin: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-family: "Poppins",sans-serif;
+    font-weight: 400;
+    color: #bdc8d3;
+}
+
+.login-form {
+  margin: 6px 0 0;
+}
+
+.login-form-container {
+  box-sizing: border-box;
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+}
+
+.input-container {
+  margin: 0 0 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-inner-container {
+  background-color: rgb(255, 255, 255);
+    color: rgb(15, 15, 16);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 16px;
+    box-shadow: rgba(15, 15, 16, 0.1) 0px 12px 24px -4px;
+    --vh: 0px;
+}
+
+.input-field {
+  display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    vertical-align: top;
+    width: 100%;
+}
+
+.input-label {
+  color: rgb(189, 200, 211);
+    font-size: 1rem;
+    line-height: 1.4375em;
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
+    padding: 0px;
+    display: block;
+    transform-origin: left top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(133% - 24px);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    transform: translate(14px, -9px) scale(0.75);
+    transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, max-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    z-index: 1;
+    pointer-events: auto;
+    user-select: none;
+    background-color: rgb(255, 255, 255);
+    color: rgb(15, 15, 16);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 16px;
+    box-shadow: rgba(15, 15, 16, 0.1) 0px 12px 24px -4px;
+}
+
+.main-input-field {
+  font-size: 1rem;
+    line-height: 1.4375em;
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
+    color: rgb(15, 15, 16);
+    box-sizing: border-box;
+    cursor: text;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    /* padding-right: 14px; */
+    border-radius: 10px;
+    background: rgb(244, 246, 249);
+    border: 1px solid rgba(189, 200, 211, 0.4);
+
+  }
+
+.custom-input{
+  border-radius: inherit;
+  animation-duration: 5000s;
+    animation-name: mui-auto-fill;
+    font: inherit;
+    letter-spacing: inherit;
+    color: currentcolor;
+    border: 0px;
+    box-sizing: content-box;
+    background: none;
+    height: 1.4375em;
+    margin: 0px;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    min-width: 0px;
+    width: 100%;
+    animation-name: mui-auto-fill-cancel;
+    animation-duration: 10ms;
+    padding: 14px 0px 14px 14px;
+}
+
+.custom-fieldset {
+  border-color: rgb(15, 15, 16);
+  text-align: left;
+    position: absolute;
+    inset: -5px 0px 0px;
+    margin: 0px;
+    padding: 0px 8px;
+    pointer-events: none;
+    border-radius: inherit;
+    border-style: solid;
+    overflow: hidden;
+    min-width: 0%;
+    border-width: 1px;
+    border-color: rgba(189, 200, 211, 0.6);
+    font-size: 1rem;
+    line-height: 1.4375em;
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
+    color: rgb(15, 15, 16);
+    box-sizing: border-box;
+    cursor: text;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    padding-right: 14px;
+    border-radius: 10px;
+
+}
+
+.forgot-password {
+  margin: 0.5rem 0 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  float: right;
+  color: #FF884E;
+}
+ .register {
+  margin: 0.5rem 0 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  color: #bdc8d3;
 }
