@@ -45,6 +45,9 @@ import styles from './EditTemplateDescription.module.scss';
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
 
+//hooks
+import useWindowSize from '@hooks/useWIndowSize';
+
 const Component = ({
     onNextStep,
     onPreviousStep,
@@ -77,6 +80,7 @@ const Component = ({
         errors?.aboutTheHost?.[0]?.message || '';
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [enableMonetization, setEnableMonetization] = useState(false);
+    const windowSize = useWindowSize();
 
     useEffect(() => {
         (() => {
@@ -246,18 +250,19 @@ const Component = ({
                 onClose={handleCloseButton}
                 anchorEl={anchorEl}
                 // style={{ zIndex: 20, left: isMobile ? "-10px" : '70px', top: isMobile ? "-25px" : '-40px' }}
-                style={{ zIndex: 20, left: isMobile ? "-10px" : '20px' }}
+                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none'}}
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'right',
+                    horizontal: windowSize.width > 1500 ? 'right' : 'center',
                 }}
                 transformOrigin={{
-                    vertical: 450,
-                    horizontal: 'left',
+                    vertical: "bottom",
+                    horizontal: windowSize.width > 1500 ? 'left' : 'center',
                 }}
                 PaperProps={{
                     className: clsx(styles.popoverMonetization),
                 }}
+                className={clsx(styles.popover, {[styles.mobile]: isMobile})}
             >
                 <CustomPaper
                     variant="black-glass"

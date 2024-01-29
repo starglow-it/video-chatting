@@ -160,7 +160,7 @@ export const MeetingMonezationForm = forwardRef(
                         sx={{
                             height: {
                                 xs: '200px',
-                                sm: 'auto',
+                                sm: '200px',
                                 md: '200px',
                                 xl: '200px',
                             },
@@ -180,7 +180,7 @@ export const MeetingMonezationForm = forwardRef(
                                 },
                                 flexDirection: {
                                     xs: 'column',
-                                    sm: 'row',
+                                    sm: 'column',
                                     md: 'column',
                                     xl: 'column',
                                 },
@@ -297,7 +297,7 @@ export const MeetingMonezationForm = forwardRef(
                                 },
                                 flexDirection: {
                                     xs: 'column',
-                                    sm: 'row',
+                                    sm: 'column',
                                     md: 'column',
                                     xl: 'column',
                                 },

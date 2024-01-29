@@ -7,7 +7,7 @@
   top: 0;
   flex-direction: column;
   padding: 100px 10px;
-  min-height: 900px;
+  min-height: 1000px;
 }
 
 .paper {
@@ -177,4 +177,12 @@
 
 .commonOpenPanel:after {
   background: #333333;
+}
+
+.popover {
+  width: 450px;
+
+  &.mobile {
+    width: 100%;
+  }
 }

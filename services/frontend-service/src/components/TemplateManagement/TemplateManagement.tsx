@@ -213,7 +213,7 @@ const Component = ({
 
     useEffect(() => {
         if (!isBusinessSubscription && !isProfessionalSubscription) {
-            // router.push(dashboardRoute);
+            router.push(dashboardRoute);
         }
     }, [isBusinessSubscription, isProfessionalSubscription]);
 
