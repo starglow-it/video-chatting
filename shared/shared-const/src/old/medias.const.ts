@@ -57,7 +57,7 @@ export const MEDIA_CATEGORIES = [
   },
   {
     key: 'myrooms',
-    value: 'My Rooms',
+    value: 'My Ruumes',
     emojiUrl: '1f6d6',
     type: 'background',
   },

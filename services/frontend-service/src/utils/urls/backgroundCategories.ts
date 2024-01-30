@@ -3,7 +3,7 @@ import { medias, serverUrl } from './baseData';
 
 export const getMediasCategory = ({
     skip = 0,
-    limit = 12,
+    limit = 0,
     categoryId = '',
     userTemplateId = '',
 }) => ({
