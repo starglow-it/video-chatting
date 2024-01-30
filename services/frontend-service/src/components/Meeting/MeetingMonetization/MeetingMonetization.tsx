@@ -32,6 +32,7 @@ import {
     $paymentPaywallAudience,
     $paymentPaywallParticipant,
     updatePaymentMeetingEvent,
+    setCreateRoomPaymentDataEvent
 } from '../../../store/roomStores';
 import { $isConnectedStripe } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
@@ -122,7 +123,7 @@ const tabs: ValuesSwitcherAlias[] = [
     },
 ];
 
-const Component = ({ onUpdate }: { onUpdate: () => void }) => {
+const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
         null,
@@ -146,7 +147,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const onSubmit = useCallback(async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
-        updatePaymentMeetingEvent({
+        const payload = {
             meeting: {
                 participant: {
                     enabled: paymentParticipant?.enabledMeeting ?? false,
@@ -179,7 +180,17 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         DEFAULT_PAYMENT_CURRENCY,
                 },
             },
-        });
+        };
+        if (!isRoomCreate) {
+            updatePaymentMeetingEvent({
+                ...payload
+            });
+        } else {
+            setCreateRoomPaymentDataEvent({
+                ...payload
+            });
+        }
+
         onUpdate?.();
     }, []);
 

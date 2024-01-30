@@ -342,7 +342,6 @@ export class ProfileTemplatesController {
           });
         });
       });
-
       await Promise.all(promise);
 
       return await this.coreService.updateTemplatePayment({

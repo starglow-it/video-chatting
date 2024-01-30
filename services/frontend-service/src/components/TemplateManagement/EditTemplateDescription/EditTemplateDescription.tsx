@@ -33,6 +33,8 @@ import {
     getBusinessCategoriesFx,
 } from '../../../store';
 
+import { toggleCreateRoomPaymentFormEvent } from '../../../store/roomStores';
+
 // const
 import {
     MAX_DESCRIPTION_LENGTH,
@@ -126,6 +128,10 @@ const Component = ({
             ),
         );
     }, []);
+
+    useEffect(() => {
+        toggleCreateRoomPaymentFormEvent(enableMonetization);
+    }, [enableMonetization]);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -228,7 +234,6 @@ const Component = ({
         setEnableMonetization(prev => !prev);
 
         if (!enableMonetization) {
-            // setAnchorEl(e.currentTarget);
             setAnchorEl(document.getElementById('formPanel'));
         }
     };
@@ -268,7 +273,7 @@ const Component = ({
                     variant="black-glass"
                     className={styles.commonOpenPanel}
                 >
-                    <MeetingMonetization onUpdate={handleCloseButton} />
+                    <MeetingMonetization isRoomCreate={true} onUpdate={handleCloseButton} />
                 </CustomPaper>
             </CustomPopover>
             <CustomPaper id="formPanel" variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>

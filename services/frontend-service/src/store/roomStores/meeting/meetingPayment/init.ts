@@ -7,6 +7,9 @@ import {
     $isTogglePayment,
     $meetingPaymentStore,
     $paymentIntent,
+    $createRoomPaymentStore,
+    $isToggleCreateRoomPayment,
+    setCreateRoomPaymentDataEvent,
     cancelPaymentIntentFx,
     cancelPaymentIntentWithData,
     createPaymentIntentFx,
@@ -14,6 +17,7 @@ import {
     getPaymentMeetingFx,
     receivePaymentMeetingEvent,
     togglePaymentFormEvent,
+    toggleCreateRoomPaymentFormEvent,
     updatePaymentMeetingFx,
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
@@ -26,6 +30,8 @@ createPaymentIntentFx.use(handleCreatePaymentIntent);
 cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 getPaymentMeetingFx.use(handleGetPaymentMeeting);
 updatePaymentMeetingFx.use(handleUpdatePaymentMeeting);
+
+$createRoomPaymentStore.on(setCreateRoomPaymentDataEvent, (state, data) => ({ ...data }));
 
 $paymentIntent
     .on(createPaymentIntentWithData.doneData, (state, data) => ({
@@ -45,6 +51,10 @@ $meetingPaymentStore
     .reset(resetRoomStores);
 
 $isTogglePayment.on(togglePaymentFormEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isToggleCreateRoomPayment.on(toggleCreateRoomPaymentFormEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 
