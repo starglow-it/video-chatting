@@ -12,7 +12,6 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import styles from './CategoryItem.module.scss';
 
 const Component = ({
@@ -72,28 +71,26 @@ const Component = ({
                     {category.value}
                 </CustomTypography>
             </CustomGrid>
-            <ConditionalRender condition={category.key !== 'myrooms'}>
-                <Fade in={isHover}>
-                    <CustomGrid
-                        alignItems="center"
-                        flexDirection="row"
-                        display="flex"
-                    >
-                        <ActionButton
-                            variant="decline"
-                            Icon={<EditIcon width="17px" height="17px" />}
-                            onAction={toggleEdit}
-                            className={styles.editIcon}
-                        />
-                        <ActionButton
-                            variant="decline"
-                            Icon={<TrashIcon width="20px" height="20px" />}
-                            className={styles.editIcon}
-                            onAction={deleteCategory}
-                        />
-                    </CustomGrid>
-                </Fade>
-            </ConditionalRender>
+            <Fade in={isHover}>
+                <CustomGrid
+                    alignItems="center"
+                    flexDirection="row"
+                    display="flex"
+                >
+                    <ActionButton
+                        variant="decline"
+                        Icon={<EditIcon width="17px" height="17px" />}
+                        onAction={toggleEdit}
+                        className={styles.editIcon}
+                    />
+                    <ActionButton
+                        variant="decline"
+                        Icon={<TrashIcon width="20px" height="20px" />}
+                        className={styles.editIcon}
+                        onAction={deleteCategory}
+                    />
+                </CustomGrid>
+            </Fade>
             <ModifyCategoryItem
                 ref={refModify}
                 category={category}
