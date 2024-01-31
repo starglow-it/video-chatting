@@ -36,7 +36,7 @@ import {
     updateMeetingTemplateSocketEvent,
     enterWaitingRoomSocketEvent,
     sendReconnectMeetingEvent,
-    joinMeetingLurkerEvent,
+    joinMeetingAudienceEvent,
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -93,15 +93,15 @@ export const sendReconnectMeetingSocketEvent = attach<
     }),
 });
 
-export const joinLurkerMeetingSocketEvent = attach<
+export const joinAudienceMeetingSocketEvent = attach<
     void,
     Store<{
         meeting: Meeting;
         localUser: MeetingUser;
     }>,
-    typeof joinMeetingLurkerEvent
+    typeof joinMeetingAudienceEvent
 >({
-    effect: joinMeetingLurkerEvent,
+    effect: joinMeetingAudienceEvent,
     source: combine({
         meeting: $meetingStore,
         localUser: $localUserStore,
@@ -347,9 +347,9 @@ sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.failData.watch((error: any) => {
     console.log('console reconnect error', error);
 });
-joinMeetingLurkerEvent.doneData.watch(handleUpdateMeetingEntities);
-joinMeetingLurkerEvent.failData.watch((error: any) => {
-    console.log('lurker join fail', error);
+joinMeetingAudienceEvent.doneData.watch(handleUpdateMeetingEntities);
+joinMeetingAudienceEvent.failData.watch((error: any) => {
+    console.log('audience join fail', error);
 });
 
 sample({
@@ -466,6 +466,25 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnReceiceUnReaction,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveQuestion,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveQuestion,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveQuestionReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveQuestionReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
+        ),
+    );
+
     socketInstance?.on(
         TemplateSubscribeEvents.OnUpdatePaymentsTemplate,
         getMeetingTemplateSocketSubscribeHandler(

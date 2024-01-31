@@ -108,7 +108,7 @@ const Component = () => {
     const isAudioError = Boolean(audioError);
     const isVideoError = Boolean(videoError);
     const { runMeetingJoyride } = useStore($joyrideStore);
-    const [ stepIndex, setStepIndex ] = useState(0);
+    const [stepIndex, setStepIndex] = useState(0);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -118,15 +118,14 @@ const Component = () => {
     });
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
-    const [welcomeMeetingDialog, setWelcomeMeetingDialog] = useState(false);
 
     const createContentWithLineBreaks = text => {
         return text.split('\n').map((line, index, array) => (
             <span key={index}>
-              {line}
-              {index !== array.length - 1 && <br />}
+                {line}
+                {index !== array.length - 1 && <br />}
             </span>
-          ));
+        ));
     };
 
     const joyrideStyleOptions = {
@@ -151,13 +150,21 @@ const Component = () => {
         {
             target: "#privatePublicSetting",
             title: "private/public setting",
-            content: createContentWithLineBreaks("set your ruume to private or public.\n\n only participants can access a private ruume. \n\n public allows audience members to join without permissions,\n chat and ask questions."),
+            content: (
+                <>
+                    set your ruume to private or public. <br /><br />
+                    <b>Private ruumes </b> all attendees are participants and need your <br />
+                    permission to join. <br /><br />
+                    <b>Public ruumes </b> allows audience members to join and watch <br />
+                    without permissions, chat, and ask questions.  <br />
+                </>
+            ),
             placement: "bottom",
             disableBeacon: true
 
         },
         {
-            target: "#selectGuests",            
+            target: "#selectGuests",
             title: "select your guests",
             content: createContentWithLineBreaks("once you've determined if your ruume is private or public,\n select the audience you would like to invite then click the\n 'link' icon.\n\n participants and audience members have their own link."),
             placement: "left",
@@ -166,14 +173,14 @@ const Component = () => {
         {
             target: "#menuBar",
             title: "menu bar",
-            content: createContentWithLineBreaks("enjoy engaging functionality for you to customize and\n interact with participants in your ruume.\n\n post sticky notes, record your ruume, start transcripts and \n more. take a moment to hover over each icon to understand \n your new menu bar."),
+            content: createContentWithLineBreaks("enjoy engaging functionality for you to customize and \n interact with participants in your ruume.\n\n post sticky notes, record your ruume, start transcripts and \n more. take a moment to hover over each icon to understand \n your new menu bar."),
             placement: "top",
             disableBeacon: true
         },
         {
             target: "#changeBackground",
             title: "set the scene",
-            content: createContentWithLineBreaks("change backgrounds with a selection or presets or from your \n own collection. \n\n with a business subscriptioin, you can embed youtube \n videos directly into your ruume, audio included!"),
+            content: createContentWithLineBreaks("change backgrounds with a selection of presets o r from your \n own collection.\n\n with a business subscription, you can embed youtube \n videos directly into your ruume, audio included."),
             placement: "left",
             disableBeacon: true
         },
@@ -273,19 +280,6 @@ const Component = () => {
         }
     }, [isMobile]);
 
-    useEffect(() => {
-        const isFirstMeeting = localStorage.getItem("isFirstMeeting");
-
-        if (isFirstMeeting) {
-            setWelcomeMeetingDialog(true);
-            localStorage.removeItem("isFirstMeeting");
-        } else {
-            if (welcomeMeetingDialog) {
-                setWelcomeMeetingDialog(false);
-            }
-        }
-    }, []);
-
     const handleUpdateMeetingTemplate = useCallback(async (updateData: any) => {
         if (updateData) {
             await updateMeetingTemplateFxWithData(updateData.data);
@@ -309,8 +303,6 @@ const Component = () => {
         if (type === 'step:after') {
             setStepIndex(index + 1);
         }
-
-        
 
         if (type === 'tour:end' || action === 'close') {
             emitMeetingJoyrideEvent({ runMeetingJoyride: false });
@@ -352,6 +344,10 @@ const Component = () => {
                     },
                     tooltipFooterSpacer: {
                         display: "none"
+                    },
+                    buttonNext: {
+                        marginLeft: 'auto',
+                        marginRight: 10
                     },
                     options: { ...joyrideStyleOptions }
                 }}

@@ -37,11 +37,11 @@ const Component = ({
     onAcceptUser,
     onDeleteUser,
     onChangeHost,
-    onRequestLurker,
+    onRequestAudience,
     onChangeRoleToAudience,
     isLocalItem,
     isOwnerItem,
-    isLurkerRequest = false,
+    isAudienceRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
 
@@ -52,8 +52,8 @@ const Component = ({
         onAcceptUser?.({ userId: user.id });
     };
 
-    const handleRequestLurker = () => {
-        onRequestLurker?.({ userId: user.id });
+    const handleRequestAudience = () => {
+        onRequestAudience?.({ userId: user.id });
     };
 
     const handleDeleteRequest = () => {
@@ -102,14 +102,14 @@ const Component = ({
                         Icon={<AcceptIcon width="23px" height="23px" />}
                     />
                 </ConditionalRender>
-                <ConditionalRender condition={isLurkerRequest}>
+                <ConditionalRender condition={isAudienceRequest}>
                     <CustomTooltip
                         title="Invite as Participant (join the scene)"
                         placement="bottom"
                     >
                         <ActionButton
                             variant="accept"
-                            onAction={handleRequestLurker}
+                            onAction={handleRequestAudience}
                             className={styles.acceptUser}
                             Icon={<ArrowUp width="15px" height="15px" />}
                         />

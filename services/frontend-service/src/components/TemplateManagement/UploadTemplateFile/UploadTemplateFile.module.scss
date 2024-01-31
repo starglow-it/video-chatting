@@ -4,10 +4,12 @@
 .container {
   width: 100%;
   height: 100%;
+  min-height: 600px;
   position: absolute;
   top: 0;
   left: 0;
-  padding: 10px;
+  padding: 30px;
+
   &.active {
     background: rgba($primary-black, 0.6);
     z-index: 2;
@@ -22,19 +24,24 @@
   border-radius: rem(4px);
 }
 
-.uploadDescription {
-  
-}
-
 .title {
   margin: rem(0 0 4px);
 }
 
 .description {
   margin: rem(0 0 32px);
+  color: white;
+  font-size: 18px;
+}
+
+.uploadButton {
+  max-width: rem(106px);
+  width: 100%;
+  height: rem(46px);
 }
 
 .button {
+  background-color: #333333;
   max-width: rem(106px);
   width: 100%;
   height: rem(46px);
@@ -59,10 +66,13 @@
 }
 
 .buttonsGroup {
-  position: absolute;
-  bottom: rem(28px);
-  left: 50%;
-  transform: translate(-50%);
+
+  &.isBackgroundUploaded {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translate(-50%);
+  }
 
   .button {
     max-width: rem(113px);
@@ -87,4 +97,53 @@
 
 .icon {
   color: $primary-white;
+}
+
+.uploadBackground {
+  padding: rem(100px 30px);
+
+  &.mobile {
+    padding: rem(60px 10px);
+  }
+}
+
+.uploadTitile {
+  height: fit-content;
+}
+
+.uploadBackgroundContentWrapper {
+  border-radius: 16px;
+  background-color: #333333;
+  padding: 30px;
+  width: 50%;
+  min-width: rem(700px);
+
+  &.mobile {
+    width: 100%;
+    min-width: rem(400px);
+  }
+}
+
+.uploadBackgroundDescription {
+  color: white;
+  margin-top: 30px;
+}
+
+.innerUploadBackgroundContent {
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.youtubeInputWrapper {
+  margin-top: 8px;
+  width: 70%;
+
+  .css-1qq5tj-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 10px 14px;
+  }
+}
+
+.customBackroundTitle {
+  font-size: 48px;
+  text-shadow: 1px 1px 2px white;
 }

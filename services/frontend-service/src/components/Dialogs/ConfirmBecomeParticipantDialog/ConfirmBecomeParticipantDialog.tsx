@@ -10,7 +10,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { Translation } from '@library/common/Translation/Translation';
 import {
     $meetingStore,
-    answerRequestByLurkerEvent,
+    answerRequestByAudienceEvent,
 } from 'src/store/roomStores';
 import { AnswerSwitchRoleAction } from 'shared-types';
 import styles from './ConfirmBecomeParticipantDialog.module.scss';
@@ -29,7 +29,7 @@ export const ConfirmBecomeParticipantDialog = () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.confirmBecomeParticipantDialog,
         });
-        answerRequestByLurkerEvent({
+        answerRequestByAudienceEvent({
             action: AnswerSwitchRoleAction.Rejected,
             meetingId: meeting.id,
         });
@@ -39,7 +39,7 @@ export const ConfirmBecomeParticipantDialog = () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.confirmBecomeParticipantDialog,
         });
-        answerRequestByLurkerEvent({
+        answerRequestByAudienceEvent({
             action: AnswerSwitchRoleAction.Accept,
             meetingId: meeting.id,
         });

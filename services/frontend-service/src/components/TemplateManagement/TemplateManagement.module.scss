@@ -19,7 +19,12 @@
     width: 100%;
   }
 
+  .navigationPaper:after {
+    background-color: #333333;
+  }
+
   .closeButton {
+    background-color: #333333;
     width: rem(46px);
     height: rem(46px);
   }
@@ -34,6 +39,7 @@
 
   .mainInfo {
     padding: rem(7px 12px);
+    background-color: #333333;
     .name {
       word-break: break-word;
     }
@@ -44,4 +50,15 @@
       color: rgba($primary-white, 0.6);
     }
   }
+}
+
+.mobileNavigationBar {
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.mobileNavigationBar:after {
+  background: #333333;
 }

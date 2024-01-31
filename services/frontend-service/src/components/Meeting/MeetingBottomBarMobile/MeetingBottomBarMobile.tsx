@@ -9,10 +9,10 @@ import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import { SyntheticEvent, useCallback } from 'react';
 import {
-    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingAudience,
     $enabledPaymentMeetingParticipant,
     $isHaveNewMessage,
-    $isLurker,
+    $isAudience,
     $isMeetingHostStore,
     $isOwner,
     $isToggleUsersPanel,
@@ -23,7 +23,7 @@ import {
     $paymentIntent,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
-    requestSwitchRoleByLurkerEvent,
+    requestSwitchRoleByAudienceEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     setIsAudioActiveEvent,
@@ -69,13 +69,13 @@ export const MeetingBottomBarMobile = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const localUser = useStore($localUserStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
-    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentIntent = useStore($paymentIntent);
     const intentId = paymentIntent?.id;
     const isCreatePaymentIntentPending = useStore(
@@ -164,14 +164,14 @@ export const MeetingBottomBarMobile = () => {
     };
 
     const handleRequestToBecomeParticipant = () => {
-        requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
+        requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
     };
 
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.main}>
                 <ConditionalRender
-                    condition={isMobile && !isPortraitLayout && !isLurker}
+                    condition={isMobile && !isPortraitLayout && !isAudience}
                 >
                     <CustomPaper
                         variant="black-glass"
@@ -208,7 +208,7 @@ export const MeetingBottomBarMobile = () => {
                         />
                     </CustomPaper>
                 </ConditionalRender>
-                <ConditionalRender condition={!isLurker}>
+                <ConditionalRender condition={!isAudience}>
                     <CustomPaper
                         variant="black-glass"
                         borderRadius={28}
@@ -222,7 +222,7 @@ export const MeetingBottomBarMobile = () => {
                         />
                     </CustomPaper>
                 </ConditionalRender>
-                <ConditionalRender condition={isLurker}>
+                <ConditionalRender condition={isAudience}>
                     <CustomPaper
                         variant="black-glass"
                         borderRadius={28}
@@ -266,7 +266,7 @@ export const MeetingBottomBarMobile = () => {
                     condition={
                         isOwner ||
                         enabledPaymentMeetingParticipant ||
-                        enabledPaymentMeetingLurker
+                        enabledPaymentMeetingAudience
                     }
                 >
                     <CustomPaper
@@ -285,7 +285,7 @@ export const MeetingBottomBarMobile = () => {
                     </CustomPaper>
                 </ConditionalRender>
                 <ConditionalRender
-                    condition={isMobile && !isPortraitLayout && !isLurker}
+                    condition={isMobile && !isPortraitLayout && !isAudience}
                 >
                     <CustomPaper
                         variant="black-glass"

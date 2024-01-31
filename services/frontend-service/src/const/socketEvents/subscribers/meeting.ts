@@ -14,4 +14,7 @@ export enum MeetingSubscribeEvents {
     OnReceiveReaction = 'meeting:chat:reaction:receive',
     OnReceiceUnReaction = 'meeting:chat:unreaction:receive',
     OnRejoinWaitingRoom = 'meeting:rejoin',
+    OnReceiveQuestion = 'meeting:question:question:receive',
+    OnReceiveQuestionReaction = 'meeting:question:reaction:receive',
+    OnReceiceQuestionUnReaction = 'meeting:question:unreaction:receive',
 }

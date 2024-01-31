@@ -75,6 +75,22 @@ export type MeetingChatReaction = {
     kind: MeetingReactionKind;
 };
 
+export type MeetingQuestionAnswer = {
+    id: string;
+    sender: MeetingUser;
+    body: string;
+    meeting: Meeting;
+    createdAt: Date;
+    reactions: { [K in MeetingReactionKind]: string[] };
+};
+
+export type MeetingQuestionAnswerReaction = {
+    id: string;
+    meetingQuestionAnswer: MeetingQuestionAnswer;
+    user: MeetingUser;
+    kind: MeetingReactionKind;
+};
+
 export type AuthUserState = {
     isAuthenticated: boolean;
     error?: ErrorState | null;

@@ -21,7 +21,7 @@ import {
     UpdatePaymentMeetingPayload,
     UpdatePaymentMeetingResponse,
 } from './type';
-import { $isLurker, $isParticipant } from '../meetingRole/model';
+import { $isAudience, $isParticipant } from '../meetingRole/model';
 import { $localUserStore } from '../../users/localUser/model';
 
 export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
@@ -118,12 +118,12 @@ export const $enabledPaymentPaywallParticipant = combine({
         ),
 );
 
-export const $enabledPaymentMeetingLurker = combine({
-    isLurker: $isLurker,
+export const $enabledPaymentMeetingAudience = combine({
+    isAudience: $isAudience,
     meetingPayment: $meetingPaymentStore,
 }).map(
-    ({ isLurker, meetingPayment }) =>
-        isLurker &&
+    ({ isAudience, meetingPayment }) =>
+        isAudience &&
         meetingPayment.some(
             item =>
                 item.meetingRole === MeetingRole.Audience &&
@@ -133,12 +133,12 @@ export const $enabledPaymentMeetingLurker = combine({
         ),
 );
 
-export const $enabledPaymentPaywallLurker = combine({
-    isLurker: $isLurker,
+export const $enabledPaymentPaywallAudience = combine({
+    isAudience: $isAudience,
     meetingPayment: $meetingPaymentStore,
 }).map(
-    ({ isLurker, meetingPayment }) =>
-        isLurker &&
+    ({ isAudience, meetingPayment }) =>
+        isAudience &&
         meetingPayment.some(
             item =>
                 item.meetingRole === MeetingRole.Audience &&
@@ -164,7 +164,7 @@ export const $paymentMeetingParticipant = $meetingPaymentStore.map(
         } as PaymentItem),
 );
 
-export const $paymentMeetingLurker = $meetingPaymentStore.map(
+export const $paymentMeetingAudience = $meetingPaymentStore.map(
     payments =>
         payments.find(
             item =>
@@ -196,7 +196,7 @@ export const $paymentPaywallParticipant = $meetingPaymentStore.map(
         } as PaymentItem),
 );
 
-export const $paymentPaywallLurker = $meetingPaymentStore.map(
+export const $paymentPaywallAudience = $meetingPaymentStore.map(
     payments =>
         payments.find(
             item =>

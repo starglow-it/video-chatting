@@ -27,6 +27,8 @@ import { mapToThumbYoutubeUrl } from 'src/utils/functions/mapToThumbYoutubeUrl';
 import {
     $isUploadTemplateBackgroundInProgress,
     $profileStore,
+    createMeetingFx,
+    updateProfileFx,
     addTemplateToUserFx,
     clearTemplateDraft,
     deleteCommonTemplateFx,
@@ -39,10 +41,14 @@ import {
     removeWindowListeners,
     startCheckoutSessionForSubscriptionFx,
     uploadTemplateFileFx,
+    setScheduleTemplateIdEvent,
+    appDialogsApi
 } from '../../store';
 
+import { AppDialogsEnum } from '../../store/types';
+
 // utils
-import { getCreateRoomUrl } from '../../utils/urls';
+import { getCreateRoomUrl, getClientMeetingUrl } from '../../utils/urls';
 
 // styles
 import styles from './CreateRoomContainer.module.scss';
@@ -107,63 +113,96 @@ const Component = () => {
         router.push(dashboardRoute);
     }, [template?.id]);
 
-    const handleSubmit = useCallback(
-        async (data: IUploadTemplateFormData) => {
-            if (!template?.templateId) {
-                return;
-            }
+    const handleCreateRoom = useCallback(async (data: IUploadTemplateFormData) => {
+        if (!template?.templateId) {
+            return;
+        }
 
-            const payload = {
-                name: data.name,
-                description: data.description,
-                customLink: data.customLink,
-                isPublic: data.isPublic,
-                maxParticipants: data.participantsNumber,
-                usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
-                draft: false,
-                url: data.url,
-                previewUrls: data.previewUrls,
-                links: data.templateLinks?.map(link => ({
-                    item: link.value,
-                    title: link.title ?? '',
-                    position: {
-                        top: link.top,
-                        left: link.left,
-                    },
-                })),
-                mediaLink: data.youtubeUrl
-                    ? {
-                          src: data.youtubeUrl,
-                          thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
-                          platform: 'youtube',
-                      }
-                    : null,
-            } as any;
+        const payload = {
+            name: data.name,
+            description: data.description,
+            customLink: data.customLink,
+            isPublic: data.isPublic,
+            maxParticipants: data.participantsNumber,
+            usersPosition: adjustUserPositions(data.participantsPositions),
+            businessCategories: data.tags,
+            draft: false,
+            url: data.url,
+            previewUrls: data.previewUrls,
+            links: data.templateLinks?.map(link => ({
+                item: link.value,
+                title: link.title ?? '',
+                position: {
+                    top: link.top,
+                    left: link.left,
+                },
+            })),
+            mediaLink: data.youtubeUrl
+                ? {
+                    src: data.youtubeUrl,
+                    thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                    platform: 'youtube',
+                }
+                : null,
+        } as any;
 
-            await editTemplateFx({
-                templateId: template.id,
-                data: payload,
+        await editTemplateFx({
+            templateId: template.id,
+            data: payload,
+        });
+
+        await updateProfileFx({ description: data.aboutTheHost });
+
+        const userTemplate = await addTemplateToUserFx({
+            templateId: template.id,
+        });
+
+        const newPayload = { ...payload };
+        delete newPayload?.businessCategories;
+
+        if (userTemplate?.id) {
+            await editUserTemplateFx({
+                templateId: userTemplate.id,
+                data: newPayload,
             });
+        }
 
-            const userTemplate = await addTemplateToUserFx({
-                templateId: template.id,
-            });
+        return userTemplate;
+    }, [template?.id]);
 
-            const newPayload = { ...payload };
-            delete newPayload?.businessCategories;
-
-            if (userTemplate?.id) {
-                await editUserTemplateFx({
-                    templateId: userTemplate.id,
-                    data: newPayload,
-                });
+    const handleSubmit = async (data: IUploadTemplateFormData) => {
+            const userTemplate = await handleCreateRoom(data);
+            if (userTemplate) {
+                await router.push(dashboardRoute);
             }
+        };
 
-            await router.push(dashboardRoute);
-        },
-        [template?.id],
-    );
+    const handleSubmitAndEnterMeeting = async (data: IUploadTemplateFormData) => {
+        const userTemplate = await handleCreateRoom(data);
+
+        if (userTemplate) {
+            const result = await createMeetingFx({ templateId: userTemplate?.id });
+
+            if (result.template) {
+                const newPageUrl = await getClientMeetingUrl(
+                    result.template?.customLink || result?.template?.id,
+                );
+
+                window.open(newPageUrl, '_blank');
+            }
+        }
+    }
+
+    const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
+        const userTemplate = await handleCreateRoom(data);
+
+        if (userTemplate) {
+            setScheduleTemplateIdEvent(userTemplate?.id);
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+            });
+        }
+    }
 
     const handleUploadFile = useCallback(
         (file: File) => {
@@ -206,10 +245,10 @@ const Component = () => {
                 })),
                 mediaLink: data.youtubeUrl
                     ? {
-                          src: data.youtubeUrl,
-                          thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
-                          platform: 'youtube',
-                      }
+                        src: data.youtubeUrl,
+                        thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
+                        platform: 'youtube',
+                    }
                     : null,
             };
 
@@ -262,6 +301,8 @@ const Component = () => {
             <TemplateManagement
                 template={template}
                 onSubmit={handleSubmit}
+                onSubmitAndEnterMeeting={handleSubmitAndEnterMeeting}
+                onSubmitAndScheduleMeeting={handleSubmitAndScheduleMeeting}
                 onCancel={handleCancel}
                 onUploadFile={handleUploadFile}
                 onUpgradePlan={handleUpgradePlan}

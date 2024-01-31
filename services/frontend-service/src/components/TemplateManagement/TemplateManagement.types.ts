@@ -9,6 +9,8 @@ export type TemplateManagementProps = {
     template: ICommonTemplate | IUserTemplate | null;
     onCancel: () => void;
     onSubmit: (data: IUploadTemplateFormData) => void;
+    onSubmitAndEnterMeeting: (data: IUploadTemplateFormData) => void;
+    onSubmitAndScheduleMeeting: (data: IUploadTemplateFormData) => void;
     onUploadFile: (
         file: File,
     ) =>

@@ -61,9 +61,9 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             ),
         );
         socketInstance?.on(
-            UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
+            UsersSubscribeEvents.OnAnswerSwitchRoleByAudience,
             getUsersSocketSubscribeHandler(
-                UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
+                UsersSubscribeEvents.OnAnswerSwitchRoleByAudience,
             ),
         );
         socketInstance?.on(
@@ -97,9 +97,9 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             ),
         );
         socketInstance?.on(
-            UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
+            UsersSubscribeEvents.OnRequestSwitchRoleByAudience,
             getUsersSocketSubscribeHandler(
-                UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
+                UsersSubscribeEvents.OnRequestSwitchRoleByAudience,
             ),
         );
     }
