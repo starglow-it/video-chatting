@@ -45,8 +45,6 @@ const Component = ({
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const { isPublishAudience } = useStore($meetingTemplateStore);
-    console.log(isPublishAudience);
-
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);

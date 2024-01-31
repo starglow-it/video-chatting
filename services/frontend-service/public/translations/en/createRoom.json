@@ -65,7 +65,7 @@
     "title": "publish",
     "private": {
       "title": "Create Private Room",
-      "availability": "the Room will be available for you in My Rooms",
+      "availability": "the Room will be available for you in My Ruumes",
       "editable": "you can edit the Room anytime",
       "changePrivacyPossibility": "you can make the Room public anytime"
     },
