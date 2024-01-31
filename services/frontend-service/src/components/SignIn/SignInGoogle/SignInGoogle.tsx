@@ -34,12 +34,14 @@ export const SignInGoogle = ({
             token,
         }).then(() => {
             setIsProcessing(false);
-            if (!localStorage.getItem("isFirstDashboardVisit")) {
-                localStorage.setItem("isFirstDashboardVisit", "true");
-            }
+            if (!!buttonText) {
+                if (!localStorage.getItem("isFirstDashboardVisit")) {
+                    localStorage.setItem("isFirstDashboardVisit", "true");
+                }
 
-            if (!localStorage.getItem("isFirstMeeting")) {
-                localStorage.setItem("isFirstMeeting", "true");
+                if (!localStorage.getItem("isFirstMeeting")) {
+                    localStorage.setItem("isFirstMeeting", "true");
+                }
             }
         });
     };

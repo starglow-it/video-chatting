@@ -1,0 +1,149 @@
+@import '../../../../styles/variables.scss';
+
+.containter {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.right {
+    padding: 10px 12px;
+    width: 170px;
+    gap: 6px;
+    display: flex;
+    flex-direction: column;
+    line-height: 16px;
+    border-radius: 15px;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3882352941);
+    position: relative;
+    height: fit-content;
+    min-height: 30px;
+    margin-bottom: 15px;
+}
+
+.userName {
+    font-size: 11px;
+    color: $primary-orange;
+}
+
+.content {
+    font-size: 13px;
+    color: $primary-white;
+    font-weight: 500;
+    word-break: break-word
+}
+
+.grey {
+    color: #898686 !important;
+}
+
+.avatar {
+    margin-right: 5px;
+}
+
+.time {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 13px;
+    color: $primary-white;
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.myMessage {
+    justify-content: flex-end;
+}
+
+.yourMessage {
+    justify-content: flex-start;
+}
+
+.myMessage .right {
+    border-radius: 15px;
+}
+
+.recently {
+    margin-left: 30px;
+}
+
+.myMessage .recently {
+    margin-left: 0px;
+}
+
+.break {
+    margin-top: 15px;
+}
+
+.emotionLeft {
+    margin-right: 4px;
+    cursor: pointer;
+}
+
+.emotionRight {
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.releasedEmotion {
+    background: rgba(0, 0, 0, 0.3882352941); 
+    border-radius: 35%;
+    min-width: 22px;
+    padding: 0px 4px;
+    height: 24px;
+    z-index: 10;
+
+    &.active {
+        background-color: #66656578;
+    }
+}
+
+.emotion {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tranformEmotion {
+    transform: scale(1.2);
+}
+
+.emotionCount {
+    color: $primary-white;
+    font-size: 10px;
+    margin-left: 2px;
+}
+
+.reactionMark {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 20px;
+    color: #27C54A;
+}
+
+.reactionButton {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #27C54A;
+    margin-left: 15px;
+    margin-top: -10px;
+}
+
+.questionMarked {
+    position: absolute;
+    right: 10px;
+    bottom: -10px;
+}

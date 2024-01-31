@@ -84,26 +84,26 @@ const Component = () => {
         {
             target: "#profileAvatarIcon",
             title: "profile",
-            content: createContentWithLineBreaks("edit your profiel and avatar,\n manage your sucscription \n and monetization here."),
+            content: createContentWithLineBreaks("edit your profile and avatar,\n manage your subscription \n and monetization here."),
             disableBeacon: true
         },
         {
             target: "#templatesMenu",
-            title: "ruume's",
-            content: createContentWithLineBreaks("browser pre-made ruume's \n by category."),
+            title: "ruumes",
+            content: createContentWithLineBreaks("browse pre-made ruume's \n by category."),
             disableBeacon: true
-
         },
         {
             target: "#templateCreate",
             title: "create a ruume",
-            content: createContentWithLineBreaks("personalize your very own \n ruume. \n\n create a unique aesthetic and \n vid eo calling experience to your \n preference."),
+            content: createContentWithLineBreaks("personalize your very own \n ruume. \n\n create a unique aesthetic and \n video calling experience to your \n preference."),
             disableBeacon: true
         },
         {
             target: "#featuredTemplates",
             title: "featured ruumes",
             content: createContentWithLineBreaks("enjoy using seasonal, exclusive backgrounds for your ruume."),
+            placement: "top",
             disableBeacon: true
         },
     ];
@@ -258,10 +258,6 @@ const Component = () => {
 
     const handleSetVisitedDashboard = () => {
         setIsFirstDashboardVisit(false);
-
-        if (localStorage.getItem("isFirstDashboardVisit")) {
-            localStorage.removeItem("isFirstDashboardVisit");
-        }
     };
 
     const handleJoyrideCallback = (data) => {
@@ -284,7 +280,6 @@ const Component = () => {
         if (type === 'tour:end' || action === 'close') {
             emitDashboardJoyrideEvent({ runDashboardJoyride: false });
         }
-
     };
 
     return (
@@ -315,6 +310,10 @@ const Component = () => {
                     },
                     tooltipFooterSpacer: {
                         display: "none"
+                    },
+                    buttonNext: {
+                        marginLeft: 'auto',
+                        marginRight: 10
                     },
                     options: { ...joyrideStyleOptions }
                 }}
