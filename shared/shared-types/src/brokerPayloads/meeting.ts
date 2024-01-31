@@ -45,6 +45,9 @@ export type CreateMeetingInstancePayload = {
 export type AssignMeetingInstancePayload = {
   templateId: IUserTemplate['id'];
   userId: ICommonUser['id'];
+  startAt?: string;
+  aboutTheHost?: string;
+  content?: string;
 };
 
 export type KickUserFromMeetingPayload = {

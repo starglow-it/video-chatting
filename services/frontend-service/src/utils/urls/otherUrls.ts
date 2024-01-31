@@ -11,6 +11,11 @@ export const sendScheduleInviteUrl = {
     method: HttpMethods.Post,
 };
 
+export const downloadIcsFileUrl = {
+    url: `${serverUrl}/${usersScope}/download-ics`,
+    method: HttpMethods.Post,
+};
+
 export const sendContactFormUrl = {
     url: `${serverUrl}/${usersScope}/contacts`,
     method: HttpMethods.Post,

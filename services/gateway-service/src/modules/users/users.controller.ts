@@ -62,7 +62,7 @@ import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
-import { ScheduleRequestDto } from '../../dtos/requests/schedule.dto';
+import { ScheduleRequestDto, DownloadIcsFileRequestDto } from '../../dtos/requests/schedule.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -642,6 +642,9 @@ export class UsersController {
       await this.meetingService.assignMeetingInstance({
         userId: req.user.userId,
         templateId: template.id,
+        startAt: startAtDate,
+        aboutTheHost: senderUser.description,
+        content: content
       });
 
       return {
@@ -661,4 +664,45 @@ export class UsersController {
       throw new BadRequestException(err);
     }
   }
+
+  // @UseGuards(JwtAuthGuard)
+  @Post('/download-ics')
+  @ApiOperation({ summary: 'Download ics File' })
+  @ApiOkResponse({
+    description: 'Download ics File',
+  })
+  async DownloadIcsFile(@Req() req, @Body() body: DownloadIcsFileRequestDto) {
+    try {
+      const content = body.content;
+      const template = await this.userTemplatesService.getUserTemplateById({
+        id: body.templateId,
+      });
+
+      const uploadId = uuidv4();
+
+      const key = `uploads/calendarEvents/${template.id}/${uploadId}/invite.ics`;
+
+      const icsLink = await this.uploadService.uploadFile(
+        Buffer.from(content),
+        key,
+      );
+
+      return {
+        success: true,
+        result: {
+          icsLink,
+        },
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while downloading ics file`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
 }
+  

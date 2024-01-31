@@ -59,6 +59,7 @@ export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
 export const $createRoomPaymentStore = paymentsDomain.createStore<UpdatePaymentMeetingParams>(initialCreateRoomPaymentStore);
 
 export const $isToggleCreateRoomPayment = paymentsDomain.createStore<boolean>(false);
+export const $isRoomPaywalledStore = paymentsDomain.createStore<boolean>(true);
 
 export const $isTogglePayment = paymentsDomain.createStore<boolean>(false);
 
@@ -75,6 +76,13 @@ export const createPaymentIntentFx = paymentsDomain.effect<
     PaymentIntentStore,
     ErrorState
 >('createPaymentIntentFx');
+
+export const isRoomPaywalledFx = paymentsDomain.effect<
+    CreatePaymentIntentPayload,
+    PaymentIntentStore,
+    ErrorState
+>('isRoomPaywalledFx');
+
 export const cancelPaymentIntentFx = paymentsDomain.effect<
     CancelPaymentIntentPayload,
     void,

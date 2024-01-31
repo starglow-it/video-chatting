@@ -179,6 +179,9 @@ export class MeetingsController {
             },
             data: {
               owner: payload.userId,
+              startAt: payload.startAt,
+              aboutTheHost: payload.aboutTheHost,
+              content: payload.content
             },
             session,
           });
@@ -188,6 +191,9 @@ export class MeetingsController {
               serverStatus: MeetingInstanceServerStatus.Active,
               serverIp: this.defaultServerIp,
               owner: payload.userId,
+              startAt: payload.startAt,
+              aboutTheHost: payload.aboutTheHost,
+              content: payload.content
             },
             session,
           });
