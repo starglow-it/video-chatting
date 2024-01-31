@@ -109,7 +109,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret || isPreEvent ? (
+            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
                 <CustomGrid
                     container
                     direction="column"

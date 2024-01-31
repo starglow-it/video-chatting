@@ -32,7 +32,9 @@ import {
     $isOwner,
     $meetingTemplateStore,
     $paymentMeetingParticipant,
-    createPaymentIntentFx
+    $isRoomPaywalledStore,
+    createPaymentIntentFx,
+    isRoomPaywalledFx
 } from '../../../store/roomStores';
 
 // styles
@@ -62,6 +64,7 @@ const Component = ({
 }) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const isRoomPaywalledStore = useStore($isRoomPaywalledStore);
     const startMeetingAt =
         meetingTemplate !== null &&
             meetingTemplate.meetingInstance !== null &&
@@ -86,7 +89,13 @@ const Component = ({
             try {
                 const meetingRole = !!router.query.role ? MeetingRole.Audience : MeetingRole.Participant;
 
-                if (meetingTemplate.type !== 'free') {
+                await isRoomPaywalledFx({
+                    templateId: meetingTemplate.id,
+                    meetingRole: meetingRole,
+                    paymentType: PaymentType.Paywall
+                });
+
+                if (isRoomPaywalledStore) {
                     await createPaymentIntentFx({
                         templateId: meetingTemplate.id,
                         meetingRole: meetingRole,
@@ -99,7 +108,7 @@ const Component = ({
         };
 
         fetchData();
-    }, [meetingTemplate.id, meetingTemplate.type]);
+    }, [meetingTemplate.id, meetingTemplate.type, isRoomPaywalledStore]);
 
     const handleDownloadInviteICSFile = async () => {
         if (!!meetingTemplate.id && !!meetingTemplate.meetingInstance.content) {
@@ -219,7 +228,7 @@ const Component = ({
                         >
                             {aboutTheHost}
                         </CustomTypography>
-                        <ConditionalRender condition={meetingTemplate.type !== 'free'}>
+                        <ConditionalRender condition={isRoomPaywalledStore}>
                             <CustomPaper className={styles.payPaper}>
                                 <CustomTypography
                                     variant="body2bold"
@@ -235,7 +244,7 @@ const Component = ({
                                 />
                             </CustomPaper>
                         </ConditionalRender>
-                        <ConditionalRender condition={meetingTemplate.type === 'free'}>
+                        <ConditionalRender condition={!isRoomPaywalledStore}>
                             <CustomGrid
                                 container
                                 gap={4}
