@@ -48,7 +48,7 @@
     "subscriptionProfessionalSuccess": "Thank you for subscribing to Ruume Professional!",
     "subscriptionProfessionalTrialSuccess": "Thank you for subscribing to Ruume Professional! Enjoy 7 days Free Trial",
     "subscriptionFail": "An error occurred during the subscription. Please try again",
-    "templateSuccess": "The purchase was successful. New room added to My Rooms",
+    "templateSuccess": "The purchase was successful. New ruume added to My Ruumes",
     "templateFail": "Something happened during the payment. You can repeat the purchase.",
     "endDate": "You cannot schedule these dates as you run out of meeting minutes. Go to Profile to upgrade"
   },

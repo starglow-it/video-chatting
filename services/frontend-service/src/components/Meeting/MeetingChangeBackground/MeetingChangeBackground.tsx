@@ -52,6 +52,11 @@ const Component = () => {
         item => item.key === 'myrooms' && item.id === categorySelected,
     );
     const meetingTemplate = useStore($meetingTemplateStore);
+    const [ mediaItems, setMediaItems ] = useState([]);
+
+    useEffect(() => {
+        setMediaItems(medias);
+    }, [medias]);
 
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
@@ -208,7 +213,7 @@ const Component = () => {
                                     >
                                         <UploadBackground />
                                     </ConditionalRender>
-                                    {medias.map(item => (
+                                    {mediaItems.map(item => (
                                         <Media
                                             key={item.id}
                                             isActive={item.id === mediaSelected}

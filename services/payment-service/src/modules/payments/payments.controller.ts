@@ -651,8 +651,6 @@ export class PaymentsController {
 
       const price = await this.paymentService.getProductPrice(product.id);
 
-      console.log(price.id);
-
       if (product?.id) {
         return this.paymentService.getStripeCheckoutSession({
           paymentMode: 'payment',
