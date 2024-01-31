@@ -73,6 +73,7 @@ import {
     registerRoute,
     roomRoute,
     welcomeRoute,
+    analyticsRoute,
 } from '../../const/client-routes';
 
 // styles
@@ -95,7 +96,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     NotFoundRoute,
 ];
 
-const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
+const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute];
 const DASHBOARD_ROOM_HEADER: string[] = [createRoomRoute, editRoomRoute];
 
 const ScrollParent = ({
