@@ -65,7 +65,7 @@ export const MeetingMonetizationButton = () => {
                     <MeetingMonetization onUpdate={handleCloseForm} />
                 </ChargeButtonBase>
             </ConditionalRender>
-            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant && true}>
                 <ChargeButtonBase
                     tooltipButton={
                         <Translation

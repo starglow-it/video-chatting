@@ -25,4 +25,13 @@ export class CommonMeetingDTO implements IMeetingInstance {
 
   @Expose()
   snapshotId: IMeetingInstance['snapshotId'];
+
+  @Expose()
+  startAt: string;
+
+  @Expose()
+  aboutTheHost: string;
+
+  @Expose()
+  content: string;
 }

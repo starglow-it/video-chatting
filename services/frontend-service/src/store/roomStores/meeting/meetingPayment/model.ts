@@ -29,6 +29,8 @@ export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     clientSecret: '',
 });
 
+export const $isRoomPaywalledStore = paymentsDomain.createStore<boolean>(true);
+
 export const $isTogglePayment = paymentsDomain.createStore<boolean>(false);
 
 export const togglePaymentFormEvent = paymentsDomain.event<boolean | undefined>(
@@ -40,6 +42,13 @@ export const createPaymentIntentFx = paymentsDomain.effect<
     PaymentIntentStore,
     ErrorState
 >('createPaymentIntentFx');
+
+export const isRoomPaywalledFx = paymentsDomain.effect<
+    CreatePaymentIntentPayload,
+    PaymentIntentStore,
+    ErrorState
+>('isRoomPaywalledFx');
+
 export const cancelPaymentIntentFx = paymentsDomain.effect<
     CancelPaymentIntentPayload,
     void,
