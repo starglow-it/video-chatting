@@ -43,7 +43,6 @@ const Component = ({
     const handleSubmit = useCallback(
         async (event: { preventDefault: () => void }) => {
             event.preventDefault();
-            console.log('submit card', event);
 
             if (stripe && elements) {
                 setIsLoading(true);

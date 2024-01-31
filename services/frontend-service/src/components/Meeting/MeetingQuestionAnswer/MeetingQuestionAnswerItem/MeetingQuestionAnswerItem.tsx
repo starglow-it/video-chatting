@@ -48,7 +48,6 @@ export const MeetingQuestionAnswerItem = memo(
             const hasReaction = kindReactions.find(
                 item => item === localUser.id,
             );
-            console.log(hasReaction)
             if (hasReaction) {
                 onUnReaction?.(id, kind);
             } else {

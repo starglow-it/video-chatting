@@ -11,7 +11,6 @@ export const handleStartRecordingStream = async (): Promise<CustomMediaStream | 
                 trackEndedEvent();
             };
         }
-        console.log(recordingStream)
         return recordingStream;
     } catch (e) {
         console.error(e);
