@@ -9,16 +9,19 @@
 <body>
     <div class="container">
         <div class="title"><img src="./Ruume.svg" alt="title"></div>
-        <div id="logged-in">
+        <div id="logged-in" style="padding: 0 40px;">
+            <button id="selectRuume">
+                <span class="btn-span">select a ruume</span>
+            </button>
             <button id="scheduleMeeting">
-                <span class="btn-span">schedule a ruume</span>
+                <span class="btn-span">schedule</span>
             </button>
             <button id="enterMeeting">
-                <span class="btn-span">enter a ruume</span>
+                <span class="btn-span">start instant meeting</span>
             </button>
         </div>
         <div id="not-logged-in">
-            <div class="google-login">
+            <div class="google-login" id="google-login">
                 <span class="google-login-icon"><span class="google-login-icon-inner"><img alt="" aria-hidden="true"
                             src="data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20version=%271.1%27%20width=%2728%27%20height=%2727%27/%3e"
                             style="display: block; max-width: 100%; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px;"></span><img
@@ -28,7 +31,7 @@
             </div>
             <div class="or-div"><span class="or-span">or</span>
             </div>
-            <form class="login-form">
+            <form class="login-form" id="signin-form">
                 <div class="login-form-container">
                     <div class="input-container">
                         <div class="input-inner-container">
@@ -36,8 +39,8 @@
                                 <!-- <label class="input-label" data-shrink="false" for=":r3:"
                                     id=":r3:-label">Email</label> -->
                                 <div class="main-input-field">
-                                    <input class="custom-input" placeholder="Email" aria-invalid="false" id=":r3:"
-                                        name="email" type="text" value="">
+                                    <input class="custom-input" placeholder="Email" id="email" aria-invalid="false"
+                                        id=":r3:" name="email" type="text" value="" required>
                                     <!-- <fieldset aria-hidden="true" class="custom-fieldset">
                                         <legend class="css-yjsfm1"><span>Email</span></legend>
                                     </fieldset> -->
@@ -51,8 +54,8 @@
                                 <!-- <label class="input-label" data-shrink="false" for=":r4:"
                                     id=":r4:-label">Password</label> -->
                                 <div class="main-input-field">
-                                    <input aria-invalid="false" placeholder="Password" id=":r4:" name="password"
-                                        type="password" class="custom-input" value="">
+                                    <input aria-invalid="false" placeholder="Password" id="password" name="password"
+                                        type="password" class="custom-input" value="" required>
                                     <!-- <div
                                         class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1nvf7g0">
                                         <button
@@ -72,20 +75,25 @@
                                     </fieldset> -->
                                 </div>
                             </div>
-                        </div><span class="forgot-password">Forgot
-                            password?</span>
+                        </div>
                     </div>
+                    <div id="error-message" style="color: red; font-size: 0.875rem; font-weight: 500;"></div>
                 </div>
-                <button id="signinMeeting">
+                <div style="display: flex; justify-content: flex-end; flex-direction: row; margin-bottom: 10px;"><span
+                        class="forgot-password">Forgot
+                        password?</span></div>
+                <button id="signinMeeting" type="submit">
                     <span class="btn-span">sign in</span>
                 </button>
                 <div style="text-align: center; margin-top: 1rem">
-                    <span class="register">don't have an account? <span style="color: #FF884E;">register</span> for
+                    <span class="register">don't have an account? <span style="color: #FF884E; cursor: pointer"
+                            id="register">register</span> for
                         free!</span>
                 </div>
             </form>
         </div>
     </div>
+    <script src="client.js" async defer></script>
     <script src="popup.js"></script>
 </body>
 

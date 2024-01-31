@@ -17,7 +17,8 @@
   ],
   "host_permissions": [
     "https://www.googleapis.com/",
-    "https://stg-my.chatruume.com/*"
+    "https://stg-my.chatruume.com/*",
+    "https://accounts.google.com/*"
   ],
   "web_accessible_resources": [
     {
@@ -41,6 +42,22 @@
       "matches": ["*://calendar.google.com/calendar/u/0/r"],
       "css": ["modal.css"],
       "js": ["modalScript.js"]
+    },
+    {
+      "matches": ["https://stg-my.chatruume.com/login"],
+      "js": ["login_page.js"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
+  },
+  "oauth2": {
+    "client_id": "439436979316-p97bn16seanblh660ii9ef4g35msqpm6.apps.googleusercontent.com",
+    "scopes": [
+      "openid",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  }
 }
