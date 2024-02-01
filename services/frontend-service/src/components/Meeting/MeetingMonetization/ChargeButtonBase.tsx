@@ -56,7 +56,6 @@ export const ChargeButtonBase = forwardRef(
                         variant="black-glass"
                         className={clsx(styles.deviceButton)}
                         aria-describedby="monetization"
-                        borderRadius={8}
                     >
                         <ActionButton
                             variant="transparentBlack"

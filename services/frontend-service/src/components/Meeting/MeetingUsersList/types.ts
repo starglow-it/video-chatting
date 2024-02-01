@@ -5,11 +5,12 @@ export type MeetingUsersListItemProps = {
     isLocalItem?: boolean;
     isOwnerItem?: boolean;
     isAcceptRequest?: boolean;
-    isLurkerRequest?: boolean;
+    isAudienceRequest?: boolean;
     onAcceptUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onDeleteUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onChangeHost?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
-    onRequestLurker?:
+    onChangeRoleToAudience?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
+    onRequestAudience?:
         | ((data: { userId: MeetingUser['id'] }) => void)
         | undefined;
 };

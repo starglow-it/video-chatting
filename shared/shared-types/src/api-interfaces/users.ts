@@ -122,3 +122,13 @@ export interface ICommonUserStatistic {
   roomsUsed: number;
   moneyEarned: number;
 }
+
+export interface ICSFileConent {
+  organizerEmail: string;
+  organizerName: string;
+  startAt: string;
+  endAt: string;
+  comment: string;
+  url: string;
+  attendees: Array<string>;
+}

@@ -27,11 +27,12 @@ import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
 import { isMobile } from 'shared-utils';
 import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
 import {
-    $paymentMeetingLurker,
+    $paymentMeetingAudience,
     $paymentMeetingParticipant,
-    $paymentPaywallLurker,
+    $paymentPaywallAudience,
     $paymentPaywallParticipant,
     updatePaymentMeetingEvent,
+    setCreateRoomPaymentDataEvent
 } from '../../../store/roomStores';
 import { $isConnectedStripe } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
@@ -122,7 +123,7 @@ const tabs: ValuesSwitcherAlias[] = [
     },
 ];
 
-const Component = ({ onUpdate }: { onUpdate: () => void }) => {
+const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
         null,
@@ -131,8 +132,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
-    const paymentMeetingLurker = useStore($paymentMeetingLurker);
-    const paymentPaywallLurker = useStore($paymentPaywallLurker);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
+    const paymentPaywallAudience = useStore($paymentPaywallAudience);
     const isConnectedStripe = useStore($isConnectedStripe);
 
     const { activeItem, onValueChange } = useValueSwitcher<
@@ -146,7 +147,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const onSubmit = useCallback(async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
-        updatePaymentMeetingEvent({
+        const payload = {
             meeting: {
                 participant: {
                     enabled: paymentParticipant?.enabledMeeting ?? false,
@@ -155,7 +156,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         paymentParticipant?.templateCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
-                lurker: {
+                audience: {
                     enabled: paymentAudience?.enabledMeeting ?? false,
                     price: paymentAudience?.templatePrice ?? 5,
                     currency:
@@ -171,7 +172,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         paymentParticipant?.paywallCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
-                lurker: {
+                audience: {
                     enabled: paymentAudience?.enabledPaywall ?? false,
                     price: paymentAudience?.paywallPrice ?? 5,
                     currency:
@@ -179,7 +180,17 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         DEFAULT_PAYMENT_CURRENCY,
                 },
             },
-        });
+        };
+        if (!isRoomCreate) {
+            updatePaymentMeetingEvent({
+                ...payload
+            });
+        } else {
+            setCreateRoomPaymentDataEvent({
+                ...payload
+            });
+        }
+
         onUpdate?.();
     }, []);
 
@@ -204,6 +215,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                 alignItems="center"
                 marginBottom={2}
                 maxWidth={isMobile() ? undefined : '340px'}
+                minWidth={isMobile() ? undefined : '340px'}
             >
                 <CustomGrid
                     display="flex"
@@ -243,8 +255,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                 />
                 <MeetingMonezationForm
                     enableForm={activeItem.value === TabsValues.Audience}
-                    paymentMeeting={paymentMeetingLurker}
-                    paymentPaywall={paymentPaywallLurker}
+                    paymentMeeting={paymentMeetingAudience}
+                    paymentPaywall={paymentPaywallAudience}
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formAudienceRef}

@@ -10,6 +10,11 @@
   margin: 0 auto 0 0;
 }
 
+.audiences {
+  display: block;
+  margin: 0 0 0 0;
+}
+
 .button {
   display: flex;
   justify-content: center;
@@ -27,8 +32,63 @@
   }
 }
 
+.statistics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: rem(32px);
+  height: rem(32px);
+  background: rgba($primary-white, 0.25);
+  border-radius: rem(8px);
+  border: none;
+  color: $primary-white;
+  margin: rem(0 6px);
+}
+
 .divider {
   margin: rem(20px 0);
 
   background: rgba($normal-gray-scale, 0.4);
+}
+
+.participantTitle {
+  flex-basis: 80%;
+  margin-bottom: 36px;
+}
+
+.audienceTitle {
+  flex-basis: 80%;
+  margin-bottom: 0px 0px 0px 20px;
+}
+
+.attendeesStatistics {
+  margin-bottom: 36px;
+}
+
+.scheduleOpenPanel {
+  position: absolute;
+  max-width: rem(392px);
+  min-width: rem(372px);
+  padding: rem(20px);
+  opacity: 0;
+  right: 20px;
+  bottom: 30px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.attendeeBtn {
+  flex-basis: 80%;
+  text-align: left;
+  font-size: 16px;
+  padding: 0px;
+  color: white;
+}
+
+.activeBtn {
+  color: #FF884E;
 }

@@ -13,7 +13,7 @@ export const handleGetCategories = async ({
     >({
         ...getBackgroundCategories({ skip: 0, limit: 12, userTemplateId }),
     });
-
+    
     if (success && result) {
         const newList = [...result.list];
         const addLastItem = (index: number) => {

@@ -85,14 +85,14 @@ const WelcomePageContainer = memo(() => {
                 const newTemplate = await addTemplateToUserFx({ templateId });
                 if (newTemplate) {
                     await handleCreateMeeting({ templateId: newTemplate.id });
-                    router.push(getClientMeetingUrl(newTemplate.id));
+                    window.open(getClientMeetingUrl(newTemplate.id), '_blank');
                     setUserWithoutTokenCookies(
                         userWithoutLoginId,
                         newTemplate.id,
                     );
                 }
             } else {
-                router.push(getClientMeetingUrl(userTemplateId));
+                window.open(getClientMeetingUrl(userTemplateId), '_blank');
             }
         }
     };

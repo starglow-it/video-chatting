@@ -230,7 +230,8 @@ const Component = () => {
                 }
             } else if (result.template) {
                 const meetingUrl = getClientMeetingUrl(result.template.id);
-                await router.push(`${meetingUrl}?success_house=true`);
+                // await router.push(`${meetingUrl}?success_house=true`);
+                window.open(`${meetingUrl}?success_house=true`, '_blank');
             }
         }
     };

@@ -3,7 +3,7 @@ import { ForwardedRef, forwardRef, memo, PropsWithChildren } from 'react';
 import Paper, { PaperProps } from '@mui/material/Paper';
 
 const Component = (
-    { children, ...rest }: PropsWithChildren<PaperProps>,
+    { children, borderRadius, ...rest }: PropsWithChildren<PaperProps>,
     ref: ForwardedRef<HTMLDivElement>,
 ) => (
     <Paper ref={ref} {...rest}>

@@ -24,8 +24,11 @@
   }
 }
 
+.wrapper:after {
+  background-color: #333333;
+}
+
 .primary {
-  background: rgba($normal-gray-scale, 0.25);
   border-radius: rem(6px);
   color: $primary-black;
   padding: rem(1px);

@@ -26,9 +26,9 @@ import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
-    const localUser = useStore($localUserStore);
+    // const localUser = useStore($localUserStore);
 
-    const isLocalUserScreenSharing = localUser.id === meeting.sharingUserId;
+    // const isLocalUserScreenSharing = localUser.id === meeting.sharingUserId;
 
     const sharingTracks = useStoreMap({
         store: $tracksStore,
@@ -44,11 +44,11 @@ const Component = () => {
 
     return (
         <CustomGrid container className={styles.screenSharingLayoutWrapper}>
-            {isLocalUserScreenSharing ? (
+            {/* {isLocalUserScreenSharing ? (
                 <ScreenSharingPlaceholder />
             ) : (
-                <ScreenSharingVideo videoTrack={sharingTracks?.videoTrack} />
-            )}
+                )} */}
+            <ScreenSharingVideo videoTrack={sharingTracks?.videoTrack} />
         </CustomGrid>
     );
 };

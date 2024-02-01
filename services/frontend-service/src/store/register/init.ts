@@ -24,7 +24,17 @@ registerWithoutTemplateFx.use(handleRegisterWithoutTemplate);
 
 $registerStore
     .on(resetRegisterErrorEvent, state => ({ ...state, error: null }))
-    .on(registerUserFx.doneData, (_state, data) => data)
+    .on(registerUserFx.doneData, (_state, data) => {
+        if (!localStorage.getItem("isFirstDashboardVisit")) {
+            localStorage.setItem("isFirstDashboardVisit", "true");
+        }
+
+        if (!localStorage.getItem("isFirstMeeting")) {
+            localStorage.setItem("isFirstMeeting", "true");
+        }
+
+        return data;
+    })
     .on(registerUserFx.failData, (state, error) => ({
         isUserRegistered: false,
         error: { message: error.message },

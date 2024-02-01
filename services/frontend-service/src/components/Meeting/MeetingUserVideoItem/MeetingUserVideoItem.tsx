@@ -20,9 +20,9 @@ import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUser
 // stores
 import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
 import { ResizeCallbackData } from 'react-resizable';
-import { $windowSizeStore } from 'src/store';
+import { $windowSizeStore, addNotificationEvent } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isOwner, $tracksStore } from '../../../store/roomStores';
+import { $isCameraActiveStore, $isOwner, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -31,6 +31,7 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 // styles
 import styles from './MeetingUserVideoItem.module.scss';
 import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
+import { NotificationType } from 'src/store/types';
 
 // utils
 
@@ -46,7 +47,6 @@ const MeetingUserVideoChildCom = ({
     isScreenSharing,
     isScreenSharingUser,
     isAuraActive,
-    isSelfView,
     setScale,
     resizeCoeff,
     onResizeVideo,
@@ -68,10 +68,29 @@ const MeetingUserVideoChildCom = ({
 
     const [isVideoSelfView, setVideoSelfView] =
         useState<boolean>(isCameraEnabled);
+    const isCameraActive = useStore($isCameraActiveStore);
+    const videoError = useStore($videoErrorStore);
+    const isVideoError = Boolean(videoError);
 
-    const toggleSelfView = () => {
-        setVideoSelfView(!isVideoSelfView);
+
+    const toggleSelfView = async () => {
+        if (isVideoError) {
+            addNotificationEvent({
+                type: NotificationType.CamAction,
+                message: `meeting.deviceErrors.${videoError?.type}`,
+            });
+        } else {
+            setIsCameraActiveEvent(!isCameraActive);
+            await updateUserSocketEvent({
+                cameraStatus: !isCameraActive ? 'active' : 'inactive',
+            });
+            addNotificationEvent({
+                type: NotificationType.DevicesAction,
+                message: 'meeting.devices.saved',
+            });
+        }
     };
+
 
     useEffect(() => {
         if (!isLocal) setVideoSelfView(isCameraEnabled);
@@ -118,7 +137,6 @@ const MeetingUserVideoChildCom = ({
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
         if (onResizeVideo) onResizeVideo(data.size.width / resizeCoeff, userId);
     };
-
     return (
         <CustomResizable
             width={scale}
@@ -156,7 +174,6 @@ const MeetingUserVideoChildCom = ({
                     size={scale}
                     onToggleVideo={toggleSelfView}
                     isScreenSharing={isScreenSharing}
-                    isSelfView={isSelfView}
                     isVideoSelfView={isVideoSelfView}
                 />
                 {isScreenSharingUser && (

@@ -8,6 +8,8 @@ import {
     Meeting,
     MeetingChat,
     MeetingChatReaction,
+    MeetingQuestionAnswer,
+    MeetingQuestionAnswerReaction,
     MeetingUser,
     Profile,
 } from '../../../types';
@@ -87,7 +89,7 @@ export type SendReconnectMeetingPayload = {
     meetingUserId: string;
 };
 
-export type JoinLurkerMeetingPayload = {
+export type JoinAudienceMeetingPayload = {
     meetingId: string;
     username: string;
     meetingAvatarId?: string;
@@ -118,3 +120,32 @@ export type SendUnReactionMessageResponse = {
 export type SendUpdatePaymentsMeetingPayload = MeetingPayment;
 
 export type SendUpdatePaymentsMeetingRespone = MeetingPayment;
+
+
+export type SendQuestionPayload = {
+    meetingId: string,
+    body: string;
+};
+
+
+export type SendQuestionResponse = {
+    question: MeetingQuestionAnswer;
+};
+
+export type SendReactionQuestionPayload = {
+    meetingQuestionId: string;
+    kind: MeetingReactionKind;
+};
+
+export type SendUnReactionQuestionPayload = {
+    meetingQuestionId: string;
+    kind: MeetingReactionKind;
+};
+
+export type SendReactionQuestionReponse = {
+    reaction: MeetingQuestionAnswerReaction;
+};
+
+export type SendUnReactionQuestionResponse = {
+    question: MeetingQuestionAnswer;
+};

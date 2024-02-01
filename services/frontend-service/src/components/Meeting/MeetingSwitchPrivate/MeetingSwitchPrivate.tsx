@@ -37,6 +37,7 @@ export const MeetingSwitchPrivate = () => {
             tooltipClassName={styles.containerTooltip}
         >
             <CustomGrid
+                id="privatePublicSetting"
                 display="flex"
                 justifyContent="center"
                 gap={1}

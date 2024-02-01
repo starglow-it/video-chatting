@@ -2,7 +2,7 @@ import Carousel from 'react-material-ui-carousel';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { useStore, useStoreMap } from 'effector-react';
-import { $isLurker, $meetingUsersStore } from 'src/store/roomStores';
+import { $isAudience, $meetingUsersStore } from 'src/store/roomStores';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingVideosCarousel } from './MeetingVideosCarousel';
 import { MeetingSelfView } from '../MeetingSelfView/MeetingSelfView';
@@ -16,15 +16,15 @@ export const MeetingCarousel = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const users1 = users.length < 6 ? users : users.slice(0, 5);
     const users2 = users.length < 6 ? [] : users.slice(5, 11);
 
     const elements: any = [];
-    if (!isLurker)
+    if (!isAudience)
         elements.push(
             <CustomGrid width="100%" height="100%" bgcolor="beige">
                 <MeetingSelfView />
@@ -60,11 +60,11 @@ export const MeetingCarousel = () => {
     return (
         <CustomGrid className={styles.container}>
             <Carousel
-                navButtonsAlwaysVisible={!isLurker}
+                navButtonsAlwaysVisible={!isAudience}
                 autoPlay={false}
                 height="100%"
                 sx={{ height: '100%' }}
-                navButtonsAlwaysInvisible={isLurker && !users2.length}
+                navButtonsAlwaysInvisible={isAudience && !users2.length}
             >
                 {elements}
             </Carousel>

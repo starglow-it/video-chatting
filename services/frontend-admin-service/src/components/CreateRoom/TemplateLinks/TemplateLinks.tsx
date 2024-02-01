@@ -25,7 +25,6 @@ import { NotificationType } from '../../../store/types';
 
 const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
     const { control, trigger, clearErrors } = useFormContext();
-
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'templateLinks',

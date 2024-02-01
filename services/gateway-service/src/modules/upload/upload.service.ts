@@ -31,21 +31,21 @@ export class UploadService {
     );
   }
 
-  async uploadFile(fileData: Buffer, key: string): Promise<string> {
+  async uploadFile(fileData: Buffer, key: string, contentType?: string): Promise<string> {
     const params = {
       Bucket: this.vultrUploadBucket,
       Key: key,
       Body: fileData,
       ACL: 'public-read',
     } as S3.Types.PutObjectRequest;
-
+    if (contentType) {
+      params.ContentType = contentType;
+    }
     const response = await this.s3.upload(params).promise();
 
     if (!/^https:\/\/*/.test(response.Location)) {
       return `https://${response.Location}`;
     }
-
-    console.log('uploadFile response.Location', response.Location);
 
     return response.Location;
   }

@@ -1,5 +1,4 @@
 import { memo, useCallback, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // custom
@@ -33,8 +32,6 @@ import { AppDialogsEnum } from '../../store/types';
 import { getClientMeetingUrl } from '../../utils/urls';
 
 const DiscoveryContainer = memo(() => {
-    const router = useRouter();
-
     const templates = useStore($discoveryTemplatesStore);
 
     useEffect(() => {
@@ -45,7 +42,7 @@ const DiscoveryContainer = memo(() => {
 
     const handleEnterWaitingRoom = useCallback(
         (templateId: ICommonTemplate['id']) => {
-            router.push(getClientMeetingUrl(templateId));
+            window.open(getClientMeetingUrl(templateId), '_blank');
         },
         [],
     );

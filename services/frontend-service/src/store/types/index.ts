@@ -38,6 +38,11 @@ export type MeetingUser = {
     meetingRole: MeetingRole;
 };
 
+export type joyride = {
+    runDashboardJoyride: boolean,
+    runMeetingJoyride: boolean
+};
+
 export type Meeting = {
     id: string;
     isMonetizationEnabled?: boolean;
@@ -66,6 +71,22 @@ export type MeetingChat = {
 export type MeetingChatReaction = {
     id: string;
     meetingChat: MeetingChat;
+    user: MeetingUser;
+    kind: MeetingReactionKind;
+};
+
+export type MeetingQuestionAnswer = {
+    id: string;
+    sender: MeetingUser;
+    body: string;
+    meeting: Meeting;
+    createdAt: Date;
+    reactions: { [K in MeetingReactionKind]: string[] };
+};
+
+export type MeetingQuestionAnswerReaction = {
+    id: string;
+    meetingQuestionAnswer: MeetingQuestionAnswer;
     user: MeetingUser;
     kind: MeetingReactionKind;
 };
@@ -137,6 +158,10 @@ export type DashboardNotification = {
     status: DashboardNotificationReadStatus;
 };
 
+export type welcomeTour = {
+    status: boolean;
+};
+
 export type AppDialogsState = {
     isUserRegisteredDialog: boolean;
     devicesSettingsDialog: boolean;
@@ -144,6 +169,7 @@ export type AppDialogsState = {
     inviteAttendeeByEmailDialog: boolean;
     meetingErrorDialog: boolean;
     userToKickDialog: boolean;
+    userToAudienceDialog: boolean;
     templatePreviewDialog: boolean;
     editMeetingTemplateDialog: boolean;
     confirmChangeRouteDialog: boolean;
@@ -163,8 +189,12 @@ export type AppDialogsState = {
     downgradedSubscriptionDialog: boolean;
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
+    inviteGuestsDialogCountTimeStart: boolean,
     confirmBecomeParticipantDialog: boolean;
+    confirmBecomeAudienceDialog: boolean;
     meetingEndDialog: boolean;
+    hostDeviceRequireDialog: boolean;
+    recordVideoDownloadDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -174,6 +204,7 @@ export enum AppDialogsEnum {
     inviteAttendeeByEmailDialog = 'inviteAttendeeByEmailDialog',
     meetingErrorDialog = 'meetingErrorDialog',
     userToKickDialog = 'userToKickDialog',
+    userToAudienceDialog = 'userToAudienceDialog',
     templatePreviewDialog = 'templatePreviewDialog',
     editMeetingTemplateDialog = 'editMeetingTemplateDialog',
     confirmChangeRouteDialog = 'confirmChangeRouteDialog',
@@ -194,7 +225,11 @@ export enum AppDialogsEnum {
     meetingFinishedDialog = 'meetingFinishedDialog',
     meetingEndDialog = 'meetingEndDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
+    inviteGuestsDialogCountTimeStart = 'inviteGuestsDialogCountTimeStart',
     confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
+    confirmBecomeAudienceDialog = 'confirmBecomeAudienceDialog',
+    hostDeviceRequireDialog = 'hostDeviceRequireDialog',
+    recordVideoDownloadDialog = 'recordVideoDownloadDialog',
 }
 
 export type DialogActionPayload = {
@@ -275,6 +310,7 @@ export enum NotificationType {
     UploadBackgroundSuccess = 'upload_background_success',
     DeleteMedia = 'DeleteMedia',
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
+    RequestBecomeAudienceSuccess = 'request_become_audience_success',
 }
 
 export type Notification = {
@@ -342,3 +378,12 @@ export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>;
 export interface INextPageContext {
     ctx: NextPageContext;
 }
+
+export type GetRoomRatingStatisticParams = {
+    basedOn: string;
+    roomType: string;
+};
+
+export * from './state';
+export * from './response';
+export * from './requestParams';

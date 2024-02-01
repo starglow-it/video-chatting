@@ -1,6 +1,6 @@
 {
   "selectTemplates": "Select a Room",
-  "myTemplates": "My Rooms",
+  "myTemplates": "My Ruumes",
   "editTemplateDisabled": "Upgrade your subscription to edit the Room or to create a new one",
   "buttons": {
     "startMeeting": "Enter",
@@ -44,6 +44,9 @@
     "noEmails": "You have not added users",
     "downloadIcsTitle": "An email reminder was sent to you and the other party",
     "downloadIcs": "Download ICS"
+  },
+  "welcomeTour": {
+    "title": "How about a house tour?"
   },
   "createRoom": "Create room",
   "addYourDesign": "Add your design",

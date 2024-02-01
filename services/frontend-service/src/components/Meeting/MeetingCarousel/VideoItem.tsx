@@ -13,6 +13,7 @@ import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 
 type VideoItemProps = {
+    id: string;
     isCameraEnabled: boolean;
     userName: string;
     userProfilePhoto: string;
@@ -23,6 +24,7 @@ type VideoItemProps = {
 };
 
 export const VideoItem = ({
+    id,
     isCameraEnabled,
     userName,
     userProfilePhoto,
@@ -53,7 +55,7 @@ export const VideoItem = ({
     }, [userTracks?.videoTrack]);
 
     return (
-        <CustomGrid container direction="column" alignItems="center" gap="6px">
+        <CustomGrid container key={id} direction="column" alignItems="center" gap="6px">
             <CustomBox
                 className={clsx(styles.videoItem)}
                 sx={{

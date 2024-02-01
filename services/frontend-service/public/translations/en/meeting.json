@@ -18,11 +18,18 @@
     "remember": "Remember my settings"
   },
   "allowAccess": {
-    "desktop": "To Join Reset Your Mic & Cam",
+    "desktop": {
+      "allowDevice": "Your settings are currently disabled. Please check that your microphone and video camera are enabled in your browser, then refresh the browser.",
+      "allowChrome": "There was an error processing your devices. Please double-check your microphone and video camera settings on your computer and authorize access.",
+      "allowChromeDescription": "In System Settings, open Privacy & Security and allow Chrome access to your microphone and camera.",
+      "notFoundDevice": "Check your system settings to make sure that a camera is available. If not, plug one in. You might then need to restart your browser.",
+      "errorDevice": "There was an error accessing the media devices. Please reset your microphone and camera to join the meeting.",
+      "noDevice": "Will you be joining the meeting without a microphone and camera?"
+    },
     "mobile": "Reload & Allow Access to Mic & Cam"
   },
   "preview": {
-    "invitedText": "invited you to this special scene"
+    "invitedText": "invited you to"
   },
   "meetingNotStarted": {
     "title": "Meeting has not \nstarted yet",
@@ -62,17 +69,23 @@
     "kick": "Kick",
     "stay": "Stay",
     "lockUp": "Lock Up",
-    "yes": "Yes"
+    "yes": "Yes",
+    "goToSetting": "Go To Setting",
+    "move": "Move",
+    "download": "download",
+    "upload": "upload & share",
+    "close": "Close"
   },
   "devices": {
-    "turnOn":"Turn on",
-    "turnOff":"Turn off",
-    "switchOn":"Switch ON",
-    "switchOff":"Switch OFF",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "switchOn": "Switch ON",
+    "switchOff": "Switch OFF",
     "clickToSeeYourself": "Click to see yourself",
     "selfViewOff": "Self-View Off",
     "dragAndResize": "Drag & Resize",
-    "microphone": "Mic on/off"
+    "microphone": "Mic on/off",
+    "stickyNotes": "Sticky Notes"
   },
   "endMeeting": {
     "forHost": "Leave?",
@@ -88,7 +101,9 @@
     "copyMeetingInfo": "Copy meeting info",
     "inviteButton": "Invite with email",
     "sendInvitation": "Send invitations",
-    "tooltip": "Add Callers"
+    "tooltip": "Add Callers",
+    "participants": "Participants",
+    "audiences": "Audiences"
   },
   "enterName": {
     "title": "Welcome",
@@ -127,6 +142,10 @@
       "busy": "Someone is already sharing screen",
       "selfSharing": "You are sharing screen now"
     }
+  },
+  "recordMeeting": {
+    "start": "Start Recording",
+    "stop": "Stop Recording"
   },
   "features": {
     "blurBackground": "Background blur",
@@ -202,19 +221,20 @@
   "people": {
     "tooltip": "People"
   },
-  "lurker": {
-    "buttons" : {
+  "audience": {
+    "buttons": {
       "requestBecomeParticipant": "Become a Participant"
     }
   },
   "chat": {
     "tooltip": "Chat"
   },
-  "youtubeVideo": "Youtube Video",
+  "youtubeVideo": "youtube video",
+  "connect": "connect a ",
   "originalVideoSound": "Original video sound",
   "role": {
     "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
-    "tooltipLurker": "Invite up to 1000 Audience members. They view & hear Participants."
+    "tooltipAudience": "Invite up to 1000 Audience members. They view & hear Participants."
   },
   "waitForTheHost": "Waiting for the Host",
   "lock": {
@@ -222,5 +242,9 @@
     "public": "Public Meeting. Add an Audience"
   },
   "meetingPrivate": "The Meeting is private",
-  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience."
+  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
+  "hostDeviceRequireTitle": "Microphone Requirement for Host",
+  "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?",
+  "recordVideoDownloadTitle": "Save your recording",
+  "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?"
 }

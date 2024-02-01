@@ -10,9 +10,11 @@ import { handleRemoveUsers } from './handleRemoveUsers';
 // utils
 import { emptyFunction } from '../../../../utils/functions/emptyFunction';
 import { handleReceiveAnswerSwitchRoleFromHost } from './handleReceiveAnswerSwitchRoleFromHost';
-import { handleReceiveAnswerSwitchRoleFromLurker } from './handleReceiveAnswerSwitchRoleFromLurker';
+import { handleReceiveAnswerSwitchRoleFromAudience } from './handleReceiveAnswerSwitchRoleFromAudience';
 import { handleReceiveRequestSwitchRoleByHost } from './handleReceiveRequestSwitchRoleByHost';
-import { handleReceiveRequestSwitchRoleByLurker } from './handleReceiveRequestSwitchRoleByLurker';
+import { handleReceiveRequestSwitchRoleByAudience } from './handleReceiveRequestSwitchRoleByAudience';
+import { handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost } from './handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost';
+import { handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant } from './handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -30,20 +32,29 @@ const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
         { handler: handleReceiveAnswerSwitchRoleFromHost },
     ],
     [
-        UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
-        { handler: handleReceiveAnswerSwitchRoleFromLurker },
+        UsersSubscribeEvents.OnAnswerSwitchRoleByAudience,
+        { handler: handleReceiveAnswerSwitchRoleFromAudience },
     ],
     [
         UsersSubscribeEvents.OnRequestSwitchRoleByHost,
         { handler: handleReceiveRequestSwitchRoleByHost },
     ],
     [
-        UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
-        { handler: handleReceiveRequestSwitchRoleByLurker },
+        UsersSubscribeEvents.OnRequestSwitchRoleByAudience,
+        { handler: handleReceiveRequestSwitchRoleByAudience },
+    ],
+    [
+        UsersSubscribeEvents.OnRequestSwitchFromParticipantToAudienceRoleByHost,
+        { handler: handleReceiveRequestSwitchRoleFromParticipantToAudienceByHost },
+    ],
+    [
+        UsersSubscribeEvents.OnAnswerSwitchFromParticipantToAudienceRoleByParticipant,
+        { handler: handleReceiveAnswerSwitchFromParticipantToAudienceRoleFromParticipant },
     ],
 ]);
 
 export const getUsersSocketSubscribeHandler = (
     eventName: UsersSubscribeEvents,
-): SocketHandlerData['handler'] =>
-    USERS_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;
+): SocketHandlerData['handler'] => {
+    return USERS_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction
+};

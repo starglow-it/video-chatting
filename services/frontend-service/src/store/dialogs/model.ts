@@ -5,9 +5,11 @@ export const initialDialogsState: AppDialogsState = {
     isUserRegisteredDialog: false,
     devicesSettingsDialog: false,
     endMeetingDialog: false,
+    meetingEndDialog: false,
     inviteAttendeeByEmailDialog: false,
     meetingErrorDialog: false,
     userToKickDialog: false,
+    userToAudienceDialog: false,
     templatePreviewDialog: false,
     editMeetingTemplateDialog: false,
     confirmChangeRouteDialog: false,
@@ -27,7 +29,10 @@ export const initialDialogsState: AppDialogsState = {
     downgradedSubscriptionDialog: false,
     meetingFinishedDialog: false,
     inviteGuestsDialog: false,
+    inviteGuestsDialogCountTimeStart: false,
     confirmBecomeParticipantDialog: false,
+    confirmBecomeAudienceDialog: false,
+    hostDeviceRequireDialog: false,
 };
 
 export const $appDialogsStore =

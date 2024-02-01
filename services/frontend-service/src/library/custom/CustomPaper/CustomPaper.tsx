@@ -6,6 +6,7 @@ import { Paper, PaperProps } from '@mui/material';
 const Component = (
     {
         children,
+        borderRadius,
         ...rest
     }: PropsWithChildren<{ borderRadius?: number | string } & PaperProps>,
     ref: ForwardedRef<HTMLDivElement>,

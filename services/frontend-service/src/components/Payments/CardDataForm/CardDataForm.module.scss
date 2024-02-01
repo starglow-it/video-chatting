@@ -24,6 +24,15 @@
 .button {
   margin: rem(20px 0 0 0);
 
+  &.isPreEvent {
+    background-color: #FFA552;
+    color: white;
+
+    &:hover {
+      background-color: #f58a25;
+    }
+  }
+
   &.mobile {
     margin: rem(8px 0 0 0);
   }
@@ -37,6 +46,10 @@
 .cardPaywallField {
   height: 42px;
 
+  &.isPreEvent {
+    border: 1px solid rgb(201, 200, 200);
+  }
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
   }
@@ -44,10 +57,18 @@
 
 .datePaywallField {
   height: 42px;
+
+  &.isPreEvent {
+    border: 1px solid rgb(201, 200, 200);
+  }
 }
 
 .cvcPaywallField {
   height: 42px;
+
+  &.isPreEvent {
+    border: 1px solid rgb(201, 200, 200);
+  }
 }
 
 .textField {

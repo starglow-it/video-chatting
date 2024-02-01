@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren, useEffect, useMemo, useRef } from 'react';
+import { memo, PropsWithChildren, useState, useEffect, useMemo, useRef, createRef, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -19,6 +19,16 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
 import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
 
+import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+import { profileRoute } from '../../const/client-routes';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import { TemplatesIcon } from 'shared-frontend/icons/OtherIcons/TemplatesIcon';
+import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
+import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+
+
 import { Footer } from '@components/Footer/Footer';
 
 // types
@@ -33,12 +43,14 @@ import { LayoutProps } from './types';
 // stores
 import {
     $authStore,
+    $profileStore,
     // $isPortraitLayout,
     $isSocketConnected,
     $modeTemplateStore,
     $profileTemplatesStore,
     $templatesStore,
     $windowSizeStore,
+
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -47,6 +59,7 @@ import {
     loadmoreCommonTemplates,
     loadmoreUserTemplates,
     sendJoinDashboardSocketEvent,
+    logoutUserFx
 } from '../../store';
 
 // const
@@ -61,6 +74,7 @@ import {
     registerRoute,
     roomRoute,
     welcomeRoute,
+    analyticsRoute,
 } from '../../const/client-routes';
 
 // styles
@@ -83,7 +97,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     NotFoundRoute,
 ];
 
-const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
+const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute];
 const DASHBOARD_ROOM_HEADER: string[] = [createRoomRoute, editRoomRoute];
 
 const ScrollParent = ({
@@ -129,7 +143,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const profileTemplates = useStore($profileTemplatesStore);
     const mode = useStore($modeTemplateStore);
     const { height } = useStore($windowSizeStore);
-    // const isPortraitLayout = useStore($isPortraitLayout);
+    const [isDashboardRoomRoute, setIsDashboardRoomRoute] = useState(false);
+
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -137,9 +152,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isDashboardRoute = ROUTES_MAIN_HEADER.some(route =>
         new RegExp(route).test(router.pathname),
     );
-    const isDashboardRoomRoute = DASHBOARD_ROOM_HEADER.some(route =>
-        new RegExp(route).test(router.pathname),
-    );
+
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
     const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
     const isNotFoundRoute = new RegExp(`${NotFoundRoute}`).test(
@@ -161,11 +174,32 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     );
 
     useEffect(() => {
+        const checkRoute = () => {
+            const matches = DASHBOARD_ROOM_HEADER.some(route =>
+                new RegExp(route).test(router.pathname),
+            );
+            setIsDashboardRoomRoute(matches);
+        };
+
+        // Check the route initially
+        checkRoute();
+
+        // Check the route whenever the pathname changes on the client side
+        const handleRouteChange = () => {
+            checkRoute();
+        };
+
+        router.events.on('routeChangeComplete', handleRouteChange);
+
         (async () => {
             if (isDashboardRoute || isRoomRoute || isBaseRoute) {
                 initiateSocketConnectionEvent();
             }
         })();
+
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
+        };
     }, [router.pathname]);
 
     useEffect(() => {
@@ -235,12 +269,54 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const hanleStartFreeRoom = async () => {
         const { userWithoutLoginId, userTemplateId } = parseCookies();
         if (!userWithoutLoginId) await initUserWithoutTokenFx({});
-        else router.push(getClientMeetingUrl(userTemplateId));
+        else {
+            const newPageUrl = await getClientMeetingUrl(userTemplateId);
+
+            window.open(newPageUrl, '_blank');
+        }
     };
-    // console.log('#Duy Phan console pt', isPortraitLayout, height)
+
     const heightFull = useMemo(() => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
+
+    const isProfilePageActive = router.pathname === profileRoute;
+    const profileState = useStore($profileStore);
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleAvatarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleProfilePage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(profileRoute);
+    }, []);
+
+    const handleTemplatesPage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(dashboardRoute);
+    }, []);
+
+    const handleAnalyticsPage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(analyticsRoute);
+    }, []);
+
+    const isTemplatesLinkActive = router.pathname === dashboardRoute;
+    const isAnalyticsLinkActive = router.pathname === analyticsRoute;
+
+    const handleLogout = useCallback(async () => {
+        handleMenuClose();
+        logoutUserFx();
+        localStorage.removeItem("isFirstDashboardVisit");
+        localStorage.removeItem("isFirstMeeting");
+    }, []);
 
     return (
         <CustomBox
@@ -281,14 +357,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         className={clsx({
                             [styles.mobileContent]:
                                 isMobile && !isDashboardRoute,
+
                         })}
                     >
                         <ConditionalRender
-                            condition={
-                                !isMobile
-                                    ? !isNotFoundRoute
-                                    : !isNotFoundRoute && !isRoomRoute
-                            }
+                            condition={!isNotFoundRoute && !isRoomRoute}
                         >
                             <CustomBox
                                 className={clsx(styles.header, {
@@ -306,7 +379,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         flexDirection: {
                                             sm: 'row',
                                             md: 'row',
-                                            xs: 'column',
+                                            xs: 'row',
                                             xl: 'row',
                                         },
                                     }}
@@ -386,6 +459,102 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         >
                                             <HeaderRoomLink />
                                         </ConditionalRender>
+                                        {/* User Info */}
+                                        <ConditionalRender
+                                            condition={
+                                                isDashboardRoute && isAuthenticated
+                                            }
+                                        >
+                                            <div>
+                                                <IconButton
+                                                    id="profileAvatarIcon"
+                                                    onClick={handleAvatarClick}
+                                                    className={styles.iconButton}
+                                                >
+                                                    <ProfileAvatar
+                                                        src={profileState?.profileAvatar?.url}
+                                                        userName={profileState.fullName}
+                                                        className={clsx(styles.profileImage, styles.linkIcon, {
+                                                            [styles.activeProfile]: isProfilePageActive,
+                                                        })}
+                                                    />
+                                                </IconButton>
+
+                                                <Menu
+                                                    anchorEl={anchorEl}
+                                                    keepMounted
+                                                    open={Boolean(anchorEl)}
+                                                    onClose={handleMenuClose}
+                                                    className={styles.menu}
+                                                >
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        placement="right"
+                                                        translation="pages.profile"
+                                                    >
+                                                        <MenuItem>
+                                                            <PersonIcon
+                                                                onClick={handleProfilePage}
+                                                                width="28px"
+                                                                height="28px"
+                                                                className={clsx(styles.linkIcon, {
+                                                                    [styles.activeIcon]: isProfilePageActive,
+                                                                })}
+                                                            />
+                                                        </MenuItem>
+
+                                                    </CustomTooltip>
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        translation="pages.templates"
+                                                        placement="right"
+                                                    >
+                                                        <MenuItem>
+                                                            <TemplatesIcon
+                                                                onClick={handleTemplatesPage}
+                                                                width="28px"
+                                                                height="28px"
+                                                                className={clsx(styles.linkIcon, {
+                                                                    [styles.activeIcon]: isTemplatesLinkActive,
+                                                                })}
+                                                            />
+                                                        </MenuItem>
+
+                                                    </CustomTooltip>
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        translation="pages.analytics"
+                                                        placement="right"
+                                                    >
+                                                        <MenuItem>
+                                                            <StatisticsIcon
+                                                                onClick={handleAnalyticsPage}
+                                                                width="28px"
+                                                                height="28px"
+                                                                className={clsx(styles.linkIcon, {
+                                                                    [styles.activeIcon]: isAnalyticsLinkActive,
+                                                                })}
+                                                            />
+                                                        </MenuItem>
+                                                    </CustomTooltip>
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        translation="pages.logout"
+                                                        placement="right"
+                                                    >
+                                                        <MenuItem>
+                                                            <ExitIcon
+                                                                onClick={handleLogout}
+                                                                className={styles.icon}
+                                                                width="28px"
+                                                                height="28px"
+                                                            />
+                                                        </MenuItem>
+
+                                                    </CustomTooltip>
+                                                </Menu>
+                                            </div>
+                                        </ConditionalRender>
                                     </CustomGrid>
                                 </CustomGrid>
                             </CustomBox>
@@ -403,7 +572,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     </ConditionalRender>
                 </CustomGrid>
             </ScrollParent>
-        </CustomBox>
+        </CustomBox >
     );
 };
 

@@ -1,27 +1,20 @@
 import { useStore, useStoreMap } from 'effector-react';
-import {
-    $activeTabPanel,
-    $isLurker,
-    $isMeetingHostStore,
-    $meetingUsersStore,
-    resetHaveNewMessageEvent,
-    setActiveTabPanelEvent,
-} from 'src/store/roomStores';
-import Tab from '@mui/material/Tab';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useCallback } from 'react';
-import { Tabs } from '@mui/material';
+import { ReactNode, useCallback, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
-import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
-import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
-import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
+import { Tab, Tabs, Typography } from '@mui/material';
+import { $activeTabPanel, $isAudience, $isHaveNewMessage, $isHaveNewQuestion, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, resetHaveNewQuestionEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
+import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
+import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -55,9 +48,10 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 };
 
 export const MeetingPeople = () => {
-    const isMeetingHost = useStore($isMeetingHostStore);
-    const isLurker = useStore($isLurker);
     const isPortraitLayout = useStore($isPortraitLayout);
+    const isMeetingHost = useStore($isMeetingHostStore);
+
+    const isAudience = useStore($isAudience);
 
     const participants = useStoreMap({
         store: $meetingUsersStore,
@@ -66,30 +60,45 @@ export const MeetingPeople = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
 
-    const lurkers = useStoreMap({
+    const audiences = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
         fn: state =>
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole === MeetingRole.Lurker,
+                    user.meetingRole === MeetingRole.Audience,
             ),
     });
 
     const value = useStore($activeTabPanel);
+
+    const isThereNewMessage = useStore($isHaveNewMessage);
+    const isThereNewQuestion = useStore($isHaveNewQuestion);
+
+    useEffect(()=> {
+        if (isThereNewMessage) {
+            setActiveTabPanelEvent(0);
+        }
+        if (isThereNewMessage) {
+            setActiveTabPanelEvent(1);
+        }
+    }, [isThereNewMessage, isThereNewQuestion])
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTabPanelEvent(newValue);
     };
 
     const handleResetNewMessage = (tab: string) => {
-        if (tab === 'Chat') {
+        if (tab === 'chat') {
             resetHaveNewMessageEvent();
+        }
+        if (tab === 'questions') {
+            resetHaveNewQuestionEvent();
         }
     };
 
@@ -100,15 +109,11 @@ export const MeetingPeople = () => {
         };
     }, []);
 
-    const tabs = !isLurker
-        ? [
-              !participants.length
-                  ? 'Participants'
-                  : `Participants(${participants.length})`,
-              !lurkers.length ? 'Audience' : `Audience(${lurkers.length})`,
-              'Chat',
-          ]
-        : ['Chat'];
+    const tabs = [
+        'chat',
+        'questions',
+        'transcript',
+    ]
 
     return (
         <CustomGrid
@@ -141,8 +146,14 @@ export const MeetingPeople = () => {
                     />
                 ))}
             </Tabs>
-            <ConditionalRender condition={!isLurker}>
+            <ConditionalRender condition={!isAudience}>
                 <CustomTabPanel value={value} index={0}>
+                    <MeetingChat />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <MeetingQuestionAnswer />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
                     <CustomGrid
                         display="flex"
                         flexDirection="column"
@@ -152,22 +163,13 @@ export const MeetingPeople = () => {
                         <MeetingUsersList />
                     </CustomGrid>
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
-                    <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        <MeetingLurkers />
-                    </CustomGrid>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    <MeetingChat />
-                </CustomTabPanel>
             </ConditionalRender>
-            <ConditionalRender condition={isLurker}>
+            <ConditionalRender condition={isAudience}>
                 <CustomTabPanel value={value} index={0}>
                     <MeetingChat />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <MeetingQuestionAnswer />
                 </CustomTabPanel>
             </ConditionalRender>
         </CustomGrid>

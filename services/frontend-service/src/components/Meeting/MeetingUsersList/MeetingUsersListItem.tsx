@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -19,8 +20,10 @@ import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { $isMeetingHostStore } from '../../../store/roomStores';
+import { $meetingTemplateStore } from 'src/store/roomStores';
 
 // types
 import { MeetingUsersListItemProps } from './types';
@@ -34,12 +37,14 @@ const Component = ({
     onAcceptUser,
     onDeleteUser,
     onChangeHost,
-    onRequestLurker,
+    onRequestAudience,
+    onChangeRoleToAudience,
     isLocalItem,
     isOwnerItem,
-    isLurkerRequest = false,
+    isAudienceRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
+    const { isPublishAudience } = useStore($meetingTemplateStore);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
@@ -47,12 +52,16 @@ const Component = ({
         onAcceptUser?.({ userId: user.id });
     };
 
-    const handleRequestLurker = () => {
-        onRequestLurker?.({ userId: user.id });
+    const handleRequestAudience = () => {
+        onRequestAudience?.({ userId: user.id });
     };
 
     const handleDeleteRequest = () => {
         onDeleteUser?.({ userId: user.id });
+    };
+
+    const handleChangeRoleToAudienceRequest = () => {
+        onChangeRoleToAudience?.({ userId: user.id });
     };
 
     const handleChangeHost = () => {
@@ -93,14 +102,14 @@ const Component = ({
                         Icon={<AcceptIcon width="23px" height="23px" />}
                     />
                 </ConditionalRender>
-                <ConditionalRender condition={isLurkerRequest}>
+                <ConditionalRender condition={isAudienceRequest}>
                     <CustomTooltip
                         title="Invite as Participant (join the scene)"
                         placement="bottom"
                     >
                         <ActionButton
                             variant="accept"
-                            onAction={handleRequestLurker}
+                            onAction={handleRequestAudience}
                             className={styles.acceptUser}
                             Icon={<ArrowUp width="15px" height="15px" />}
                         />
@@ -122,18 +131,38 @@ const Component = ({
                         Icon={<HostIcon width="23px" height="23px" />}
                     />
                 </ConditionalRender>
-
+                <ConditionalRender condition={Boolean(
+                    !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest
+                )}>
+                    <CustomTooltip
+                        title="Move user to audience"
+                        placement="bottom"
+                    >
+                        <ActionButton
+                            variant="decline"
+                            onAction={handleChangeRoleToAudienceRequest}
+                            className={clsx(styles.toAudienceBtn)}
+                            Icon={<ArrowDownIcon width="23px" height="23px" />}
+                        />
+                    </CustomTooltip>
+                </ConditionalRender>
                 <ConditionalRender
                     condition={Boolean(
                         !isLocalItem && onDeleteUser && !isOwnerItem,
                     )}
                 >
-                    <ActionButton
-                        variant="decline"
-                        onAction={handleDeleteRequest}
-                        className={styles.deleteUser}
-                        Icon={<CloseIcon width="23px" height="23px" />}
-                    />
+
+                    <CustomTooltip
+                        title="Kick user"
+                        placement="bottom"
+                    >
+                        <ActionButton
+                            variant="decline"
+                            onAction={handleDeleteRequest}
+                            className={clsx(styles.deleteUser)}
+                            Icon={<CloseIcon width="23px" height="23px" />}
+                        />
+                    </CustomTooltip>
                 </ConditionalRender>
             </CustomGrid>
         </CustomGrid>

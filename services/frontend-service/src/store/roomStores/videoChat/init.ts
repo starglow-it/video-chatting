@@ -11,11 +11,14 @@ import {
     setDevicesPermission,
     setDevicesPermissionEvent,
     setServerType,
+    startRecordMeeting,
     startScreenSharing,
+    stopRecordMeeting,
     stopScreenSharing,
+    uploadToS3Event,
 } from './model';
 import { ServerTypes, TrackKind } from '../../../const/webrtc';
-import { $activeStreamStore, toggleDevicesEvent } from './localMedia/model';
+import { $activeStreamStore, startRecordStreamFx, stopRecordStreamFx, toggleDevicesEvent, uploadToS3Fx } from './localMedia/model';
 import {
     changeSFUActiveStreamEvent,
     disconnectFromSFUEvent,
@@ -159,4 +162,20 @@ sample({
             ? ServerTypes.SFU
             : ServerTypes.P2P,
     target: setServerType,
+});
+
+
+sample({
+    clock: startRecordMeeting,
+    target: startRecordStreamFx,
+});
+
+sample({
+    clock: stopRecordMeeting,
+    target: stopRecordStreamFx,
+});
+
+sample({
+    clock: uploadToS3Event,
+    target: uploadToS3Fx,
 });

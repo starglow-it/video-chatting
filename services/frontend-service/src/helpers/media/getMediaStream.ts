@@ -4,29 +4,71 @@ import { VIDEO_CONSTRAINTS } from '../../const/media/VIDEO_CONSTRAINTS';
 import { MediaStreamOptions } from './types';
 import { CustomMediaStream } from '../../types';
 
-const MEDIA_STREAMS_ERROR = new Map([['NotAllowedError', 'media.notAllowed']]);
+export const MEDIA_NOT_ALLOWED_BY_BROWSER = "notAllowedByBrowser";
+export const MEDIA_NOT_ALLOWED_BY_SYSTEM = "notAllowedBySystem";
+export const MEDIA_OPERATION_ABORTED = "operationAborted";
+export const MEDIA_DEVICE_NOT_FOUND = "deviceNotFound";
+export const MEDIA_DEVICE_NOT_ACCESSIBLE = "deviceNotAccessible";
+export const MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED = "constraintsCannotBeSatisfied";
+export const MEDIA_SECURITY_ERROR = "securityError";
+export const MEDIA_INVALID_CONSTRAINTS = "invalidConstraints";
+export const MEDIA_GENERAL_ERROR = "generalError";
+
+export const MEDIA_STREAMS_ERROR = new Map<string, string | Map<string, string>>([
+    [
+        "NotAllowedError",
+        new Map<string, string>([
+            ["Permission denied", MEDIA_NOT_ALLOWED_BY_BROWSER],
+            ["Permission denied by system", MEDIA_NOT_ALLOWED_BY_SYSTEM],
+        ]),
+    ],
+    ["AbortError", MEDIA_OPERATION_ABORTED],
+    ["NotFoundError", MEDIA_DEVICE_NOT_FOUND],
+    ["NotReadableError", MEDIA_DEVICE_NOT_ACCESSIBLE],
+    ["OverconstrainedError", MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED],
+    ["SecurityError", MEDIA_SECURITY_ERROR],
+    ["TypeError", MEDIA_INVALID_CONSTRAINTS],
+]);
+
 
 export type GetMediaStream = {
     stream?: MediaStream | null;
-    audioError?: string;
-    videoError?: string;
-    error?: string;
+    audioError?: MediaStreamError;
+    videoError?: MediaStreamError;
+    error?: MediaStreamError;
+};
+
+export type MediaStreamError = {
+    type: string;
+    message?: string;
+};
+
+const getErrorType = (typedError: Error): MediaStreamError => {
+    const errorInfo = MEDIA_STREAMS_ERROR.get(typedError.name);
+    if (errorInfo instanceof Map) {
+        const message = errorInfo.get(typedError.message) || MEDIA_NOT_ALLOWED_BY_BROWSER;
+        return { type: message, message: typedError.message };
+    }
+    return {
+        type: errorInfo || MEDIA_GENERAL_ERROR,
+        message: typedError.message
+    };
 };
 
 export const getVideoMediaStream = async (
     videoDeviceId: MediaStreamOptions['videoDeviceId'],
 ): Promise<{
     stream?: MediaStream | null;
-    error?: string;
+    error?: MediaStreamError;
 }> => {
     try {
         const videoStream = await navigator.mediaDevices.getUserMedia({
             video: isMobile()
                 ? {}
                 : {
-                      ...VIDEO_CONSTRAINTS,
-                      ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
-                  },
+                    ...VIDEO_CONSTRAINTS,
+                    ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
+                },
         });
 
         return { stream: videoStream };
@@ -34,9 +76,7 @@ export const getVideoMediaStream = async (
         const typedError = e as Error;
 
         return {
-            error:
-                MEDIA_STREAMS_ERROR.get(typedError?.name) ||
-                typedError?.message,
+            error: getErrorType(typedError)
         };
     }
 };
@@ -45,7 +85,7 @@ export const getAudioMediaStream = async (
     audioDeviceId: MediaStreamOptions['audioDeviceId'],
 ): Promise<{
     stream?: MediaStream | null;
-    error?: string;
+    error?: MediaStreamError;
 }> => {
     try {
         const audioStream = await navigator.mediaDevices.getUserMedia({
@@ -60,9 +100,7 @@ export const getAudioMediaStream = async (
         const typedError = e as Error;
 
         return {
-            error:
-                MEDIA_STREAMS_ERROR.get(typedError?.name) ||
-                typedError?.message,
+            error: getErrorType(typedError)
         };
     }
 };
@@ -76,26 +114,26 @@ export const composeMediaStream = (
     const audioTracks = [
         ...(streamOne
             ? streamOne
-                  .getTracks()
-                  .filter((track: MediaStreamTrack) => track.kind === 'audio')
+                .getTracks()
+                .filter((track: MediaStreamTrack) => track.kind === 'audio')
             : []),
         ...(streamTwo
             ? streamTwo
-                  .getTracks()
-                  .filter((track: MediaStreamTrack) => track.kind === 'audio')
+                .getTracks()
+                .filter((track: MediaStreamTrack) => track.kind === 'audio')
             : []),
     ];
 
     const videoTracks = [
         ...(streamOne
             ? streamOne
-                  .getTracks()
-                  .filter((track: MediaStreamTrack) => track.kind === 'video')
+                .getTracks()
+                .filter((track: MediaStreamTrack) => track.kind === 'video')
             : []),
         ...(streamTwo
             ? streamTwo
-                  .getTracks()
-                  .filter((track: MediaStreamTrack) => track.kind === 'video')
+                .getTracks()
+                .filter((track: MediaStreamTrack) => track.kind === 'video')
             : []),
     ];
 
@@ -114,9 +152,9 @@ export const getVideoAndAudioStream = async ({
             video: isMobile()
                 ? {}
                 : {
-                      ...VIDEO_CONSTRAINTS,
-                      ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
-                  },
+                    ...VIDEO_CONSTRAINTS,
+                    ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
+                },
             audio:
                 isMobile() || !audioDeviceId
                     ? true
@@ -127,9 +165,7 @@ export const getVideoAndAudioStream = async ({
         const typedError = e as Error;
 
         return {
-            error:
-                MEDIA_STREAMS_ERROR.get(typedError?.name) ||
-                typedError?.message,
+            error: getErrorType(typedError)
         };
     }
 };
@@ -138,16 +174,26 @@ export const getMediaStream = async ({
     audioDeviceId,
     videoDeviceId,
 }: MediaStreamOptions = {}): Promise<GetMediaStream> => {
-    const { stream: streamLoaded, error } = await getVideoAndAudioStream({
-        audioDeviceId,
-        videoDeviceId,
-    });
+    let videoResult: {
+        stream?: MediaStream | null;
+        error?: MediaStreamError;
+    } = {};
+    let audioResult: {
+        stream?: MediaStream | null;
+        error?: MediaStreamError;
+    } = {};
 
-    const stream = await composeMediaStream(streamLoaded, undefined);
+    videoResult = await getVideoMediaStream(videoDeviceId);
+    audioResult = await getAudioMediaStream(audioDeviceId);
+
+    const videoStream = videoResult.stream || undefined;
+    const audioStream = audioResult.stream || undefined;
+
+    const composedStream = composeMediaStream(videoStream, audioStream);
 
     return {
-        stream,
-        audioError: error,
-        videoError: error,
+        stream: composedStream || undefined, // Ensure stream is not null
+        audioError: audioResult.error,
+        videoError: videoResult.error,
     };
 };

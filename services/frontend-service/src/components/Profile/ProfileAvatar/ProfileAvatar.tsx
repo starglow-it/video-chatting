@@ -75,6 +75,7 @@ const Component = (
                             textAnchor="middle"
                             style={{
                                 fontWeight: 600,
+                                fontSize: '16px'
                             }}
                         >
                             {splitName}
@@ -99,7 +100,7 @@ const Component = (
                             dominantBaseline="middle"
                             textAnchor="middle"
                             x="50%"
-                            y="63%"
+                            y="50%"
                             className={styles.yourText}
                             fill="currentColor"
                         >

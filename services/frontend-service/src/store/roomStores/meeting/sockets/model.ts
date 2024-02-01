@@ -20,7 +20,7 @@ import {
     UpdateMeetingTemplatePayload,
     EnterWaitingRoomPayload,
     SendReconnectMeetingPayload,
-    JoinLurkerMeetingPayload,
+    JoinAudienceMeetingPayload,
     SendMessageChatPayload,
     SendMessageChatResponse,
     SendReactionMessagePayload,
@@ -29,6 +29,12 @@ import {
     SendUnReactionMessageResponse,
     SendUpdatePaymentsMeetingPayload,
     SendUpdatePaymentsMeetingRespone,
+    SendQuestionPayload,
+    SendReactionQuestionPayload,
+    SendUnReactionQuestionPayload,
+    SendUnReactionQuestionResponse,
+    SendQuestionResponse,
+    SendReactionQuestionReponse,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -86,10 +92,10 @@ export const sendReconnectMeetingEvent = createMeetingSocketEvent<
     SendReconnectMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.SendReconnectMeeting);
-export const joinMeetingLurkerEvent = createMeetingSocketEvent<
-    JoinLurkerMeetingPayload,
+export const joinMeetingAudienceEvent = createMeetingSocketEvent<
+    JoinAudienceMeetingPayload,
     EnterMeetingRequestResponse
->(MeetingSocketEmitters.JoinWithLurker);
+>(MeetingSocketEmitters.JoinWithAudience);
 
 export const sendMeetingChatEvent = createMeetingSocketEvent<
     SendMessageChatPayload,
@@ -110,3 +116,18 @@ export const sendUpdatePaymentsMeetingEvent = createMeetingSocketEvent<
     SendUpdatePaymentsMeetingPayload,
     SendUpdatePaymentsMeetingRespone
 >(TemplatesSocketEmitters.UpdatePaymentTemplate);
+
+export const sendMeetingQuestionAnswerEvent = createMeetingSocketEvent<
+    SendQuestionPayload,
+    SendQuestionResponse
+>(MeetingSocketEmitters.SendQuestion);
+
+export const sendMeetingQuestionReactionEvent = createMeetingSocketEvent<
+    SendReactionQuestionPayload,
+    SendReactionQuestionReponse
+>(MeetingSocketEmitters.ReactionQuestion);
+
+export const sendMeetingQuestionUnReactionEvent = createMeetingSocketEvent<
+    SendUnReactionQuestionPayload,
+    SendUnReactionQuestionResponse
+>(MeetingSocketEmitters.SendUnReactionQuestion);

@@ -1,5 +1,7 @@
 import { memo } from 'react';
 import { Fade } from '@mui/material';
+import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -30,40 +32,44 @@ const Component = ({
     authorRole,
     authorThumbnail,
     authorName,
-}: TemplateMainInfoProps) => (
-    <Fade in={show}>
-        <CustomGrid className={styles.templateInfo} display="grid">
-            <TemplateInfo
-                className={styles.avatar}
-                name={name}
-                description={description}
-                isPublic={isPublic}
-                isCommonTemplate={isCommonTemplate}
-            />
-            <CustomBox className={styles.emptySpace} />
-            {isNeedToShowBusinessInfo && (
-                <CustomGrid
-                    container
-                    alignItems="flex-end"
-                    gap={1}
-                    className={styles.businessInfo}
-                >
-                    <TemplateParticipants
-                        number={maxParticipants}
-                        authorRole={authorRole}
-                        authorThumbnail={authorThumbnail}
-                        authorName={authorName}
-                    />
-                    <ConditionalRender condition={Boolean(type)}>
-                        <TemplatePaymentType
-                            type={type}
-                            priceInCents={priceInCents}
+}: TemplateMainInfoProps) => {
+    const { isMobile } = useBrowserDetect();
+
+    return (
+        <Fade in={show}>
+            <CustomGrid className={clsx(styles.templateInfo, { [styles.mobile]: isMobile })} display="grid">
+                <TemplateInfo
+                    className={styles.avatar}
+                    name={name}
+                    description={description}
+                    isPublic={isPublic}
+                    isCommonTemplate={isCommonTemplate}
+                />
+                <CustomBox className={styles.emptySpace} />
+                {isNeedToShowBusinessInfo && (
+                    <CustomGrid
+                        container
+                        alignItems="flex-end"
+                        gap={1}
+                        className={styles.businessInfo}
+                    >
+                        <TemplateParticipants
+                            number={maxParticipants}
+                            authorRole={authorRole}
+                            authorThumbnail={authorThumbnail}
+                            authorName={authorName}
                         />
-                    </ConditionalRender>
-                </CustomGrid>
-            )}
-        </CustomGrid>
-    </Fade>
-);
+                        <ConditionalRender condition={Boolean(type)}>
+                            <TemplatePaymentType
+                                type={type}
+                                priceInCents={priceInCents}
+                            />
+                        </ConditionalRender>
+                    </CustomGrid>
+                )}
+            </CustomGrid>
+        </Fade>
+    );
+}
 
 export const TemplateMainInfo = memo<TemplateMainInfoProps>(Component);

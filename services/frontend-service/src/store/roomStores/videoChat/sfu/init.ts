@@ -75,7 +75,7 @@ sample({
         isMicActive: $isMicActiveStore,
         role: $meetingRoleStore,
     }),
-    filter: ({ role }) => role !== MeetingRole.Lurker,
+    filter: ({ role }) => role !== MeetingRole.Audience,
     target: publishTracksFx,
 });
 

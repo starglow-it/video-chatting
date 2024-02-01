@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -18,6 +18,7 @@ import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 // components
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
+import { MeetingAttendeesList } from '@components/Meeting/MeetingAttendeesList/MeetingAttendeesList';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
@@ -25,7 +26,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
-    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingAudience,
     $enabledPaymentMeetingParticipant,
     $isOwner,
     $isScreenSharingStore,
@@ -35,7 +36,7 @@ import {
     $isToggleUsersPanel,
     $meetingUsersStore,
     $paymentIntent,
-    $paymentMeetingLurker,
+    $paymentMeetingAudience,
     $paymentMeetingParticipant,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
@@ -66,9 +67,11 @@ const Component = () => {
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
-    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
-    const paymentMeetingLurker = useStore($paymentMeetingLurker);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
+
+    const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();
 
@@ -142,16 +145,31 @@ const Component = () => {
                 </ClickAwayListener>
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.scheduleOpenPanel, {
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                            })}
-                        >
-                            <CustomScroll>
-                                <MeetingInviteParticipants />
-                            </CustomScroll>
-                        </CustomPaper>
+                        <div className={styles.scheduleOpenPanelWrapper}>
+                            <CustomPaper
+                                variant="black-glass"
+                                className={clsx(styles.scheduleOpenPanel, {
+                                    [styles.mobile]: isMobile && isPortraitLayout,
+                                })}
+                            >
+                                <CustomScroll>
+                                    <MeetingInviteParticipants
+                                        isParticipantPanelShow={isParticipantsPanelShow}
+                                        handleParticipantPanel={setIsParticipantPanelShow}
+                                    />
+                                </CustomScroll>
+                            </CustomPaper>
+                            <CustomPaper
+                                variant="black-glass"
+                                className={clsx(styles.attendeesList, {
+                                    [styles.mobile]: isMobile && isPortraitLayout,
+                                })}
+                            >
+                                <CustomScroll>
+                                    <MeetingAttendeesList isParticipantPanelShow={isParticipantsPanelShow} />
+                                </CustomScroll>
+                            </CustomPaper>
+                        </div>
                     </Fade>
                 </ClickAwayListener>
                 <ConditionalRender condition={isMobile}>
@@ -180,11 +198,11 @@ const Component = () => {
                                     />
                                 </ConditionalRender>
                                 <ConditionalRender
-                                    condition={enabledPaymentMeetingLurker}
+                                    condition={enabledPaymentMeetingAudience}
                                 >
                                     <PaymentForm
                                         onClose={handleCloseForm}
-                                        payment={paymentMeetingLurker}
+                                        payment={paymentMeetingAudience}
                                     />
                                 </ConditionalRender>
                             </CustomPaper>
@@ -267,7 +285,6 @@ const Component = () => {
                                 >
                                     <CloseIcon width="40px" height="40px" />
                                 </CustomGrid>
-
                                 {commonContent}
                             </CustomScroll>
                         </CustomGrid>

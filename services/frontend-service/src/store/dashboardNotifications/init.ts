@@ -2,9 +2,14 @@ import { attach, combine, Store } from 'effector-next';
 
 import {
     $dashboardNotificationsStore,
+    $welcomeTourStore,
+    $joyrideStore,
+    emitDashboardJoyrideEvent,
+    emitMeetingJoyrideEvent,
     getDashboardNotificationsSocketEvent,
     readDashboardNotificationsSocketEvent,
     setDashboardNotifications,
+    enableWelcomeTourEvent
 } from './model';
 import { $profileStore } from '../profile/profile/model';
 import {
@@ -48,6 +53,16 @@ export const sendReadDashboardNotificationsSocketEvent = attach<
     }),
 });
 
+$joyrideStore
+    .on(emitDashboardJoyrideEvent, (state, { runDashboardJoyride }) => ({
+        ...state,
+        runDashboardJoyride: runDashboardJoyride
+    }))
+    .on(emitMeetingJoyrideEvent, (state, { runMeetingJoyride }) => ({
+        ...state,
+        runMeetingJoyride: runMeetingJoyride
+    }));
+
 $dashboardNotificationsStore.on(
     [
         getDashboardNotificationsSocketEvent.doneData,
@@ -72,3 +87,5 @@ $dashboardNotificationsStore.on(
             ) as DashboardNotification[];
     },
 );
+
+$welcomeTourStore.on(enableWelcomeTourEvent, (state, data) => ({ ...state, status: data }));

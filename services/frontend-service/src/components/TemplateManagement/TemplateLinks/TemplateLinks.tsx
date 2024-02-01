@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 import { getRandomNumber } from 'shared-utils';
 
@@ -34,6 +35,7 @@ const Component = ({
 }: TemplatesLinksProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const { control, trigger } = useFormContext();
+    const { isMobile } = useBrowserDetect();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -94,11 +96,12 @@ const Component = ({
             container
             className={styles.wrapper}
             alignItems="center"
+            direction="column"
             justifyContent="center"
         >
             <ConditionalRender condition={!isBusinessSubscription}>
                 <CustomPaper
-                    className={styles.paperUpgrade}
+                    className={clsx(styles.paperUpgrade, { [styles.mobile]: isMobile })}
                     variant="black-glass"
                 >
                     <CustomGrid
@@ -110,42 +113,16 @@ const Component = ({
                         height="100%"
                         padding={4}
                     >
-                        <CustomTypography
-                            variant="h2"
-                            fontSize={30}
-                            color="colors.white.primary"
-                        >
+                        <CustomTypography color="colors.white.primary" className={styles.linkDescription}>
                             <Translation
                                 nameSpace="createRoom"
-                                translation="upgrade.embedYourLinks"
+                                translation="upgrade.linkDescription1"
                             />
                         </CustomTypography>
-                        <CustomTypography
-                            variant="h4"
-                            marginTop={7}
-                            color="colors.white.primary"
-                        >
+                        <CustomTypography color="colors.white.primary" className={clsx(styles.linkDescription, styles.linkDescription2)}>
                             <Translation
                                 nameSpace="createRoom"
-                                translation="upgrade.businessMembership"
-                            />
-                        </CustomTypography>
-                        <CustomTypography
-                            marginTop={4}
-                            color="colors.white.primary"
-                        >
-                            <Translation
-                                nameSpace="createRoom"
-                                translation="upgrade.embedLinks"
-                            />
-                        </CustomTypography>
-                        <CustomTypography color="colors.white.primary">
-                            +
-                        </CustomTypography>
-                        <CustomTypography color="colors.white.primary">
-                            <Translation
-                                nameSpace="createRoom"
-                                translation="upgrade.commission"
+                                translation="upgrade.linkDescription2"
                             />
                         </CustomTypography>
                         <CustomButton
@@ -202,13 +179,13 @@ const Component = ({
                 <ActionButton
                     variant="gray"
                     Icon={<ArrowLeftIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonPrev}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
                     Icon={<ArrowRightIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonNext}
                     onAction={handleClickNextStep}
                 />
             </CustomGrid>

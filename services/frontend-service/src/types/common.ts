@@ -17,3 +17,6 @@ export type SavedSettings = {
     backgroundAudioVolumeSetting: number;
     backgroundAudioSetting: boolean;
 };
+
+
+export type VideoBlob = Blob | null;

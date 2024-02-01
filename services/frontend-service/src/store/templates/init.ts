@@ -1,22 +1,9 @@
 import { combine, forward, sample } from 'effector';
 
-import { ICommonTemplate } from 'shared-types';
 import {
-    $discoveryTemplatesStore,
-    $isUploadTemplateBackgroundInProgress,
-    $modeTemplateStore,
     $queryProfileTemplatesStore,
     $queryTemplatesStore,
-    $replaceTemplateIdStore,
-    $scheduleEventLinkStore,
-    $scheduleTemplateIdStore,
-    $scheduleTemplateStore,
-    $setUpTemplateStore,
-    $templateDraft,
-    $templatePreviewStore,
-    $templatesStore,
     addTemplateToUserFx,
-    clearTemplateDraft,
     createTemplateFx,
     deleteCommonTemplateFx,
     editTemplateFx,
@@ -30,27 +17,21 @@ import {
     loadmoreUserTemplates,
     purchaseTemplateFx,
     sendScheduleInviteFx,
-    setPreviewTemplate,
+    downloadIcsFileFx,
     setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
-    setReplaceTemplateIdEvent,
     setScheduleEventLinkEvent,
-    setScheduleTemplateEvent,
-    setScheduleTemplateIdEvent,
     uploadTemplateFileFx,
     uploadUserTemplateFileFx,
 } from './model';
 
-import { appDialogsApi } from '../dialogs/init';
-import { $profileStore, clearProfileEvent } from '../profile/profile/model';
-
-// types
-import { AppDialogsEnum } from '../types';
+import { $profileStore } from '../profile/profile/model';
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
 import { handleFetchUserTemplate } from './handlers/handleFetchUsersTemplate';
 import { handleSendScheduleInvite } from './handlers/handleSendScheduleInvite';
+import { handleDownloadIcsFile } from './handlers/handleDownloadIcsFile';
 import { handleFetchTemplates } from './handlers/handleFetchTemplates';
 import { handleFetchCommonTemplate } from './handlers/handleFetchCommonTemplate';
 import { handlePurchaseTemplate } from './handlers/handlePurchaseTemplate';
@@ -62,10 +43,9 @@ import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 import { handleGetUserTemplate } from './handlers/handleGetUserTemplate';
 import {
-    editUserTemplateFx,
     getProfileTemplatesFx,
 } from '../profile/profileTemplates/model';
-import { googleVerifyFx, loginUserFx } from '../auth/model';
+
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -74,6 +54,7 @@ getUserTemplateFx.use(handleFetchUserTemplate);
 getUserTemplateByIdFx.use(handleGetUserTemplate);
 purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
+downloadIcsFileFx.use(handleDownloadIcsFile);
 createTemplateFx.use(handleCreateTemplate);
 editTemplateFx.use(handleEditTemplate);
 getEditingTemplateFx.use(handleFetchUserTemplate);
@@ -82,92 +63,13 @@ uploadUserTemplateFileFx.use(handleUploadUserTemplateFile);
 addTemplateToUserFx.use(handleAddTemplateToUser);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
-$templatesStore
-    .on(getTemplatesFx.doneData, (state, data) => ({
-        ...data,
-        list: data.isReset
-            ? data.list
-            : [
-                  ...state.list,
-                  ...data.list.filter(item => !item.isAcceptNoLogin),
-              ],
-    }))
-    .reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
-
-$templatePreviewStore.on(
-    setPreviewTemplate,
-    (_state, data: ICommonTemplate | null) => data,
-);
-$setUpTemplateStore.on(getTemplateFx.doneData, (state, data) => data);
-$discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({
-    ...state,
-    ...data,
-}));
-$scheduleTemplateIdStore.on(setScheduleTemplateIdEvent, (state, data) => data);
-$scheduleTemplateStore.on(setScheduleTemplateEvent, (state, data) => ({
-    ...state,
-    ...data,
-}));
-
-$scheduleEventLinkStore.on(setScheduleEventLinkEvent, (state, data) => {
-    if (data) {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-        });
-    } else {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-        });
-    }
-
-    return data;
-});
-
-$templateDraft
-    .on(
-        [
-            createTemplateFx.doneData,
-            editTemplateFx.doneData,
-            getEditingTemplateFx.doneData,
-            editUserTemplateFx.doneData,
-        ],
-        (state, data) => data,
-    )
-    .reset(clearTemplateDraft);
-
-$replaceTemplateIdStore.on(setReplaceTemplateIdEvent, (state, data) => data);
-
-$isUploadTemplateBackgroundInProgress.reset(clearTemplateDraft);
-
-$queryTemplatesStore
-    .on(setQueryTemplatesEvent, (state, data) => ({
-        ...state,
-        ...data,
-    }))
-    .on(getTemplatesFx.doneData, (state, data) => ({
-        ...state,
-        skip: data.skip,
-    }))
-    .reset([
-        setQueryProfileTemplatesEvent,
-        loginUserFx.doneData,
-        googleVerifyFx.doneData,
-    ]);
-
-$queryProfileTemplatesStore
-    .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
-    .on(getProfileTemplatesFx.doneData, (state, data) => ({
-        ...state,
-        skip: data?.skip || 0,
-    }))
-    .reset(setQueryTemplatesEvent);
-
-$modeTemplateStore
-    .on(setQueryTemplatesEvent, () => 'common')
-    .on(setQueryProfileTemplatesEvent, () => 'private');
-
 forward({
     from: sendScheduleInviteFx.doneData,
+    to: setScheduleEventLinkEvent,
+});
+
+forward({
+    from: downloadIcsFileFx.doneData,
     to: setScheduleEventLinkEvent,
 });
 

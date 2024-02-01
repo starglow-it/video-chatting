@@ -326,6 +326,7 @@ const Component = ({
                         }
                     >
                         <CustomGrid
+                            container
                             flex={1}
                             height={370}
                             display="flex"

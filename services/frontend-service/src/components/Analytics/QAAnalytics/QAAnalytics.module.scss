@@ -1,0 +1,31 @@
+@import "../../../styles/rem";
+
+.chartClass {
+  margin: rem(40px auto);
+}
+
+.loader {
+  margin: auto;
+}
+
+.noData {
+  margin: auto;
+}
+
+.attendeesDescWrapper {
+  width: fit-content;
+}
+
+.questionsNumWrapper {
+  width: rem(100px);
+  height: rem(100px);
+  border-radius: 50%;
+  border:1px solid #FF884E;
+}
+
+.qaTitleWrapper {
+  margin-bottom: 20px;
+}
+.questionList {
+  color: #B8B6B6;
+}

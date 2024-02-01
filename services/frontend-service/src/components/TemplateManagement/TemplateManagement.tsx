@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -88,9 +89,8 @@ enum TabsValues {
 
 const tabs: ValuesSwitcherItem<number>[] = [
     { id: 1, value: TabsValues.Background, label: 'Background' },
-    { id: 2, value: TabsValues.Settings, label: 'Settings' },
     {
-        id: 3,
+        id: 2,
         value: TabsValues.Links,
         label: 'Links',
         tooltip: (
@@ -100,14 +100,15 @@ const tabs: ValuesSwitcherItem<number>[] = [
             />
         ),
     },
-    { id: 4, value: TabsValues.Privacy, label: 'Privacy' },
+    { id: 3, value: TabsValues.Settings, label: 'Description' },
+    { id: 4, value: TabsValues.Privacy, label: 'Publish' },
 ];
 
 const businessUserTabs: ValuesSwitcherItem<number>[] = [
     { id: 1, value: TabsValues.Background, label: 'Background' },
-    { id: 2, value: TabsValues.Settings, label: 'Settings' },
-    { id: 3, value: TabsValues.Links, label: 'Links' },
-    { id: 4, value: TabsValues.Privacy, label: 'Privacy' },
+    { id: 2, value: TabsValues.Links, label: 'Links' },
+    { id: 3, value: TabsValues.Settings, label: 'Description' },
+    { id: 4, value: TabsValues.Privacy, label: 'Publish' },
 ];
 
 const defaultValues: IUploadTemplateFormData = {
@@ -142,12 +143,15 @@ const Component = ({
     template,
     onCancel,
     onSubmit,
+    onSubmitAndEnterMeeting,
+    onSubmitAndScheduleMeeting,
     onUploadFile,
     onUpgradePlan,
     isFileUploading,
 }: TemplateManagementProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
+    const { isMobile } = useBrowserDetect();
 
     const router = useRouter();
 
@@ -209,7 +213,7 @@ const Component = ({
 
     useEffect(() => {
         if (!isBusinessSubscription && !isProfessionalSubscription) {
-            router.push(dashboardRoute);
+            // router.push(dashboardRoute);
         }
     }, [isBusinessSubscription, isProfessionalSubscription]);
 
@@ -352,6 +356,34 @@ const Component = ({
         [onSubmit, isFileUploading],
     );
 
+    const handleSaveAndEnterMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndEnterMeeting(data);
+        }),
+        [onSubmitAndEnterMeeting, isFileUploading],
+    );
+
+    const handleSaveAndScheduleMeeting = useCallback(
+        onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
+            onSubmitAndScheduleMeeting(data);
+        }),
+        [onSubmitAndScheduleMeeting, isFileUploading],
+    );
+
     const handleUpgradePlanClick = useCallback(
         onSubmitForm(async data => {
             if (isFileUploading) {
@@ -476,10 +508,11 @@ const Component = ({
                                 onSubmit={handleSubmit}
                                 onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
+                                handleEnterMeeting={handleSaveAndEnterMeeting}
+                                handleScheduleMeeting={handleSaveAndScheduleMeeting}
                                 template={template}
                             />
                         </ConditionalRender>
-
                         <ConditionalRender
                             condition={activeValue === TabsValues.Links}
                         >
@@ -490,9 +523,9 @@ const Component = ({
                                 onUpgrade={handleUpgradePlanClick}
                             />
                         </ConditionalRender>
-
                         <CustomGrid
                             ref={controlPanelRef}
+                            item
                             container
                             flexWrap="nowrap"
                             alignItems="flex-start"
@@ -545,7 +578,6 @@ const Component = ({
                                                     className={styles.name}
                                                 />
                                             )}
-
                                             <CustomGrid
                                                 container
                                                 wrap="nowrap"
@@ -584,24 +616,27 @@ const Component = ({
                                     </CustomPaper>
                                 </CustomGrid>
                             </CustomGrid>
-                            <CustomGrid
-                                item
-                                container
-                                flex={2}
-                                justifyContent="center"
-                            >
-                                <CustomPaper
-                                    variant="black-glass"
-                                    className={styles.navigationPaper}
+                            {
+                                !isMobile &&
+                                <CustomGrid
+                                    item
+                                    container
+                                    flex={2}
+                                    justifyContent="center"
                                 >
-                                    <ValuesSwitcher<number>
-                                        values={targetTab}
-                                        activeValue={activeItem}
-                                        onValueChanged={handleValueChange}
-                                        variant="transparent"
-                                    />
-                                </CustomPaper>
-                            </CustomGrid>
+                                    <CustomPaper
+                                        variant="black-glass"
+                                        className={styles.navigationPaper}
+                                    >
+                                        <ValuesSwitcher<number>
+                                            values={targetTab}
+                                            activeValue={activeItem}
+                                            onValueChanged={handleValueChange}
+                                            variant="transparent"
+                                        />
+                                    </CustomPaper>
+                                </CustomGrid>
+                            }
                             <CustomGrid
                                 item
                                 container
@@ -630,6 +665,27 @@ const Component = ({
                                 </CustomTooltip>
                             </CustomGrid>
                         </CustomGrid>
+                        {
+                            isMobile &&
+                            <CustomGrid
+                                container
+                                flex={2}
+                                justifyContent="center"
+                                className={ styles.mobileNavigationBar }
+                            >
+                                <CustomPaper
+                                    style={{ backgroundColor: '#333333' }}
+                                    className={styles.navigationPaper}
+                                >
+                                    <ValuesSwitcher<number>
+                                        values={targetTab}
+                                        activeValue={activeItem}
+                                        onValueChanged={handleValueChange}
+                                        variant="transparent"
+                                    />
+                                </CustomPaper>
+                            </CustomGrid>
+                        }
                     </TemplateBackgroundPreview>
                 </form>
             </FormProvider>

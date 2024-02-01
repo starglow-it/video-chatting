@@ -2,6 +2,7 @@ import { memo, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -24,6 +25,7 @@ import { CommonTemplateItemProps } from './types';
 import styles from './CommonTemplateItem.module.scss';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
+    const { isMobile } = useBrowserDetect();
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
     const [showPreview, setShowPreview] = useState(false);
@@ -94,7 +96,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
 
     return (
         <CustomGrid
-            className={styles.templateContent}
+            className={clsx(styles.templateContent, { [styles.mobile]: isMobile })}
             container
             justifyContent="center"
             alignItems="center"
@@ -118,6 +120,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 authorRole={template.authorRole}
                 authorThumbnail={template.authorThumbnail}
                 authorName={template.authorName}
+                className={styles.templateMainInfo}
             />
             <Fade in={showPreview}>
                 <CustomGrid

@@ -10,7 +10,8 @@ import { setMeetingErrorEvent } from '../meeting/meetingError/model';
 import { appDialogsApi } from '../../dialogs/init';
 import { createMeetingSocketEvent } from '../meetingSocket/model';
 import {
-    joinMeetingWithLurkerEvent,
+    joinMeetingEvent,
+    joinMeetingWithAudienceEvent,
     updateMeetingEvent,
 } from '../meeting/meeting/model';
 import { updateMeetingUserEvent } from './meetingUsers/model';
@@ -40,15 +41,16 @@ export const changeHostSocketEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.ChangeHost);
 
+//add audience to paticipant
 export const requestSwitchRoleByHostEvent = createMeetingSocketEvent<
     { meetingId: string; meetingUserId: string },
     any
 >(UsersSocketEmitters.RequestRoleByHost);
 
-export const requestSwitchRoleByLurkerEvent = createMeetingSocketEvent<
+export const requestSwitchRoleByAudienceEvent = createMeetingSocketEvent<
     { meetingId: string },
     any
->(UsersSocketEmitters.RequestRoleByLurker);
+>(UsersSocketEmitters.RequestRoleByAudience);
 
 export const answerRequestByHostEvent = createMeetingSocketEvent<
     {
@@ -59,11 +61,37 @@ export const answerRequestByHostEvent = createMeetingSocketEvent<
     any
 >(UsersSocketEmitters.AnswerRequestByHost);
 
-export const answerRequestByLurkerEvent = createMeetingSocketEvent<
+export const answerRequestByAudienceEvent = createMeetingSocketEvent<
     { action: AnswerSwitchRoleAction; meetingId: string },
     any
->(UsersSocketEmitters.AnswerRequestByLurker);
+>(UsersSocketEmitters.AnswerRequestByAudience);
 
+//Send participant back to audience
+export const requestSwitchRoleFromParticipantToAudienceByHostEvent = createMeetingSocketEvent<
+    { meetingId: string; meetingUserId: string },
+    any
+>(UsersSocketEmitters.RequestRoleFromParticipantToAudienceByHost);
+
+export const requestSwitchRoleFromParticipantToAudienceByParticipantEvent = createMeetingSocketEvent<
+    { meetingId: string },
+    any
+>(UsersSocketEmitters.RequestRoleFromParticipantToAudienceByParticipant);
+
+export const answerRequestFromParticipantToAudienceByHostEvent = createMeetingSocketEvent<
+    {
+        meetingUserId: string;
+        action: AnswerSwitchRoleAction;
+        meetingId: string;
+    },
+    any
+>(UsersSocketEmitters.AnswerRequestFromParticipantToAudienceByHost);
+
+export const answerRequestFromParticipantToAudienceByParticipantEvent = createMeetingSocketEvent<
+    { action: AnswerSwitchRoleAction; meetingId: string },
+    any
+>(UsersSocketEmitters.AnswerRequestFromParticipantToAudienceByParticipant);
+
+//Socket events watch
 changeHostSocketEvent.failData.watch(data => {
     if (data) {
         setMeetingErrorEvent(data);
@@ -73,19 +101,19 @@ changeHostSocketEvent.failData.watch(data => {
     }
 });
 
-answerRequestByLurkerEvent.doneData.watch(async data => {
+answerRequestByAudienceEvent.doneData.watch(async data => {
     if (data) {
         if (data?.action === AnswerSwitchRoleAction.Accept) {
             setRoleQueryUrlEvent(null);
             updateMeetingEvent({ meeting: data?.meeting });
             updateMeetingUserEvent({ user: data?.user });
             await initDevicesEventFxWithStore();
-            await joinMeetingWithLurkerEvent();
+            await joinMeetingWithAudienceEvent();
         }
     }
 });
 
-requestSwitchRoleByLurkerEvent.doneData.watch(data => {
+requestSwitchRoleByAudienceEvent.doneData.watch(data => {
     if (data) {
         addNotificationEvent({
             message: `Request sent to Host. Please wait for Host to approve`,
@@ -102,5 +130,27 @@ requestSwitchRoleByHostEvent.doneData.watch(data => {
             withSuccessIcon: true,
             type: NotificationType.RequestBecomeParticipantSuccess,
         });
+    }
+});
+
+requestSwitchRoleFromParticipantToAudienceByHostEvent.doneData.watch(data => {
+    if (data) {
+        addNotificationEvent({
+            message: `Moved user to audience`,
+            withSuccessIcon: true,
+            type: NotificationType.RequestBecomeAudienceSuccess,
+        });
+    }
+});
+
+answerRequestFromParticipantToAudienceByParticipantEvent.doneData.watch(async data => {
+    if (data) {
+        if (data?.action === AnswerSwitchRoleAction.Accept) {
+            setRoleQueryUrlEvent('audience');
+            updateMeetingEvent({ meeting: data?.meeting });
+            updateMeetingUserEvent({ user: data?.user });
+            await initDevicesEventFxWithStore();
+            await joinMeetingEvent();
+        }
     }
 });

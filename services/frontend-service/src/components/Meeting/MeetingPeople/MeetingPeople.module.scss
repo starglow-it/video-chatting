@@ -4,10 +4,21 @@
     font-weight: bold;
     font-size: 13px;
     min-width: 73px;
+    color: white;
+}
+
+.clearBtn {
+    text-transform: initial;
+    min-height: 40px;
+    font-weight: bold;
+    font-size: 13px;
+    min-width: 73px;
+    color: white;
 }
 
 .tabs {
     min-height: 40px;
+    justify-content: space-between;
 }
 
 .tabContainer {
@@ -20,4 +31,11 @@
 
 .buttonScroll {
     color: white;
+}
+
+.chatCaption {
+    color: white;
+    padding: 6px 0;
+    border-bottom: 1px solid white;
+    margin-bottom: 10px;
 }

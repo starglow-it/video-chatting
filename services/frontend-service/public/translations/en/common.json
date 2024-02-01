@@ -61,7 +61,10 @@
     "leave": "Leave",
     "homePage": "Homepage",
     "getStartedGoogle": "Get Started with Google",
-    "getStartedEmail": "Get Started with Email"
+    "getStartedEmail": "Get Started with Email",
+    "openSystemSettings": "Open System Settings",
+    "letsgo": "Let's go",
+    "next": "next"
   },
   "login": {
     "welcome": "Welcome back",
@@ -103,5 +106,63 @@
   },
   "network": {
     "off": "Network unstable, reconnecting…"
+  },
+  "statistics": {
+    "rooms": {
+      "rating": {
+        "title": "Rooms rating",
+        "based": "Based on",
+        "roomType": "Room Type",
+        "dropdownTitle": "select a ruume event"
+      }
+    },
+    "pages": {
+      "users": {
+        "title": "users"
+      },
+      "qa": {
+        "title": "q&a"
+      },
+      "links": {
+        "title": "links"
+      },
+      "monetization": {
+        "title": "monetization"
+      }
+    },
+    "users": {
+      "attendeesNumbers": {
+        "numberOfAttendees": "number of attendees",
+        "participants": "participants",
+        "audience": "audience",
+        "avgMin": "average minutes present",
+        "mins": "mins",
+        "min": "min"
+      },
+      "locationAnalytics": {
+        "title": "location"
+      },
+      "reactionAnalytics": {
+        "title": "reactions",
+        "popular": "popular",
+        "participants": "participants",
+        "audience": "audience"
+      },
+      "qaAnalytics": {
+        "title": "q&a",
+        "questions": "questions",
+        "answered": "answered"
+      },
+      "linksAnalytics": {
+        "title": "links",
+        "clicks": "clicks",
+        "clickThroughRate": "click-through rate"
+      },
+      "monetizationAnalytics": {
+        "title": "earnings",
+        "entryFees": "entry fees",
+        "donations": "donations"
+      }
+    }
   }
 }

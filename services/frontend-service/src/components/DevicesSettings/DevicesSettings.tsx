@@ -62,6 +62,7 @@ import { NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
+import { MEDIA_NOT_ALLOWED_BY_BROWSER, MEDIA_NOT_ALLOWED_BY_SYSTEM, MEDIA_OPERATION_ABORTED, MEDIA_DEVICE_NOT_FOUND, MEDIA_DEVICE_NOT_ACCESSIBLE, MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED, MEDIA_SECURITY_ERROR, MEDIA_INVALID_CONSTRAINTS, MEDIA_GENERAL_ERROR } from 'src/helpers/media/getMediaStream';
 
 const Component = () => {
     const [waitingPaywall, setWaitingPaywall] = useState(false);
@@ -77,6 +78,7 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -143,26 +145,42 @@ const Component = () => {
     }, [isCameraActive]);
 
     const handleToggleMic = useCallback(() => {
-        addNotificationEvent({
-            type: NotificationType.MicAction,
-            message: `meeting.mic.${isMicActive ? 'off' : 'on'}`,
-        });
+        if (isAudioError) {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.deviceErrors.${audioError?.type}`,
+            });
+            setShowDeviceError('audio');
+        } else {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.mic.${isMicActive ? 'off' : 'on'}`,
+            });
 
-        updateLocalUserEvent({
-            micStatus: isMicActive ? 'inactive' : 'active',
-        });
-        setIsAudioActiveEvent(!isMicActive);
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+            setIsAudioActiveEvent(!isMicActive);
+        }
     }, [isMicActive]);
 
     const handleToggleCamera = useCallback(() => {
-        addNotificationEvent({
-            type: NotificationType.CamAction,
-            message: `meeting.cam.${isCameraActive ? 'off' : 'on'}`,
-        });
-        updateLocalUserEvent({
-            cameraStatus: isCameraActive ? 'inactive' : 'active',
-        });
-        setIsCameraActiveEvent(!isCameraActive);
+        if (isVideoError) {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.deviceErrors.${videoError?.type}`,
+            });
+            setShowDeviceError('video');
+        } else {
+            addNotificationEvent({
+                type: NotificationType.CamAction,
+                message: `meeting.cam.${isCameraActive ? 'off' : 'on'}`,
+            });
+            updateLocalUserEvent({
+                cameraStatus: isCameraActive ? 'inactive' : 'active',
+            });
+            setIsCameraActiveEvent(!isCameraActive);
+        }
     }, [isCameraActive]);
 
     const handleJoinMeeting = useCallback(async () => {
@@ -207,12 +225,22 @@ const Component = () => {
 
     const isAudioError = Boolean(audioError);
     const isVideoError = Boolean(videoError);
+    useEffect(() => {
+        if (isAudioError) {
+            setIsAudioActiveEvent(false); // This assumes setIsAudioActiveEvent will set isMicActive to false
+        }
+    }, [isAudioError]);
+
+    useEffect(() => {
+        if (isVideoError) {
+            setIsCameraActiveEvent(false); // This assumes setIsCameraActiveEvent will set isCameraActive to false
+        }
+    }, [isVideoError]);
 
     const isAccessStatusWaiting =
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
 
     const isEnterMeetingDisabled =
-        isAudioError ||
         isEnterMeetingRequestPending ||
         isEnterWaitingRoomRequestPending ||
         isAccessStatusWaiting;
@@ -236,8 +264,8 @@ const Component = () => {
         window.open(
             `
         https://mail.google.com/mail/?view=cm&fs=1&su=While you were out&body=${encodeURI(
-            'Missed you on Ruume… Shall we re-schedule?',
-        )}`,
+                'Missed you on Ruume… Shall we re-schedule?',
+            )}`,
             '_blank',
         );
     };
@@ -425,6 +453,118 @@ const Component = () => {
         }
     };
 
+    const renderErrorContent = (src: string, translationKey: string) => (
+        <>
+            <ConditionalRender condition={Boolean(src)}>
+                <CustomImage
+                    src={src}
+                    width={10}
+                    height={100}
+                    unoptimized={false}
+                    objectFit="contain"
+                />
+            </ConditionalRender>
+            <CustomTypography
+                textAlign="center"
+                fontSize={14}
+                nameSpace="meeting"
+                translation={translationKey}
+                className={styles.devicesError}
+            />
+        </>
+    );
+
+    const openSystemSettings = (): void => {
+        const userAgent: string = navigator.userAgent;
+        const deviceSetting = showDeviceError === "video" ? 'camera' : 'microphone';
+    
+        let preferencesURI: string;
+    
+        if (/Mac|Macintosh|OS X/.test(userAgent)) {
+            const macSetting = deviceSetting === 'camera' ? 'Privacy_Camera' : 'Privacy_Microphone';
+            preferencesURI = `x-apple.systempreferences:com.apple.preference.security?${macSetting}`;
+        } else if (/Windows/.test(userAgent)) {
+            const windowsSetting = deviceSetting === 'camera' ? 'webcam' : 'microphone';
+            preferencesURI = `ms-settings:privacy-${windowsSetting}`;
+        } else {
+            // Default to Linux or other OS
+            preferencesURI = `gnome-control-center ${deviceSetting}`;
+        }
+    
+        openPreferences(preferencesURI);
+    };
+    const openPreferences = (preferencesURI: string): void => {
+        try {
+            window.open(preferencesURI);
+        } catch (error) {
+            console.error("Failed to open preferences:", error);
+        }
+    };
+
+    const determineRenderContent = () => {
+        if (showDeviceError == "") {
+            return (
+                <CustomTypography
+                        textAlign="center"
+                        fontSize={14}
+                        nameSpace="meeting"
+                        translation="allowAccess.desktop.noDevice"
+                        className={styles.devicesError}
+                    />
+            );
+        }
+        const error = showDeviceError == "audio" ? audioError : videoError;
+        if (error?.type == MEDIA_NOT_ALLOWED_BY_BROWSER) {
+            // return renderErrorContent("/images/reset-permission.gif", "allowAccess.desktop.allowDevice");
+            return renderErrorContent("", "allowAccess.desktop.allowDevice");
+        }
+
+        if (error?.type == MEDIA_NOT_ALLOWED_BY_SYSTEM) {
+            return (
+                <>
+                    <CustomTypography
+                        textAlign="center"
+                        fontSize={14}
+                        nameSpace="meeting"
+                        translation="allowAccess.desktop.allowChromeDescription"
+                        className={styles.devicesError}
+                    />
+                    {renderErrorContent("", "allowAccess.desktop.allowChrome")}
+                    <CustomGrid
+                        container
+                        gap={1}
+                        wrap="nowrap" className={styles.openSystemSettingsButton}>
+                        <CustomButton
+                            onClick={openSystemSettings}
+                            variant="custom-primary"
+                            label={
+                                <Translation
+                                    nameSpace="common"
+                                    translation="buttons.openSystemSettings"
+                                />
+                            }
+                        />
+                    </CustomGrid>
+                </>
+            );
+        }
+
+        if (error?.type == MEDIA_DEVICE_NOT_FOUND) {
+            return renderErrorContent("", "allowAccess.desktop.notFoundDevice");
+        }
+
+        if (error?.type == MEDIA_GENERAL_ERROR) {
+            return renderErrorContent("", "allowAccess.desktop.errorDevice");
+        }
+        if (error?.type == MEDIA_OPERATION_ABORTED ||
+            error?.type == MEDIA_DEVICE_NOT_ACCESSIBLE ||
+            error?.type == MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED ||
+            error?.type == MEDIA_SECURITY_ERROR ||
+            error?.type == MEDIA_INVALID_CONSTRAINTS) {
+            return renderErrorContent("", error?.message || "");
+        }
+    };
+
     return (
         <>
             <CustomGrid container direction="column" wrap="nowrap">
@@ -438,8 +578,8 @@ const Component = () => {
                 >
                     <ConditionalRender condition={!isPayWallBeforeJoin}>
                         <MediaPreview
-                            videoError={videoError}
-                            audioError={audioError}
+                            videoError={videoError || undefined}
+                            audioError={audioError || undefined}
                             isMicActive={isMicActive}
                             isCameraActive={isCameraActive}
                             videoDevices={videoDevices}
@@ -447,10 +587,10 @@ const Component = () => {
                             profileAvatar={
                                 localUser.meetingAvatarId
                                     ? list.find(
-                                          item =>
-                                              item.id ===
-                                              localUser.meetingAvatarId,
-                                      )?.resouce.url
+                                        item =>
+                                            item.id ===
+                                            localUser.meetingAvatarId,
+                                    )?.resouce.url
                                     : profile.profileAvatar?.url
                             }
                             userName={localUser?.username}
@@ -477,7 +617,10 @@ const Component = () => {
                             }
                             wrap="nowrap"
                         >
-                            {renderMainContent()}
+                            <CustomGrid className={styles.blockAccess}>
+                                {renderMainContent()}
+                            </CustomGrid>
+
                             <ConditionalRender condition={isOwner}>
                                 <CustomCheckbox
                                     labelClassName={styles.label}
@@ -496,25 +639,7 @@ const Component = () => {
                 </CustomGrid>
             </CustomGrid>
             <ConditionalRender condition={isAudioError || isVideoError}>
-                <ConditionalRender condition={!isMobile}>
-                    <CustomGrid className={styles.blockAccess}>
-                        <CustomImage
-                            src="/images/reset-permission.gif"
-                            width={10}
-                            height={100}
-                            unoptimized={false}
-                            objectFit="contain"
-                        />
-                        <CustomTypography
-                            textAlign="center"
-                            color="colors.grayscale.normal"
-                            fontSize={14}
-                            nameSpace="meeting"
-                            translation="allowAccess.desktop"
-                            className={styles.devicesError}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
+                {determineRenderContent()}
                 <ConditionalRender condition={isMobile}>
                     <CustomImage
                         src="/images/reload.svg"
@@ -525,12 +650,12 @@ const Component = () => {
                     />
                     <CustomTypography
                         textAlign="center"
-                        color="colors.grayscale.normal"
                         fontSize={14}
                         nameSpace="meeting"
                         translation="allowAccess.mobile"
                         className={styles.devicesError}
                     />
+
                 </ConditionalRender>
             </ConditionalRender>
             <CustomGrid

@@ -150,7 +150,7 @@ const Component = ({
                 template.customLink || template.id,
             );
 
-            if (role === MeetingRole.Lurker && !isOwner) {
+            if (role === MeetingRole.Audience && !isOwner) {
                 roomUrl = `${roomUrl}?role=${role}`;
             }
 

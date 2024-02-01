@@ -58,7 +58,7 @@ import { MeetingUserDocument } from '../schemas/meeting-user.schema';
 import { MeetingDocument } from '../schemas/meeting.schema';
 import { subscribeWsError, throwWsError, wsError } from '../utils/ws/wsError';
 import { ReconnectDto } from '../dtos/requests/recconnect.dto';
-import { LurkerJoinMeetingDto } from '../dtos/requests/lurker-join-meeting.dto';
+import { AudienceJoinMeetingDto } from '../dtos/requests/audience-join-meeting.dto';
 import { wsResult } from '../utils/ws/wsResult';
 import { ObjectId } from '../utils/objectId';
 import { MeetingChatsService } from '../modules/meeting-chats/meeting-chats.service';
@@ -301,7 +301,7 @@ export class MeetingsGateway
   }
 
   isChangeVideoContainer = (user: MeetingUserDocument) =>
-    user.meetingRole !== MeetingRole.Lurker &&
+    user.meetingRole !== MeetingRole.Audience &&
     [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Left].includes(
       user.accessStatus as MeetingAccessStatusEnum,
     );
@@ -866,10 +866,10 @@ export class MeetingsGateway
     );
   }
 
-  @Roles([MeetingRole.Lurker])
-  @WsEvent(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
-  async joinMeetingWithLurker(
-    @MessageBody() msg: LurkerJoinMeetingDto,
+  @Roles([MeetingRole.Audience])
+  @WsEvent(MeetingSubscribeEvents.OnJoinMeetingWithAudience)
+  async joinMeetingWithAudience(
+    @MessageBody() msg: AudienceJoinMeetingDto,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(
@@ -925,7 +925,7 @@ export class MeetingsGateway
         const mU = await this.usersComponent.findOneAndUpdate({
           query: {
             socketId: socket.id,
-            meetingRole: MeetingRole.Lurker,
+            meetingRole: MeetingRole.Audience,
           },
           data: updateData,
           session,
@@ -939,7 +939,7 @@ export class MeetingsGateway
         });
 
         await meeting.populate(['users']);
-        socket.join(`lurker:${msg.meetingId}`);
+        socket.join(`audience:${msg.meetingId}`);
         socket.join(`meeting:${msg.meetingId}`);
 
         const plainMeeting = meetingSerialization(meeting);
@@ -1308,7 +1308,7 @@ export class MeetingsGateway
         throwWsError(!userTemplate, 'No user template found');
 
         if (
-          user.meetingRole !== MeetingRole.Lurker &&
+          user.meetingRole !== MeetingRole.Audience &&
           user.accessStatus === MeetingAccessStatusEnum.Disconnected
         ) {
           const u = await this.usersService.updateVideoContainer({

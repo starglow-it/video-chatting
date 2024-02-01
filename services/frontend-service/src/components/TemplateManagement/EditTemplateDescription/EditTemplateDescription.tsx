@@ -1,9 +1,11 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useState, useEffect, useMemo, useRef, MouseEvent } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -11,14 +13,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
-import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
-import { Translation } from '@library/common/Translation/Translation';
+import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
+import { MeetingMonetization } from '../../Meeting/MeetingMonetization/MeetingMonetization';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
@@ -28,23 +27,28 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 import { getRandomHexColor } from 'shared-utils';
 import { useRouter } from 'next/router';
 import {
+    $profileStore,
     $businessCategoriesStore,
     checkCustomLinkFx,
     getBusinessCategoriesFx,
 } from '../../../store';
+
+import { toggleCreateRoomPaymentFormEvent } from '../../../store/roomStores';
 
 // const
 import {
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
 } from '../../../const/templates/info';
-import frontendConfig from '../../../const/config';
 
 // styles
 import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
+
+//hooks
+import useWindowSize from '@hooks/useWIndowSize';
 
 const Component = ({
     onNextStep,
@@ -53,6 +57,8 @@ const Component = ({
 }: EditTemplateDescriptionProps) => {
     const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
+    const profileStore = useStore($profileStore);
+    const { isMobile } = useBrowserDetect();
 
     const {
         register,
@@ -69,6 +75,14 @@ const Component = ({
     const tags = useWatch({ control, name: 'tags' });
     const tagsCustom = router.query.tags;
     const isCustom = !!tagsCustom;
+    const nameErrorMessage: string = errors?.name?.[0]?.message || '';
+    const descriptionErrorMessage: string =
+        errors?.description?.[0]?.message || '';
+    const aboutTheHostErrorMessage: string =
+        errors?.aboutTheHost?.[0]?.message || '';
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [enableMonetization, setEnableMonetization] = useState(false);
+    const windowSize = useWindowSize();
 
     useEffect(() => {
         (() => {
@@ -105,15 +119,19 @@ const Component = ({
             tags.map((item: AutocompleteType<IBusinessCategory> | string) =>
                 typeof item === 'string'
                     ? {
-                          label: item,
-                          key: generateKeyByLabel(item),
-                          value: item,
-                          color: getRandomHexColor(50, 220),
-                      }
+                        label: item,
+                        key: generateKeyByLabel(item),
+                        value: item,
+                        color: getRandomHexColor(50, 220),
+                    }
                     : item,
             ),
         );
     }, []);
+
+    useEffect(() => {
+        toggleCreateRoomPaymentFormEvent(enableMonetization);
+    }, [enableMonetization]);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -151,9 +169,13 @@ const Component = ({
         () => register('name'),
         [],
     );
-    const customLinkProps = useMemo(() => register('customLink'), []);
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
         () => register('description', { required: false }),
+        [],
+    );
+
+    const { onChange: onChangeAboutTheHost, ...aboutTheHost } = useMemo(
+        () => register('aboutTheHost', { required: false }),
         [],
     );
 
@@ -176,6 +198,25 @@ const Component = ({
         onChangeDescription(event);
     }, []);
 
+    const handleChangeAboutTheHost = useCallback(event => {
+        if (event.target.value.length > MAX_DESCRIPTION_LENGTH) {
+            // eslint-disable-next-line no-param-reassign
+            event.target.value = event.target.value.slice(
+                0,
+                MAX_DESCRIPTION_LENGTH,
+            );
+            setError('aboutTheHost', [
+                {
+                    type: 'focus',
+                    message: `maxLength.${MAX_DESCRIPTION_LENGTH}`,
+                },
+            ]);
+        } else {
+            setError('aboutTheHost', [{ message: '', type: 'focus' }]);
+        }
+        onChangeAboutTheHost(event);
+    }, []);
+
     const handleChangeName = useCallback(event => {
         if (event.target.value.length > MAX_NAME_LENGTH) {
             // eslint-disable-next-line no-param-reassign
@@ -189,44 +230,60 @@ const Component = ({
         onChangeName(event);
     }, []);
 
-    const customLinkInputProps = useMemo(
-        () => ({
-            startAdornment: <CustomLinkIcon width="24px" height="24px" />,
-        }),
-        [],
-    );
+    const toggleSelected = (e: MouseEvent<HTMLElement>) => {
+        setEnableMonetization(prev => !prev);
 
-    const businessCategoriesOptions = useMemo(
-        () =>
-            businessCategories.list.map(item => ({
-                ...item,
-                label: item.value,
-            })),
-        [businessCategories.list],
-    );
+        if (!enableMonetization) {
+            setAnchorEl(document.getElementById('formPanel'));
+        }
+    };
 
-    const nameErrorMessage: string = errors?.name?.[0]?.message || '';
-    const descriptionErrorMessage: string =
-        errors?.description?.[0]?.message || '';
-    const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
-    const customLinkErrorMessage: string =
-        errors?.customLink?.[0]?.message || '';
+    const handleCloseButton = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <CustomGrid
             container
             alignItems="center"
             justifyContent="center"
-            className={styles.wrapper}
+            className={clsx(styles.wrapper)}
         >
-            <CustomPaper variant="black-glass" className={styles.paper}>
+            <CustomPopover
+                id="monetization"
+                open={Boolean(anchorEl)}
+                onClose={handleCloseButton}
+                anchorEl={anchorEl}
+                // style={{ zIndex: 20, left: isMobile ? "-10px" : '70px', top: isMobile ? "-25px" : '-40px' }}
+                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none'}}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: windowSize.width > 1500 ? 'right' : 'center',
+                }}
+                transformOrigin={{
+                    vertical: "bottom",
+                    horizontal: windowSize.width > 1500 ? 'left' : 'center',
+                }}
+                PaperProps={{
+                    className: clsx(styles.popoverMonetization),
+                }}
+                className={clsx(styles.popover, {[styles.mobile]: isMobile})}
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    className={styles.commonOpenPanel}
+                >
+                    <MeetingMonetization isRoomCreate={true} onUpdate={handleCloseButton} />
+                </CustomPaper>
+            </CustomPopover>
+            <CustomPaper id="formPanel" variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>
                 <CustomGrid container direction="column">
                     <CustomTypography
-                        variant="body3"
+                        variant="body1bold"
                         color="colors.white.primary"
                         nameSpace="createRoom"
                         translation="editDescription.form.roomName"
-                        className={styles.label}
+                        className={clsx(styles.label)}
                     />
                     <CustomGrid
                         container
@@ -271,47 +328,8 @@ const Component = ({
                         rows={3}
                         {...descriptionProps}
                     />
-                    <CustomTypography
-                        variant="body3"
-                        color="colors.white.primary"
-                        nameSpace="createRoom"
-                        translation="editDescription.form.tags"
-                        className={styles.label}
-                    />
-                    <CustomAutocomplete<AutocompleteType<IBusinessCategory>>
-                        multiple
-                        freeSolo
-                        includeInputInList
-                        disableClearable
-                        autoHighlight
-                        options={businessCategoriesOptions}
-                        control={control}
-                        classes={{
-                            inputRoot: isCustom
-                                ? styles.disabledTags
-                                : undefined,
-                        }}
-                        name="tags"
-                        autoComplete
-                        disabled={isCustom}
-                        error={tagsErrorMessage}
-                        errorComponent={
-                            <ConditionalRender
-                                condition={Boolean(tagsErrorMessage)}
-                            >
-                                <ErrorMessage error={Boolean(tagsErrorMessage)}>
-                                    <Translation
-                                        nameSpace="errors"
-                                        translation={tagsErrorMessage}
-                                    />
-                                </ErrorMessage>
-                            </ConditionalRender>
-                        }
-                    />
                     <CustomGrid
                         container
-                        gap={2}
-                        flexWrap="nowrap"
                         justifyContent="space-between"
                         className={styles.label}
                     >
@@ -319,43 +337,79 @@ const Component = ({
                             variant="body3"
                             color="colors.white.primary"
                             nameSpace="createRoom"
-                            translation="editDescription.form.link"
-                            className={styles.linkLabel}
+                            translation="editDescription.form.aboutTheHost"
                         />
                         <CustomTypography
                             variant="body3"
-                            className={styles.customLinkPreview}
+                            color="colors.white.primary"
                         >
-                            {`${frontendConfig.frontendUrl}/.../${customLink}`}
+                            {`${description.length}/${MAX_DESCRIPTION_LENGTH}`}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomInput
-                        autoComplete="off"
+                        defaultValue={profileStore.description}
                         color="secondary"
-                        InputProps={customLinkInputProps}
-                        error={customLinkErrorMessage}
-                        {...customLinkProps}
+                        autoComplete="off"
+                        onChange={handleChangeAboutTheHost}
+                        error={aboutTheHostErrorMessage}
+                        multiline
+                        rows={3}
+                        {...aboutTheHost}
                     />
                 </CustomGrid>
             </CustomPaper>
-
+            <CustomPaper variant="black-glass" className={clsx(styles.monetizationPanel, { [styles.mobile]: isMobile })}>
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    <CustomGrid item md={8} xs={7}>
+                        <CustomTypography
+                            variant="body2"
+                            color="colors.white.primary"
+                            nameSpace="createRoom"
+                            translation="editDescription.form.monetizationTitle"
+                        />
+                        <CustomTypography
+                            variant="body3"
+                            color="colors.white.primary"
+                            nameSpace="createRoom"
+                            translation="editDescription.form.monetizationContent"
+                            className={styles.monetizationContent}
+                        />
+                    </CustomGrid>
+                    <CustomGrid item md={4} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
+                        <div className={styles.customSwitchContainer} onClick={toggleSelected}>
+                            <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
+                        </div>
+                        <CustomTypography
+                            variant="body2"
+                            color="colors.white.primary"
+                            nameSpace="createRoom"
+                            translation={enableMonetization ? "editDescription.form.monetizationContentOn" : "editDescription.form.monetizationContentOff"}
+                            className={styles.monetizationContentToggleValue}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </CustomPaper>
             <CustomGrid
                 container
                 gap={1.5}
                 flexWrap="nowrap"
                 justifyContent="center"
-                className={styles.buttonsGroup}
+                className={clsx(styles.buttonsGroup, { [styles.mobile]: isMobile })}
             >
                 <ActionButton
                     variant="gray"
                     Icon={<ArrowLeftIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonPrev}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
                     Icon={<ArrowRightIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
+                    className={styles.actionButtonNext}
                     onAction={handleClickNextStep}
                 />
             </CustomGrid>

@@ -18,6 +18,7 @@ const Component = ({
     onClose,
     children,
     contentClassName,
+    wrapperClassName,
     className,
     withNativeCloseBehavior = false,
     withCloseButton = true,

@@ -1,4 +1,6 @@
 import { memo } from 'react';
+import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -22,12 +24,14 @@ const Component = <TemplateType extends { id: string }>({
     onCreate,
     isCustomElementCreate = false,
     ElementCreate = (
-        <CustomGrid display="flex" flexDirection="row" alignItems="center">
+        <CustomGrid id="templateCreate" display="flex" flexDirection="row" alignItems="center">
             <PlusIcon width="22px" height="22px" />
             <CustomTypography nameSpace="templates" translation="createRoom" />
         </CustomGrid>
     ),
 }: TemplateGridProps<TemplateType>) => {
+    const { isMobile } = useBrowserDetect();
+
     const renderTemplates = () => {
         const initialTemplatesRender = list?.map(template => ({
             id: template.id,
@@ -45,7 +49,7 @@ const Component = <TemplateType extends { id: string }>({
                 id: 'create',
                 component: (
                     <CustomGrid
-                        className={styles.addItem}
+                        className={clsx(styles.addItem, { [styles.addItemMobile]: isMobile })}
                         container
                         justifyContent="center"
                         alignItems="center"

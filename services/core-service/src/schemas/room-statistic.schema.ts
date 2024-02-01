@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { now, Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 // shared
 import { UserDocument } from './user.schema';
 import { UserTemplateDocument } from './user-template.schema';
 
-@Schema()
+@Schema({ timestamps: true })
 export class RoomStatistic {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

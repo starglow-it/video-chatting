@@ -64,6 +64,7 @@
   "pages": {
     "profile": "My profile",
     "templates": "My rooms",
+    "analytics": "Statistics",
     "logout": "Log out",
     "discovery": "Discovery"
   },

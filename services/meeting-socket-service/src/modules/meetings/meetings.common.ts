@@ -16,6 +16,8 @@ import { MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
 import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';
+import { MeetingQuestionAnswersService } from '../meeting-question-answer/meeting-question-answer.service';
+import { MeetingQuestionAnswerReactionsService } from '../meeting-question-answer/meeting-question-answer-reactions.service';
 
 @Injectable()
 export class MeetingsCommonService {
@@ -26,6 +28,8 @@ export class MeetingsCommonService {
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
+    private readonly meetingQuestionAnswersService: MeetingQuestionAnswersService,
+    private readonly meeetingQuestionAnswerReactionsService: MeetingQuestionAnswerReactionsService,
   ) {}
 
   async handleTimeLimit({
@@ -85,7 +89,17 @@ export class MeetingsCommonService {
       session,
     });
 
+    await this.meeetingQuestionAnswerReactionsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
+
     await this.meetingChatsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
+
+    await this.meetingQuestionAnswersService.deleteMany({
       query: { meeting: meetingId },
       session,
     });
@@ -132,8 +146,8 @@ export class MeetingsCommonService {
 
   isMaxMembers = async (meeting: MeetingDocument, role: MeetingRole) => {
     const condition =
-      role === MeetingRole.Lurker
-        ? { max: 1000, roles: [MeetingRole.Lurker] }
+      role === MeetingRole.Audience
+        ? { max: 1000, roles: [MeetingRole.Audience] }
         : {
             max: meeting.maxParticipants,
             roles: [MeetingRole.Host, MeetingRole.Participant],

@@ -1,0 +1,59 @@
+@import "../../../styles/rem";
+
+.downloadIcsEvent {
+  width: rem(373px);
+  position: fixed;
+  bottom: rem(20px);
+  right: rem(20px);
+
+  padding: rem(16px);
+}
+
+.image {
+  flex: 0 0 rem(24px);
+}
+
+.text {
+  flex: 1 0 auto;
+}
+
+.downloadButton {
+  width: rem(63px);
+  height: rem(36px);
+}
+
+.cancelButton {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: rem(6px);
+}
+
+.wrapper {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+.content {
+  padding: 8px;
+}
+
+.contentNoMobile {
+  padding: rem(40px);
+  max-width: 700px;
+  padding: 78px;
+}
+
+.contentMobile {
+  padding: rem(40px);
+  max-width: rem(400px);
+}
+
+.actionBtn {
+  background-color: #9243B7;
+  color: white;
+  padding-left: 44px;
+  padding-right: 44px;
+}
+
+.actionBtnWrapper {
+  width: auto;
+}

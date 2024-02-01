@@ -15,6 +15,7 @@ const CustomTooltip = memo(
         tooltipClassName,
         title,
         variant = 'primary',
+        borderRadius,
         ...rest
     }: CustomTooltipProps & Omit<TooltipProps, 'title'>) => (
         <Tooltip

@@ -2,8 +2,8 @@ version: "3.7"
 
 networks:
   default:
-    external:
-      name: liveoffice_network
+    name: liveoffice_network
+    external: true
   liveoffice_local:
     name: liveoffice_local
 
@@ -86,7 +86,7 @@ services:
       args:
         - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
-      - "9001:9001"
+      - "9000:9000"
     env_file:
       - .env
     volumes:

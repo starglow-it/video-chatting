@@ -62,6 +62,6 @@ export enum PaymentType {
 
 export const DEFAULT_PAYMENT_CURRENCY = StripeCurrency.USD;
 export const DEFAULT_PRICE: { [K in Exclude<MeetingRole, 'host'>]: number } = {
-  lurker: 3,
+  audience: 3,
   participant: 5,
 };

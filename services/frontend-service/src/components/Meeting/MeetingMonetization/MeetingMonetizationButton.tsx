@@ -10,9 +10,9 @@ import {
     $isOwner,
     createPaymentIntentWithData,
     $enabledPaymentMeetingParticipant,
-    $enabledPaymentMeetingLurker,
+    $enabledPaymentMeetingAudience,
     $paymentMeetingParticipant,
-    $paymentMeetingLurker,
+    $paymentMeetingAudience,
     cancelPaymentIntentWithData,
 } from '../../../store/roomStores';
 import { ChargeButtonBase } from './ChargeButtonBase';
@@ -23,13 +23,13 @@ export const MeetingMonetizationButton = () => {
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
-    const enabledPaymentMeetingLurker = useStore($enabledPaymentMeetingLurker);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const intentId = paymentIntent?.id;
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
-    const paymentMeetingLurker = useStore($paymentMeetingLurker);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
 
     const managePaymentRef = useRef<any>(null);
 
@@ -65,7 +65,7 @@ export const MeetingMonetizationButton = () => {
                     <MeetingMonetization onUpdate={handleCloseForm} />
                 </ChargeButtonBase>
             </ConditionalRender>
-            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant && true}>
                 <ChargeButtonBase
                     tooltipButton={
                         <Translation
@@ -83,7 +83,7 @@ export const MeetingMonetizationButton = () => {
                     />
                 </ChargeButtonBase>
             </ConditionalRender>
-            <ConditionalRender condition={enabledPaymentMeetingLurker}>
+            <ConditionalRender condition={enabledPaymentMeetingAudience}>
                 <ChargeButtonBase
                     tooltipButton={
                         <Translation
@@ -97,7 +97,7 @@ export const MeetingMonetizationButton = () => {
                 >
                     <PaymentForm
                         onClose={handleCloseForm}
-                        payment={paymentMeetingLurker}
+                        payment={paymentMeetingAudience}
                     />
                 </ChargeButtonBase>
             </ConditionalRender>

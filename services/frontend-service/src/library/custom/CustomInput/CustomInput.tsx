@@ -30,6 +30,7 @@ const Component = (
             container
             direction="column"
             className={styles.inputWrapper}
+            alignItems="center"
         >
             <TextField
                 inputRef={ref}

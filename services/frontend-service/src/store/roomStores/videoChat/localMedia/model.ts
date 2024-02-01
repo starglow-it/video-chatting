@@ -1,7 +1,7 @@
 import { combine } from 'effector-next';
 
 import { videoChatDomain } from '../../../domains';
-import { CustomMediaStream } from '../../../../types';
+import { CustomMediaStream, VideoBlob } from '../../../../types';
 import {
     ChangeStreamPayload,
     InitDevicesPayload,
@@ -10,6 +10,7 @@ import {
     ToggleDevicePayload,
     UseMediaDevices,
 } from '../types';
+import { MediaStreamError } from 'src/helpers/media/getMediaStream';
 
 export const $audioDevicesStore = videoChatDomain.createStore<
     UseMediaDevices['audioDevices']
@@ -25,17 +26,26 @@ export const $isCameraActiveStore = videoChatDomain.createStore<boolean>(true);
 export const $isMicActiveStore = videoChatDomain.createStore<boolean>(true);
 export const $isStreamRequestedStore =
     videoChatDomain.createStore<boolean>(false);
-export const $audioErrorStore = videoChatDomain.createStore<string | undefined>(
-    '',
+export const $audioErrorStore = videoChatDomain.createStore<MediaStreamError | null>(
+    null,
 );
-export const $videoErrorStore = videoChatDomain.createStore<string | undefined>(
-    '',
+export const $videoErrorStore = videoChatDomain.createStore<MediaStreamError | null>(
+    null,
 );
 export const $currentAudioDeviceStore = videoChatDomain.createStore<string>('');
 export const $currentVideoDeviceStore = videoChatDomain.createStore<string>('');
 export const $isAuraActive = videoChatDomain.createStore<boolean>(true);
 export const $sharingStream =
     videoChatDomain.createStore<CustomMediaStream>(null);
+
+export const $recordingStream =
+    videoChatDomain.createStore<CustomMediaStream>(null);
+
+export const $recordedVideoBlobStore =
+    videoChatDomain.createStore<VideoBlob>(null);
+
+export const $isRecordingStore = videoChatDomain.createStore<boolean>(false);
+export const $uploadVideoToS3Store = videoChatDomain.createStore<string>('');
 
 export const commonMediaStore = combine({
     audioDevices: $audioDevicesStore,
@@ -51,6 +61,9 @@ export const commonMediaStore = combine({
     currentAudioDevice: $currentAudioDeviceStore,
     currentVideoDevice: $currentVideoDeviceStore,
     isAuraActive: $isAuraActive,
+    recordedVideoBlob: $recordedVideoBlobStore,
+    isRecording: $isRecordingStore,
+    uploadVideoToS3Store: $uploadVideoToS3Store,
 });
 
 export const setAudioDevicesEvent = videoChatDomain.createEvent<
@@ -79,10 +92,10 @@ export const setActivePermissionsEvent =
         'setActivePermissionsEvent',
     );
 export const setAudioErrorEvent = videoChatDomain.createEvent<
-    string | undefined
+    MediaStreamError | null
 >('setAudioErrorEvent');
 export const setVideoErrorEvent = videoChatDomain.createEvent<
-    string | undefined
+    MediaStreamError | null
 >('setVideoErrorEvent');
 export const setCurrentAudioDeviceEvent = videoChatDomain.createEvent<string>(
     'setCurrentAudioDeviceEvent',
@@ -114,3 +127,15 @@ export const chooseSharingStreamFx = videoChatDomain.createEffect<
     void,
     CustomMediaStream
 >('chooseSharingStreamFx');
+export const startRecordStreamFx = videoChatDomain.createEffect<
+    void,
+    CustomMediaStream
+>('startRecordStreamFx');
+export const stopRecordStreamFx = videoChatDomain.createEffect<
+    VideoBlob,
+    VideoBlob
+>('stopRecordStreamFx');
+export const uploadToS3Fx = videoChatDomain.createEffect<
+    VideoBlob,
+    string
+>('uploadToS3Fx');

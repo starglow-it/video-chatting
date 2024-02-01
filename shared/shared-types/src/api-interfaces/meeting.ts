@@ -52,7 +52,7 @@ export enum MeetingAvatarRole {
 export enum MeetingRole {
   Host = 'host',
   Participant = 'participant',
-  Lurker = 'lurker',
+  Audience = 'audience',
 }
 
 export enum MeetingAccessStatusEnum {

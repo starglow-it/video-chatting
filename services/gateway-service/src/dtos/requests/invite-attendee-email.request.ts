@@ -31,5 +31,5 @@ export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
     type: String,
     example: 'participant',
   })
-  readonly role: MeetingRole.Participant | MeetingRole.Lurker;
+  readonly role: MeetingRole.Participant | MeetingRole.Audience;
 }

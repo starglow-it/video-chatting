@@ -41,6 +41,12 @@ module.exports = withTM(
             ],
         },
         webpack(config, options) {
+            if (process.env.NEXT_WEBPACK_USEPOLLING) {
+                config.watchOptions = {
+                    poll: 5000,
+                    aggregateTimeout: 600,
+                };
+            }
             if (!options.isServer) {
                 config.plugins.push(
                     new I18NextHMRPlugin({

@@ -36,7 +36,7 @@ import { MeetingUser } from '../../../store/types';
 // const
 import { clientRoutes } from '../../../const/client-routes';
 
-const Component = ({ isAllowBack = true }) => {
+const Component = ({ isAllowBack = true, isShow = true }: { isAllowBack: Boolean, isShow: Boolean }) => {
     const router = useRouter();
 
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -54,7 +54,7 @@ const Component = ({ isAllowBack = true }) => {
                 user =>
                     user.id !== localUserId &&
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Lurker,
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
 
@@ -83,98 +83,101 @@ const Component = ({ isAllowBack = true }) => {
     );
 
     return (
-        <CustomGrid width="100%">
-            <ConditionalRender condition={isAllowBack}>
-                <CustomGrid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    onClick={handleLeaveMeeting}
-                    className={clsx(styles.backButton, {
-                        [styles.mobile]: isMobile,
-                    })}
-                >
-                    <ArrowLeftIcon
-                        width={isMobile ? '22px' : '32px'}
-                        height={isMobile ? '22px' : '32px'}
-                    />
-                    <ConditionalRender condition={isMobile}>
-                        <CustomTypography
-                            color="colors.black.primary"
-                            nameSpace="meeting"
-                            translation="rooms"
-                            className={styles.text}
-                        />
-                    </ConditionalRender>
-                </CustomGrid>
-            </ConditionalRender>
-            <ConditionalRender condition={!isMobile}>
-                <CustomGrid
-                    container
-                    alignItems="center"
-                    className={clsx(styles.meetingPreviewWrapper, {
-                        [styles.mobile]: isMobile,
-                    })}
-                    wrap="nowrap"
-                >
-                    <CustomBox className={styles.imageWrapper} />
-                    <ProfileAvatar
-                        className={clsx(styles.profileAvatar, {
+        <ConditionalRender condition={isShow}>
+            <CustomGrid width="100%">
+                <ConditionalRender condition={isAllowBack}>
+                    <CustomGrid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        onClick={handleLeaveMeeting}
+                        className={clsx(styles.backButton, {
                             [styles.mobile]: isMobile,
                         })}
-                        width={isMobile ? '50px' : '90px'}
-                        height={isMobile ? '50px' : '90px'}
-                        src={meetingTemplate?.user?.profileAvatar?.url || ''}
-                        userName={meetingTemplate.fullName}
-                    />
-                    <CustomGrid
-                        item
-                        container
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        className={styles.textWrapper}
-                        flex="1 1 auto"
                     >
-                        <CustomTypography
-                            variant="h3bold"
-                            color="colors.white.primary"
-                            className={styles.companyName}
-                            fontSize={isMobile ? 15 : 24}
-                            lineHeight={isMobile ? '20px' : '36px'}
-                        >
-                            {meetingTemplate.companyName}
-                        </CustomTypography>
-                        <ConditionalRender condition={!isOwner}>
+                        <ArrowLeftIcon
+                            width={isMobile ? '22px' : '32px'}
+                            height={isMobile ? '22px' : '32px'}
+                        />
+                        <ConditionalRender condition={isMobile}>
                             <CustomTypography
-                                textAlign="center"
-                                color="colors.white.primary"
+                                color="colors.black.primary"
                                 nameSpace="meeting"
-                                translation="preview.invitedText"
-                                fontSize={isMobile ? 12 : 16}
-                                lineHeight={isMobile ? '18px' : '24px'}
+                                translation="rooms"
+                                className={styles.text}
                             />
                         </ConditionalRender>
-                        <CustomTypography
-                            variant="body1"
-                            textAlign="center"
-                            color="colors.white.primary"
-                            className={styles.description}
-                            fontSize={isMobile ? 12 : 16}
-                            lineHeight={isMobile ? '18px' : '24px'}
-                        >
-                            {meetingTemplate.shortDescription ||
-                                meetingTemplate.description}
-                        </CustomTypography>
                     </CustomGrid>
-                    <UsersAvatarsCounter<MeetingUser>
-                        renderItem={renderUserAvatar}
-                        className={styles.inMeetingAvatars}
-                        users={users}
-                    />
-                </CustomGrid>
-            </ConditionalRender>
-        </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={!isMobile}>
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        className={clsx(styles.meetingPreviewWrapper, {
+                            [styles.mobile]: isMobile,
+                        })}
+                        wrap="nowrap"
+                    >
+                        <CustomBox className={styles.imageWrapper} />
+                        <ProfileAvatar
+                            className={clsx(styles.profileAvatar, {
+                                [styles.mobile]: isMobile,
+                            })}
+                            width={isMobile ? '50px' : '90px'}
+                            height={isMobile ? '50px' : '90px'}
+                            src={meetingTemplate?.user?.profileAvatar?.url || ''}
+                            userName={meetingTemplate.fullName}
+                        />
+                        <CustomGrid
+                            item
+                            container
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            className={styles.textWrapper}
+                            flex="1 1 auto"
+                        >
+                            <CustomTypography
+                                variant="h3bold"
+                                color="colors.white.primary"
+                                className={styles.companyName}
+                                fontSize={isMobile ? 15 : 24}
+                                lineHeight={isMobile ? '20px' : '36px'}
+                            >
+                                {meetingTemplate.companyName}
+                            </CustomTypography>
+                            <ConditionalRender condition={!isOwner}>
+                                <CustomTypography
+                                    textAlign="center"
+                                    color="colors.white.primary"
+                                    nameSpace="meeting"
+                                    translation="preview.invitedText"
+                                    fontSize={isMobile ? 12 : 16}
+                                    lineHeight={isMobile ? '18px' : '24px'}
+                                />
+                            </ConditionalRender>
+                            <CustomTypography
+                                variant="body1"
+                                textAlign="center"
+                                color="colors.white.primary"
+                                className={styles.description}
+                                fontSize={isMobile ? 12 : 16}
+                                lineHeight={isMobile ? '18px' : '24px'}
+                            >
+                                {meetingTemplate.shortDescription ||
+                                    meetingTemplate.description}
+                            </CustomTypography>
+                        </CustomGrid>
+                        <UsersAvatarsCounter<MeetingUser>
+                            renderItem={renderUserAvatar}
+                            className={styles.inMeetingAvatars}
+                            users={users}
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
+            </CustomGrid>
+        </ConditionalRender>
+
     );
 };
 

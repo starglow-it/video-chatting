@@ -47,7 +47,11 @@ const Component = () => {
                     const { userWithoutLoginId, userTemplateId } =
                         parseCookies();
                     if (!userWithoutLoginId) await initUserWithoutTokenFx({});
-                    else router.push(getClientMeetingUrl(userTemplateId));
+                    else {
+                        const newPageUrl = await getClientMeetingUrl(userTemplateId);
+
+                        window.open(newPageUrl, '_blank');
+                    }
                 },
             },
         ],

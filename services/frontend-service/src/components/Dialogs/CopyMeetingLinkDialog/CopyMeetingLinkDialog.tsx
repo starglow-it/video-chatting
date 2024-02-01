@@ -61,7 +61,7 @@ const Component = () => {
     const handleChangeValue = (value: any) => {
         setMeetingLinkText(
             `${getClientMeetingUrlWithDomain(router.query.token as string)}${
-                value === MeetingRole.Lurker ? '?role=lurker' : ''
+                value === MeetingRole.Audience ? '?role=audience' : ''
             }`,
         );
     };

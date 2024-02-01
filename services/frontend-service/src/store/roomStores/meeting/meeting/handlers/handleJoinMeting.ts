@@ -2,7 +2,7 @@ import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { isMobile } from 'shared-utils';
 import { updateLocalUserEvent } from '../../../users/localUser/model';
 import {
-    joinLurkerMeetingSocketEvent,
+    joinAudienceMeetingSocketEvent,
     sendEnterMeetingRequestSocketEvent,
     sendStartMeetingSocketEvent,
 } from '../../sockets/init';
@@ -44,7 +44,7 @@ export const handleJoinMeting = async ({
         if (meetingRole === MeetingRole.Participant) {
             await sendEnterMeetingRequestSocketEvent();
         } else {
-            await joinLurkerMeetingSocketEvent();
+            await joinAudienceMeetingSocketEvent();
         }
     } else {
         updateLocalUserEvent({
@@ -74,7 +74,7 @@ export const handleJoinMeting = async ({
 
     const clonedStream = changeStream?.clone();
 
-    if (!isMobile() && meetingRole !== MeetingRole.Lurker) {
+    if (!isMobile() && meetingRole !== MeetingRole.Audience) {
         BackgroundManager.applyBlur(clonedStream);
 
         BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {

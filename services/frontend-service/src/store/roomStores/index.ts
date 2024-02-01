@@ -6,6 +6,7 @@ import * as videoChatSFU from './videoChat/sfu/init';
 import * as localUser from './users/localUser/init';
 import * as meetingUsers from './users/meetingUsers/init';
 import * as userToKick from './users/userToKick/init';
+import * as moveUserToAudience from './users/moveUserToAudience/init';
 import * as audio from './audio/init';
 import * as meeting from './meeting/meeting/init';
 import * as meetingPayment from './meeting/meetingPayment/init';
@@ -18,6 +19,7 @@ import * as meetingBackground from './meeting/meetingBackground/init';
 import * as meetingAudio from './meeting/meetingAudio/init';
 import * as meetingRole from './meeting/meetingRole/init';
 import * as meetingChat from './meeting/meetingChat/init';
+import * as meetingQuestionAnswer from './meeting/meetingQuestionAnswer/init';
 
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
@@ -29,6 +31,7 @@ export * from './videoChat/sfu/model';
 export * from './users/localUser/model';
 export * from './users/meetingUsers/model';
 export * from './users/userToKick/model';
+export * from './users/moveUserToAudience/model';
 export * from './audio/model';
 export * from './meeting/meeting/model';
 export * from './meeting/meetingPayment/model';
@@ -42,6 +45,7 @@ export * from './meeting/meetingBackground/model';
 export * from './meeting/meetingAudio/model';
 export * from './meeting/meetingRole/model';
 export * from './meeting/meetingChat/model';
+export * from './meeting/meetingQuestionAnswer/model';
 
 export * from './videoChat/p2p/init';
 export * from './videoChat/localMedia/init';
@@ -57,6 +61,7 @@ export default {
     localUser,
     meetingUsers,
     userToKick,
+    moveUserToAudience,
     audio,
     meeting,
     meetingPayment,
@@ -69,4 +74,5 @@ export default {
     meetingAudio,
     meetingRole,
     meetingChat,
+    meetingQuestionAnswer,
 };

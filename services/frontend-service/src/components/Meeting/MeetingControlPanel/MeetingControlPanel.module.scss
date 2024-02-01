@@ -20,12 +20,13 @@
   border: 1px solid $primary-white;
 
   &:not(:first-child) {
-    margin: rem(0  0 0 -15px);
+    margin: rem(0 0 0 -15px);
   }
 }
 
 .controlPanelWrapper {
   position: relative;
+
   .actionButton {
     position: relative;
     background: transparent;
@@ -121,14 +122,32 @@
   }
 }
 
+.scheduleOpenPanelWrapper {
+  opacity: 0;
+}
+
 .scheduleOpenPanel {
   position: absolute;
   max-width: rem(392px);
   min-width: rem(372px);
   padding: rem(20px);
-  opacity: 0;
   right: 20px;
   bottom: 30px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.attendeesList {
+  position: absolute;
+  max-width: rem(392px);
+  min-width: rem(372px);
+  padding: rem(20px);
+  right: 20px;
+  bottom: 300px;
 
   &.mobile {
     left: 0%;

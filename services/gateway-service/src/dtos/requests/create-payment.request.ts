@@ -31,7 +31,7 @@ export class CreatePaymentRequest {
   @ApiProperty({
     type: String,
     enum: Object.values(MeetingRole),
-    example: MeetingRole.Lurker,
+    example: MeetingRole.Audience,
   })
   @IsNotEmpty({
     message: 'PaymentPaywall must be present',

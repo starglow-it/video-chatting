@@ -27,9 +27,9 @@ import { fullNameSchema } from '../../validation/users/fullName';
 // stores
 import { $profileStore, $authStore, $isSocketConnected } from '../../store';
 import {
-    $enabledPaymentPaywallLurker,
+    $enabledPaymentPaywallAudience,
     $isLoadingJoinWaitingRoom,
-    $isLurker,
+    $isAudience,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -38,7 +38,7 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     getMeetingTemplateFx,
-    joinLurkerMeetingSocketEvent,
+    joinAudienceMeetingSocketEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -61,8 +61,8 @@ const Component = () => {
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinWaitingRoomPending = useStore($isLoadingJoinWaitingRoom);
     const isOwner = useStore($isOwner);
-    const isLurker = useStore($isLurker);
-    const enabledPaymentPaywallLurker = useStore($enabledPaymentPaywallLurker);
+    const isAudience = useStore($isAudience);
+    const enabledPaymentPaywallAudience = useStore($enabledPaymentPaywallAudience);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isHasMeeting = useStoreMap({
@@ -101,14 +101,14 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(data => {
-            if (isLurker) {
+            if (isAudience) {
                 updateLocalUserEvent({
                     username: data.fullName,
                 });
-                if (enabledPaymentPaywallLurker) {
+                if (enabledPaymentPaywallAudience) {
                     setIsJoinPaywall(true);
                 } else {
-                    joinLurkerMeetingSocketEvent();
+                    joinAudienceMeetingSocketEvent();
                 }
             } else {
                 updateLocalUserEvent({
@@ -117,11 +117,11 @@ const Component = () => {
                 });
             }
         }),
-        [enabledPaymentPaywallLurker, isLurker],
+        [enabledPaymentPaywallAudience, isAudience],
     );
 
     const handlePaymentSuccess = useCallback(() => {
-        joinLurkerMeetingSocketEvent();
+        joinAudienceMeetingSocketEvent();
     }, []);
 
     const fullNameError = errors.fullName?.message;
@@ -200,7 +200,7 @@ const Component = () => {
                             <Translation
                                 nameSpace="meeting"
                                 translation={
-                                    isLurker
+                                    isAudience
                                         ? 'buttons.join'
                                         : 'buttons.continue'
                                 }
@@ -220,7 +220,7 @@ const Component = () => {
         ) {
             return <CustomLoader className={styles.loader} />;
         }
-        if (isLurker) {
+        if (isAudience) {
             if (!isHasMeeting) {
                 return (
                     <CustomTypography

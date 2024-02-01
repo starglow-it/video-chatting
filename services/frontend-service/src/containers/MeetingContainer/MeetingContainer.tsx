@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useState, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -19,9 +19,12 @@ import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName'
 import { KickedUser } from '@components/KickedUser/KickedUser';
 import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
 import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
+import { MeetingPreEvent } from '@components/Meeting/MeetingPreEvent/MeetingPreEvent';
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
+
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
@@ -46,7 +49,7 @@ import {
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
-    $isLurker,
+    $isAudience,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -89,7 +92,7 @@ import {
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
 
-const NotMeetingComponent = memo(() => {
+const NotMeetingComponent = memo(({ isShow = false }) => {
     const localUser = useStore($localUserStore);
     const { isMobile } = useBrowserDetect();
 
@@ -105,21 +108,23 @@ const NotMeetingComponent = memo(() => {
     }, [localUser.accessStatus]);
 
     return (
-        <CustomPaper
-            className={clsx(styles.wrapper, {
-                [styles.fitContent]:
-                    isMobile &&
-                    localUser.accessStatus ===
+        <ConditionalRender condition={isShow}>
+            <CustomPaper
+                className={clsx(styles.wrapper, {
+                    [styles.fitContent]:
+                        isMobile &&
+                        localUser.accessStatus ===
                         MeetingAccessStatusEnum.EnterName,
-            })}
-            id="anchor-unlock"
-        >
-            <CustomScroll className={styles.scroll}>
-                <CustomGrid container direction="column" wrap="nowrap">
-                    <ChildComponent />
-                </CustomGrid>
-            </CustomScroll>
-        </CustomPaper>
+                })}
+                id="anchor-unlock"
+            >
+                <CustomScroll className={styles.scroll}>
+                    <CustomGrid container direction="column" wrap="nowrap">
+                        <ChildComponent />
+                    </CustomGrid>
+                </CustomScroll>
+            </CustomPaper>
+        </ConditionalRender>
     );
 });
 
@@ -129,7 +134,7 @@ const MeetingContainer = memo(() => {
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
-    const isLurker = useStore($isLurker);
+    const isAudience = useStore($isAudience);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
@@ -141,6 +146,7 @@ const MeetingContainer = memo(() => {
         sendJoinWaitingRoomSocketEvent.pending,
     );
     const isMeetingConnected = useStore($meetingConnectedStore);
+    const [isMeetingPreviewShow, setIsMeetingPreviewShow] = useState(false);
 
     const { isMobile } = useBrowserDetect();
 
@@ -157,7 +163,7 @@ const MeetingContainer = memo(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
-        if (!!roleUrl && roleUrl !== MeetingRole.Lurker) {
+        if (!!roleUrl && roleUrl !== MeetingRole.Audience) {
             router.push(NotFoundRoute);
         }
     }, [roleUrl]);
@@ -250,7 +256,7 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                if (!isLurker) {
+                if (!isAudience) {
                     await initDevicesEventFxWithStore();
                 }
                 await sendJoinWaitingRoomSocketEvent();
@@ -323,6 +329,8 @@ const MeetingContainer = memo(() => {
     }, []);
 
     const previewImage = getPreviewImage(meetingTemplate);
+
+    const handleSetMeetingPreviewShow = () => setIsMeetingPreviewShow(true);
 
     return (
         <>
@@ -407,8 +415,9 @@ const MeetingContainer = memo(() => {
                         >
                             <ConditionalRender condition={!isOwner}>
                                 <>
-                                    <MeetingPreview />
-                                    <NotMeetingComponent />
+                                    <MeetingPreview isShow={isMeetingPreviewShow} />
+                                    <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} />
                                 </>
                             </ConditionalRender>
                         </CustomBox>
@@ -448,6 +457,7 @@ const MeetingContainer = memo(() => {
             )}
             <HostTimeExpiredDialog />
             <MeetingErrorDialog />
+            <DownloadIcsEventDialog />
         </>
     );
 });

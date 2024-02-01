@@ -312,7 +312,7 @@ const Component = () => {
                         ) as any,
                         draftPreviewUrls: [],
                         draftUrl: '',
-                        subdomain: withSubdomain
+                        subdomain: !!withSubdomain
                             ? `${getProtocol()}//${data.subdomain}.${
                                   frontendConfig.baseDomain
                               }`

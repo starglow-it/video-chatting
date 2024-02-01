@@ -17,10 +17,9 @@ export const ImageIcon = memo(
         onClick={onClick}
         viewBox="0 0 16 16"
         fill="none"
-        // stroke="#ffffff"
         strokeLinecap="round"
         strokeLinejoin="round"
-        stroke-width="1"
+        strokeWidth="1"
         {...rest}
       >
         <path

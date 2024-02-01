@@ -1,4 +1,4 @@
-import { SyntheticEvent, memo, useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, memo, useEffect, useRef, useState, forwardRef } from 'react';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import clsx from 'clsx';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
@@ -24,8 +24,7 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { AudioItem } from './AudioItem';
 import styles from './MeetingManageAudio.module.scss';
 
-const Component = () => {
-    const refToolTip = useRef<any>();
+const Component = forwardRef((props, ref) => {
     const audioList = useStoreMap({
         store: $meetingAudioStore,
         keys: [],
@@ -37,8 +36,7 @@ const Component = () => {
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
 
     const changeExpand = (event: SyntheticEvent, expanded: boolean) => {
-        // event.stopPropagation();
-        if (expanded) refToolTip.current?.hide();
+        if (expanded) ref.current?.hide();
         setIsExpand(expanded);
     };
 
@@ -69,7 +67,7 @@ const Component = () => {
             }
             placement="right"
             disableHoverListener={isExpand}
-            ref={refToolTip}
+            ref={ref}
         >
             <CustomPaper
                 className={clsx(styles.commonOpenPanel, {
@@ -174,5 +172,5 @@ const Component = () => {
             </CustomPaper>
         </CustomTooltip>
     );
-};
+});
 export const MeetingManageAudio = memo(Component);
