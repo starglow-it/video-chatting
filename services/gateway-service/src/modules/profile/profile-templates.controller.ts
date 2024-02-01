@@ -162,7 +162,6 @@ export class ProfileTemplatesController {
         });
       }
 
-
       const template = await this.userTemplatesService.updateUserTemplate({
         templateId,
         userId: req.user.userId,
