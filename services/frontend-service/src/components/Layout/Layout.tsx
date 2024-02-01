@@ -23,6 +23,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { profileRoute } from '../../const/client-routes';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { TemplatesIcon } from 'shared-frontend/icons/OtherIcons/TemplatesIcon';
+import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
@@ -49,7 +50,7 @@ import {
     $profileTemplatesStore,
     $templatesStore,
     $windowSizeStore,
-    
+
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -143,7 +144,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const mode = useStore($modeTemplateStore);
     const { height } = useStore($windowSizeStore);
     const [isDashboardRoomRoute, setIsDashboardRoomRoute] = useState(false);
-    
+
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -279,11 +280,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isMeetingRoute]);
 
-    const handleProfilePage = useCallback(async () => {
-        handleMenuClose();
-        await router.push(profileRoute);
-    }, []);
-
     const isProfilePageActive = router.pathname === profileRoute;
     const profileState = useStore($profileStore);
 
@@ -297,12 +293,23 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         setAnchorEl(null);
     };
 
+    const handleProfilePage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(profileRoute);
+    }, []);
+
     const handleTemplatesPage = useCallback(async () => {
         handleMenuClose();
         await router.push(dashboardRoute);
     }, []);
 
+    const handleAnalyticsPage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(analyticsRoute);
+    }, []);
+
     const isTemplatesLinkActive = router.pathname === dashboardRoute;
+    const isAnalyticsLinkActive = router.pathname === analyticsRoute;
 
     const handleLogout = useCallback(async () => {
         handleMenuClose();
@@ -516,6 +523,22 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                             />
                                                         </MenuItem>
 
+                                                    </CustomTooltip>
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        translation="pages.analytics"
+                                                        placement="right"
+                                                    >
+                                                        <MenuItem>
+                                                            <StatisticsIcon
+                                                                onClick={handleAnalyticsPage}
+                                                                width="28px"
+                                                                height="28px"
+                                                                className={clsx(styles.linkIcon, {
+                                                                    [styles.activeIcon]: isAnalyticsLinkActive,
+                                                                })}
+                                                            />
+                                                        </MenuItem>
                                                     </CustomTooltip>
                                                     <CustomTooltip
                                                         nameSpace="profile"
