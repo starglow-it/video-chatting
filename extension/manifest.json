@@ -34,7 +34,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.google.com/calendar/u/0/r/eventedit/*"],
+      "matches": ["*://*.google.com/calendar/u/0/r/*"],
       "css": ["content.css"],
       "js": ["contentScript.js"]
     },

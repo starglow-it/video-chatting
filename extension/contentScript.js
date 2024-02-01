@@ -1,5 +1,6 @@
 var userName,
   roomList,
+  roomId,
   currentRoomId,
   isRoomSelected = false;
 
@@ -120,27 +121,28 @@ async function injectRoomSelect(roomList) {
   const customSelect = document.createElement("div");
   customSelect.className = "custom-select";
 
-  const customSelectTrigger = document.createElement("div");
-  customSelectTrigger.className = "custom-select__trigger";
-  customSelectTrigger.innerHTML = `<span>${roomList[0].name}</span><div class="arrow"></div>`;
-
+  
   const customOptions = document.createElement("div");
   customOptions.className = "custom-options";
+  
+  let selectedRoomName = '';
 
-  const option1 = document.createElement("span");
-  option1.className = "custom-option selected";
-  option1.setAttribute("data-value", roomList[0].id);
-  option1.textContent = roomList[0].name;
-  customOptions.appendChild(option1);
-
-  for (let i = 1; i < roomList.length; i++) {
+  for (let i = 0; i < roomList.length; i++) {
     const option = document.createElement("span");
     option.className = "custom-option";
+    if ((roomId && roomId === roomList[i].id) || (!roomId && i === 0)) {
+      option.classList.add('selected');
+      selectedRoomName = roomList[i].name;
+    } 
     option.setAttribute("data-value", roomList[i].id);
     option.textContent = roomList[i].name;
     customOptions.appendChild(option);
   }
 
+  const customSelectTrigger = document.createElement("div");
+  customSelectTrigger.className = "custom-select__trigger";
+  customSelectTrigger.innerHTML = `<span>${selectedRoomName}</span><div class="arrow"></div>`;
+  
   customSelect.appendChild(customSelectTrigger);
   customSelect.appendChild(customOptions);
 
@@ -290,6 +292,11 @@ window.addEventListener("load", async () => {
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
+    chrome.storage.local.get(['roomId'], function(result) {
+      roomId = result.roomId
+      console.log('Data retrieved is ', result.roomId);
+    })
+    
     chrome.runtime.sendMessage({ action: "fetchRoomList" });
 
     chrome.runtime.onMessage.addListener(
@@ -302,6 +309,7 @@ window.addEventListener("load", async () => {
         }
       }
     );
+
 
     await injectButton();
     await fillTitleField();

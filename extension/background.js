@@ -27,10 +27,17 @@ chrome.runtime.onMessage.addListener(async function (
 
           const roomList = await response.json();
 
-          await chrome.tabs.sendMessage(sender.tab.id, {
-            action: "roomListResponse",
-            roomList: roomList.result.list,
-          });
+          console.log(roomList);
+
+          if (sender.tab) {
+            await chrome.tabs.sendMessage(sender.tab.id, {
+              action: "roomListResponse",
+              roomList: roomList.result.list,
+            });
+          } else {
+            await chrome.runtime.sendMessage({ action: "roomListResponse", roomList: roomList.result.list });
+
+          }
         }
       );
     } catch (error) {
@@ -93,7 +100,7 @@ chrome.runtime.onMessage.addListener(async function (
 
     console.log(response)
 
-    if ( response.success ) {
+    if (response.success) {
       const accessTokenCookie = {
         url: 'https://stg-my.chatruume.com', // Replace with your desired domain
         name: 'accessToken',
@@ -128,31 +135,31 @@ chrome.runtime.onMessage.addListener(async function (
       })
 
     }
-  } 
+  }
   else if (message.action === 'startGoogleLogin') {
-      // const client = google.accounts.oauth2.initTokenClient({
-      //   client_id: '539436979316-oqfebgmndsqkhv37ch1l0gnnh8hd3e1v.apps.googleusercontent.com',
-      //   scope: 'email profile',
-      //   callback: res => {
-      //     // handleSuccess(res.access_token);
-      //     alert(res.access_token);
-      //     console.log(res.access_token)
-      //   },
-      //   error_callback: err => {
-      //     console.log(err.message);
-      //   },
-      // });
-      // client.requestAccessToken();
+    // const client = google.accounts.oauth2.initTokenClient({
+    //   client_id: '539436979316-oqfebgmndsqkhv37ch1l0gnnh8hd3e1v.apps.googleusercontent.com',
+    //   scope: 'email profile',
+    //   callback: res => {
+    //     // handleSuccess(res.access_token);
+    //     alert(res.access_token);
+    //     console.log(res.access_token)
+    //   },
+    //   error_callback: err => {
+    //     console.log(err.message);
+    //   },
+    // });
+    // client.requestAccessToken();
     // } else {
     //   console.log('Failed to login to Google');
     // }
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0]) {
         previousTabId = tabs[0].id;
       }
 
       // Now open the login page in a new tab
-      chrome.tabs.create({ url: 'https://stg-my.chatruume.com/login' }, function(tab) {
+      chrome.tabs.create({ url: 'https://stg-my.chatruume.com/login' }, function (tab) {
         // No need to save the login tab ID unless you want to refer to it later
         loginTabId = tab
       });
@@ -189,10 +196,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     );
   } else if (loginTabId && changeInfo.url && changeInfo.url.includes('https://stg-my.chatruume.com/dashboard')) {
     // Close the login tab
-    chrome.tabs.remove(tabId, function() {
+    chrome.tabs.remove(tabId, function () {
       if (previousTabId) {
         // Switch back to the previous tab
-        chrome.tabs.update(previousTabId, {active: true});
+        chrome.tabs.update(previousTabId, { active: true });
       }
     });
   }
