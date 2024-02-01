@@ -43,6 +43,10 @@ export type SendScheduleInvitePayload = {
     userEmails: string[];
     role: MeetingRole;
 };
+export type downloadIcsFilePayload = {
+    templateId: string;
+    content: string;
+};
 
 export type PurchaseTemplatePayload = { templateId: ICommonTemplate['id'] };
 export type GetUserTemplatePayload = {

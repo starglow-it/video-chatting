@@ -45,6 +45,12 @@ import {
     appDialogsApi
 } from '../../store';
 
+import {
+    $isToggleCreateRoomPayment,
+    $createRoomPaymentStore,
+    updatePaymentMeetingFx
+} from '../../store/roomStores';
+
 import { AppDialogsEnum } from '../../store/types';
 
 // utils
@@ -61,6 +67,8 @@ const Component = () => {
         $isUploadTemplateBackgroundInProgress,
     );
     const profile = useStore($profileStore);
+    const isToggleCreateRoomPayment = useStore($isToggleCreateRoomPayment);
+    const createRoomPaymentStore = useStore($createRoomPaymentStore);
 
     const router = useRouter();
 
@@ -165,17 +173,24 @@ const Component = () => {
                 templateId: userTemplate.id,
                 data: newPayload,
             });
+
+            if (isToggleCreateRoomPayment) {
+                await updatePaymentMeetingFx({
+                    data: createRoomPaymentStore,
+                    templateId: userTemplate.id
+                });
+            }
         }
 
         return userTemplate;
-    }, [template?.id]);
+    }, [template?.id, createRoomPaymentStore]);
 
     const handleSubmit = async (data: IUploadTemplateFormData) => {
-            const userTemplate = await handleCreateRoom(data);
-            if (userTemplate) {
-                await router.push(dashboardRoute);
-            }
-        };
+        const userTemplate = await handleCreateRoom(data);
+        if (userTemplate) {
+            await router.push(dashboardRoute);
+        }
+    };
 
     const handleSubmitAndEnterMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);

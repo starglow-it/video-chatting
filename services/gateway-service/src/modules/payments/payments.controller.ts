@@ -41,7 +41,7 @@ export class PaymentsController {
     private coreService: CoreService,
     private templateService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthAnonymousGuard)
   @Post('/stripe')
@@ -257,6 +257,63 @@ export class PaymentsController {
           paymentIntent,
         },
       };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while create payment intent`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/isRoomPaywalled')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Identify if the room is paywalled' })
+  @ApiOkResponse({
+    type: PaymentIntentRestDto,
+    description: 'Identify if the room is paywalled',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async isRoomPaywalled(
+    @Body() body: CreatePaymentRequest,
+  ): Promise<
+    ResponseSumType<{ isRoomPaywalled: boolean }>
+  > {
+    try {
+      const userTemplate = await this.userTemplatesService.getUserTemplateById({
+        id: body.templateId,
+      });
+
+      if (!userTemplate) {
+        return {
+          success: false,
+        };
+      }
+
+      const templatePayment = await this.coreService.getEnabledTemplatePayment({
+        userTemplateId: userTemplate.id,
+        paymentType: body.paymentType,
+        meetingRole: body.meetingRole,
+      });
+
+      if (!!templatePayment) return {
+        success: true,
+        result: {
+          isRoomPaywalled: true
+        },
+      }
+      else return {
+        success: true,
+        result: {
+          isRoomPaywalled: false
+        },
+      };
+
     } catch (err) {
       this.logger.error(
         {

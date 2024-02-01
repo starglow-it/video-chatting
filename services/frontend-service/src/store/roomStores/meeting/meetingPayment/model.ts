@@ -24,10 +24,42 @@ import {
 import { $isAudience, $isParticipant } from '../meetingRole/model';
 import { $localUserStore } from '../../users/localUser/model';
 
+const initialCreateRoomPaymentStore = {
+    meeting: {
+        participant: {
+            enabled: false,
+            price: 0,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        },
+        audience: {
+            enabled:false,
+            price: 0,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        },
+    },
+    paywall: {
+        participant: {
+            enabled: false,
+            price: 0,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        },
+        audience: {
+            enabled: false,
+            price: 0,
+            currency: DEFAULT_PAYMENT_CURRENCY,
+        },
+    },
+};
+
 export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     id: '',
     clientSecret: '',
 });
+
+export const $createRoomPaymentStore = paymentsDomain.createStore<UpdatePaymentMeetingParams>(initialCreateRoomPaymentStore);
+
+export const $isToggleCreateRoomPayment = paymentsDomain.createStore<boolean>(false);
+export const $isRoomPaywalledStore = paymentsDomain.createStore<boolean>(true);
 
 export const $isTogglePayment = paymentsDomain.createStore<boolean>(false);
 
@@ -35,11 +67,22 @@ export const togglePaymentFormEvent = paymentsDomain.event<boolean | undefined>(
     'togglePaymentFormEvent',
 );
 
+export const toggleCreateRoomPaymentFormEvent = paymentsDomain.event<boolean | undefined>(
+    'toggleCreateRoomPaymentFormEvent',
+);
+
 export const createPaymentIntentFx = paymentsDomain.effect<
     CreatePaymentIntentPayload,
     PaymentIntentStore,
     ErrorState
 >('createPaymentIntentFx');
+
+export const isRoomPaywalledFx = paymentsDomain.effect<
+    CreatePaymentIntentPayload,
+    PaymentIntentStore,
+    ErrorState
+>('isRoomPaywalledFx');
+
 export const cancelPaymentIntentFx = paymentsDomain.effect<
     CancelPaymentIntentPayload,
     void,
@@ -235,6 +278,10 @@ export const updatePaymentMeetingEvent = attach<
         templateId: template.id,
     }),
 });
+
+export const setCreateRoomPaymentDataEvent = meetingDomain.createEffect<
+    UpdatePaymentMeetingParams
+>('setCreateRoomPaymentDataEvent');
 
 export const receivePaymentMeetingEvent =
     meetingDomain.createEvent<MeetingPayment>('receivePaymentMeetingEvent');

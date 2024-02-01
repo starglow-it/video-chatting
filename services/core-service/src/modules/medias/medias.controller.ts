@@ -200,9 +200,9 @@ export class MediaController {
       return withTransaction(this.connection, async (session) => {
         const query = {
           type,
-          key: {
-            $ne: 'myrooms',
-          },
+          // key: {
+          //   $ne: 'myrooms',
+          // },
         };
         return await this.getMediaCategories({ query, skip, limit, session });
       });
@@ -223,7 +223,7 @@ export class MediaController {
         const { skip, limit, categoryId, userTemplateId } = payload;
 
         const skipQuery = skip || 0;
-        const limitQuery = limit || 8;
+        const limitQuery = limit || 0;
 
         const mediaCategory = await this.mediaService.findMediaCategory({
           query: isValidObjectId(categoryId) ? { _id: categoryId } : {},

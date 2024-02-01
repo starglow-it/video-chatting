@@ -62,7 +62,7 @@ const Component = () => {
                         {parseEmoji(mapEmoji('1f6d6'))}
                     </CustomGrid>
                     <CustomTypography fontSize={13}>
-                        My Rooms ({templatesLimit})
+                        My Ruumes ({templatesLimit})
                     </CustomTypography>
                 </CustomGrid>
             </CustomPaper>

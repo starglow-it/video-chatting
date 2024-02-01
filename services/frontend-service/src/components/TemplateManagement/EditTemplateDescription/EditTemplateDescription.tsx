@@ -33,6 +33,8 @@ import {
     getBusinessCategoriesFx,
 } from '../../../store';
 
+import { toggleCreateRoomPaymentFormEvent } from '../../../store/roomStores';
+
 // const
 import {
     MAX_DESCRIPTION_LENGTH,
@@ -44,6 +46,9 @@ import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
+
+//hooks
+import useWindowSize from '@hooks/useWIndowSize';
 
 const Component = ({
     onNextStep,
@@ -76,7 +81,8 @@ const Component = ({
     const aboutTheHostErrorMessage: string =
         errors?.aboutTheHost?.[0]?.message || '';
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [ enableMonetization, setEnableMonetization ] = useState(false);
+    const [enableMonetization, setEnableMonetization] = useState(false);
+    const windowSize = useWindowSize();
 
     useEffect(() => {
         (() => {
@@ -122,6 +128,10 @@ const Component = ({
             ),
         );
     }, []);
+
+    useEffect(() => {
+        toggleCreateRoomPaymentFormEvent(enableMonetization);
+    }, [enableMonetization]);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger([
@@ -224,7 +234,7 @@ const Component = ({
         setEnableMonetization(prev => !prev);
 
         if (!enableMonetization) {
-            setAnchorEl(e.currentTarget);
+            setAnchorEl(document.getElementById('formPanel'));
         }
     };
 
@@ -244,27 +254,29 @@ const Component = ({
                 open={Boolean(anchorEl)}
                 onClose={handleCloseButton}
                 anchorEl={anchorEl}
-                style={{ zIndex: 20, left: isMobile ? "-10px" :'70px', top: isMobile ? "-25px" : '-40px' }}
+                // style={{ zIndex: 20, left: isMobile ? "-10px" : '70px', top: isMobile ? "-25px" : '-40px' }}
+                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none'}}
                 anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: 'bottom',
+                    horizontal: windowSize.width > 1500 ? 'right' : 'center',
                 }}
                 transformOrigin={{
-                    vertical: 450,
-                    horizontal: 'left',
+                    vertical: "bottom",
+                    horizontal: windowSize.width > 1500 ? 'left' : 'center',
                 }}
                 PaperProps={{
                     className: clsx(styles.popoverMonetization),
                 }}
+                className={clsx(styles.popover, {[styles.mobile]: isMobile})}
             >
                 <CustomPaper
                     variant="black-glass"
                     className={styles.commonOpenPanel}
                 >
-                    <MeetingMonetization onUpdate={handleCloseButton} />
+                    <MeetingMonetization isRoomCreate={true} onUpdate={handleCloseButton} />
                 </CustomPaper>
             </CustomPopover>
-            <CustomPaper variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>
+            <CustomPaper id="formPanel" variant="black-glass" className={clsx(styles.paper, { [styles.mobile]: isMobile })}>
                 <CustomGrid container direction="column">
                     <CustomTypography
                         variant="body1bold"
@@ -335,7 +347,7 @@ const Component = ({
                         </CustomTypography>
                     </CustomGrid>
                     <CustomInput
-                        defaultValue= { profileStore.description }
+                        defaultValue={profileStore.description}
                         color="secondary"
                         autoComplete="off"
                         onChange={handleChangeAboutTheHost}
@@ -371,21 +383,13 @@ const Component = ({
                         <div className={styles.customSwitchContainer} onClick={toggleSelected}>
                             <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
                         </div>
-                        {enableMonetization
-                            ? <CustomTypography
-                                variant="body2"
-                                color="colors.white.primary"
-                                nameSpace="createRoom"
-                                translation="editDescription.form.monetizationContentOff"
-                                className={styles.monetizationContentToggleValue}
-                            />
-                            : <CustomTypography
-                                variant="body2"
-                                color="colors.white.primary"
-                                nameSpace="createRoom"
-                                translation="editDescription.form.monetizationContentOn"
-                                className={styles.monetizationContentToggleValue}
-                            />}
+                        <CustomTypography
+                            variant="body2"
+                            color="colors.white.primary"
+                            nameSpace="createRoom"
+                            translation={enableMonetization ? "editDescription.form.monetizationContentOn" : "editDescription.form.monetizationContentOff"}
+                            className={styles.monetizationContentToggleValue}
+                        />
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

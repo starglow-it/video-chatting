@@ -90,7 +90,7 @@
   },
   "revokeRoomDialog": {
     "title": "Revoke publication?",
-    "text": "The Room will be removed from Ruume library, but will stay in the list of My Rooms of those users who currently have it."
+    "text": "The Ruume will be removed from Ruume library, but will stay in the list of My Ruumes of those users who currently have it."
   },
   "buttons": {
     "create": "Create Room",

@@ -7,6 +7,10 @@ import {
     $isTogglePayment,
     $meetingPaymentStore,
     $paymentIntent,
+    $createRoomPaymentStore,
+    $isToggleCreateRoomPayment,
+    setCreateRoomPaymentDataEvent,
+    $isRoomPaywalledStore,
     cancelPaymentIntentFx,
     cancelPaymentIntentWithData,
     createPaymentIntentFx,
@@ -14,21 +18,31 @@ import {
     getPaymentMeetingFx,
     receivePaymentMeetingEvent,
     togglePaymentFormEvent,
+    toggleCreateRoomPaymentFormEvent,
     updatePaymentMeetingFx,
+    isRoomPaywalledFx
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
 import { handleUpdatePaymentMeeting } from './handlers/handleUpdatePaymentMeeting';
 import { handleGetPaymentMeeting } from './handlers/handleGetPaymentMeeting';
 import { sendUpdatePaymentsMeetingEvent } from '../sockets/model';
+import { handleIsRoomPaywalled } from './handlers/handleIsRoomPaywalled';
 
+isRoomPaywalledFx.use(handleIsRoomPaywalled);
 createPaymentIntentFx.use(handleCreatePaymentIntent);
 cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 getPaymentMeetingFx.use(handleGetPaymentMeeting);
 updatePaymentMeetingFx.use(handleUpdatePaymentMeeting);
 
+$createRoomPaymentStore.on(setCreateRoomPaymentDataEvent, (state, data) => ({ ...data }));
+
 $paymentIntent
     .on(createPaymentIntentWithData.doneData, (state, data) => ({
+        id: data.id,
+        clientSecret: data.clientSecret,
+    }))
+    .on(createPaymentIntentFx.doneData, (state, data) => ({
         id: data.id,
         clientSecret: data.clientSecret,
     }))
@@ -36,6 +50,8 @@ $paymentIntent
         id: '',
         clientSecret: '',
     }));
+
+$isRoomPaywalledStore.on(isRoomPaywalledFx.doneData, (state, data) => data.isRoomPaywalled);
 $meetingPaymentStore
     .on(getPaymentMeetingFx.doneData, (_, data) => data)
     .on(updatePaymentMeetingFx.doneData, (state, payments) =>
@@ -45,6 +61,10 @@ $meetingPaymentStore
     .reset(resetRoomStores);
 
 $isTogglePayment.on(togglePaymentFormEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isToggleCreateRoomPayment.on(toggleCreateRoomPaymentFormEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 

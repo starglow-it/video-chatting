@@ -44,7 +44,6 @@ const RecordVideoDownloadDialog = memo(() => {
     }, [videoBlob]);
 
     useEffect(() => {
-        console.log(uploadVideoToS3Store)
         if (uploadVideoToS3Store) {
             setStatusUploadingToS3('done');
         }

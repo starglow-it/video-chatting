@@ -315,6 +315,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         handleMenuClose();
         logoutUserFx();
         localStorage.removeItem("isFirstDashboardVisit");
+        localStorage.removeItem("isFirstMeeting");
     }, []);
 
     return (
@@ -360,11 +361,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         })}
                     >
                         <ConditionalRender
-                            condition={
-                                !isMobile
-                                    ? !isNotFoundRoute
-                                    : !isNotFoundRoute && !isRoomRoute
-                            }
+                            condition={!isNotFoundRoute && !isRoomRoute}
                         >
                             <CustomBox
                                 className={clsx(styles.header, {
