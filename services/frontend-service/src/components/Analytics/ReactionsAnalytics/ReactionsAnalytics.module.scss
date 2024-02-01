@@ -1,0 +1,29 @@
+@import "../../../styles/rem";
+
+.chartClass {
+  margin: rem(40px auto);
+}
+
+.loader {
+  margin: auto;
+}
+
+.noData {
+  margin: auto;
+}
+
+.attendeesDescWrapper {
+  width: fit-content;
+}
+
+.avgMinTitle {
+  margin-top: 16px;
+}
+
+.avgMinUnit {
+  margin-left: 2px;
+}
+
+.reactionWrapper {
+  margin-bottom: 16px;
+}

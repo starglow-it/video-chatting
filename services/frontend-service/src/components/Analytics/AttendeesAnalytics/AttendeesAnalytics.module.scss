@@ -1,0 +1,35 @@
+@import "../../../styles/rem";
+
+.chartClass {
+  margin: rem(40px auto);
+}
+
+.loader {
+  margin: auto;
+}
+
+.noData {
+  margin: auto;
+}
+
+.participantsIcon {
+  color: #9243B7;
+  margin-right: 4px;
+}
+
+.audienceIcon {
+  color: #27C54A;
+  margin-right: 4px;
+}
+
+.attendeesDescWrapper {
+  width: fit-content;
+}
+
+.avgMinTitle {
+  margin-top: 16px;
+}
+
+.avgMinUnit {
+  margin-left: 2px;
+}
