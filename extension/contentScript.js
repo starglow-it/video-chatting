@@ -296,7 +296,7 @@ window.addEventListener("load", async () => {
       roomId = result.roomId
       console.log('Data retrieved is ', result.roomId);
     })
-    
+
     chrome.runtime.sendMessage({ action: "fetchRoomList" });
 
     chrome.runtime.onMessage.addListener(
@@ -309,7 +309,6 @@ window.addEventListener("load", async () => {
         }
       }
     );
-
 
     await injectButton();
     await fillTitleField();

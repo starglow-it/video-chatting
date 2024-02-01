@@ -21,15 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const errorMessageField = document.getElementById('error-message');
   const registerLink = document.getElementById('register');
   const confirmBtn = document.getElementById('confirmBtn');
+  const forgotPasswordSpan = document.getElementById('forgot-password');
 
   renderCal();
 
   /*
     Fetch Room list and render badges
   */
-  chrome.runtime.sendMessage({
-    action: 'fetchRoomList'
-  });
 
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.action === 'roomListResponse') {
@@ -66,6 +64,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function (cookie) {
       if (cookie) {
         notLoggedInDiv.style.display = "none";
+        chrome.runtime.sendMessage({
+          action: 'fetchRoomList'
+        });
       } else {
         loggedInDiv.style.display = "none";
       }
@@ -113,6 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   })
 
+  forgotPasswordSpan.addEventListener('click', function() {
+    chrome.tabs.create({
+      url: 'https://stg-my.chatruume.com/login?forgot-password'
+    })
+  })
+
   enterMeetingBtn.addEventListener("click", function () {
     chrome.tabs.create({
       url: "https://stg-my.chatruume.com/dashboard",
@@ -124,7 +131,8 @@ document.addEventListener("DOMContentLoaded", function () {
   */
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.action === 'displayErrorMessage') {
-      errorMessageField.textContent = message.error;
+      // errorMessageField.textContent = message.error;
+      errorMessageField.textContent = 'wrong password.';
     } else if (message.action === 'reloadPage') {
       location.reload();
     }

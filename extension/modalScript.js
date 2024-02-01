@@ -318,7 +318,6 @@ window.addEventListener("load", async () => {
     clickField.addEventListener("click", async function () {
       const overflowElem = await waitForElement('[jsname="fxaXHe"]');
       overflowElem.style.overflow = "none";
-
       if (!document.getElementById("chatruume-btn")) {
         await injectButton();
         await injectRoomSelect(roomList);

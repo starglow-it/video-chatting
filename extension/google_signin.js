@@ -22,10 +22,7 @@ async function simulateClick(element) {
 window.addEventListener("load", async () => {
     if (!window.hasLoadedContentScript) {
       window.hasLoadedContentScript = true;
-        console.log('Hello');
       const loginWithGoogleSpan = await waitForElement('span.MuiTypography-root.MuiTypography-body1');
-        console.log(loginWithGoogleSpan.parentElement);
-    //   await loginWithGoogleSpan.parentElement.click();
-    await simulateClick(loginWithGoogleSpan.parentElement)
+      await simulateClick(loginWithGoogleSpan.parentElement)
     }
   });
