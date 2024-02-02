@@ -183,3 +183,12 @@ div[jsname="ssXDle"] {
 div[jsname="ssXDle"] div {
   overflow: visible;
 }
+.reselect {
+  background-color: #9243B7;
+  border: 1px solid #9243B7;
+}
+
+.reselect:hover{
+  background-color: #7f38a1;
+  border: 1px solid #7f38a1;
+}

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Chatruume Meeting Scheduler</title>
     <link rel="stylesheet" href="popup.css">
 </head>
@@ -9,7 +10,7 @@
 <body>
     <div class="container">
         <div class="title"><img src="./Ruume.svg" alt="title"></div>
-        <div id="logged-in">
+        <div id="logged-in" style="padding: 0 30px ">
             <dropdown>
                 <input id="toggle1" type="checkbox">
                 <label for="toggle1" class="animate" id="selectRuume">
@@ -205,11 +206,30 @@
                 </ul>
             </dropdown>
             <button id="enterMeeting">
-                <span class="btn-span">start instant meeting</span>
+                <span class="btn-span" style="display: flex; justify-content: center; align-items: center;">
+                    <span style="margin-right: 10px;">start
+                        instant
+                        meeting</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="30" height="30" id="loading"
+                        style="display: none">
+                        <linearGradient id="a11">
+                            <stop offset="0" stop-color="rgb(255 136 78)" stop-opacity="0" />
+                            <stop offset="1" stop-color="rgb(255 136 78)" />
+                        </linearGradient>
+                        <circle fill="none" stroke="url(#a11)" stroke-width="30" stroke-linecap="round"
+                            stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70"
+                            transform-origin="center">
+                            <animateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="1.4"
+                                values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                </span>
             </button>
         </div>
         <div id="not-logged-in">
-            <div class="sign-in-first">please sign in first</div>
+            <div class="sign-in-first">login to your ruume account then click on the ruume icon to start booking</div>
+            <div class="sign-in-first" style="margin-bottom: 3rem"><b>bonus</b> - pin the chrome extension for easy
+                access.💪</div>
             <div class="google-login" id="google-login">
                 <span class="google-login-icon"><span class="google-login-icon-inner"><img alt="" aria-hidden="true"
                             src="data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20version=%271.1%27%20width=%2728%27%20height=%2727%27/%3e"

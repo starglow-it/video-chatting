@@ -212,6 +212,7 @@ async function injectRoomReselectBtn(roomList) {
 
   const reselectBtn = document.createElement("button");
   reselectBtn.id = "chatruume-btn";
+  reselectBtn.className = 'reselect';
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");

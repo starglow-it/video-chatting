@@ -24,7 +24,7 @@
 }
 
 body {
-  width: 400px;
+  width: 480px;
   height: fit-content;
   padding: 15px;
   font-size: 1rem;
@@ -35,7 +35,7 @@ body {
 .container {
   border: 2px rgb(255, 136, 78) solid;
   border-radius: 15px;
-  padding: 40px 30px 50px;
+  padding: 40px 50px 50px;
 }
 .title {
   margin: 0px;
@@ -67,7 +67,7 @@ body {
   vertical-align: middle;
   appearance: none;
   text-decoration: none;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   /* font-weight: 500; */
   font-size: 1rem;
   line-height: 1.75;
@@ -118,7 +118,7 @@ body {
   margin: 0px;
   font-size: 1rem;
   line-height: 1.5rem;
-  font-family: Poppins, sans-serif;
+  font-family: 'Poppins', sans-serif;
   /* font-weight: 400; */
 }
 
@@ -229,7 +229,7 @@ body {
   color: rgb(189, 200, 211);
     font-size: 1rem;
     line-height: 1.4375em;
-    font-family: Poppins, sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
     padding: 0px;
     display: block;
@@ -256,7 +256,7 @@ body {
 .main-input-field {
   font-size: 1rem;
     line-height: 1.4375em;
-    font-family: Poppins, sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
     color: rgb(15, 15, 16);
     box-sizing: border-box;
@@ -309,7 +309,7 @@ body {
     border-color: rgba(189, 200, 211, 0.6);
     font-size: 1rem;
     line-height: 1.4375em;
-    font-family: Poppins, sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
     color: rgb(15, 15, 16);
     box-sizing: border-box;
@@ -345,7 +345,8 @@ body {
   text-align: center;
   color: #C9C9C9; 
   font-size: 0.8785rem;
-  margin-bottom: -10px;
+  line-height: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 
@@ -415,13 +416,14 @@ ul {
 }
 .calendar-header, .calendar-footer {
   display: flex;
-  width: 254px;
+  width: 234px;
   justify-content: center;
 }
 .calendar-footer{
   position: absolute;
+  width: 314px;
+  left: 0;
   bottom: 0;
-  padding: 10px 0;
 }
 
 .calendar {

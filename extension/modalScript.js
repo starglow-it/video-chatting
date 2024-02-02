@@ -221,7 +221,7 @@ async function injectRoomReselectBtn() {
   btnWrapper.className = "reselect-btn-wrapper";
 
   const reselectBtn = document.createElement("button");
-  reselectBtn.className = "chatruume-btn";
+  reselectBtn.className = "chatruume-btn reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");

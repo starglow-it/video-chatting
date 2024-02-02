@@ -1,11 +1,11 @@
-let roomList=[], 
-  roomId = null, 
+let roomList = [],
+  roomId = null,
   selectedYear = new Date().getFullYear(),
-  selectedMonth = new Date().getMonth() + 1, 
-  selectedDay=new Date().getUTCDate(), 
-  selectedStartTime = new Date().getUTCHours().toString() + new Date().getUTCMinutes().toString(), 
-  selectedEndTime = new Date().getUTCHours().toString() + new Date().getUTCMinutes().toString(), 
-  selectedMeridiem = 'am', 
+  selectedMonth = new Date().getMonth() + 1,
+  selectedDay = new Date().getUTCDate(),
+  selectedStartTime = new Date().getUTCHours().toString() + new Date().getUTCMinutes().toString(),
+  selectedEndTime = new Date().getUTCHours().toString() + new Date().getUTCMinutes().toString(),
+  selectedMeridiem = 'am',
   selectedTimeZone = '00';
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -90,19 +90,15 @@ document.addEventListener("DOMContentLoaded", function () {
   confirmBtn
     .addEventListener("click", function () {
       selectedDay = $('.calendar li.active').text() || selectedDay;
-      
+
       const start = formatTimeString(selectedYear, selectedMonth + 1, selectedDay, selectedStartTime, selectedMeridiem, selectedTimeZone);
       const end = formatTimeString(selectedYear, selectedMonth + 1, selectedDay, selectedEndTime, selectedMeridiem, selectedTimeZone);
-      
-      console.log(start, end);
-      // chrome.tabs.create({
-      //   url: "https://calendar.google.com/calendar/render?action=TEMPLATE",
-      // });
+
       chrome.tabs.create({
         url: `https://calendar.google.com/calendar/u/0/r/eventedit?dates=${start}/${end}&trp=true`,
       });
 
-      chrome.storage.local.set({roomId: roomId}, function() {
+      chrome.storage.local.set({ roomId: roomId }, function () {
         console.log('Data is stored in storage');
       })
 
@@ -114,16 +110,33 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   })
 
-  forgotPasswordSpan.addEventListener('click', function() {
+  forgotPasswordSpan.addEventListener('click', function () {
     chrome.tabs.create({
       url: 'https://stg-my.chatruume.com/login?forgot-password'
     })
   })
 
   enterMeetingBtn.addEventListener("click", function () {
-    chrome.tabs.create({
-      url: "https://stg-my.chatruume.com/dashboard",
-    });
+    if (roomId) {
+      const loading = document.getElementById('loading');
+      chrome.runtime.sendMessage({
+        action: 'createMeeting',
+        templateId: roomId
+      });
+      loading.style.display = 'block';
+
+      setTimeout(() => {
+        loading.style.display = 'none';
+        chrome.runtime.sendMessage({
+          action: 'enterRoom',
+          roomId: roomId
+        });
+      }, 1000);
+    } else {
+      chrome.tabs.create({
+        url: "https://stg-my.chatruume.com/dashboard",
+      });
+    }
   });
 
   /*
@@ -262,7 +275,7 @@ function selectOption(event) {
 
   event.stopPropagation();
 
-  if (customSelect.id === 'year' || customSelect.id === 'month' ) { renderCal(); }
+  if (customSelect.id === 'year' || customSelect.id === 'month') { renderCal(); }
 }
 
 function setupCustomSelects() {

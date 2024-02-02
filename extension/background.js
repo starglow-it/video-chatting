@@ -154,9 +154,6 @@ chrome.runtime.onMessage.addListener(async function (
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status === "complete" && tab.url.includes("dashboard")) {
-    // Close the tab
-    // chrome.tabs.remove(tabId);
-    // Retrieve and store access token
     chrome.cookies.get(
       { url: "https://stg-my.chatruume.com", name: "accessToken" },
       function (cookie) {
