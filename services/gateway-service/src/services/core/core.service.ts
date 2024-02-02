@@ -193,6 +193,15 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
+  async isTemplatePaymentEnabled(
+    payload: GetTemplatePaymentPayload,
+  ): Promise<boolean> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.IsTemplatePaymentEnabled,
+    };
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
   async manageUserRights(
     payload: ManageUserRightsPayload,
   ): Promise<ICommonUser> {

@@ -323,6 +323,7 @@ export type Notification = {
 };
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
+export type PaymentExistStore = { isPaywalled: boolean };
 export type PaymentIntentParams = {
     paymentType: PaymentType;
 };
