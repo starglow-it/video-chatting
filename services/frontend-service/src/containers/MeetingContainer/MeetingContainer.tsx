@@ -76,10 +76,12 @@ import {
     updateLocalUserEvent,
     updateMeetingEvent,
     updateMeetingSocketEvent,
+    isRoomPaywalledFx
 } from '../../store/roomStores';
 
 // types
 import { SavedSettings } from '../../types';
+import { PaymentType } from 'shared-const';
 
 // styles
 import styles from './MeetingContainer.module.scss';
@@ -316,6 +318,20 @@ const MeetingContainer = memo(() => {
             setIsMeetingPreviewShow(true);
         }
     }, [isMuteYb]);
+
+    useEffect(() => {
+        const fetch = async () => {
+            const meetingRole = !!router.query.role ? MeetingRole.Audience : MeetingRole.Participant;
+
+            await isRoomPaywalledFx({
+                templateId: meetingTemplate.id,
+                meetingRole: meetingRole,
+                paymentType: PaymentType.Paywall
+            });
+        };
+
+        fetch();
+    }, [router, meetingTemplate.id]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (

@@ -54,7 +54,8 @@
       "monetizationContent": " collect entry fees, donations or payments",
       "monetizationContentOn": "On",
       "monetizationContentOff": "Off",
-      "preMeetingNtfText": "you'll be able to join at the indicated time"
+      "preMeetingNtfText": "you'll be able to join at the indicated time",
+      "paymentTitle": "Payment is required before entering"
     }
   },
   "editPositions": {
