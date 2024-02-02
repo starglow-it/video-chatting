@@ -95,12 +95,16 @@ async function injectButton() {
           templateId: roomId,
         });
 
-        selectElem.style.display = "none";
+        // selectElem.style.display = "none";
 
-        chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
+        // chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
 
-        injectRoomReselectBtn();
+        // injectRoomReselectBtn();
         fillMeetingDetails();
+
+        setTimeout(() => {
+          document.querySelectorAll('[jsname="c6xFrd"] [class="VfPpkd-Jh9lGc"]')[3].click();
+        }, 500);
       } else {
         chrome.runtime.sendMessage({
           action: "enterRoom",
