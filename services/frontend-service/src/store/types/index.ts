@@ -379,3 +379,12 @@ export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>;
 export interface INextPageContext {
     ctx: NextPageContext;
 }
+
+export type GetRoomRatingStatisticParams = {
+    basedOn: string;
+    roomType: string;
+};
+
+export * from './state';
+export * from './response';
+export * from './requestParams';

@@ -162,7 +162,6 @@ export class ProfileTemplatesController {
         });
       }
 
-
       const template = await this.userTemplatesService.updateUserTemplate({
         templateId,
         userId: req.user.userId,
@@ -342,7 +341,6 @@ export class ProfileTemplatesController {
           });
         });
       });
-
       await Promise.all(promise);
 
       return await this.coreService.updateTemplatePayment({

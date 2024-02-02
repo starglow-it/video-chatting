@@ -13,6 +13,27 @@ export interface ICountryStatistic {
   value: number;
   color: string;
 }
+export interface AttendeesNumbers {
+  totalNumber: number;
+  participants: number;
+  audience: number;
+  participantsAvgMin: number;
+  audienceAvgMin: number;
+}
+export interface LocationStatistics {
+  data: {country: string, state?: { name: string, num: number }[], num: number}[]
+}
+export interface qaStatistics {
+  data: {
+    questions: { content: string, who: string, answered: boolean }[]
+  }
+}
+export interface linksStatistics {
+  data: { link: string, clicks: number, clickThroughRate: number }[]
+}
+export interface monetizationStatistics {
+  data: { entryFee: number, total: number, donations: number }
+}
 
 export interface ISubscriptionsStatistics {
   label: string;

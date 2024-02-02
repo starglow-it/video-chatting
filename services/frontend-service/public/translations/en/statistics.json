@@ -1,0 +1,60 @@
+{
+  "users": {
+    "location": {
+      "title": "By location"
+    },
+    "monetization": {
+      "noData": "Nothing earned yet"
+    },
+    "subscription": {
+      "title": "Subscriptions",
+      "noData": "No subscriptions yet"
+    },
+    "users": {
+      "title": "Subscriptions",
+      "noData": "No users yet"
+    },
+    "usersMonetization": {
+      "title": "Users earned",
+      "noData": "Nothing earned yet"
+    },
+    "platformMonetization": {
+      "title": "Platform earned",
+      "noData": "Nothing earned yet"
+    },
+    "search": {
+      "noData":"Nothing found"
+    }
+  },
+  "common": {
+    "title": "Statistics"
+  },
+  "rooms": {
+    "rating": {
+      "title": "Rooms rating",
+      "based": "Based on",
+      "roomType": "Room Type",
+      "dropdownTitle": "select a ruume event"
+    }
+  },
+  "pages": {
+    "users": {
+      "title": "users"
+    },
+    "qa": {
+      "title": "q&a"
+    },
+    "links": {
+      "title": "links"
+    },
+    "monetization": {
+      "title": "monetization"
+    }
+  },
+  "monetization": {
+    "rooms": "Purchased rooms",
+    "subscriptions": "Subscriptions",
+    "sellRooms": "Selling custom rooms",
+    "roomCalls": "Room calls"
+  }
+}

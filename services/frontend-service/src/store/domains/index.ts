@@ -12,5 +12,6 @@ export const notificationsDomain = rootDomain.createDomain(
 export const otherStoresDomain = rootDomain.createDomain('otherStoresDomain');
 export const paymentsDomain = rootDomain.createDomain('paymentsDomain');
 export const profileDomain = rootDomain.createDomain('profileDomain');
+export const statisticsDomain = rootDomain.createDomain('statisticsDomain');
 export const videoChatDomain = rootDomain.createDomain('videoChatDomain');
 export const supportDomain = rootDomain.createDomain('support');
