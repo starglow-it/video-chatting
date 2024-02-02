@@ -131,6 +131,10 @@ const Component = ({
 
     useEffect(() => {
         toggleCreateRoomPaymentFormEvent(enableMonetization);
+
+        if (!enableMonetization) {
+            setAnchorEl(null);
+        }
     }, [enableMonetization]);
 
     const handleClickNextStep = useCallback(async () => {
@@ -244,6 +248,7 @@ const Component = ({
 
     return (
         <CustomGrid
+            item
             container
             alignItems="center"
             justifyContent="center"
@@ -252,10 +257,13 @@ const Component = ({
             <CustomPopover
                 id="monetization"
                 open={Boolean(anchorEl)}
-                onClose={handleCloseButton}
                 anchorEl={anchorEl}
-                // style={{ zIndex: 20, left: isMobile ? "-10px" : '70px', top: isMobile ? "-25px" : '-40px' }}
-                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none'}}
+                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none' }}
+                disableAutoFocus
+                disableEnforceFocus
+                disableRestoreFocus
+                disablePortal
+                onClose={() => {}}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: windowSize.width > 1500 ? 'right' : 'center',
@@ -267,7 +275,7 @@ const Component = ({
                 PaperProps={{
                     className: clsx(styles.popoverMonetization),
                 }}
-                className={clsx(styles.popover, {[styles.mobile]: isMobile})}
+                className={clsx(styles.popover, { [styles.mobile]: isMobile })}
             >
                 <CustomPaper
                     variant="black-glass"

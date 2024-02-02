@@ -32,6 +32,8 @@ import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttend
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/TemplateLinks';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -690,6 +692,8 @@ const Component = ({
                 </form>
             </FormProvider>
             <ConfirmCancelRoomCreationDialog onConfirm={onCancel} />
+            <ScheduleMeetingDialog />
+            <DownloadIcsEventDialog />
         </CustomGrid>
     );
 };

@@ -187,7 +187,7 @@ const Component = () => {
 
     const handleSubmit = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
-        if (userTemplate) {
+        if (!!userTemplate) {
             await router.push(dashboardRoute);
         }
     };
@@ -195,7 +195,7 @@ const Component = () => {
     const handleSubmitAndEnterMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (userTemplate) {
+        if (!!userTemplate) {
             const result = await createMeetingFx({ templateId: userTemplate?.id });
 
             if (result.template) {
@@ -211,7 +211,7 @@ const Component = () => {
     const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (userTemplate) {
+        if (!!userTemplate) {
             setScheduleTemplateIdEvent(userTemplate?.id);
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
