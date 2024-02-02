@@ -50,11 +50,14 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         roomListDiv.appendChild(spanElement);
       }
+    } else if (message.action === 'completeCreatingMeeting') {
+      document.getElementById('loading').style.display = 'none';
+        chrome.runtime.sendMessage({
+          action: 'enterRoom',
+          roomId: roomId
+        });
     }
   })
-
-
-
 
   /*
      Conditionally Render based on token existence
@@ -98,9 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
         url: `https://calendar.google.com/calendar/u/0/r/eventedit?dates=${start}/${end}&trp=true`,
       });
 
-      chrome.storage.local.set({ roomId: roomId }, function () {
-        console.log('Data is stored in storage');
-      })
+      chrome.storage.local.set({ roomId: roomId })
 
     });
 
@@ -124,14 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
         templateId: roomId
       });
       loading.style.display = 'block';
-
-      setTimeout(() => {
-        loading.style.display = 'none';
-        chrome.runtime.sendMessage({
-          action: 'enterRoom',
-          roomId: roomId
-        });
-      }, 1000);
     } else {
       chrome.tabs.create({
         url: "https://stg-my.chatruume.com/dashboard",
@@ -144,8 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
   */
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.action === 'displayErrorMessage') {
-      // errorMessageField.textContent = message.error;
-      errorMessageField.textContent = 'wrong password.';
+      errorMessageField.textContent = 'wrong credential.';
     } else if (message.action === 'reloadPage') {
       location.reload();
     }
@@ -166,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   })
-
 });
 
 
@@ -174,8 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
  * Format time string function
  */
 function formatTimeString(year, month, date, timeString, period, timezoneOffset) {
-  console.log(year, month, date, timeString, period, timezoneOffset)
-
   const hours = parseInt(timeString.slice(0, 2));
   const minutes = parseInt(timeString.slice(2, 4));
 

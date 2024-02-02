@@ -13,35 +13,37 @@ chrome.runtime.onMessage.addListener(async function (
       await chrome.storage.sync.get(
         ["accessToken", "refreshToken"],
         async function (data) {
-          accessToken = data.accessToken;
-          refreshToken = data.refreshToken;
-          const response = await fetch(
-            "https://stg-my.chatruume.com/api/profile/templates",
-            {
-              method: "GET",
-              headers: {
-                Authorization: "Bearer " + accessToken,
-              },
+          try {
+            accessToken = data.accessToken;
+            refreshToken = data.refreshToken;
+            const response = await fetch(
+              "https://stg-my.chatruume.com/api/profile/templates",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: "Bearer " + accessToken,
+                },
+              }
+            );
+  
+            const roomList = await response.json();
+    
+            if (sender.tab) {
+              await chrome.tabs.sendMessage(sender.tab.id, {
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+              });
+            } else {
+              await chrome.runtime.sendMessage({ action: "roomListResponse", roomList: roomList.result.list });
+  
             }
-          );
-
-          const roomList = await response.json();
-
-          console.log(roomList);
-
-          if (sender.tab) {
-            await chrome.tabs.sendMessage(sender.tab.id, {
-              action: "roomListResponse",
-              roomList: roomList.result.list,
-            });
-          } else {
-            await chrome.runtime.sendMessage({ action: "roomListResponse", roomList: roomList.result.list });
-
+          } catch (error) {
+            console.error(error);            
           }
         }
       );
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   } else if (message.action === "createMeeting") {
     try {
@@ -66,17 +68,24 @@ chrome.runtime.onMessage.addListener(async function (
               }),
             }
           );
-
-          await chrome.tabs.sendMessage(sender.tab.id, {
-            action: "completeCreatingMeeting",
-            success: true,
-          });
+          
+          if (sender.tab) {
+            await chrome.tabs.sendMessage(sender.tab.id, {
+              action: "completeCreatingMeeting",
+              success: true,
+            });
+          } else {
+            await chrome.runtime.sendMessage({
+              action: 'completeCreatingMeeting',
+              success: true
+            });
+          }
 
           const res = await response.json();
         }
       );
     } catch (error) {
-      console.log("Error creating new room: ", error);
+      console.error("Error creating new room: ", error);
     }
   } else if (message.action === "enterRoom") {
     chrome.tabs.create({
@@ -93,12 +102,8 @@ chrome.runtime.onMessage.addListener(async function (
         password: message.password
       })
     })
-    console.log(message);
-    console.log(res);
 
     const response = await res.json();
-
-    console.log(response)
 
     if (response.success) {
       const accessTokenCookie = {
@@ -115,13 +120,9 @@ chrome.runtime.onMessage.addListener(async function (
         expirationDate: response.result.refreshToken.expiresAt
       }
 
-      chrome.cookies.set(accessTokenCookie, (cookie) => {
-        console.log('AccessToken cookie successfully set', cookie);
-      })
+      chrome.cookies.set(accessTokenCookie);
 
-      chrome.cookies.set(refreshTokenCookie, (cookie) => {
-        console.log('RefreshToken cookie successfully set', cookie);
-      })
+      chrome.cookies.set(refreshTokenCookie)
 
       chrome.runtime.sendMessage({
         action: 'reloadPage'
@@ -158,9 +159,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       { url: "https://stg-my.chatruume.com", name: "accessToken" },
       function (cookie) {
         if (cookie) {
-          chrome.storage.sync.set({ accessToken: cookie.value }, function () {
-            console.log("Access token saved");
-          });
+          chrome.storage.sync.set({ accessToken: cookie.value });
         }
       }
     );
@@ -168,9 +167,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       { url: "https://stg-my.chatruume.com", name: "refreshToken" },
       function (cookie) {
         if (cookie) {
-          chrome.storage.sync.set({ refreshToken: cookie.value }, function () {
-            console.log("Refresh token saved");
-          });
+          chrome.storage.sync.set({ refreshToken: cookie.value });
         }
       }
     );

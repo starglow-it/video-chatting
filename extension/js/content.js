@@ -82,7 +82,7 @@ async function injectButton() {
       );
 
       if (this.textContent === "Make it a Ruume Meeting") {
-        // if (!isRoomSelected) {
+
         chrome.runtime.sendMessage({
           action: "createMeeting",
           templateId: roomId,
@@ -283,7 +283,7 @@ async function fetchRoomList(accessToken, refreshToken) {
 
       return roomList;
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   }
 }
@@ -295,7 +295,6 @@ window.addEventListener("load", async () => {
 
     chrome.storage.local.get(['roomId'], function(result) {
       roomId = result.roomId
-      console.log('Data retrieved is ', result.roomId);
     })
 
     chrome.runtime.sendMessage({ action: "fetchRoomList" });

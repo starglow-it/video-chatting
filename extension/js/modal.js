@@ -47,7 +47,6 @@ async function injectButton() {
   const parentElement = await waitForElement('[aria-labelledby="tabEvent"]');
 
   if (parentElement) {
-    // const saveButton = saveButtonRow.lastChild.firstChild;
     // Create the container div for the ChatRuume button
     const chatRuumeContainer = document.createElement("div");
     chatRuumeContainer.className = "chatruume-meeting";
@@ -115,7 +114,6 @@ async function injectButton() {
     chatRuumeContainer.appendChild(btnContainer);
 
     // Insert the new ChatRuume container next to the Google Meet button
-    // saveButton.insertAdjacentElement("afterend", chatRuumeContainer);
     parentElement.appendChild(chatRuumeContainer);
   }
 }
@@ -205,7 +203,7 @@ async function injectRoomSelect(roomList) {
         select.classList.remove("open");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 }
@@ -303,7 +301,7 @@ async function fetchRoomList(accessToken, refreshToken) {
       const roomList = await response.json().result.list;
       return roomList;
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   }
 }

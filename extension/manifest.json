@@ -27,7 +27,7 @@
     }
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js"
   },
   "action": {
     "default_popup": "popup.html"
@@ -35,21 +35,21 @@
   "content_scripts": [
     {
       "matches": ["*://*.google.com/calendar/u/0/r/eventedit*"],
-      "css": ["content.css"],
-      "js": ["contentScript.js"]
+      "css": ["css/content.css"],
+      "js": ["js/content.js"]
     },
     {
       "matches": ["*://calendar.google.com/calendar/u/0/r"],
-      "css": ["modal.css"],
-      "js": ["modalScript.js"]
+      "css": ["css/modal.css"],
+      "js": ["js/modal.js"]
     },
     {
       "matches": ["https://stg-my.chatruume.com/login?google-signin"],
-      "js": ["google_signin.js"]
+      "js": ["js/google_signin.js"]
     },
     {
       "matches": ["https://stg-my.chatruume.com/login?forgot-password"],
-      "js": ["forgot_password.js"]
+      "js": ["js/forgot_password.js"]
     }
   ],
   "content_security_policy": {
