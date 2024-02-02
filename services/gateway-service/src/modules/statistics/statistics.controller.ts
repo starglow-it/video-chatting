@@ -22,6 +22,7 @@ import {
   SubscriptionsStatisticsType,
   UserRoles,
   UserStatistics,
+  Rooms,
 } from 'shared-types';
 
 // services
@@ -218,6 +219,39 @@ export class StatisticsController {
         result: {
           totalNumber: roomsStatistics?.length,
           data: roomsStatistics,
+        },
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get rooms rating statistic`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/get-rooms')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Rooms ' })
+  @ApiOkResponse({
+    description: 'Rooms retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getRooms(
+    @Query('author') author: string,
+  ): Promise<ResponseSumType<Rooms>> {
+    try {
+      const rooms = await this.statisticsService.getRooms({ author });
+
+      return {
+        result: {
+          totalNumber: rooms?.length,
+          data: rooms,
         },
         success: true,
       };

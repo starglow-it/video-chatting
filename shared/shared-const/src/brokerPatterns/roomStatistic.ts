@@ -1,4 +1,6 @@
 export enum StatisticBrokerPatterns {
+  GetRooms = 'get_rooms',
+  GetMeetingAttendeesStatistics = 'get_meeting_attendees_statistics',
   GetRoomRatingStatistic = 'get_room_rating_statistic',
   UpdateRoomRatingStatistic = 'update_room_rating_statistic',
   GetMonetizationStatistic = 'get_monetization_statistic',

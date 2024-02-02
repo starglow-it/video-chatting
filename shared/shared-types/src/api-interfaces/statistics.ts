@@ -57,6 +57,11 @@ export interface IRoomsRatingStatistic {
   money: number;
   uniqueUsers: number;
 }
+export interface IRooms {
+  id: string;
+  template: { name: string };
+  updatedAt: string;
+}
 
 export interface IMonetizationStatistic {
   key: string;
@@ -68,6 +73,15 @@ export type UserStatistics = StatisticBase<ICountryStatistic[]>;
 export type SubscriptionsStatisticsType = StatisticBase<
   ISubscriptionsStatistics[]
 >;
+
+export type MeetingAttendeesStatistics = {
+  total: number;
+  participants: number;
+  audiences: number;
+  participantsAvgMin: number;
+  audienceAvgMin: number;
+};
+export type Rooms = StatisticBase<IRooms[]>;
 export type RoomsStatistics = StatisticBase<IRoomsStatistics[]>;
 export type RoomRatingStatistics = StatisticBase<IRoomsRatingStatistic[]>;
 export type MonetizationStatistics = StatisticBase<IMonetizationStatistic[]>;

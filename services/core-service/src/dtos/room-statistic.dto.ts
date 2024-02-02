@@ -3,6 +3,7 @@ import {
   IRoomsRatingStatistic,
   ICommonTemplate,
   ICommonUser,
+  IRooms
 } from 'shared-types';
 
 import { CommonUserDTO } from './common-user.dto';
@@ -35,4 +36,16 @@ export class RoomRatingStatisticDTO implements IRoomsRatingStatistic {
 
   @Expose()
   uniqueUsers: number;
+}
+export class RoomsDTO implements IRooms {
+  @Expose()
+  @Transform((data) => data.obj['_id'])
+  id: string;
+
+  @Expose()
+  @Type(() => CommonTemplateDTO)
+  template: ICommonTemplate;
+
+  @Expose()
+  updatedAt: string;
 }

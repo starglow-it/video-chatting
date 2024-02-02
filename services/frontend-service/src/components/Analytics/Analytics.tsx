@@ -109,7 +109,7 @@ const monetizationMockups = {
 const Component = () => {
     const { translation } = useLocalization('static');
     const profileStore = useStore($profileStore);
-    // const roomsRatingStatistics = useStore($roomsRatingStatistics);
+    const roomsRatingStatistics = useStore($roomsRatingStatistics);
     const [basedOnKey, setBasedOnKey] = useState('');
     const { activeTab, onChange: onChangeTab } = useNavigation({
         tabs: statisticTabs,
@@ -121,16 +121,6 @@ const Component = () => {
             onChangeTab(Tabs.PrivacyPolicy);
         }
     }, [router.query]);
-
-    useEffect(() => {
-        const handleProfileTemplatesPageChange = async () => {
-            await getProfileTemplatesFx({
-                limit: 100,
-                skip: 0,
-            });
-        };
-        handleProfileTemplatesPageChange();
-    }, []);
 
     useEffect(() => {
         getRoomRatingStatisticsFx({
