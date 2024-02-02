@@ -1,4 +1,4 @@
-let roomList = [],
+var roomList = [],
   roomId = null,
   selectedYear = new Date().getFullYear(),
   selectedMonth = new Date().getMonth() + 1,
@@ -94,7 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
   confirmBtn
     .addEventListener("click", function () {
       selectedDay = $('.calendar li.active').text() || selectedDay;
-
+      selectedStartTime = $('#start-time .selected').attr('data-value');
+      selectedEndTime = $('#end-time .selected').attr('data-value');
+      
       const start = formatTimeString(selectedYear, selectedMonth + 1, selectedDay, selectedStartTime, selectedMeridiem, selectedTimeZone);
       const end = formatTimeString(selectedYear, selectedMonth + 1, selectedDay, selectedEndTime, selectedMeridiem, selectedTimeZone);
 

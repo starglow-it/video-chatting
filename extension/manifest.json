@@ -39,7 +39,7 @@
       "js": ["js/content.js"]
     },
     {
-      "matches": ["*://calendar.google.com/calendar/u/0/r"],
+      "matches": ["*://calendar.google.com/calendar/u/0/r","*://calendar.google.com/calendar/u/0/r?trp=true"],
       "css": ["css/modal.css"],
       "js": ["js/modal.js"]
     },
