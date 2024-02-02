@@ -872,6 +872,42 @@ export class UserTemplatesController {
   }
 
   @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.IsTemplatePaymentEnabled,
+  })
+  async IsTemplatePaymentEnabled(
+    @Payload()
+    { userTemplateId, paymentType, meetingRole }: GetTemplatePaymentPayload,
+  ) {
+    return withTransaction<boolean>(
+      this.connection,
+      async (session) => {
+        try {
+          const templatePayment = await this.templatePaymentsComponent.findOne({
+            query: {
+              userTemplate: new ObjectId(userTemplateId),
+              type: paymentType,
+              meetingRole,
+            },
+            session,
+            populatePaths: 'userTemplate',
+          });
+
+          if (templatePayment.enabled) {
+            return true;
+          } else {
+            return false;
+          }
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({
     cmd: UserTemplatesBrokerPatterns.GetTemplatePayments,
   })
   async getTemplatePayments(
