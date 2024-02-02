@@ -2,28 +2,301 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Chatruume Meeting Scheduler</title>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="css/popup.css">
 </head>
 
 <body>
     <div class="container">
-        <div class="title"><img src="./Ruume.svg" alt="title"></div>
-        <div id="logged-in">
-            <button id="scheduleMeeting">
-                <span class="btn-span">schedule a ruume</span>
-            </button>
+        <div class="title"><img src="icons/Ruume.svg" alt="title"></div>
+        <div id="logged-in" style="padding: 0 30px ">
+            <dropdown>
+                <input id="toggle1" type="checkbox">
+                <label for="toggle1" class="animate" id="selectRuume">
+                    <span class="bnt-span">select a ruume<span id="room-name"></span></span>
+                    <span class="chevron"></span>
+                </label>
+                <ul class="animate">
+                    <div class="room-list"></div>
+                </ul>
+            </dropdown>
+            <dropdown>
+                <input id="toggle2" type="checkbox">
+                <label for="toggle2" class="animate" id="scheduleMeeting">
+                    <span class="btn-span">schedule</span>
+                    <span class="chevron"></span>
+                </label>
+                <ul class="animate">
+                    <div class="calendar">
+                        <div class="group">
+                            <div class="calendar-header">
+                                <div class="custom-select-wrapper">
+                                    <div class="custom-select" id="month">
+                                        <div class="custom-select__trigger"><span>january</span>
+                                            <span class="short-chevron"></span>
+
+                                        </div>
+                                        <div class="custom-options" style="width: 80px;">
+                                            <span class="custom-option selected" data-value="0">january</span>
+                                            <span class="custom-option" data-value="1">february</span>
+                                            <span class="custom-option" data-value="2">march</span>
+                                            <span class="custom-option" data-value="3">april</span>
+                                            <span class="custom-option" data-value="4">may</span>
+                                            <span class="custom-option" data-value="5">june</span>
+                                            <span class="custom-option" data-value="6">july</span>
+                                            <span class="custom-option" data-value="7">august</span>
+                                            <span class="custom-option" data-value="8">september</span>
+                                            <span class="custom-option" data-value="9">october</span>
+                                            <span class="custom-option" data-value="10">november</span>
+                                            <span class="custom-option" data-value="11">december</option>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-select-wrapper">
+                                    <div class="custom-select" id="year">
+                                        <div class="custom-select__trigger"><span>2024</span>
+                                            <span class="short-chevron"></span>
+
+                                        </div>
+                                        <div class="custom-options" style="width: 50px;">
+                                            <span class="custom-option selected" data-value="2024">2024</span>
+                                            <span class="custom-option" data-value="2025">2025</span>
+                                            <span class="custom-option" data-value="2026">2026</span>
+                                            <span class="custom-option" data-value="2027">2027</span>
+                                            <span class="custom-option" data-value="2028">2028</span>
+                                            <span class="custom-option" data-value="2029">2029</span>
+                                            <span class="custom-option" data-value="2030">2030</span>
+                                            <span class="custom-option" data-value="2031">2031</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="group">
+                                <li>mo</li>
+                                <li>tu</li>
+                                <li>we</li>
+                                <li>th</li>
+                                <li>fr</li>
+                                <li>sa</li>
+                                <li>su</li>
+                            </ul>
+                        </div>
+                        <div class="calendar-footer">
+                            <div class="custom-select-wrapper">
+                                <div class="custom-select" id="timezone">
+                                    <div class="custom-select__trigger"><span>GMT-08</span>
+                                        <span class="short-chevron"></span>
+
+                                    </div>
+                                    <div class="custom-options" style="width: 80px;overflow: auto; max-height: 300px;">
+                                        <span class="custom-option" data-value="-11">GMT-11</span>
+                                        <span class="custom-option" data-value="-10">GMT-10</span>
+                                        <span class="custom-option" data-value="-09">GMT-09</span>
+                                        <span class="custom-option selected" data-value="-08">GMT-08</span>
+                                        <span class="custom-option" data-value="-07">GMT-07</span>
+                                        <span class="custom-option" data-value="-06">GMT-06</span>
+                                        <span class="custom-option" data-value="-05">GMT-05</span>
+                                        <span class="custom-option" data-value="-04">GMT-04</span>
+                                        <span class="custom-option" data-value="-03">GMT-03</span>
+                                        <span class="custom-option" data-value="-02">GMT-02</span>
+                                        <span class="custom-option" data-value="-01">GMT-01</span>
+                                        <span class="custom-option" data-value="+00">GMT+00</span>
+                                        <span class="custom-option" data-value="+01">GMT+01</span>
+                                        <span class="custom-option" data-value="+02">GMT+02</span>
+                                        <span class="custom-option" data-value="+03">GMT+03</span>
+                                        <span class="custom-option" data-value="+04">GMT+04</span>
+                                        <span class="custom-option" data-value="+05">GMT+05</span>
+                                        <span class="custom-option" data-value="+06">GMT+06</span>
+                                        <span class="custom-option" data-value="+07">GMT+07</span>
+                                        <span class="custom-option" data-value="+08">GMT+08</span>
+                                        <span class="custom-option" data-value="+09">GMT+09</span>
+                                        <span class="custom-option" data-value="+10">GMT+10</span>
+                                        <span class="custom-option" data-value="+11">GMT+11</span>
+                                        <span class="custom-option" data-value="+12">GMT+12</span>
+                                        <span class="custom-option" data-value="+13">GMT+13</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-select-wrapper">
+                                <div class="custom-select" id="start-time">
+                                    <div class="custom-select__trigger"><span>00.00</span>
+                                        <span class="short-chevron"></span>
+
+                                    </div>
+                                    <div class="custom-options" style="width: 80px;overflow: auto; max-height: 300px;">
+                                        <span class="custom-option selected" data-value="0000" selected>00.00</span>
+                                        <span class="custom-option" data-value="0030">00.30</span>
+                                        <span class="custom-option" data-value="0100">01.00</span>
+                                        <span class="custom-option" data-value="0130">01.30</span>
+                                        <span class="custom-option" data-value="0200">02.00</span>
+                                        <span class="custom-option" data-value="0230">02.30</span>
+                                        <span class="custom-option" data-value="0300">03.00</span>
+                                        <span class="custom-option" data-value="0330">03.30</span>
+                                        <span class="custom-option" data-value="0400">04.00</span>
+                                        <span class="custom-option" data-value="0430">04.30</span>
+                                        <span class="custom-option" data-value="0500">05.00</span>
+                                        <span class="custom-option" data-value="0530">05.30</span>
+                                        <span class="custom-option" data-value="0600">06.00</span>
+                                        <span class="custom-option" data-value="0630">06.30</span>
+                                        <span class="custom-option" data-value="0700">07.00</span>
+                                        <span class="custom-option" data-value="0730">07.30</span>
+                                        <span class="custom-option" data-value="0800">08.00</span>
+                                        <span class="custom-option" data-value="0830">08.30</span>
+                                        <span class="custom-option" data-value="0900">09.00</span>
+                                        <span class="custom-option" data-value="0930">09.30</span>
+                                        <span class="custom-option" data-value="1000">10.00</span>
+                                        <span class="custom-option" data-value="1030">10.30</span>
+                                        <span class="custom-option" data-value="1100">11.00</span>
+                                        <span class="custom-option" data-value="1130">11.30</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-select-wrapper">
+                                <div class="custom-select" id="end-time">
+                                    <div class="custom-select__trigger">
+                                        <span>00.00</span>
+                                        <span class="short-chevron"></span>
+
+                                    </div>
+                                    <div class="custom-options" style="width: 80px; overflow: auto; max-height: 300px;">
+                                        <span class="custom-option selected" data-value="0000" selected>00.00</span>
+                                        <span class="custom-option" data-value="0030">00.30</span>
+                                        <span class="custom-option" data-value="0100">01.00</span>
+                                        <span class="custom-option" data-value="0130">01.30</span>
+                                        <span class="custom-option" data-value="0200">02.00</span>
+                                        <span class="custom-option" data-value="0230">02.30</span>
+                                        <span class="custom-option" data-value="0300">03.00</span>
+                                        <span class="custom-option" data-value="0330">03.30</span>
+                                        <span class="custom-option" data-value="0400">04.00</span>
+                                        <span class="custom-option" data-value="0430">04.30</span>
+                                        <span class="custom-option" data-value="0500">05.00</span>
+                                        <span class="custom-option" data-value="0530">05.30</span>
+                                        <span class="custom-option" data-value="0600">06.00</span>
+                                        <span class="custom-option" data-value="0630">06.30</span>
+                                        <span class="custom-option" data-value="0700">07.00</span>
+                                        <span class="custom-option" data-value="0730">07.30</span>
+                                        <span class="custom-option" data-value="0800">08.00</span>
+                                        <span class="custom-option" data-value="0830">08.30</span>
+                                        <span class="custom-option" data-value="0900">09.00</span>
+                                        <span class="custom-option" data-value="0930">09.30</span>
+                                        <span class="custom-option" data-value="1000">10.00</span>
+                                        <span class="custom-option" data-value="1030">10.30</span>
+                                        <span class="custom-option" data-value="1100">11.00</span>
+                                        <span class="custom-option" data-value="1130">11.30</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-select-wrapper">
+                                <div class="custom-select" id="meridiem">
+                                    <div class="custom-select__trigger"><span>AM</span>
+                                        <span class="short-chevron"></span>
+                                    </div>
+                                    <div class="custom-options" style="width: 50px;">
+                                        <span class="custom-option selected" data-value="am" selected>AM</span>
+                                        <span class="custom-option" data-value="pm">PM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="confirmBtn" id="confirmBtn">
+                        confirm
+                    </div>
+                </ul>
+            </dropdown>
             <button id="enterMeeting">
-                <span class="btn-span">enter a ruume</span>
+                <span class="btn-span" style="display: flex; justify-content: center; align-items: center;">
+                    <span>start
+                        instant
+                        meeting</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="30" height="30" id="loading"
+                        style="display: none; margin-left: 10px;">
+                        <linearGradient id="a11">
+                            <stop offset="0" stop-color="rgb(255 136 78)" stop-opacity="0" />
+                            <stop offset="1" stop-color="rgb(255 136 78)" />
+                        </linearGradient>
+                        <circle fill="none" stroke="url(#a11)" stroke-width="30" stroke-linecap="round"
+                            stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70"
+                            transform-origin="center">
+                            <animateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="1.4"
+                                values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                </span>
             </button>
         </div>
         <div id="not-logged-in">
-            <button id="signinMeeting">
-                <span class="btn-span">sign in</span>
-            </button>
+            <div class="sign-in-first">login to your ruume account then click on the ruume icon to start booking</div>
+            <div class="sign-in-first" style="margin-bottom: 3rem"><b>bonus</b> - pin the chrome extension for easy
+                access.💪</div>
+            <div class="google-login" id="google-login">
+                <span class="google-login-icon"><span class="google-login-icon-inner"><img alt="" aria-hidden="true"
+                            src="data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20version=%271.1%27%20width=%2728%27%20height=%2727%27/%3e"
+                            style="display: block; max-width: 100%; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px;"></span><img
+                        src="/icons/logo_google.svg" decoding="async" data-nimg="intrinsic"
+                        style="position: absolute; inset: 0px; box-sizing: border-box; padding: 0px; border: none; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"></span>
+                <span class="google-login-text">Login with google</span>
+            </div>
+            <div class="or-div"><span class="or-span">or</span>
+            </div>
+            <form class="login-form" id="signin-form">
+                <div class="login-form-container">
+                    <div class="input-container">
+                        <div class="input-inner-container">
+                            <div class="input-field">
+                                <div class="main-input-field">
+                                    <input class="custom-input" placeholder="Email" id="email" aria-invalid="false"
+                                        id=":r3:" name="email" type="text" value="" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-inner-container">
+                            <div class="input-field">
+                                <div class="main-input-field">
+                                    <input aria-invalid="false" placeholder="Password" id="password" name="password"
+                                        type="password" class="custom-input" value="" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="error-message" style="color: red; font-size: 0.875rem; font-weight: 500;"></div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; flex-direction: row; margin-bottom: 10px;"><span
+                        class="forgot-password" id="forgot-password">Forgot
+                        password?</span></div>
+                <button id="signinMeeting" type="submit">
+                    <span class="btn-span" style="display: flex; justify-content: center; align-items: center;">
+                        <span>sign in</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="signin-loading" viewBox="0 0 200 200" width="30"
+                            height="30" style="margin-left: 10px; display: none;">
+                            <linearGradient id="a12">
+                                <stop offset="0" stop-color="#FFFFFF" stop-opacity="0"></stop>
+                                <stop offset="1" stop-color="#FFFFFF"></stop>
+                            </linearGradient>
+                            <circle fill="none" stroke="url(#a12)" stroke-width="28" stroke-linecap="round"
+                                stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70"
+                                transform-origin="center">
+                                <animateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="1.4"
+                                    values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite">
+                                </animateTransform>
+                            </circle>
+                        </svg>
+                    </span>
+                </button>
+                <div style="text-align: center; margin-top: 1rem">
+                    <span class="register">don't have an account? <span style="color: #FF884E; cursor: pointer"
+                            id="register">register</span> for
+                        free!</span>
+                </div>
+            </form>
         </div>
+
     </div>
-    <script src="popup.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popup.js"></script>
 </body>
 
 </html>
