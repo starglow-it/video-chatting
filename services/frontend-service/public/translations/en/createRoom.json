@@ -53,7 +53,8 @@
       "monetizationTitle": "monetization: ",
       "monetizationContent": " collect entry fees, donations or payments",
       "monetizationContentOn": "On",
-      "monetizationContentOff": "Off"
+      "monetizationContentOff": "Off",
+      "preMeetingNtfText": "you'll be able to join at the indicated time"
     }
   },
   "editPositions": {

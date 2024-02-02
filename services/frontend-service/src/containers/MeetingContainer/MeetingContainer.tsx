@@ -311,6 +311,12 @@ const MeetingContainer = memo(() => {
         isOwner,
     ]);
 
+    useEffect(() => {
+        if (!isMuteYb) {
+            setIsMeetingPreviewShow(true);
+        }
+    }, [isMuteYb]);
+
     const LoadingWaitingRoom = useMemo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>

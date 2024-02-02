@@ -11,6 +11,7 @@ import {
     MeetingUser,
     PaymentIntentParams,
     PaymentIntentStore,
+    PaymentExistStore
 } from '../../../types';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
@@ -45,7 +46,7 @@ export const createPaymentIntentFx = paymentsDomain.effect<
 
 export const isRoomPaywalledFx = paymentsDomain.effect<
     CreatePaymentIntentPayload,
-    PaymentIntentStore,
+    PaymentExistStore,
     ErrorState
 >('isRoomPaywalledFx');
 
