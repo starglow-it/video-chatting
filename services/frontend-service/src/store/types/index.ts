@@ -323,6 +323,7 @@ export type Notification = {
 };
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
+export type PaymentExistStore = { isPaywalled: boolean };
 export type PaymentIntentParams = {
     paymentType: PaymentType;
 };
@@ -378,3 +379,12 @@ export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>;
 export interface INextPageContext {
     ctx: NextPageContext;
 }
+
+export type GetRoomRatingStatisticParams = {
+    basedOn: string;
+    roomType: string;
+};
+
+export * from './state';
+export * from './response';
+export * from './requestParams';

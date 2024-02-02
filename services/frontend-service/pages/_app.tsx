@@ -54,6 +54,7 @@ import {
     setUpTemplateRoute,
     welcomeRoute,
     indexRoute,
+    analyticsRoute,
 } from '../src/const/client-routes';
 
 const { publicRuntimeConfig } = getConfig();
@@ -67,7 +68,7 @@ const REGISTER_REDIRECT_ROUTES: string[] = [
     registerRoute,
     welcomeRoute,
 ];
-const LOGIN_REDIRECT_ROUTES: string[] = [dashboardRoute];
+const LOGIN_REDIRECT_ROUTES: string[] = [dashboardRoute, analyticsRoute];
 
 const CustomApp = ({
     Component,

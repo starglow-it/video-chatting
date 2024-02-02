@@ -295,24 +295,27 @@ export class PaymentsController {
         };
       }
 
-      const templatePayment = await this.coreService.getEnabledTemplatePayment({
+      const templatePayment = await this.coreService.isTemplatePaymentEnabled({
         userTemplateId: userTemplate.id,
         paymentType: body.paymentType,
         meetingRole: body.meetingRole,
       });
 
-      if (!!templatePayment) return {
-        success: true,
-        result: {
-          isRoomPaywalled: true
-        },
+      if (!!templatePayment) {
+        return {
+          success: true,
+          result: {
+            isRoomPaywalled: true
+          },
+        }
+      } else {
+        return {
+          success: true,
+          result: {
+            isRoomPaywalled: false
+          },
+        };
       }
-      else return {
-        success: true,
-        result: {
-          isRoomPaywalled: false
-        },
-      };
 
     } catch (err) {
       this.logger.error(

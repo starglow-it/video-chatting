@@ -25,7 +25,7 @@ export class RoomsStatisticsController {
   constructor(
     @InjectConnection() private connection: Connection,
     private roomsStatisticService: RoomsStatisticsService,
-  ) {}
+  ) { }
 
   @MessagePattern({ cmd: StatisticBrokerPatterns.GetRoomRatingStatistic })
   async getRoomRatingStatistics(
@@ -55,7 +55,9 @@ export class RoomsStatisticsController {
             author:
               payload.roomKey === 'custom'
                 ? { $not: { $size: 0 } }
-                : { $size: 0 },
+                : payload.roomKey === 'common'
+                  ? { $size: 0 }
+                  : payload.roomKey
           },
         },
         {

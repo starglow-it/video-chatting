@@ -4,6 +4,7 @@ import * as auth from './auth/init';
 import * as register from './register/init';
 import * as notifications from './notifications/init';
 import * as profile from './profile/profile/init';
+import * as statistics from './statistics/init';
 import * as profileTemplates from './profile/profileTemplates/init';
 import * as profileTemplate from './profile/profileTemplate/init';
 import * as payments from './payments/init';
@@ -32,6 +33,7 @@ export * from './notifications/model';
 export * from './profile/profile/model';
 export * from './profile/profileTemplates/model';
 export * from './profile/profileTemplate/model';
+export * from './statistics/model';
 export * from './payments/model';
 export * from './subscriptions/products/model';
 export * from './subscriptions/subscription/model';
@@ -79,4 +81,5 @@ export default {
     version,
     templates,
     routeToChange,
+    statistics
 };

@@ -1,0 +1,34 @@
+@import "../../../styles/rem";
+
+.chartClass {
+  margin: rem(40px auto);
+}
+
+.loader {
+  margin: auto;
+}
+
+.noData {
+  margin: auto;
+}
+
+.attendeesDescWrapper {
+  width: fit-content;
+}
+
+.stateWrapper {
+  padding-left: rem(30px);
+  color: #B8B6B6;
+}
+
+.stateIcon {
+  background-color: transparent;
+}
+
+.scrollWrapper {
+  max-height: rem(200px);
+}
+
+.countryListWrapper {
+  width: 90%;
+}
