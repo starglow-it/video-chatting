@@ -92,56 +92,59 @@ chrome.runtime.onMessage.addListener(async function (
       url: `https://stg-my.chatruume.com/room/${message.roomId}`,
     });
   } else if (message.action === 'saveCookie') {
-    const res = await fetch('https://stg-my.chatruume.com/api/auth/login', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: message.email,
-        password: message.password
+    try {
+      const res = await fetch('https://stg-my.chatruume.com/api/auth/login', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: message.email,
+          password: message.password
+        })
       })
-    })
-
-    const response = await res.json();
-
-    if (response.success) {
-      const accessTokenCookie = {
-        url: 'https://stg-my.chatruume.com', // Replace with your desired domain
-        name: 'accessToken',
-        value: response.result.accessToken.token,
-        expirationDate: response.result.accessToken.expiresAt
+  
+      const response = await res.json();
+  
+      if (response.success) {
+        const accessTokenCookie = {
+          url: 'https://stg-my.chatruume.com', // Replace with your desired domain
+          name: 'accessToken',
+          value: response.result.accessToken.token,
+          expirationDate: response.result.accessToken.expiresAt
+        }
+  
+        const refreshTokenCookie = {
+          url: 'https://stg-my.chatruume.com', // Replace with your desired domain
+          name: 'refreshToken',
+          value: response.result.refreshToken.token,
+          expirationDate: response.result.refreshToken.expiresAt
+        }
+  
+        chrome.cookies.set(accessTokenCookie);
+  
+        chrome.cookies.set(refreshTokenCookie)
+  
+        chrome.runtime.sendMessage({
+          action: 'reloadPage'
+        })
+      } else {
+        const errorMessage = response.error.message;
+  
+        chrome.runtime.sendMessage({
+          action: 'displayErrorMessage',
+          error: errorMessage
+        })
+  
       }
-
-      const refreshTokenCookie = {
-        url: 'https://stg-my.chatruume.com', // Replace with your desired domain
-        name: 'refreshToken',
-        value: response.result.refreshToken.token,
-        expirationDate: response.result.refreshToken.expiresAt
-      }
-
-      chrome.cookies.set(accessTokenCookie);
-
-      chrome.cookies.set(refreshTokenCookie)
-
-      chrome.runtime.sendMessage({
-        action: 'reloadPage'
-      })
-    } else {
-      const errorMessage = response.error.message;
-
-      chrome.runtime.sendMessage({
-        action: 'displayErrorMessage',
-        error: errorMessage
-      })
-
+    } catch (error) {
+      console.error('Error signing in: ', error);
     }
   } else if (message.action === 'startGoogleLogin') {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0]) {
         previousTabId = tabs[0].id;
       }
-
       // Now open the login page in a new tab
       chrome.tabs.create({ url: 'https://stg-my.chatruume.com/login?google-signin' }, function (tab) {
         // No need to save the login tab ID unless you want to refer to it later

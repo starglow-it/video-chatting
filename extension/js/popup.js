@@ -87,7 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   signInForm.addEventListener("submit", async function () {
-    chrome.runtime.sendMessage({ action: 'saveCookie', email: emailInput.value, password: passwordInput.value })
+    chrome.runtime.sendMessage({ action: 'saveCookie', email: emailInput.value, password: passwordInput.value });
+    document.getElementById('signin-loading').style.display = 'block';
   });
 
   confirmBtn
@@ -138,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.action === 'displayErrorMessage') {
       errorMessageField.textContent = 'wrong credential.';
+      document.getElementById('signin-loading').style.display = 'none';
     } else if (message.action === 'reloadPage') {
       location.reload();
     }
