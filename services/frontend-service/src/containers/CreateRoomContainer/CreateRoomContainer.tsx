@@ -80,8 +80,6 @@ const Component = () => {
         onSwitchOff: onHideSubscriptions,
     } = useToggle(false);
 
-    useEffect(() => { console.log(isSubscriptionStep); }, [isSubscriptionStep]);
-
     const { onSetUpdateUrl } = useSubscriptionNotification();
 
     useEffect(() => {
