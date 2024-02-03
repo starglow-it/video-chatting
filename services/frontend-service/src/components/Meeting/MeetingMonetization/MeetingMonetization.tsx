@@ -147,10 +147,12 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
     });
 
     useEffect(() => {
-        const backdropElement = document.querySelector('.MuiBackdrop-root');
+        if (isRoomCreate) {
+            const backdropElement = document.querySelector('.MuiBackdrop-root');
 
-        if (backdropElement) {
-            backdropElement.style.display = 'none';
+            if (backdropElement) {
+                backdropElement.style.display = 'none';
+            }
         }
     }, []);
 
@@ -218,9 +220,12 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
 
     return (
         <>
-            <IconButton className={styles.closeIconBtn} onClick={() => onUpdate?.()}>
-                <CloseIcon className={styles.closeIcon} />
-            </IconButton>
+            {
+                isRoomCreate &&
+                <IconButton className={styles.closeIconBtn} onClick={() => onUpdate?.()}>
+                    <CloseIcon className={styles.closeIcon} />
+                </IconButton>
+            }
             <CustomGrid
                 container
                 columnGap={4}

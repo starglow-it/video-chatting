@@ -386,8 +386,22 @@ const Component = ({
         [onSubmitAndScheduleMeeting, isFileUploading],
     );
 
-    const handleUpgradePlanClick = useCallback(
+    // const handleUpgradePlanClick = useCallback(
+    //     onSubmitForm(async data => {
+    //         if (isFileUploading) {
+    //             addNotificationEvent({
+    //                 type: NotificationType.BackgroundFileIsNotUploadedYet,
+    //                 message: 'createRoom.uploadBackground.isPending',
+    //             });
+    //             return;
+    //         }
+    //         onUpgradePlan(data);
+    //     }),
+    //     [onUpgradePlan, isFileUploading],
+    // );
+    const handleUpgradePlanClick = () => 
         onSubmitForm(async data => {
+            console.log(data);
             if (isFileUploading) {
                 addNotificationEvent({
                     type: NotificationType.BackgroundFileIsNotUploadedYet,
@@ -396,9 +410,7 @@ const Component = ({
                 return;
             }
             onUpgradePlan(data);
-        }),
-        [onUpgradePlan, isFileUploading],
-    );
+        })
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherItem<number>) => {

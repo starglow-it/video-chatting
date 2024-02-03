@@ -58,6 +58,7 @@ const Component = ({
     const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
     const profileStore = useStore($profileStore);
+
     const { isMobile } = useBrowserDetect();
 
     const {
@@ -260,8 +261,6 @@ const Component = ({
                 anchorEl={anchorEl}
                 style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none' }}
                 disableAutoFocus
-                disableEnforceFocus
-                disableRestoreFocus
                 disablePortal
                 onClose={() => {}}
                 anchorOrigin={{
