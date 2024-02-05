@@ -8,18 +8,8 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": [
-    "identity",
-    "activeTab",
-    "storage",
-    "cookies",
-    "tabs"
-  ],
-  "host_permissions": [
-    "https://www.googleapis.com/",
-    "https://stg-my.chatruume.com/*",
-    "https://accounts.google.com/*"
-  ],
+  "permissions": ["storage", "cookies", "tabs"],
+  "host_permissions": ["https://stg-my.chatruume.com/*"],
   "web_accessible_resources": [
     {
       "resources": ["icons/icon16.png"],
@@ -39,7 +29,10 @@
       "js": ["js/content.js"]
     },
     {
-      "matches": ["*://calendar.google.com/calendar/u/0/r","*://calendar.google.com/calendar/u/0/r?trp=true"],
+      "matches": [
+        "*://calendar.google.com/calendar/u/0/r",
+        "*://calendar.google.com/calendar/u/0/r?trp=true"
+      ],
       "css": ["css/modal.css"],
       "js": ["js/modal.js"]
     },
@@ -51,9 +44,5 @@
       "matches": ["https://stg-my.chatruume.com/login?forgot-password"],
       "js": ["js/forgot_password.js"]
     }
-  ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';",
-    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
-  }
+  ]
 }
