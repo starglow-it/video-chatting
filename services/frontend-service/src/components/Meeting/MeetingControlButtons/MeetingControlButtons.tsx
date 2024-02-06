@@ -25,6 +25,7 @@ import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -257,6 +258,34 @@ const Component = () => {
                                     width="22px"
                                     height="22px"
                                 />
+                            }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={!isMobile && !isAudience}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="devices.userReactions"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleSetStickyNotesVisible}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
+                            Icon={
+                                <FavoriteIcon fontSize="small" />
                             }
                         />
                     </CustomPaper>

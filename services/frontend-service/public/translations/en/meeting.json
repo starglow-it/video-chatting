@@ -1,250 +1,251 @@
 {
-  "readyToJoin": "Ready to join?",
-  "checkDevices": "Check your device settings before you join the meeting",
-  "requestSent": "Request sent",
-  "unlockAccess": {
-    "link": "Register to Access",
-    "title": "Unlock Free Access Now",
-    "note": "(Refresh this page after registration)",
-    "decs": {
-      "1": "Sign up in 10s",
-      "2": "Access all avatars",
-      "3": "Start free & unlimited immersive calls"
-    }
-  },
-  "settings": {
-    "main": "Settings",
-    "audioVideo": "Audio & video",
-    "remember": "Remember my settings"
-  },
-  "allowAccess": {
-    "desktop": {
-      "allowDevice": "Your settings are currently disabled. Please check that your microphone and video camera are enabled in your browser, then refresh the browser.",
-      "allowChrome": "There was an error processing your devices. Please double-check your microphone and video camera settings on your computer and authorize access.",
-      "allowChromeDescription": "In System Settings, open Privacy & Security and allow Chrome access to your microphone and camera.",
-      "notFoundDevice": "Check your system settings to make sure that a camera is available. If not, plug one in. You might then need to restart your browser.",
-      "errorDevice": "There was an error accessing the media devices. Please reset your microphone and camera to join the meeting.",
-      "noDevice": "Will you be joining the meeting without a microphone and camera?"
+    "readyToJoin": "Ready to join?",
+    "checkDevices": "Check your device settings before you join the meeting",
+    "requestSent": "Request sent",
+    "unlockAccess": {
+        "link": "Register to Access",
+        "title": "Unlock Free Access Now",
+        "note": "(Refresh this page after registration)",
+        "decs": {
+            "1": "Sign up in 10s",
+            "2": "Access all avatars",
+            "3": "Start free & unlimited immersive calls"
+        }
     },
-    "mobile": "Reload & Allow Access to Mic & Cam"
-  },
-  "preview": {
-    "invitedText": "invited you to"
-  },
-  "meetingNotStarted": {
-    "title": "Meeting has not \nstarted yet",
-    "text": "Please wait for the host arrival"
-  },
-  "roomHasBeenDeleted": "This Room has been Deleted",
-  "meetingHasEnded": "This Meeting Has Ended",
-  "hostLeftRoom": {
-    "title": "Host has left the room",
-    "text": "You can leave a message"
-  },
-  "enterPermission": "You need a permission from the participant to join",
-  "mic": "Microphone",
-  "cam": "Camera",
-  "over": "Meeting is over",
-  "kicked": "You have been removed from the meeting",
-  "waitForHost": "Waiting for host",
-  "meetingReady": "Invite others to join",
-  "meetingInfo": {
-    "title": "Meeting info",
-    "company": "Company",
-    "contacts": "Contacts",
-    "tooltip": "Click to edit"
-  },
-  "meetingActions": {
-    "editTemplate": "Click avatar to edit profile",
-    "meetingInfo": "Click avatar to view info"
-  },
-  "buttons": {
-    "join": "Join now",
-    "cancel": "Cancel",
-    "saveSettings": "Save settings",
-    "leave": "Leave",
-    "end": "Close Office",
-    "send": "Send",
-    "continue": "Continue",
-    "kick": "Kick",
-    "stay": "Stay",
-    "lockUp": "Lock Up",
-    "yes": "Yes",
-    "goToSetting": "Go To Setting",
-    "move": "Move",
-    "download": "download",
-    "upload": "upload & share",
-    "close": "Close"
-  },
-  "devices": {
-    "turnOn": "Turn on",
-    "turnOff": "Turn off",
-    "switchOn": "Switch ON",
-    "switchOff": "Switch OFF",
-    "clickToSeeYourself": "Click to see yourself",
-    "selfViewOff": "Self-View Off",
-    "dragAndResize": "Drag & Resize",
-    "microphone": "Mic on/off",
-    "stickyNotes": "Sticky Notes"
-  },
-  "endMeeting": {
-    "forHost": "Leave?",
-    "forAttendee": "Leave?",
-    "hint": "When you Leave callers can still look around and\nsend payments",
-    "tooltip": "Exit"
-  },
-  "invite": {
-    "title": "Invite now",
-    "emailTitle": "Email invitation",
-    "copyLink": "Copy link",
-    "sendInvite": "Send invite email",
-    "copyMeetingInfo": "Copy meeting info",
-    "inviteButton": "Invite with email",
-    "sendInvitation": "Send invitations",
-    "tooltip": "Add Callers",
-    "participants": "Participants",
-    "audiences": "Audiences"
-  },
-  "enterName": {
-    "title": "Welcome",
-    "text": {
-      "part1": "Enter your name",
-      "part2": "or",
-      "part3": "Sign in",
-      "part4": "if you have an account"
-    }
-  },
-  "templates": {
-    "editTemplate": "Edit room",
-    "personal": "Personal",
-    "company": "Business",
-    "links": "Links",
-    "signBoard": "Signboards",
-    "languages": "Languages",
-    "businessCategories": "Business Categories",
+    "settings": {
+        "main": "Settings",
+        "audioVideo": "Audio & video",
+        "remember": "Remember my settings"
+    },
+    "allowAccess": {
+        "desktop": {
+            "allowDevice": "Your settings are currently disabled. Please check that your microphone and video camera are enabled in your browser, then refresh the browser.",
+            "allowChrome": "There was an error processing your devices. Please double-check your microphone and video camera settings on your computer and authorize access.",
+            "allowChromeDescription": "In System Settings, open Privacy & Security and allow Chrome access to your microphone and camera.",
+            "notFoundDevice": "Check your system settings to make sure that a camera is available. If not, plug one in. You might then need to restart your browser.",
+            "errorDevice": "There was an error accessing the media devices. Please reset your microphone and camera to join the meeting.",
+            "noDevice": "Will you be joining the meeting without a microphone and camera?"
+        },
+        "mobile": "Reload & Allow Access to Mic & Cam"
+    },
+    "preview": {
+        "invitedText": "invited you to"
+    },
+    "meetingNotStarted": {
+        "title": "Meeting has not \nstarted yet",
+        "text": "Please wait for the host arrival"
+    },
+    "roomHasBeenDeleted": "This Room has been Deleted",
+    "meetingHasEnded": "This Meeting Has Ended",
+    "hostLeftRoom": {
+        "title": "Host has left the room",
+        "text": "You can leave a message"
+    },
+    "enterPermission": "You need a permission from the participant to join",
+    "mic": "Microphone",
+    "cam": "Camera",
+    "over": "Meeting is over",
+    "kicked": "You have been removed from the meeting",
+    "waitForHost": "Waiting for host",
+    "meetingReady": "Invite others to join",
+    "meetingInfo": {
+        "title": "Meeting info",
+        "company": "Company",
+        "contacts": "Contacts",
+        "tooltip": "Click to edit"
+    },
+    "meetingActions": {
+        "editTemplate": "Click avatar to edit profile",
+        "meetingInfo": "Click avatar to view info"
+    },
     "buttons": {
-      "saveChanges": "Save Changes",
-      "cancelChanges": "Cancel Changes"
+        "join": "Join now",
+        "cancel": "Cancel",
+        "saveSettings": "Save settings",
+        "leave": "Leave",
+        "end": "Close Office",
+        "send": "Send",
+        "continue": "Continue",
+        "kick": "Kick",
+        "stay": "Stay",
+        "lockUp": "Lock Up",
+        "yes": "Yes",
+        "goToSetting": "Go To Setting",
+        "move": "Move",
+        "download": "download",
+        "upload": "upload & share",
+        "close": "Close"
     },
-    "cancelChanges": {
-      "title": "Cancel changes?",
-      "text": "If you leave now all the changes be lost"
+    "devices": {
+        "turnOn": "Turn on",
+        "turnOff": "Turn off",
+        "switchOn": "Switch ON",
+        "switchOff": "Switch OFF",
+        "clickToSeeYourself": "Click to see yourself",
+        "selfViewOff": "Self-View Off",
+        "dragAndResize": "Drag & Resize",
+        "microphone": "Mic on/off",
+        "stickyNotes": "Sticky Notes",
+        "userReactions": "User Reactions"
     },
-    "becomeParticipant": {
-      "title": "Become a Participant",
-      "text": "The Host is inviting you to be seen & heard by all"
-    }
-  },
-  "modes": {
-    "screensharing": {
-      "on": "Screen share",
-      "off": "Turn off Screen share",
-      "busy": "Someone is already sharing screen",
-      "selfSharing": "You are sharing screen now"
-    }
-  },
-  "recordMeeting": {
-    "start": "Start Recording",
-    "stop": "Stop Recording"
-  },
-  "features": {
-    "blurBackground": "Background blur",
-    "faceTracking": "Face detection",
-    "audioBackground": "Background audio",
-    "monetization": "Monetization",
-    "inMeeting": "In Meeting Fee/Donation",
-    "tooltipParticipantInMeeting": "Once saved, Participants can send you this fee by clicking the dollar icon [$] on the bottom right",
-    "tooltipAudienceInMeeting": "Once saved, Audience can send you this fee by clicking the dollar icon [$] on the bottom right",
-    "payWall": "Entry Fee",
-    "tooltipParticipantPaywall": "Once saved, Participants members will be prompted to pay this fee to join meeting",
-    "tooltipAudiencePaywall": "Once saved, Audience members will be prompted to pay this fee to join meeting",
-    "audioBackgroundDisabled": "Background audio disabled",
-    "notes": {
-      "title": "Leave a note",
-      "input": "Post a Sticky Note",
-      "unpin": "Unpin"
+    "endMeeting": {
+        "forHost": "Leave?",
+        "forAttendee": "Leave?",
+        "hint": "When you Leave callers can still look around and\nsend payments",
+        "tooltip": "Exit"
     },
-    "getPaid": "Get Paid",
-    "sendMoney": "Send Money",
-    "peopleCanSeeMe": "People can see me",
-    "peopleCanHearMe": "People can hear me",
-    "peopleSeeMe": "People see me",
-    "peopleHearMe": "People hear me"
-  },
-  "payments": {
-    "perSession": "per session",
-    "yourCard": "Your card",
-    "stripe": "Stripe",
-    "payWith": "Secure Pay with",
-    "title": "Payments"
-  },
-  "customLink": {
-    "yourLink": "your meeting link here",
-    "yourLink2": "Your meeting link here*"
-  },
-  "links": {
-    "onGoods": "Show all the items",
-    "offGoods": "Hide all the items",
-    "buyItem": "Buy this item",
-    "title": "Link"
-  },
-  "rooms": "Rooms",
-  "portraitLayout": {
-    "text": "Please turn horizontally for an awesome call."
-  },
-  "expired": {
-    "title": "Meeting was canceled",
-    "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
-    "button": "Homepage"
-  },
-  "hostDeleted": {
-    "title": "Meeting was finished",
-    "text": "The meeting has been finished as the host's account was deleted by Ruume admin. Sorry for inconvenience",
-    "button": "Homepage"
-  },
-  "changeBackground": {
-    "text": "Backgrounds"
-  },
-  "manageAudio": {
-    "text": "Music"
-  },
-  "schedule": {
-    "title": "Schedule",
-    "tooltip": "Scheduling"
-  },
-  "confirmPrice": {
-    "description": "Confirm Change Price",
-    "cancel": "Cancel",
-    "save": "Save",
-    "tooltip": "Please Save when done"
-  },
-  "people": {
-    "tooltip": "People"
-  },
-  "audience": {
-    "buttons": {
-      "requestBecomeParticipant": "Become a Participant"
-    }
-  },
-  "chat": {
-    "tooltip": "Chat"
-  },
-  "youtubeVideo": "youtube video",
-  "connect": "connect a ",
-  "originalVideoSound": "Original video sound",
-  "role": {
-    "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
-    "tooltipAudience": "Invite up to 1000 Audience members. They view & hear Participants."
-  },
-  "waitForTheHost": "Waiting for the Host",
-  "lock": {
-    "private": "Private Meeting. Only invited Participants",
-    "public": "Public Meeting. Add an Audience"
-  },
-  "meetingPrivate": "The Meeting is private",
-  "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
-  "hostDeviceRequireTitle": "Microphone Requirement for Host",
-  "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?",
-  "recordVideoDownloadTitle": "Save your recording",
-  "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?"
+    "invite": {
+        "title": "Invite now",
+        "emailTitle": "Email invitation",
+        "copyLink": "Copy link",
+        "sendInvite": "Send invite email",
+        "copyMeetingInfo": "Copy meeting info",
+        "inviteButton": "Invite with email",
+        "sendInvitation": "Send invitations",
+        "tooltip": "Add Callers",
+        "participants": "Participants",
+        "audiences": "Audiences"
+    },
+    "enterName": {
+        "title": "Welcome",
+        "text": {
+            "part1": "Enter your name",
+            "part2": "or",
+            "part3": "Sign in",
+            "part4": "if you have an account"
+        }
+    },
+    "templates": {
+        "editTemplate": "Edit room",
+        "personal": "Personal",
+        "company": "Business",
+        "links": "Links",
+        "signBoard": "Signboards",
+        "languages": "Languages",
+        "businessCategories": "Business Categories",
+        "buttons": {
+            "saveChanges": "Save Changes",
+            "cancelChanges": "Cancel Changes"
+        },
+        "cancelChanges": {
+            "title": "Cancel changes?",
+            "text": "If you leave now all the changes be lost"
+        },
+        "becomeParticipant": {
+            "title": "Become a Participant",
+            "text": "The Host is inviting you to be seen & heard by all"
+        }
+    },
+    "modes": {
+        "screensharing": {
+            "on": "Screen share",
+            "off": "Turn off Screen share",
+            "busy": "Someone is already sharing screen",
+            "selfSharing": "You are sharing screen now"
+        }
+    },
+    "recordMeeting": {
+        "start": "Start Recording",
+        "stop": "Stop Recording"
+    },
+    "features": {
+        "blurBackground": "Background blur",
+        "faceTracking": "Face detection",
+        "audioBackground": "Background audio",
+        "monetization": "Monetization",
+        "inMeeting": "In Meeting Fee/Donation",
+        "tooltipParticipantInMeeting": "Once saved, Participants can send you this fee by clicking the dollar icon [$] on the bottom right",
+        "tooltipAudienceInMeeting": "Once saved, Audience can send you this fee by clicking the dollar icon [$] on the bottom right",
+        "payWall": "Entry Fee",
+        "tooltipParticipantPaywall": "Once saved, Participants members will be prompted to pay this fee to join meeting",
+        "tooltipAudiencePaywall": "Once saved, Audience members will be prompted to pay this fee to join meeting",
+        "audioBackgroundDisabled": "Background audio disabled",
+        "notes": {
+            "title": "Leave a note",
+            "input": "Post a Sticky Note",
+            "unpin": "Unpin"
+        },
+        "getPaid": "Get Paid",
+        "sendMoney": "Send Money",
+        "peopleCanSeeMe": "People can see me",
+        "peopleCanHearMe": "People can hear me",
+        "peopleSeeMe": "People see me",
+        "peopleHearMe": "People hear me"
+    },
+    "payments": {
+        "perSession": "per session",
+        "yourCard": "Your card",
+        "stripe": "Stripe",
+        "payWith": "Secure Pay with",
+        "title": "Payments"
+    },
+    "customLink": {
+        "yourLink": "your meeting link here",
+        "yourLink2": "Your meeting link here*"
+    },
+    "links": {
+        "onGoods": "Show all the items",
+        "offGoods": "Hide all the items",
+        "buyItem": "Buy this item",
+        "title": "Link"
+    },
+    "rooms": "Rooms",
+    "portraitLayout": {
+        "text": "Please turn horizontally for an awesome call."
+    },
+    "expired": {
+        "title": "Meeting was canceled",
+        "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
+        "button": "Homepage"
+    },
+    "hostDeleted": {
+        "title": "Meeting was finished",
+        "text": "The meeting has been finished as the host's account was deleted by Ruume admin. Sorry for inconvenience",
+        "button": "Homepage"
+    },
+    "changeBackground": {
+        "text": "Backgrounds"
+    },
+    "manageAudio": {
+        "text": "Music"
+    },
+    "schedule": {
+        "title": "Schedule",
+        "tooltip": "Scheduling"
+    },
+    "confirmPrice": {
+        "description": "Confirm Change Price",
+        "cancel": "Cancel",
+        "save": "Save",
+        "tooltip": "Please Save when done"
+    },
+    "people": {
+        "tooltip": "People"
+    },
+    "audience": {
+        "buttons": {
+            "requestBecomeParticipant": "Become a Participant"
+        }
+    },
+    "chat": {
+        "tooltip": "Chat"
+    },
+    "youtubeVideo": "youtube video",
+    "connect": "connect a ",
+    "originalVideoSound": "Original video sound",
+    "role": {
+        "tooltipParticipant": "Invite up to 9 more Participants. They can be seen and heard by all.",
+        "tooltipAudience": "Invite up to 1000 Audience members. They view & hear Participants."
+    },
+    "waitForTheHost": "Waiting for the Host",
+    "lock": {
+        "private": "Private Meeting. Only invited Participants",
+        "public": "Public Meeting. Add an Audience"
+    },
+    "meetingPrivate": "The Meeting is private",
+    "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
+    "hostDeviceRequireTitle": "Microphone Requirement for Host",
+    "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?",
+    "recordVideoDownloadTitle": "Save your recording",
+    "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?"
 }
