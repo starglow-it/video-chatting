@@ -126,7 +126,13 @@ const LocationAnalytics = memo(
                         />
                     </CustomGrid>
                     <CustomScroll className={styles.scrollWrapper}>
-                        <CustomGrid item container direction="column" className={styles.countryListWrapper}>
+                        <CustomGrid
+                            item
+                            container
+                            direction="column"
+                            gap={1.5}
+                            className={styles.countryListWrapper}
+                        >
                             {renderCountryAnalytics}
                         </CustomGrid>
                     </CustomScroll>
