@@ -22,7 +22,7 @@ export const handleGetCategories = async ({
         const indexMore = newList.findIndex(img => img.key === 'more');
         addLastItem(indexMore);
 
-        const indexMyRooms = newList.findIndex(img => img.key === 'myrooms');
+        const indexMyRooms = newList.findIndex(img => img.key === 'my ruumes');
         addLastItem(indexMyRooms);
         return { ...result, list: newList };
     }

@@ -56,7 +56,7 @@ export const MEDIA_CATEGORIES = [
     type: 'sound',
   },
   {
-    key: 'myrooms',
+    key: 'my ruumes',
     value: 'My Ruumes',
     emojiUrl: '1f6d6',
     type: 'background',
