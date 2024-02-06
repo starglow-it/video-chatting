@@ -29,24 +29,24 @@ chrome.runtime.onMessage.addListener(async function (
 
             const roomList = await response.json();
 
-            if (sender.tab) {
-              await chrome.tabs.sendMessage(sender.tab.id, {
-                action: "roomListResponse",
-                roomList: roomList.result.list,
-              });
-            } else {
-              await chrome.runtime.sendMessage({
-                action: "roomListResponse",
-                roomList: roomList.result.list,
-              });
-            }
+            // if (sender.tab) {
+            //   await chrome.tabs.sendMessage(sender.tab.id, {
+            //     action: "roomListResponse",
+            //     roomList: roomList.result.list,
+            //   });
+            // } else {
+            await chrome.runtime.sendMessage({
+              action: "roomListResponse",
+              roomList: roomList.result.list,
+            });
+            // }
           } catch (error) {
-            console.error(error);
+            console.log(error);
           }
         }
       );
     } catch (error) {
-      console.error("Error fetching room list: ", error);
+      console.log("Error fetching room list: ", error);
     }
   } else if (message.action === "createMeeting") {
     try {
@@ -94,12 +94,14 @@ chrome.runtime.onMessage.addListener(async function (
           );
 
           if (sender.tab) {
+            console.log("Case 1: ", templateId);
             await chrome.tabs.sendMessage(sender.tab.id, {
               action: "completeCreatingMeeting",
               success: true,
               roomId: templateId,
             });
           } else {
+            console.log("Case 2: ", templateId);
             await chrome.runtime.sendMessage({
               action: "completeCreatingMeeting",
               success: true,
@@ -111,7 +113,7 @@ chrome.runtime.onMessage.addListener(async function (
         }
       );
     } catch (error) {
-      console.error("Error creating new room: ", error);
+      console.log("Error creating new room: ", error);
     }
   } else if (message.action === "enterRoom") {
     chrome.tabs.create({
@@ -163,7 +165,7 @@ chrome.runtime.onMessage.addListener(async function (
         });
       }
     } catch (error) {
-      console.error("Error signing in: ", error);
+      console.log("Error signing in: ", error);
     }
   } else if (message.action === "startGoogleLogin") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {

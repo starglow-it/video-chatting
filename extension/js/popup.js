@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
         spanElement.setAttribute("class", "no-room-message");
 
         spanElement.innerHTML =
-          "🏠 your immersive online ruumes will appear here <br> 🚀 click “start instant meeting” button to begin";
+          "🏠your immersive ruumes will appear here<br>🚀 click “start instant meeting” to begin";
         roomListDiv.appendChild(spanElement);
 
         roomId = "65bd3c2bbdb4016bf65c383c";
