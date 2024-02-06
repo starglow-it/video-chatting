@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "ChatRuume Meeting Scheduler",
-  "description": "Schedule meetings directly to Google Calendar",
+  "name": "Ruume Virtual Meetings",
+  "description": "Start meetings or schedule directly from GoogleCalendar private video calls or large events and collect entry fees, payments, donations, in a custom branded environment with your e-commerce links and resources embedded",
   "version": "1.0",
   "icons": {
     "16": "icons/icon16.png",
