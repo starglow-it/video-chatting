@@ -1,6 +1,6 @@
 var userName,
   roomList,
-  roomId,
+  roomId = null,
   currentRoomId,
   isRoomSelected = false;
 
@@ -70,22 +70,31 @@ async function injectButton() {
     chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
     chatRuumeButton.addEventListener("click", function () {
-      const roomId = document
-        .querySelector('span[class="custom-option selected"]')
-        .getAttribute("data-value");
-      const roomName = document.querySelector(
-        'span[class="custom-option selected"]'
-      ).textContent;
+      let isFeatured = false;
+      let roomName = "";
 
+      roomId = document
+        .querySelector('span[class="custom-option selected"]')
+        ?.getAttribute("data-value");
+
+      if (!roomId) {
+        roomId = "65bd3c2bbdb4016bf65c383c";
+        isFeatured = true;
+        roomName = "Pepsi Room";
+      } else {
+        roomName = document.querySelector(
+          'span[class="custom-option selected"]'
+        ).textContent;
+      }
       const selectElem = document.querySelector(
         'div[class="custom-select-wrapper"]'
       );
 
       if (this.textContent === "Make it a Ruume Meeting") {
-
         chrome.runtime.sendMessage({
           action: "createMeeting",
           templateId: roomId,
+          isFeatured: isFeatured,
         });
 
         selectElem.style.display = "none";
@@ -121,19 +130,18 @@ async function injectRoomSelect(roomList) {
   const customSelect = document.createElement("div");
   customSelect.className = "custom-select";
 
-  
   const customOptions = document.createElement("div");
   customOptions.className = "custom-options";
-  
-  let selectedRoomName = '';
+
+  let selectedRoomName = "";
 
   for (let i = 0; i < roomList.length; i++) {
     const option = document.createElement("span");
     option.className = "custom-option";
     if ((roomId && roomId === roomList[i].id) || (!roomId && i === 0)) {
-      option.classList.add('selected');
+      option.classList.add("selected");
       selectedRoomName = roomList[i].name;
-    } 
+    }
     option.setAttribute("data-value", roomList[i].id);
     option.textContent = roomList[i].name;
     customOptions.appendChild(option);
@@ -142,7 +150,7 @@ async function injectRoomSelect(roomList) {
   const customSelectTrigger = document.createElement("div");
   customSelectTrigger.className = "custom-select__trigger";
   customSelectTrigger.innerHTML = `<span>${selectedRoomName}</span><div class="arrow"></div>`;
-  
+
   customSelect.appendChild(customSelectTrigger);
   customSelect.appendChild(customOptions);
 
@@ -212,7 +220,7 @@ async function injectRoomReselectBtn(roomList) {
 
   const reselectBtn = document.createElement("button");
   reselectBtn.id = "chatruume-btn";
-  reselectBtn.className = 'reselect';
+  reselectBtn.className = "reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");
@@ -293,9 +301,9 @@ window.addEventListener("load", async () => {
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
-    chrome.storage.local.get(['roomId'], function(result) {
-      roomId = result.roomId
-    })
+    chrome.storage.local.get(["roomId"], function (result) {
+      roomId = result.roomId;
+    });
 
     chrome.runtime.sendMessage({ action: "fetchRoomList" });
 
@@ -303,9 +311,12 @@ window.addEventListener("load", async () => {
       async (message, sender, sendResponse) => {
         if (message.action === "roomListResponse") {
           if (message.roomList) {
+            console.log("Case 3:");
             roomList = message.roomList;
             await injectRoomSelect(roomList);
           }
+        } else if (message.action === "completeCreatingMeeting") {
+          roomId = message.roomId;
         }
       }
     );
