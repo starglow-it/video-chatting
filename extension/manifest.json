@@ -17,7 +17,8 @@
   ],
   "host_permissions": [
     "https://www.googleapis.com/",
-    "https://stg-my.chatruume.com/*"
+    "https://stg-my.chatruume.com/*",
+    "https://accounts.google.com/*"
   ],
   "web_accessible_resources": [
     {
@@ -26,21 +27,33 @@
     }
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js"
   },
   "action": {
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
-      "matches": ["*://*.google.com/calendar/u/0/r/eventedit/*"],
-      "css": ["content.css"],
-      "js": ["contentScript.js"]
+      "matches": ["*://*.google.com/calendar/u/0/r/eventedit*"],
+      "css": ["css/content.css"],
+      "js": ["js/content.js"]
     },
     {
-      "matches": ["*://calendar.google.com/calendar/u/0/r"],
-      "css": ["modal.css"],
-      "js": ["modalScript.js"]
+      "matches": ["*://calendar.google.com/calendar/u/0/r","*://calendar.google.com/calendar/u/0/r?trp=true"],
+      "css": ["css/modal.css"],
+      "js": ["js/modal.js"]
+    },
+    {
+      "matches": ["https://stg-my.chatruume.com/login?google-signin"],
+      "js": ["js/google_signin.js"]
+    },
+    {
+      "matches": ["https://stg-my.chatruume.com/login?forgot-password"],
+      "js": ["js/forgot_password.js"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
+  }
 }

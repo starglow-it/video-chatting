@@ -14,6 +14,13 @@ async function waitForElement(selector) {
   return element;
 }
 
+async function simulateKeyboardInput(element, value) {
+  element.value = value;
+
+  await element.dispatchEvent(new Event("input", { bubbles: true }));
+  await element.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
 async function getUserName() {
   const divElements = document.getElementsByTagName("div");
   let targetDivElement;
@@ -36,10 +43,10 @@ async function getUserName() {
 
 // This function injects the 'Make it a ChatRuume meeting' button
 async function injectButton() {
-  const googleMeetingButton = await waitForElement(
-    'div[jsname="WwTOGd"][jscontroller="rJx97b"]'
-  );
-  if (!document.querySelector(".chatruume-meeting")) {
+  // const saveButtonRow = await waitForElement('div[jsname="c6xFrd"]');
+  const parentElement = await waitForElement('[aria-labelledby="tabEvent"]');
+
+  if (parentElement) {
     // Create the container div for the ChatRuume button
     const chatRuumeContainer = document.createElement("div");
     chatRuumeContainer.className = "chatruume-meeting";
@@ -66,6 +73,7 @@ async function injectButton() {
 
     const chatRuumeButton = document.createElement("button");
     chatRuumeButton.id = "chatruume-btn";
+    chatRuumeButton.className = "chatruume-btn";
     chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
     chatRuumeButton.addEventListener("click", function () {
@@ -87,12 +95,16 @@ async function injectButton() {
           templateId: roomId,
         });
 
-        selectElem.style.display = "none";
+        // selectElem.style.display = "none";
 
-        chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
+        // chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
 
-        injectRoomReselectBtn();
+        // injectRoomReselectBtn();
         fillMeetingDetails();
+
+        setTimeout(() => {
+          document.querySelectorAll('[jsname="c6xFrd"] [class="VfPpkd-Jh9lGc"]')[3].click();
+        }, 500);
       } else {
         chrome.runtime.sendMessage({
           action: "enterRoom",
@@ -106,10 +118,7 @@ async function injectButton() {
     chatRuumeContainer.appendChild(btnContainer);
 
     // Insert the new ChatRuume container next to the Google Meet button
-    googleMeetingButton.parentNode.insertBefore(
-      chatRuumeContainer,
-      googleMeetingButton.nextSibling
-    );
+    parentElement.appendChild(chatRuumeContainer);
   }
 }
 
@@ -192,13 +201,18 @@ async function injectRoomSelect(roomList) {
   }
 
   window.addEventListener("click", function (e) {
-    const select = document.querySelector(".custom-select");
-    if (select && !select.contains(e.target)) {
-      select.classList.remove("open");
+    try {
+      const select = document.querySelector(".custom-select");
+      if (select && !select.contains(e.target)) {
+        select.classList.remove("open");
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 }
-async function injectRoomReselectBtn(roomList) {
+
+async function injectRoomReselectBtn() {
   const reselectContainer = document.createElement("div");
   reselectContainer.className = "chatruume-meeting";
 
@@ -209,7 +223,7 @@ async function injectRoomReselectBtn(roomList) {
   btnWrapper.className = "reselect-btn-wrapper";
 
   const reselectBtn = document.createElement("button");
-  reselectBtn.id = "chatruume-btn";
+  reselectBtn.className = "chatruume-btn reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");
@@ -229,20 +243,24 @@ async function injectRoomReselectBtn(roomList) {
       'div[class="custom-select-wrapper"]'
     );
     const chatruumeBtn = document.getElementById("chatruume-btn");
-    const locationField = document.querySelector('[id="c52"]');
-    const descriptionField = document.querySelector('[id="T2Ybvb0"]');
+    const locationField = document.querySelector(
+      'input[jsname="YPqjbf"][placeholder="Add location"]'
+    );
+    const descriptionField = document.querySelector(
+      '[aria-label="Add description"]'
+    );
 
     selectElem.style.display = "block";
     reselectContainer.remove();
 
-    locationField.value = "";
+    simulateKeyboardInput(locationField, "");
     descriptionField.innerHTML = "";
     chatruumeBtn.textContent = "Make it a Ruume Meeting";
   });
 }
 
 async function fillTitleField() {
-  const titleField = await waitForElement('[id="xTiIn"]');
+  const titleField = await waitForElement('[aria-label="Add title"]');
 
   await getUserName();
 
@@ -251,14 +269,22 @@ async function fillTitleField() {
 
 // This function autofills the meeting details
 async function fillMeetingDetails() {
-  const locationField = await waitForElement('[id="c52"]');
-  const descriptionField = await waitForElement('[id="T2Ybvb0"]');
+  const locationField = await waitForElement(
+    'input[jsname="YPqjbf"][placeholder="Add location"]'
+  );
+  const descriptionField = await waitForElement(
+    '[aria-label="Add description"]'
+  );
 
   const roomId = document
     .querySelector('span[class="custom-option selected"]')
     .getAttribute("data-value");
 
-  locationField.value = "https://stg-my.chatruume.com/room/" + roomId;
+  await simulateKeyboardInput(
+    locationField,
+    "https://stg-my.chatruume.com/room/" + roomId
+  );
+
   await descriptionField.dispatchEvent(new Event("input", { bubbles: true }));
   descriptionField.innerHTML = `${userName} is inviting you to a scheduled Ruume Meeting. <br><br> Join Ruume Meeting <br> https://stg-my.chatruume.com/room/${roomId}`;
 }
@@ -277,10 +303,9 @@ async function fetchRoomList(accessToken, refreshToken) {
       );
 
       const roomList = await response.json().result.list;
-
       return roomList;
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   }
 }
@@ -290,20 +315,27 @@ window.addEventListener("load", async () => {
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
-    chrome.runtime.sendMessage({ action: "fetchRoomList" });
+    const clickField = await waitForElement('div[jscontroller="JjlYBf"]');
 
+    clickField.addEventListener("click", async function () {
+      const overflowElem = await waitForElement('[jsname="fxaXHe"]');
+      overflowElem.style.overflow = "none";
+      if (!document.getElementById("chatruume-btn")) {
+        await injectButton();
+        await injectRoomSelect(roomList);
+      }
+      await fillTitleField();
+    });
+
+    chrome.runtime.sendMessage({ action: "fetchRoomList" });
     chrome.runtime.onMessage.addListener(
       async (message, sender, sendResponse) => {
         if (message.action === "roomListResponse") {
           if (message.roomList) {
             roomList = message.roomList;
-            await injectRoomSelect(roomList);
           }
         }
       }
     );
-
-    await injectButton();
-    await fillTitleField();
   }
 });
