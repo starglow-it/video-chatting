@@ -1,28 +1,35 @@
 /* devanagari */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
-  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FF;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecmNE.woff2)
+    format("woff2");
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC,
+    U+A830-A839, U+A8E0-A8FF;
 }
 
 /* latin-ext */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJnecmNE.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJnecmNE.woff2)
+    format("woff2");
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 /* latin */
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2)
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 body {
@@ -31,7 +38,7 @@ body {
   padding: 15px;
   font-size: 1rem;
   line-height: 1.5rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
 }
 
@@ -72,7 +79,7 @@ body {
   vertical-align: middle;
   appearance: none;
   text-decoration: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1rem;
   line-height: 1.75;
   letter-spacing: 0.02857em;
@@ -91,8 +98,8 @@ body {
 }
 
 #selectRuume {
-  background-color: #9243B7;
-  border: 1px solid #9243B7;
+  background-color: #9243b7;
+  border: 1px solid #9243b7;
 }
 
 #selectRuume:hover {
@@ -125,13 +132,13 @@ body {
   margin: 0px;
   font-size: 1rem;
   line-height: 1.5rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   /* font-weight: 400; */
 }
 
 .google-login {
   cursor: pointer;
-  transition: box-shadow .2s linear;
+  transition: box-shadow 0.2s linear;
   padding: 0.5rem 1rem;
   height: 3.5rem;
   display: flex;
@@ -256,7 +263,7 @@ body {
   color: rgb(189, 200, 211);
   font-size: 1rem;
   line-height: 1.4375em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   padding: 0px;
   display: block;
@@ -269,7 +276,9 @@ body {
   left: 0px;
   top: 0px;
   transform: translate(14px, -9px) scale(0.75);
-  transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0, 0, 0.2, 1) 0ms, max-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    transform 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    max-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   z-index: 1;
   pointer-events: auto;
   user-select: none;
@@ -283,7 +292,7 @@ body {
 .main-input-field {
   font-size: 1rem;
   line-height: 1.4375em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   color: rgb(15, 15, 16);
   box-sizing: border-box;
@@ -295,7 +304,6 @@ body {
   border-radius: 10px;
   background: rgb(244, 246, 249);
   border: 1px solid rgba(189, 200, 211, 0.4);
-
 }
 
 .custom-input {
@@ -335,7 +343,7 @@ body {
   border-color: rgba(189, 200, 211, 0.6);
   font-size: 1rem;
   line-height: 1.4375em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   color: rgb(15, 15, 16);
   box-sizing: border-box;
@@ -346,7 +354,6 @@ body {
   position: relative;
   padding-right: 14px;
   border-radius: 10px;
-
 }
 
 .forgot-password {
@@ -354,29 +361,28 @@ body {
   cursor: pointer;
   font-size: 0.875rem;
   line-height: 1.375rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   float: right;
-  color: #FF884E;
+  color: #ff884e;
 }
 
 .register {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
   line-height: 1.375rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   color: #bdc8d3;
 }
 
 .sign-in-first {
   text-align: center;
-  color: #C9C9C9;
+  color: #c9c9c9;
   font-size: 0.8785rem;
   line-height: 1rem;
   margin-bottom: 0.7rem;
 }
-
 
 /*           */
 /* Calendar  */
@@ -387,7 +393,7 @@ body {
 }
 
 dropdown label {
-  color: #B2B2B2;
+  color: #b2b2b2;
   border-radius: 0 5px 0 0;
   position: relative;
   z-index: 100;
@@ -397,7 +403,7 @@ dropdown input {
   display: none;
 }
 
-dropdown input~ul {
+dropdown input ~ ul {
   position: relative;
   visibility: hidden;
   max-height: 0px;
@@ -407,7 +413,7 @@ dropdown input~ul {
   z-index: 1;
 }
 
-dropdown input:checked~ul {
+dropdown input:checked ~ ul {
   visibility: visible;
   overflow: visible;
   opacity: 1;
@@ -415,11 +421,11 @@ dropdown input:checked~ul {
 }
 
 .animate {
-  -webkit-transition: all .3s;
-  -moz-transition: all .3s;
-  -ms-transition: all .3s;
-  -ms-transition: all .3s;
-  transition: all .3s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  transition: all 0.3s;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   /* Chrome and Safari */
@@ -482,7 +488,7 @@ ul {
   float: left;
   width: -webkit-calc(100%/7);
   text-align: center;
-  padding: .25em 0;
+  padding: 0.25em 0;
   cursor: pointer;
 }
 
@@ -497,7 +503,7 @@ ul {
   transition: 0.5s ease;
 }
 
-.calendar li:nth-child(-n+7) {
+.calendar li:nth-child(-n + 7) {
   color: #666;
 }
 
@@ -510,7 +516,7 @@ ul.animate {
 }
 
 .confirmBtn {
-  background-color: #807F7F;
+  background-color: #807f7f;
   color: white;
   border-radius: 0 0 10px 10px;
   border: 1px solid rgb(238, 111, 50);
@@ -532,7 +538,7 @@ ul.animate {
 .short-chevron:before {
   border-style: solid;
   border-width: 0.25em 0.25em 0 0;
-  content: '';
+  content: "";
   display: inline-block;
   height: 0.45em;
   left: 0.15em;
@@ -561,7 +567,7 @@ ul.animate {
   right: 15%;
 }
 
-input:checked~label .chevron:before {
+input:checked ~ label .chevron:before {
   top: 0.15em;
   transform: rotate(-45deg);
 }
@@ -570,8 +576,6 @@ input:checked~label .chevron:before {
   top: 0.15em;
   transform: rotate(-45deg);
 }
-
-
 
 .custom-select-wrapper {
   position: relative;
@@ -593,7 +597,7 @@ input:checked~label .chevron:before {
   margin: 0 3px;
   padding: 3px 20px 3px 5px;
   border-radius: 5px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   font-size: 0.7rem;
   user-select: none;
 }
@@ -605,7 +609,7 @@ input:checked~label .chevron:before {
   left: 0;
   right: 0;
   border-radius: 5px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   transition: all 0.5s;
   opacity: 0;
   visibility: hidden;
@@ -628,7 +632,7 @@ input:checked~label .chevron:before {
   margin: 0 5px;
   padding: 2px 6px 2px 2px;
   border-radius: 5px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   font-size: 0.7rem;
 }
 
@@ -652,7 +656,7 @@ input:checked~label .chevron:before {
   margin: 0 5px;
   padding: 3px 20px 3px 6px;
   border-radius: 5px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   font-size: 0.7rem;
   user-select: none;
   margin-bottom: 1rem;
@@ -670,4 +674,8 @@ input:checked~label .chevron:before {
 
 .badge.active {
   background-color: rgba(255, 136, 78, 0.9);
+}
+
+.no-room-message {
+  margin-bottom: 1rem;
 }

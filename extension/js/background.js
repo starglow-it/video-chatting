@@ -1,4 +1,5 @@
-let loginTabId = null, previousTabId = null;
+let loginTabId = null,
+  previousTabId = null;
 
 chrome.runtime.onMessage.addListener(async function (
   message,
@@ -25,20 +26,22 @@ chrome.runtime.onMessage.addListener(async function (
                 },
               }
             );
-  
+
             const roomList = await response.json();
-    
+
             if (sender.tab) {
               await chrome.tabs.sendMessage(sender.tab.id, {
                 action: "roomListResponse",
                 roomList: roomList.result.list,
               });
             } else {
-              await chrome.runtime.sendMessage({ action: "roomListResponse", roomList: roomList.result.list });
-  
+              await chrome.runtime.sendMessage({
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+              });
             }
           } catch (error) {
-            console.error(error);            
+            console.error(error);
           }
         }
       );
@@ -53,6 +56,27 @@ chrome.runtime.onMessage.addListener(async function (
           accessToken = data.accessToken;
           refreshToken = data.refreshToken;
 
+          let templateId = message.templateId;
+
+          if (message.isFeatured) {
+            const response = await fetch(
+              `https://stg-my.chatruume.com/api/profile/templates/add/${message.templateId}`,
+              {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + accessToken,
+                  "Content-Type": "application/json",
+                  Accept: "*/*",
+                  "Accept-Encoding": "gzip, deflate, br",
+                },
+              }
+            );
+
+            const data = await response.json();
+
+            templateId = data.result.id;
+          }
+
           const response = await fetch(
             "https://stg-my.chatruume.com/api/meetings",
             {
@@ -64,20 +88,22 @@ chrome.runtime.onMessage.addListener(async function (
                 "Accept-Encoding": "gzip, deflate, br",
               },
               body: JSON.stringify({
-                templateId: message.templateId,
+                templateId: templateId,
               }),
             }
           );
-          
+
           if (sender.tab) {
             await chrome.tabs.sendMessage(sender.tab.id, {
               action: "completeCreatingMeeting",
               success: true,
+              roomId: templateId,
             });
           } else {
             await chrome.runtime.sendMessage({
-              action: 'completeCreatingMeeting',
-              success: true
+              action: "completeCreatingMeeting",
+              success: true,
+              roomId: templateId,
             });
           }
 
@@ -91,67 +117,69 @@ chrome.runtime.onMessage.addListener(async function (
     chrome.tabs.create({
       url: `https://stg-my.chatruume.com/room/${message.roomId}`,
     });
-  } else if (message.action === 'saveCookie') {
+  } else if (message.action === "saveCookie") {
     try {
-      const res = await fetch('https://stg-my.chatruume.com/api/auth/login', {
-        method: 'POST',
+      const res = await fetch("https://stg-my.chatruume.com/api/auth/login", {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: message.email,
-          password: message.password
-        })
-      })
-  
+          password: message.password,
+        }),
+      });
+
       const response = await res.json();
-  
+
       if (response.success) {
         const accessTokenCookie = {
-          url: 'https://stg-my.chatruume.com', // Replace with your desired domain
-          name: 'accessToken',
+          url: "https://stg-my.chatruume.com", // Replace with your desired domain
+          name: "accessToken",
           value: response.result.accessToken.token,
-          expirationDate: response.result.accessToken.expiresAt
-        }
-  
+          expirationDate: response.result.accessToken.expiresAt,
+        };
+
         const refreshTokenCookie = {
-          url: 'https://stg-my.chatruume.com', // Replace with your desired domain
-          name: 'refreshToken',
+          url: "https://stg-my.chatruume.com", // Replace with your desired domain
+          name: "refreshToken",
           value: response.result.refreshToken.token,
-          expirationDate: response.result.refreshToken.expiresAt
-        }
-  
+          expirationDate: response.result.refreshToken.expiresAt,
+        };
+
         chrome.cookies.set(accessTokenCookie);
-  
-        chrome.cookies.set(refreshTokenCookie)
-  
+
+        chrome.cookies.set(refreshTokenCookie);
+
         chrome.runtime.sendMessage({
-          action: 'reloadPage'
-        })
+          action: "reloadPage",
+        });
       } else {
         const errorMessage = response.error.message;
-  
+
         chrome.runtime.sendMessage({
-          action: 'displayErrorMessage',
-          error: errorMessage
-        })
-  
+          action: "displayErrorMessage",
+          error: errorMessage,
+        });
       }
     } catch (error) {
-      console.error('Error signing in: ', error);
+      console.error("Error signing in: ", error);
     }
-  } else if (message.action === 'startGoogleLogin') {
+  } else if (message.action === "startGoogleLogin") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0]) {
         previousTabId = tabs[0].id;
       }
       // Now open the login page in a new tab
-      chrome.tabs.create({ url: 'https://stg-my.chatruume.com/login?google-signin' }, function (tab) {
-        // No need to save the login tab ID unless you want to refer to it later
-        loginTabId = tab
-      });
+      chrome.tabs.create(
+        { url: "https://stg-my.chatruume.com/login?google-signin" },
+        function (tab) {
+          // No need to save the login tab ID unless you want to refer to it later
+          loginTabId = tab;
+        }
+      );
     });
-  } 
+  }
 
   return true;
 });
@@ -174,7 +202,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         }
       }
     );
-  } else if (loginTabId && changeInfo.url && changeInfo.url.includes('https://stg-my.chatruume.com/dashboard')) {
+  } else if (
+    loginTabId &&
+    changeInfo.url &&
+    changeInfo.url.includes("https://stg-my.chatruume.com/dashboard")
+  ) {
     // Close the login tab
     chrome.tabs.remove(tabId, function () {
       loginTabId = null;
@@ -186,4 +218,13 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   }
 });
 
-
+chrome.runtime.setUninstallURL(
+  "https://stg-my.chatruume.com/welcome",
+  function () {
+    if (chrome.runtime.lastError) {
+      console.log("Error setting uninstall URL: ", chrome.runtime.lastError);
+    } else {
+      console.log("Uninstall URL set.");
+    }
+  }
+);

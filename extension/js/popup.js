@@ -1,5 +1,6 @@
 var roomList = [],
   roomId = null,
+  isFeatured = false,
   selectedYear = new Date().getFullYear(),
   selectedMonth = new Date().getMonth() + 1,
   selectedDay = new Date().getUTCDate(),
@@ -46,6 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (message.action === "roomListResponse") {
       const roomListDiv = document.querySelector(".room-list");
       roomList = message.roomList;
+
+      if (roomList.length === 0) {
+        const spanElement = document.createElement("span");
+        spanElement.setAttribute("class", "no-room-message");
+
+        spanElement.innerHTML =
+          "🏠 your immersive online ruumes will appear here <br> 🚀 click “start instant meeting” button to begin";
+        roomListDiv.appendChild(spanElement);
+
+        roomId = "65bd3c2bbdb4016bf65c383c";
+        isFeatured = true;
+      }
       for (const room of roomList) {
         const spanElement = document.createElement("span");
 
@@ -67,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("loading").style.display = "none";
       chrome.runtime.sendMessage({
         action: "enterRoom",
-        roomId: roomId,
+        roomId: message.roomId,
       });
     }
   });
@@ -154,7 +167,9 @@ document.addEventListener("DOMContentLoaded", function () {
       chrome.runtime.sendMessage({
         action: "createMeeting",
         templateId: roomId,
+        isFeatured: isFeatured,
       });
+
       loading.style.display = "block";
     } else {
       chrome.tabs.create({
