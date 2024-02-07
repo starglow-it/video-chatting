@@ -306,12 +306,10 @@ window.addEventListener("load", async () => {
       async (message, sender, sendResponse) => {
         if (message.action === "roomListResponse") {
           if (message.roomList) {
-            console.log("Case 3:");
             roomList = message.roomList;
             await injectRoomSelect(roomList);
           }
         } else if (message.action === "completeCreatingMeeting") {
-          console.log("Received message of completeCreatingMeeting: ", message);
           roomId = message.roomId;
           fillMeetingDetails();
         }

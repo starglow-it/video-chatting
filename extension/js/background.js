@@ -94,14 +94,12 @@ chrome.runtime.onMessage.addListener(async function (
           );
 
           if (sender.tab) {
-            console.log("Case 1: ", templateId);
             await chrome.tabs.sendMessage(sender.tab.id, {
               action: "completeCreatingMeeting",
               success: true,
               roomId: templateId,
             });
           } else {
-            console.log("Case 2: ", templateId);
             await chrome.runtime.sendMessage({
               action: "completeCreatingMeeting",
               success: true,
