@@ -1,4 +1,5 @@
 export enum UsersSubscribeEvents {
+  getUsers = 'users:getUsers',
   OnUpdateUser = 'users:updateUser',
   OnRemoveUser = 'users:removeUser',
   OnChangeHost = 'users:changeHost',

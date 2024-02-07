@@ -8,7 +8,6 @@ import { ObjectId, isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 // shared
 import { StatisticBrokerPatterns } from 'shared-const';
 import {
-  GetRoomsPayload,
   GetRoomRatingStatisticPayload,
   UpdateRoomRatingStatisticPayload
 } from 'shared-types';
@@ -20,7 +19,7 @@ import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { RoomsStatisticsService } from './rooms-statistics.service';
 
 // dtos
-import { RoomRatingStatisticDTO, RoomsDTO } from '../../dtos/room-statistic.dto';
+import { RoomRatingStatisticDTO } from '../../dtos/room-statistic.dto';
 
 @Controller('rooms-statistics')
 export class RoomsStatisticsController {
@@ -70,53 +69,6 @@ export class RoomsStatisticsController {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: 'ROOMS_STATISTICS_SERVICE',
-      });
-    }
-  }
-
-  @MessagePattern({ cmd: StatisticBrokerPatterns.GetRooms })
-  async getRooms(
-    @Payload() payload: GetRoomsPayload,
-  ) {
-    try {
-      const rooms = await this.roomsStatisticService.aggregate([
-        {
-          $lookup: {
-            from: 'commontemplates',
-            localField: 'template',
-            foreignField: '_id',
-            as: 'template',
-          },
-        },
-        {
-          $unwind: '$template', // Unwind the template array created by $lookup
-        },
-        {
-          $match: { author: new ObjectId(payload.author) },
-        },
-        {
-          $sort: { ['updatedAt']: -1 },
-        },
-        {
-          $limit: 10,
-        },
-        {
-          $project: {
-            'template.name': 1,
-            'updatedAt': 1,
-          },
-        },
-      ]);
-
-      return plainToInstance(RoomsDTO, rooms, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-      
     } catch (err) {
       throw new RpcException({
         message: err.message,

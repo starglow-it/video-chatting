@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import * as moment from 'moment-timezone';
+// import * as moment from 'moment-timezone';
 
 // shared
 import { UserDocument } from './user.schema';
@@ -65,12 +65,12 @@ export type RoomStatisticDocument = RoomStatistic & Document;
 export const RoomStatisticSchema = SchemaFactory.createForClass(RoomStatistic);
 
 // Middleware to set the updatedAt field with timezone
-RoomStatisticSchema.pre<RoomStatisticDocument>('save', function (next) {
-  const currentDateTime = moment(); // Get the current date and time
-  const timezone = 'America/Los_Angeles'; // Replace with the desired timezone
+// RoomStatisticSchema.pre<RoomStatisticDocument>('save', function (next) {
+//   const currentDateTime = moment(); // Get the current date and time
+//   const timezone = 'America/Los_Angeles'; // Replace with the desired timezone
 
-  // Use moment-timezone to convert the date to the specified timezone
-  this.updatedAt = currentDateTime.tz(timezone).format('MM DD, YY, hh:mm A, z');
+//   // Use moment-timezone to convert the date to the specified timezone
+//   this.updatedAt = currentDateTime.tz(timezone).format('MM DD, YY, hh:mm A, z');
 
-  next();
-});
+//   next();
+// });
