@@ -53,6 +53,7 @@ export interface IConfig {
   appVersion: string;
   isSyncData: boolean;
   isSeed: boolean;
+  mediaServicePort: string;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -112,6 +113,7 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'appVersion',
   'isSyncData',
   'isSeed',
+  'mediaServicePort'
 ];
 
 export const DefaultConfigValues: Record<
@@ -169,4 +171,5 @@ export const DefaultConfigValues: Record<
   appVersion: '0.0.1',
   isSyncData: false,
   isSeed: false,
+  mediaServicePort: '9091',
 };
