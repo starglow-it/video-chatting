@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Ruume Virtual Meetings",
-  "description": "Start meetings or schedule directly from GoogleCalendar private video calls or large events and collect entry fees, payments, donations, in a custom branded environment with your e-commerce links and resources embedded",
+  "description": "Instantly start ruume meetings or schedule them from GoogleCalendar, invite guests to your branded immersive ruume in 1-click.",
   "version": "1.0",
   "icons": {
     "16": "icons/icon16.png",
@@ -9,7 +9,7 @@
     "128": "icons/icon128.png"
   },
   "permissions": ["storage", "cookies", "tabs"],
-  "host_permissions": ["https://stg-my.chatruume.com/*"],
+  "host_permissions": ["https://my.chatruume.com/*"],
   "web_accessible_resources": [
     {
       "resources": ["icons/icon16.png"],
@@ -37,11 +37,11 @@
       "js": ["js/modal.js"]
     },
     {
-      "matches": ["https://stg-my.chatruume.com/login?google-signin"],
+      "matches": ["https://my.chatruume.com/login?google-signin"],
       "js": ["js/google_signin.js"]
     },
     {
-      "matches": ["https://stg-my.chatruume.com/login?forgot-password"],
+      "matches": ["https://my.chatruume.com/login?forgot-password"],
       "js": ["js/forgot_password.js"]
     }
   ]

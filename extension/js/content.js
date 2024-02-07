@@ -73,14 +73,14 @@ async function injectButton() {
       let isFeatured = false;
       let roomName = "";
 
-      roomId = document
+      let tempRoomId = document
         .querySelector('span[class="custom-option selected"]')
         ?.getAttribute("data-value");
 
-      if (!roomId) {
-        roomId = "65bd3c2bbdb4016bf65c383c";
+      if (!tempRoomId) {
+        tempRoomId = "64f25807bc78bed6bd7b84f5";
         isFeatured = true;
-        roomName = "Pepsi Room";
+        roomName = "Central Perk";
       } else {
         roomName = document.querySelector(
           'span[class="custom-option selected"]'
@@ -93,16 +93,15 @@ async function injectButton() {
       if (this.textContent === "Make it a Ruume Meeting") {
         chrome.runtime.sendMessage({
           action: "createMeeting",
-          templateId: roomId,
+          templateId: tempRoomId,
           isFeatured: isFeatured,
         });
 
-        selectElem.style.display = "none";
+        if (selectElem) selectElem.style.display = "none";
 
         chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
 
         injectRoomReselectBtn();
-        fillMeetingDetails();
       } else {
         chrome.runtime.sendMessage({
           action: "enterRoom",
@@ -243,7 +242,7 @@ async function injectRoomReselectBtn(roomList) {
     const locationField = document.querySelector('[id="c52"]');
     const descriptionField = document.querySelector('[id="T2Ybvb0"]');
 
-    selectElem.style.display = "block";
+    if (selectElem) selectElem.style.display = "block";
     reselectContainer.remove();
 
     locationField.value = "";
@@ -265,20 +264,16 @@ async function fillMeetingDetails() {
   const locationField = await waitForElement('[id="c52"]');
   const descriptionField = await waitForElement('[id="T2Ybvb0"]');
 
-  const roomId = document
-    .querySelector('span[class="custom-option selected"]')
-    .getAttribute("data-value");
-
-  locationField.value = "https://stg-my.chatruume.com/room/" + roomId;
+  locationField.value = "https://my.chatruume.com/room/" + roomId;
   await descriptionField.dispatchEvent(new Event("input", { bubbles: true }));
-  descriptionField.innerHTML = `${userName} is inviting you to a scheduled Ruume Meeting. <br><br> Join Ruume Meeting <br> https://stg-my.chatruume.com/room/${roomId}`;
+  descriptionField.innerHTML = `${userName} is inviting you to a scheduled Ruume Meeting. <br><br> Join Ruume Meeting <br> https://my.chatruume.com/room/${roomId}`;
 }
 
 async function fetchRoomList(accessToken, refreshToken) {
   if (accessToken) {
     try {
       const response = await fetch(
-        "https://stg-my.chatruume.com/api/profile/templates",
+        "https://my.chatruume.com/api/profile/templates",
         {
           method: "GET",
           headers: {
@@ -316,7 +311,9 @@ window.addEventListener("load", async () => {
             await injectRoomSelect(roomList);
           }
         } else if (message.action === "completeCreatingMeeting") {
+          console.log("Received message of completeCreatingMeeting: ", message);
           roomId = message.roomId;
+          fillMeetingDetails();
         }
       }
     );
