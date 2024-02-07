@@ -49,7 +49,7 @@ const Component = () => {
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
     const isHideUpload = categories.some(
-        item => item.key === 'myrooms' && item.id === categorySelected,
+        item => item.key === 'my ruumes' && item.id === categorySelected,
     );
     const meetingTemplate = useStore($meetingTemplateStore);
     const [ mediaItems, setMediaItems ] = useState([]);

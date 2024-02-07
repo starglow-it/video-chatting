@@ -174,3 +174,13 @@
 .custom-option.selected {
   background-color: rgb(232 239 253);
 }
+
+#chatruume-btn.reselect{
+  background-color: #9243B7;
+  border: 1px solid #9243B7;
+}
+#chatruume-btn.reselect:hover{
+  background-color: #7f38a1;
+  border: 1px solid #7f38a1;
+}
+

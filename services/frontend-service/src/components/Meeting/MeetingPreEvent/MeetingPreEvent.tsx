@@ -34,7 +34,7 @@ import {
     $paymentMeetingParticipant,
     $isRoomPaywalledStore,
     createPaymentIntentFx,
-    isRoomPaywalledFx
+
 } from '../../../store/roomStores';
 
 // styles
@@ -88,12 +88,6 @@ const Component = ({
         const fetchData = async () => {
             try {
                 const meetingRole = !!router.query.role ? MeetingRole.Audience : MeetingRole.Participant;
-
-                await isRoomPaywalledFx({
-                    templateId: meetingTemplate.id,
-                    meetingRole: meetingRole,
-                    paymentType: PaymentType.Paywall
-                });
 
                 if (isRoomPaywalledStore) {
                     await createPaymentIntentFx({

@@ -125,7 +125,7 @@ export class MediaController {
       });
       userTemplateQuery = {
         $in:
-          mediaCategory.key === 'myrooms'
+          mediaCategory.key === 'my ruumes'
             ? userTemplate.user.templates
             : [userTemplate, null],
       };
@@ -201,7 +201,7 @@ export class MediaController {
         const query = {
           type,
           // key: {
-          //   $ne: 'myrooms',
+          //   $ne: 'my ruumes',
           // },
         };
         return await this.getMediaCategories({ query, skip, limit, session });

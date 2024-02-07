@@ -1,5 +1,7 @@
 var userName,
   roomList,
+  roomId,
+  roomName,
   currentRoomId,
   isRoomSelected = false;
 
@@ -47,7 +49,6 @@ async function injectButton() {
   const parentElement = await waitForElement('[aria-labelledby="tabEvent"]');
 
   if (parentElement) {
-    // const saveButton = saveButtonRow.lastChild.firstChild;
     // Create the container div for the ChatRuume button
     const chatRuumeContainer = document.createElement("div");
     chatRuumeContainer.className = "chatruume-meeting";
@@ -78,12 +79,21 @@ async function injectButton() {
     chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
     chatRuumeButton.addEventListener("click", function () {
-      const roomId = document
+      roomId = document
         .querySelector('span[class="custom-option selected"]')
-        .getAttribute("data-value");
-      const roomName = document.querySelector(
-        'span[class="custom-option selected"]'
-      ).textContent;
+        ?.getAttribute("data-value");
+      roomName = "";
+      let isFeatured = false;
+
+      if (!roomId) {
+        roomId = "65bd3c2bbdb4016bf65c383c";
+        roomName = "Pepsi Room";
+        isFeatured = true;
+      } else {
+        roomName = document.querySelector(
+          'span[class="custom-option selected"]'
+        ).textContent;
+      }
 
       const selectElem = document.querySelector(
         'div[class="custom-select-wrapper"]'
@@ -94,14 +104,14 @@ async function injectButton() {
         chrome.runtime.sendMessage({
           action: "createMeeting",
           templateId: roomId,
+          isFeatured: isFeatured,
         });
 
-        selectElem.style.display = "none";
+        // selectElem.style.display = "none";
 
-        chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
+        // chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
 
-        injectRoomReselectBtn();
-        fillMeetingDetails();
+        // injectRoomReselectBtn();
       } else {
         chrome.runtime.sendMessage({
           action: "enterRoom",
@@ -115,7 +125,6 @@ async function injectButton() {
     chatRuumeContainer.appendChild(btnContainer);
 
     // Insert the new ChatRuume container next to the Google Meet button
-    // saveButton.insertAdjacentElement("afterend", chatRuumeContainer);
     parentElement.appendChild(chatRuumeContainer);
   }
 }
@@ -205,7 +214,7 @@ async function injectRoomSelect(roomList) {
         select.classList.remove("open");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 }
@@ -221,7 +230,7 @@ async function injectRoomReselectBtn() {
   btnWrapper.className = "reselect-btn-wrapper";
 
   const reselectBtn = document.createElement("button");
-  reselectBtn.className = "chatruume-btn";
+  reselectBtn.className = "chatruume-btn reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");
@@ -274,9 +283,9 @@ async function fillMeetingDetails() {
     '[aria-label="Add description"]'
   );
 
-  const roomId = document
-    .querySelector('span[class="custom-option selected"]')
-    .getAttribute("data-value");
+  // const roomId = document
+  //   .querySelector('span[class="custom-option selected"]')
+  //   .getAttribute("data-value");
 
   await simulateKeyboardInput(
     locationField,
@@ -303,7 +312,7 @@ async function fetchRoomList(accessToken, refreshToken) {
       const roomList = await response.json().result.list;
       return roomList;
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   }
 }
@@ -318,10 +327,12 @@ window.addEventListener("load", async () => {
     clickField.addEventListener("click", async function () {
       const overflowElem = await waitForElement('[jsname="fxaXHe"]');
       overflowElem.style.overflow = "none";
-
       if (!document.getElementById("chatruume-btn")) {
         await injectButton();
-        await injectRoomSelect(roomList);
+
+        if (roomList && roomList.length) {
+          await injectRoomSelect(roomList);
+        }
       }
       await fillTitleField();
     });
@@ -333,6 +344,15 @@ window.addEventListener("load", async () => {
           if (message.roomList) {
             roomList = message.roomList;
           }
+        } else if (message.action === "completeCreatingMeeting") {
+          roomId = message.roomId;
+          fillMeetingDetails();
+
+          setTimeout(() => {
+            document
+              .querySelectorAll('[jsname="c6xFrd"] [class="VfPpkd-Jh9lGc"]')[3]
+              .click();
+          }, 1000);
         }
       }
     );

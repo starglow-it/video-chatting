@@ -1,4 +1,5 @@
 export enum UserTemplatesBrokerPatterns {
+  IsTemplatePaymentEnabled = 'is_user_template_enabled',
   GetUserTemplate = 'get_user_template',
   GetTemplatePayments = 'get_template_payments',
   GetTemplatePayment = 'get_template_payment',

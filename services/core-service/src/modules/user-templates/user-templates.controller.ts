@@ -95,7 +95,7 @@ export class UserTemplatesController {
     try {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms',
+          key: 'my ruumes',
         },
         session,
       });
@@ -160,7 +160,7 @@ export class UserTemplatesController {
 
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms',
+          key: 'my ruumes',
         },
         session,
       });
@@ -861,6 +861,42 @@ export class UserTemplatesController {
           );
 
           return templatePaymentSerialization(templatePayment);
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.IsTemplatePaymentEnabled,
+  })
+  async IsTemplatePaymentEnabled(
+    @Payload()
+    { userTemplateId, paymentType, meetingRole }: GetTemplatePaymentPayload,
+  ) {
+    return withTransaction<boolean>(
+      this.connection,
+      async (session) => {
+        try {
+          const templatePayment = await this.templatePaymentsComponent.findOne({
+            query: {
+              userTemplate: new ObjectId(userTemplateId),
+              type: paymentType,
+              meetingRole,
+            },
+            session,
+            populatePaths: 'userTemplate',
+          });
+
+          if (templatePayment.enabled) {
+            return true;
+          } else {
+            return false;
+          }
         } catch (err) {
           throw new RpcException({
             message: err.message,

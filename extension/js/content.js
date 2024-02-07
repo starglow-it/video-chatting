@@ -1,5 +1,6 @@
 var userName,
   roomList,
+  roomId = null,
   currentRoomId,
   isRoomSelected = false;
 
@@ -69,22 +70,31 @@ async function injectButton() {
     chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
     chatRuumeButton.addEventListener("click", function () {
-      const roomId = document
-        .querySelector('span[class="custom-option selected"]')
-        .getAttribute("data-value");
-      const roomName = document.querySelector(
-        'span[class="custom-option selected"]'
-      ).textContent;
+      let isFeatured = false;
+      let roomName = "";
 
+      roomId = document
+        .querySelector('span[class="custom-option selected"]')
+        ?.getAttribute("data-value");
+
+      if (!roomId) {
+        roomId = "65bd3c2bbdb4016bf65c383c";
+        isFeatured = true;
+        roomName = "Pepsi Room";
+      } else {
+        roomName = document.querySelector(
+          'span[class="custom-option selected"]'
+        ).textContent;
+      }
       const selectElem = document.querySelector(
         'div[class="custom-select-wrapper"]'
       );
 
       if (this.textContent === "Make it a Ruume Meeting") {
-        // if (!isRoomSelected) {
         chrome.runtime.sendMessage({
           action: "createMeeting",
           templateId: roomId,
+          isFeatured: isFeatured,
         });
 
         selectElem.style.display = "none";
@@ -120,26 +130,26 @@ async function injectRoomSelect(roomList) {
   const customSelect = document.createElement("div");
   customSelect.className = "custom-select";
 
-  const customSelectTrigger = document.createElement("div");
-  customSelectTrigger.className = "custom-select__trigger";
-  customSelectTrigger.innerHTML = `<span>${roomList[0].name}</span><div class="arrow"></div>`;
-
   const customOptions = document.createElement("div");
   customOptions.className = "custom-options";
 
-  const option1 = document.createElement("span");
-  option1.className = "custom-option selected";
-  option1.setAttribute("data-value", roomList[0].id);
-  option1.textContent = roomList[0].name;
-  customOptions.appendChild(option1);
+  let selectedRoomName = "";
 
-  for (let i = 1; i < roomList.length; i++) {
+  for (let i = 0; i < roomList.length; i++) {
     const option = document.createElement("span");
     option.className = "custom-option";
+    if ((roomId && roomId === roomList[i].id) || (!roomId && i === 0)) {
+      option.classList.add("selected");
+      selectedRoomName = roomList[i].name;
+    }
     option.setAttribute("data-value", roomList[i].id);
     option.textContent = roomList[i].name;
     customOptions.appendChild(option);
   }
+
+  const customSelectTrigger = document.createElement("div");
+  customSelectTrigger.className = "custom-select__trigger";
+  customSelectTrigger.innerHTML = `<span>${selectedRoomName}</span><div class="arrow"></div>`;
 
   customSelect.appendChild(customSelectTrigger);
   customSelect.appendChild(customOptions);
@@ -210,6 +220,7 @@ async function injectRoomReselectBtn(roomList) {
 
   const reselectBtn = document.createElement("button");
   reselectBtn.id = "chatruume-btn";
+  reselectBtn.className = "reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");
@@ -280,7 +291,7 @@ async function fetchRoomList(accessToken, refreshToken) {
 
       return roomList;
     } catch (error) {
-      console.log("Error fetching room list: ", error);
+      console.error("Error fetching room list: ", error);
     }
   }
 }
@@ -290,15 +301,22 @@ window.addEventListener("load", async () => {
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
+    chrome.storage.local.get(["roomId"], function (result) {
+      roomId = result.roomId;
+    });
+
     chrome.runtime.sendMessage({ action: "fetchRoomList" });
 
     chrome.runtime.onMessage.addListener(
       async (message, sender, sendResponse) => {
         if (message.action === "roomListResponse") {
           if (message.roomList) {
+            console.log("Case 3:");
             roomList = message.roomList;
             await injectRoomSelect(roomList);
           }
+        } else if (message.action === "completeCreatingMeeting") {
+          roomId = message.roomId;
         }
       }
     );
