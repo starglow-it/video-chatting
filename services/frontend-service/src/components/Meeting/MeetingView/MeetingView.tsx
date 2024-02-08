@@ -1,6 +1,9 @@
 import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import dynamic from "next/dynamic";
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+
 const MeetingJoyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 // custom
@@ -26,6 +29,7 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { EmojiPlayground } from '@components/Meeting/EmojiPlayground/EmojiPlayground'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // shared
@@ -34,6 +38,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { EmojiList } from '@components/EmojiList/EmojiList';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import {
     StorageKeysEnum,
@@ -109,6 +114,9 @@ const Component = () => {
     const isVideoError = Boolean(videoError);
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
+    const container = useRe();
+
+    const { contextSafe } = useGSAP({ scope: container });
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -315,8 +323,36 @@ const Component = () => {
 
     const previewImage = getPreviewImage(meetingTemplate);
 
+
+
+    const startReactionBubbling = contextSafe(() => {
+        gsap.to('.good', { rotation: 360 });
+    })
+
+    useEffect(() => {
+        startReactionBubbling();
+    }, [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
-        <CustomGrid className={styles.mainMeetingWrapper}>
+        <CustomGrid className={styles.mainMeetingWrapper} ref={container}>
             <MeetingJoyride
                 callback={handleJoyrideCallback}
                 steps={joyrideSteps}
@@ -380,6 +416,7 @@ const Component = () => {
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
+                    className="good"
                 >
                     <ConditionalRender
                         condition={
@@ -402,6 +439,7 @@ const Component = () => {
                     </ConditionalRender>
 
                     <LeaveNoteForm />
+                    <EmojiList />
                 </MeetingSettingsPanel>
             )}
             {Boolean(meetingTemplate?.id) && isMobileShared() && (
@@ -424,6 +462,8 @@ const Component = () => {
                 </MeetingSettingsPanel>
             )}
 
+            <EmojiPlayground />
+
             <DevicesSettingsDialog />
             <EndMeetingDialog />
             <InviteAttendeeDialog />
@@ -438,6 +478,9 @@ const Component = () => {
             <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
             <RecordVideoDownloadDialog />
+
+
+
         </CustomGrid>
     );
 };

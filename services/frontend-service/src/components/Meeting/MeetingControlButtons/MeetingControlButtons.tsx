@@ -50,7 +50,9 @@ import {
     $meetingUsersStore,
     $recordingStream,
     $meetingNotesVisibilityStore,
+    $meetingEmojiListVisibilityStore,
     setMeetingNotesVisibilityEvent,
+    setEmojiListVisibilityEvent,
     $meetingStore,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -115,6 +117,7 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
     const { isVisible } = useStore($meetingNotesVisibilityStore);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
 
     const [recorder, setRecorder] = useState<RecordRTC | null>(null);
     const recordingStream = useStore($recordingStream);
@@ -230,6 +233,10 @@ const Component = () => {
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
+    const handleEmojiListToggle = () => {
+        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
+    }
+
     return (
         <CustomGrid id="menuBar" container gap={1.5} className={styles.devicesWrapper}>
             <ConditionalRender condition={!isMobile && !isAudience}>
@@ -280,7 +287,7 @@ const Component = () => {
                     >
                         <ActionButton
                             variant="transparentBlack"
-                            onAction={handleSetStickyNotesVisible}
+                            onAction={handleEmojiListToggle}
                             className={clsx(styles.deviceButton, {
                                 [styles.inactive]: !isMicActive,
                             })}
