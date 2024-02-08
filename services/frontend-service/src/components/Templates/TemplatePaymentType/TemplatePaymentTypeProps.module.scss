@@ -15,6 +15,11 @@
   box-shadow: rem(0 4px 10px -2px) rgba($primary-black, 0.1);
   color: $dark-green;
 
+  @media only screen and (max-width: 337px) {
+    display: none;
+    justify-content: center;
+  }
+
   &.paid {
       color: $primary-blue;
   }

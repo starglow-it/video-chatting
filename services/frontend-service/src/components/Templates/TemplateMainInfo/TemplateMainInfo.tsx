@@ -37,7 +37,7 @@ const Component = ({
 
     return (
         <Fade in={show}>
-            <CustomGrid className={clsx(styles.templateInfo, { [styles.mobile]: isMobile })} display="grid">
+            <CustomGrid className={clsx(styles.templateInfo, { [styles.mobile]: isMobile })} display='grid'>
                 <TemplateInfo
                     className={styles.avatar}
                     name={name}
