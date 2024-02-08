@@ -57,6 +57,7 @@
     opacity: 1
   }
 }
+
 .prevArrow {
   @extend %arrow;
   left: calc(50% - var(--offset));
@@ -69,11 +70,12 @@
   transform: translateY(13px) rotate(-90deg);
 }
 
-.addItem{ 
+.addItem {
   border: 1px dashed;
   position: relative;
   border-radius: rem(8px);
   overflow: hidden;
+  width: 45%;
   max-width: rem(334px);
   align-self: center;
   justify-self: center;
@@ -81,7 +83,12 @@
   height: rem(190px);
   cursor: pointer;
 
+  @media only screen and (max-width: 600px) {
+    height: 115px;
+  }
+
   &.addItemMobile {
+    width: 45%;
     height: 115px;
   }
 }

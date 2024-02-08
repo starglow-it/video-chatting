@@ -6,8 +6,18 @@
   position: relative;
   border-radius: rem(8px);
   overflow: hidden;
-  width: rem(334px);
+  width: 45%;
+  max-width: rem(334px);
   height: rem(190px);
+
+  @media only screen and (max-width: 600px) {
+    height: 115px;
+  }
+
+  &.mobile {
+    width: 45%;
+    height: 115px;
+  }
 
   z-index: 10;
 

@@ -36,5 +36,9 @@
 
   .businessInfo {
     grid-area: businessInfo;
+
+    @media only screen and (max-width: 337px) {
+      justify-content: center;
+    }
   }
 }
