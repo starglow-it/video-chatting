@@ -294,21 +294,6 @@ const Component = () => {
                         />
                     </CustomGrid>
                 </ConditionalRender>
-                <CustomGrid container direction="column">
-                    <CustomTypography
-                        className={styles.title}
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.title"
-                    />
-                    <CustomTypography
-                        variant="body1"
-                        color="text.secondary"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.text"
-                    />
-                </CustomGrid>
-
                 <CustomGrid className={styles.titleLeaveMessage}>
                     <span>Leave a Message</span>
                 </CustomGrid>
@@ -433,7 +418,7 @@ const Component = () => {
                 return (
                     <>
                         <ConditionalRender
-                            condition={isHasMeeting && isOwnerInMeeting && !isOwnerDoNotDisturb}
+                            condition={isHasMeeting && isOwnerInMeeting}
                         >
                             <CustomGrid container direction="column">
                                 <CustomTypography
