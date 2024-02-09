@@ -7,7 +7,8 @@ const withTM = require('next-transpile-modules')([
     'shared-const',
     'shared-utils',
     'shared-types',
-    '@mui/x-charts'
+    '@mui/x-charts',
+    'gsap',
 ]);
 
 const enhance = withEffectorReactAliases();

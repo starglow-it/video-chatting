@@ -1,8 +1,6 @@
 import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import dynamic from "next/dynamic";
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 
 const MeetingJoyride = dynamic(() => import("react-joyride"), { ssr: false });
 
@@ -96,6 +94,7 @@ import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/U
 import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
 // helpers
 
+
 const Component = () => {
     const meeting = useStore($meetingStore);
     const isScreenSharingActive = useStore($isScreenSharingStore);
@@ -114,9 +113,8 @@ const Component = () => {
     const isVideoError = Boolean(videoError);
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
-    const container = useRe();
-
-    const { contextSafe } = useGSAP({ scope: container });
+    const container = useRef(null);
+    const test = useRef(null)
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -144,7 +142,6 @@ const Component = () => {
         width: "fit-content",
         zIndex: 9999,
         primaryColor: "#FF884E",
-
     };
 
     const joyrideSteps = [
@@ -323,34 +320,6 @@ const Component = () => {
 
     const previewImage = getPreviewImage(meetingTemplate);
 
-
-
-    const startReactionBubbling = contextSafe(() => {
-        gsap.to('.good', { rotation: 360 });
-    })
-
-    useEffect(() => {
-        startReactionBubbling();
-    }, [])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return (
         <CustomGrid className={styles.mainMeetingWrapper} ref={container}>
             <MeetingJoyride
@@ -478,8 +447,6 @@ const Component = () => {
             <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
             <RecordVideoDownloadDialog />
-
-
 
         </CustomGrid>
     );

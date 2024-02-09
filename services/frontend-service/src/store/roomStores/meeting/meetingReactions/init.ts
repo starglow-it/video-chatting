@@ -1,23 +1,23 @@
 import {
-//     $meetingNotesStore,
+    $meetingReactionsStore,
     $meetingEmojiListVisibilityStore,
     setEmojiListVisibilityEvent,
-//     getMeetingNotesSocketEvent,
-//     setMeetingNotesEvent,
-//     removeLocalMeetingNoteEvent,
+    getMeetingReactionSocketEvent,
+    addMeetingReactionsEvent,
+    removeMeetingReactionEvent,
 } from './model';
-// import { resetRoomStores } from '../../../root';
+import { resetRoomStores } from '../../../root';
 
-// $meetingNotesStore
-//     .on(setMeetingNotesEvent, (state, data) => [...state, ...(data || [])])
-//     .on(getMeetingNotesSocketEvent.doneData, (state, { meetingNotes }) => [
-//         ...state,
-//         ...(meetingNotes || []),
-//     ])
-//     .on(removeLocalMeetingNoteEvent, (state, data) =>
-//         state.filter(note => note.id !== data),
-//     )
-//     .reset(resetRoomStores);
+$meetingReactionsStore
+    .on(addMeetingReactionsEvent, (state, data) => [...state, data])
+    .on(getMeetingReactionSocketEvent.doneData, (state, { meetingReaction }) => [
+        ...state,
+        meetingReaction,
+    ])
+    .on(removeMeetingReactionEvent, (state, data) =>
+        state.filter(reaction => reaction.id !== data),
+    )
+    .reset(resetRoomStores);
 
 $meetingEmojiListVisibilityStore.on(setEmojiListVisibilityEvent, (state, { isEmojiListVisible }) => ({
     ...state,

@@ -6,6 +6,8 @@ export enum MeetingEmitEvents {
   SendMeetingNote = 'meeting:notes:create',
   RemoveMeetingNote = 'meeting:notes:delete',
   SendMeetingNotes = 'meeting:notes:get',
+  SendMeetingReaction = 'meeting:reaction:create',
+  RemoveMeetingReaction = 'meeting:reaction:get',
   SendMeetingError = 'meeting:error',
   PlaySound = 'meeting:sounds.play',
   UpdateMeetingTemplate = 'template:update',
