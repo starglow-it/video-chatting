@@ -492,7 +492,7 @@ const Component = () => {
                         >
                             {renderMeetingNotStartedYet()}
                         </ConditionalRender>
-                        
+
                     </>
                 );
 
@@ -518,12 +518,18 @@ const Component = () => {
                             </CustomGrid>
                         </ConditionalRender>
                         <ConditionalRender
+                            condition={!isOwnerDoNotDisturb}
+                        >
+                            {renderMeetingNotStartedYet()}
+                        </ConditionalRender>
+                        <ConditionalRender
                             condition={isHasMeeting && isOwnerInMeeting && isOwnerDoNotDisturb}
                         >
                             {renderMeetingDoNotDisturb()}
                         </ConditionalRender>
                     </>
                 );
+
             default:
                 return null;
         }
