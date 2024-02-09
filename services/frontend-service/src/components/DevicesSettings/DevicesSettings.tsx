@@ -284,16 +284,30 @@ const Component = () => {
                             className={styles.title}
                             variant="h3bold"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.title"
+                            translation="hostWaitingNotify.title"
                         />
                         <CustomTypography
                             variant="body1"
                             color="text.secondary"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.text"
+                            translation="hostWaitingNotify.text"
                         />
                     </CustomGrid>
                 </ConditionalRender>
+                {/* <CustomGrid container direction="column">
+                    <CustomTypography
+                        className={styles.title}
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.title"
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        color="text.secondary"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.text"
+                    />
+                </CustomGrid> */}
                 <CustomGrid className={styles.titleLeaveMessage}>
                     <span>Leave a Message</span>
                 </CustomGrid>
@@ -477,7 +491,7 @@ const Component = () => {
                         >
                             {renderMeetingNotStartedYet()}
                         </ConditionalRender>
-                        
+
                     </>
                 );
 
@@ -503,12 +517,18 @@ const Component = () => {
                             </CustomGrid>
                         </ConditionalRender>
                         <ConditionalRender
+                            condition={!isOwnerDoNotDisturb}
+                        >
+                            {renderMeetingNotStartedYet()}
+                        </ConditionalRender>
+                        <ConditionalRender
                             condition={isHasMeeting && isOwnerInMeeting && isOwnerDoNotDisturb}
                         >
                             {renderMeetingDoNotDisturb()}
                         </ConditionalRender>
                     </>
                 );
+
             default:
                 return null;
         }

@@ -1,5 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 import { Fade } from '@mui/material';
+import clsx from 'clsx';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -19,6 +20,9 @@ import { AppDialogsEnum } from '../../../store/types';
 // stores
 import { setPreviewTemplate, appDialogsApi } from '../../../store';
 
+//hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
 // styles
 import styles from './OnboardingTemplateItem.module.scss';
 
@@ -35,6 +39,7 @@ const OnboardingTemplateItem = memo(
         template: ICommonTemplate;
         onChooseTemplate: (templateId?: string) => void;
     }) => {
+        const { isMobile } = useBrowserDetect();
         const [showPreview, setShowPreview] = useState(false);
 
         const handleShowPreview = useCallback(() => {
@@ -65,7 +70,7 @@ const OnboardingTemplateItem = memo(
 
         return (
             <CustomGrid
-                className={styles.templateContent}
+                className={clsx(styles.templateContent, { [styles.mobile]: isMobile })}
                 container
                 justifyContent="center"
                 alignItems="center"
