@@ -37,6 +37,7 @@ import {
     $localUserStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $isOwnerDoNotDisturb,
     getMeetingTemplateFx,
     joinAudienceMeetingSocketEvent,
     updateLocalUserEvent,
@@ -65,6 +66,7 @@ const Component = () => {
     const enabledPaymentPaywallAudience = useStore($enabledPaymentPaywallAudience);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
+    const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -102,13 +104,20 @@ const Component = () => {
     const onSubmit = useCallback(
         handleSubmit(data => {
             if (isAudience) {
-                updateLocalUserEvent({
-                    username: data.fullName,
-                });
-                if (enabledPaymentPaywallAudience) {
-                    setIsJoinPaywall(true);
+                if (!isOwnerDoNotDisturb) {
+                    updateLocalUserEvent({
+                        username: data.fullName,
+                    });
+                    if (enabledPaymentPaywallAudience) {
+                        setIsJoinPaywall(true);
+                    } else {
+                        joinAudienceMeetingSocketEvent();
+                    }
                 } else {
-                    joinAudienceMeetingSocketEvent();
+                    updateLocalUserEvent({
+                        username: data.fullName,
+                        accessStatus: MeetingAccessStatusEnum.Waiting
+                    });
                 }
             } else {
                 updateLocalUserEvent({
@@ -117,7 +126,7 @@ const Component = () => {
                 });
             }
         }),
-        [enabledPaymentPaywallAudience, isAudience],
+        [enabledPaymentPaywallAudience, isAudience, isOwnerDoNotDisturb],
     );
 
     const handlePaymentSuccess = useCallback(() => {
