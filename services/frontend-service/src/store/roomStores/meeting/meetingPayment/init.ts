@@ -10,6 +10,7 @@ import {
     $createRoomPaymentStore,
     $isToggleCreateRoomPayment,
     setCreateRoomPaymentDataEvent,
+    $isRoomPaywalledStore,
     cancelPaymentIntentFx,
     cancelPaymentIntentWithData,
     createPaymentIntentFx,
@@ -19,13 +20,16 @@ import {
     togglePaymentFormEvent,
     toggleCreateRoomPaymentFormEvent,
     updatePaymentMeetingFx,
+    isRoomPaywalledFx
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
 import { handleUpdatePaymentMeeting } from './handlers/handleUpdatePaymentMeeting';
 import { handleGetPaymentMeeting } from './handlers/handleGetPaymentMeeting';
 import { sendUpdatePaymentsMeetingEvent } from '../sockets/model';
+import { handleIsRoomPaywalled } from './handlers/handleIsRoomPaywalled';
 
+isRoomPaywalledFx.use(handleIsRoomPaywalled);
 createPaymentIntentFx.use(handleCreatePaymentIntent);
 cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 getPaymentMeetingFx.use(handleGetPaymentMeeting);
@@ -38,10 +42,16 @@ $paymentIntent
         id: data.id,
         clientSecret: data.clientSecret,
     }))
+    .on(createPaymentIntentFx.doneData, (state, data) => ({
+        id: data.id,
+        clientSecret: data.clientSecret,
+    }))
     .on(cancelPaymentIntentFx.doneData, () => ({
         id: '',
         clientSecret: '',
     }));
+
+$isRoomPaywalledStore.on(isRoomPaywalledFx.doneData, (state, data) => data.isRoomPaywalled);
 $meetingPaymentStore
     .on(getPaymentMeetingFx.doneData, (_, data) => data)
     .on(updatePaymentMeetingFx.doneData, (state, payments) =>

@@ -88,3 +88,19 @@ export class ScheduleRequestDto {
   })
   userEmails: string[];
 }
+
+export class DownloadIcsFileRequestDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    type: String,
+  })
+  templateId: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  @IsString()
+  content: string;
+}

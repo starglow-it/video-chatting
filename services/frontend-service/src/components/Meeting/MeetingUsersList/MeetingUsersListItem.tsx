@@ -45,7 +45,6 @@ const Component = ({
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const { isPublishAudience } = useStore($meetingTemplateStore);
-
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
@@ -142,9 +141,7 @@ const Component = ({
                         <ActionButton
                             variant="decline"
                             onAction={handleChangeRoleToAudienceRequest}
-                            className={clsx(styles.toAudienceBtn, {
-                                [styles.block]: !isPublishAudience
-                            })}
+                            className={clsx(styles.toAudienceBtn)}
                             Icon={<ArrowDownIcon width="23px" height="23px" />}
                         />
                     </CustomTooltip>

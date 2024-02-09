@@ -17,6 +17,7 @@ import {
     loadmoreUserTemplates,
     purchaseTemplateFx,
     sendScheduleInviteFx,
+    downloadIcsFileFx,
     setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
     setScheduleEventLinkEvent,
@@ -30,6 +31,7 @@ import { $profileStore } from '../profile/profile/model';
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
 import { handleFetchUserTemplate } from './handlers/handleFetchUsersTemplate';
 import { handleSendScheduleInvite } from './handlers/handleSendScheduleInvite';
+import { handleDownloadIcsFile } from './handlers/handleDownloadIcsFile';
 import { handleFetchTemplates } from './handlers/handleFetchTemplates';
 import { handleFetchCommonTemplate } from './handlers/handleFetchCommonTemplate';
 import { handlePurchaseTemplate } from './handlers/handlePurchaseTemplate';
@@ -52,6 +54,7 @@ getUserTemplateFx.use(handleFetchUserTemplate);
 getUserTemplateByIdFx.use(handleGetUserTemplate);
 purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
+downloadIcsFileFx.use(handleDownloadIcsFile);
 createTemplateFx.use(handleCreateTemplate);
 editTemplateFx.use(handleEditTemplate);
 getEditingTemplateFx.use(handleFetchUserTemplate);
@@ -62,6 +65,11 @@ deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
 forward({
     from: sendScheduleInviteFx.doneData,
+    to: setScheduleEventLinkEvent,
+});
+
+forward({
+    from: downloadIcsFileFx.doneData,
     to: setScheduleEventLinkEvent,
 });
 

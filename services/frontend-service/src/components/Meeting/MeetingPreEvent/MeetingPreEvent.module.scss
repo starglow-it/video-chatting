@@ -1,0 +1,216 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.meetingPreviewWrapper {
+  position: relative;
+  padding: rem(20px);
+  margin: rem(0 0 20px 0);
+
+  &.mobile {
+    padding: rem(10px);
+  }
+}
+
+.profileAvatar {
+  position: absolute;
+  top: 20px;
+  border: 1px solid white;
+  margin: rem(0 16px 0 0);
+  flex: 0 0 rem(90px);
+
+  &.mobile {
+    flex: 0 0 rem(50px);
+  }
+}
+
+.userAvatar {
+  border: 1px solid $primary-white;
+
+  &:not(:first-child) {
+    margin: rem(0 0 0 -15px);
+  }
+}
+
+.backButton {
+  position: absolute;
+  top: 0;
+  left: rem(-68px);
+  width: rem(44px);
+  height: rem(44px);
+  background: $primary-white;
+  border: 1px solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+
+  &.mobile {
+    position: relative;
+
+    top: unset;
+    left: unset;
+    width: rem(34px);
+    height: rem(34px);
+
+    border-radius: rem(8px);
+
+    margin: rem(12px 0 8px 0);
+  }
+
+  .text {
+    position: absolute;
+    left: calc(100% + 12px);
+    pointer-events: none;
+  }
+}
+
+.imageWrapper {
+  border-radius: rem(12px);
+  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.6);
+  }
+}
+
+.textWrapper {
+  width: auto;
+}
+
+.inMeetingAvatars {
+  position: relative;
+  width: auto;
+  align-self: flex-start;
+  flex: 1 0 auto;
+  justify-content: flex-end;
+}
+
+.companyName {
+  @include multiline-clip(1);
+  word-break: break-word;
+  margin-bottom: 8px
+}
+
+.description {
+  @include multiline-clip(3);
+  word-break: break-word;
+  margin-bottom: 16px;
+  font-size: 16px;
+  display: block;
+  text-align: left;
+  width: 80%;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 8px;
+  height: 100px;
+
+  &.mobile {
+    width: 100%;
+  }
+}
+
+.invitedText {
+  margin-bottom: 8px;
+}
+
+.descriptionLabel {
+  font-size: 16px;
+  display: block;
+  text-align: left;
+  width: 80%;
+  margin-bottom: 4px;
+
+  &.mobile {
+    width: 100%;
+  }
+}
+
+.buttonsGroup {
+  margin-top: 16px;
+}
+
+.actionButton {
+  width: 9.875rem;
+  height: rem(46px);
+  border-radius: rem(12px);
+  padding: rem(6px);
+}
+
+.payPaper {
+  width: rem(350px);
+  padding: 20px 16px;
+  border-radius: 5px;
+}
+
+.cardDetail {
+  margin-top: 8px;
+}
+
+.secureWithStripeText {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.paymentTitle {
+  display: block;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.paymentDescription {
+  display: block;
+}
+
+.stripeIcon {
+  color: #76A5FF;
+  margin-right: 8px;
+}
+
+.yourCardTitle {
+  margin-bottom: 8px;
+}
+
+.preMeetingNtfText {
+  display: block;
+  width: 50%;
+  text-align: center;
+  color: #929292;
+  margin-top: 16px;
+
+  &.mobile {
+    width: 100%;
+  }
+}
+
+.addLinkButton {
+  margin-top: 16px;
+}
+
+.cardField {
+  width: rem(352px);
+  flex: 1 1 100%;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.borderFieldBlack {
+  border-color: #ccc
+}
+
+.dateField {
+  flex: 0 1 168px;
+}
+
+.cvcField {
+  flex: 0 1 168px;
+}

@@ -22,6 +22,7 @@ import {
     QueryGetTemplates,
     ResultGetTemplates,
     SendScheduleInvitePayload,
+    downloadIcsFilePayload,
     UploadTemplateFilePayload,
     UploadTemplateFileResponse,
     UploadUserTemplateFilePayload,
@@ -132,6 +133,12 @@ export const sendScheduleInviteFx = templatesDomain.effect<
     string | undefined,
     void
 >('sendScheduleInviteFx');
+
+export const downloadIcsFileFx = templatesDomain.effect<
+    downloadIcsFilePayload,
+    string | undefined,
+    void
+>('downloadIcsFileFx');
 
 export const uploadTemplateFileFx = templatesDomain.effect<
     UploadTemplateFilePayload,

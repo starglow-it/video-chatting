@@ -29,8 +29,10 @@ import { CardDataFormProps } from './types';
 // types
 
 const Component = ({
+    isPreEvent = false,
     onSubmit,
     onError,
+    setMeetingPreviewShow,
     paymentIntentSecret,
     colorForm = 'white',
     paymentType,
@@ -63,6 +65,7 @@ const Component = ({
                 } else {
                     onSubmit();
                     setIsLoading(false);
+                    setMeetingPreviewShow();
                 }
             }
         },
@@ -82,13 +85,17 @@ const Component = ({
                     display="flex"
                     flexDirection="column"
                     flex={1}
-                    width={isMobile() && !isPortraitLayout ? '100%' : '300px'}
+                    width={isMobile() && !isPortraitLayout || isPreEvent ? '100%' : '300px'}
                 >
-                    <CustomTypography className={styles.textField}>
-                        Card number
-                    </CustomTypography>
+                    {
+                        !isPreEvent &&
+                        <CustomTypography className={styles.textField}>
+                            Card number
+                        </CustomTypography>
+                    }
                     <StripeCardNumber
                         className={clsx(styles.cardPaywallField, {
+                            [styles.isPreEvent]: isPreEvent,
                             [styles.borderFieldBlack]: isFormBlack,
                         })}
                         colorForm={colorForm}
@@ -105,11 +112,15 @@ const Component = ({
                 </CustomGrid>
                 <CustomGrid display="flex" flexDirection="row" gap={1}>
                     <CustomGrid display="flex" flexDirection="column" flex={1}>
-                        <CustomTypography className={styles.textField}>
-                            Expired date
-                        </CustomTypography>
+                        {
+                            !isPreEvent &&
+                            <CustomTypography className={styles.textField}>
+                                Expired date
+                            </CustomTypography>
+                        }
                         <StripeCardExpiry
                             className={clsx(styles.datePaywallField, {
+                                [styles.isPreEvent]: isPreEvent,
                                 [styles.borderFieldBlack]: isFormBlack,
                             })}
                             colorForm={colorForm}
@@ -121,11 +132,14 @@ const Component = ({
                         />
                     </CustomGrid>
                     <CustomGrid flex={1} display="flex" flexDirection="column">
-                        <CustomTypography className={styles.textField}>
-                            CVC
-                        </CustomTypography>
+                        {!isPreEvent &&
+                            <CustomTypography className={styles.textField}>
+                                CVC
+                            </CustomTypography>
+                        }
                         <StripeCardCvc
                             className={clsx(styles.cvcPaywallField, {
+                                [styles.isPreEvent]: isPreEvent,
                                 [styles.borderFieldBlack]: isFormBlack,
                             })}
                             colorForm={colorForm}
@@ -178,6 +192,7 @@ const Component = ({
                 variant="custom-common"
                 Icon={<StripeIcon width="24px" height="24px" />}
                 className={clsx(styles.button, {
+                    [styles.isPreEvent]: isPreEvent,
                     [styles.paddingButton]: paymentType === PaymentType.Meeting,
                     [styles.mobile]: isMobile() && !isPortraitLayout,
                 })}
