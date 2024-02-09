@@ -30,6 +30,7 @@ export const handleJoinMeting = async ({
     isCameraActive,
     meetingRole,
     isOwnerInMeeting,
+    isOwnerDoNotDisturb,
     isMeetingInstanceExists,
     changeStream,
 }: JoinMeetingFxPayload): Promise<void> => {
@@ -40,7 +41,7 @@ export const handleJoinMeting = async ({
 
     if (meetingRole === MeetingRole.Host) {
         await sendStartMeetingSocketEvent();
-    } else if (isMeetingInstanceExists && isOwnerInMeeting) {
+    } else if (isMeetingInstanceExists && isOwnerInMeeting && !isOwnerDoNotDisturb) {
         if (meetingRole === MeetingRole.Participant) {
             await sendEnterMeetingRequestSocketEvent();
         } else {
