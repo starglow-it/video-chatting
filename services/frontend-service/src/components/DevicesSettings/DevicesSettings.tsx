@@ -284,17 +284,17 @@ const Component = () => {
                             className={styles.title}
                             variant="h3bold"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.title"
+                            translation="hostWaitingNotify.title"
                         />
                         <CustomTypography
                             variant="body1"
                             color="text.secondary"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.text"
+                            translation="hostWaitingNotify.text"
                         />
                     </CustomGrid>
                 </ConditionalRender>
-                <CustomGrid container direction="column">
+                {/* <CustomGrid container direction="column">
                     <CustomTypography
                         className={styles.title}
                         variant="h3bold"
@@ -307,7 +307,7 @@ const Component = () => {
                         nameSpace="meeting"
                         translation="hostWaitingNotify.text"
                     />
-                </CustomGrid>
+                </CustomGrid> */}
 
                 <CustomGrid className={styles.titleLeaveMessage}>
                     <span>Leave a Message</span>
