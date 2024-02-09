@@ -460,6 +460,7 @@ const Component = ({
                 <form>
                     <TemplateBackgroundPreview
                         isFileUploading={isFileUploading}
+                        activeValue={activeValue}
                     >
                         <ConditionalRender
                             condition={activeValue === TabsValues.Background}

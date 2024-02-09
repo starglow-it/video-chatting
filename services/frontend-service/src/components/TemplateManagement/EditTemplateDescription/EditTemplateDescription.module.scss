@@ -2,11 +2,14 @@
 @import "../../../styles/variables";
 
 .wrapper {
-  height: fit-content;
+  // height: fit-content;
   position: absolute;
   top: 0;
   flex-direction: column;
   padding: 140px 10px;
+  height: 100%;
+  width: 100%;
+  min-height: 1000px;
 }
 
 .paper {
@@ -28,8 +31,8 @@
 }
 
 .monetizationPanel {
-  min-width: rem(700px);
   width: 40%;
+  min-width: rem(700px);
   height: fit-content;
   padding: 8px 30px;
   color: white;
