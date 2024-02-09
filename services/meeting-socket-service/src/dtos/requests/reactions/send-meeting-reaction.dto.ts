@@ -1,5 +1,6 @@
 import { IsString, MaxLength } from 'class-validator';
 import { ISendMeetingNote } from '../../../interfaces/send-meeting-note.interface';
+import { ISendMeetingReaction } from '../../../interfaces/send'
 
 export class SendMeetingNoteRequestDTO implements ISendMeetingNote {
   @IsString()
