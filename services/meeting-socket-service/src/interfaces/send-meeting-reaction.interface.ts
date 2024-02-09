@@ -1,4 +1,4 @@
 export interface ISendMeetingReaction {
-    id: string;
-  }
+    emojiName: string;
+}
   

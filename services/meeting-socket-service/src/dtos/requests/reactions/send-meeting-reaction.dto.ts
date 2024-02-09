@@ -1,9 +1,8 @@
 import { IsString, MaxLength } from 'class-validator';
-import { ISendMeetingNote } from '../../../interfaces/send-meeting-note.interface';
-import { ISendMeetingReaction } from '../../../interfaces/send'
+import { ISendMeetingReaction } from '../../../interfaces/send-meeting-reaction.interface';
 
-export class SendMeetingNoteRequestDTO implements ISendMeetingNote {
+export class SendMeetingReactionRequestDTO implements ISendMeetingReaction {
   @IsString()
   @MaxLength(500)
-  note: string;
+  emojiName: string;
 }

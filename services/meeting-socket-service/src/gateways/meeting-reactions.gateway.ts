@@ -11,10 +11,10 @@ import { BaseGateway } from './base.gateway';
 
 import { UsersService } from '../modules/users/users.service';
 import { withTransaction } from '../helpers/mongo/withTransaction';
-import { SendMeetingNoteRequestDTO } from '../dtos/requests/notes/send-meeting-note.dto';
-import { MeetingNotesService } from '../modules/meeting-notes/meeting-notes.service';
-import { MeetingNoteDTO } from '../dtos/response/meeting-note.dto';
-import { RemoveMeetingNoteRequestDTO } from '../dtos/requests/notes/remove-meeting-note.dto';
+import { SendMeetingReactionRequestDTO } from '../dtos/requests/reactions/send-meeting-reaction.dto';
+import { MeetingReactionsService } from '../modules/meeting-reactions/meeting-reactions.service';
+import { MeetingReactionDTO } from '../dtos/response/meeting-reaction.dto';
+import { RemoveMeetingReactionRequestDTO } from '../dtos/requests/reactions/remove-meeting-reaction.dto';
 import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../const/socket-events/emitters';
@@ -31,15 +31,15 @@ import { wsResult } from '../utils/ws/wsResult';
 export class MeetingReactionsGateway extends BaseGateway {
   constructor(
     private usersService: UsersService,
-    private meetingNotesService: MeetingNotesService,
+    private meetingReactionsService: MeetingReactionsService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
   }
 
-  @WsEvent(MeetingSubscribeEvents.OnSendMeetingNote)
-  async sendMeetingNote(
-    @MessageBody() message: SendMeetingNoteRequestDTO,
+  @WsEvent(MeetingSubscribeEvents.OnSendMeetingReaction)
+  async sendMeetingReaction(
+    @MessageBody() message: SendMeetingReactionRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(
@@ -52,25 +52,25 @@ export class MeetingReactionsGateway extends BaseGateway {
           populatePaths: 'meeting',
         });
 
-        const [newNote] = await this.meetingNotesService.create(
+        const [newReaction] = await this.meetingReactionsService.create(
           {
             user: user._id,
             meeting: user.meeting._id,
-            content: message.note,
+            emojiName: message.emojiName,
           },
           session,
         );
 
-        const meetingNote = plainToInstance(MeetingNoteDTO, newNote, {
+        const meetingReaction = plainToInstance(MeetingReactionDTO, newReaction, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
 
         this.emitToRoom(
           `meeting:${user.meeting._id}`,
-          MeetingEmitEvents.SendMeetingNote,
+          MeetingEmitEvents.SendMeetingReaction,
           {
-            meetingNotes: [meetingNote],
+            meetingReactions: [meetingReaction],
           },
         );
 
@@ -82,51 +82,51 @@ export class MeetingReactionsGateway extends BaseGateway {
     );
   }
 
-  // @WsEvent(MeetingSubscribeEvents.OnRemoveMeetingMote)
-  // async removeMeetingNote(
-  //   @MessageBody() message: RemoveMeetingNoteRequestDTO,
-  //   @ConnectedSocket() socket: Socket,
-  // ) {
-  //   return withTransaction(
-  //     this.connection,
-  //     async (session) => {
-  //       subscribeWsError(socket);
-  //       const user = this.getUserFromSocket(socket);
-  //       await this.meetingNotesService.deleteOne(
-  //         { _id: message.noteId },
-  //         session,
-  //       );
-
-  //       this.emitToRoom(
-  //         `meeting:${user.meeting.toString()}`,
-  //         MeetingEmitEvents.RemoveMeetingNote,
-  //         {
-  //           meetingNoteId: message.noteId,
-  //         },
-  //       );
-  //     },
-  //     {
-  //       onFinaly: (err) => wsError(socket, err),
-  //     },
-  //   );
-  // }
-
-  @WsEvent(MeetingSubscribeEvents.OnGetMeetingNotes)
-  async getMeetingNotes(@ConnectedSocket() socket: Socket) {
+  @WsEvent(MeetingSubscribeEvents.OnRemoveMeetingReaction)
+  async removeMeetingReaction(
+    @MessageBody() message: RemoveMeetingReactionRequestDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
     return withTransaction(
       this.connection,
       async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
-        const meetingNotes = await this.meetingNotesService.findMany({
+        await this.meetingReactionsService.deleteOne(
+          { _id: message.reactionId },
+          session,
+        );
+
+        this.emitToRoom(
+          `meeting:${user.meeting.toString()}`,
+          MeetingEmitEvents.RemoveMeetingReaction,
+          {
+            meetingReactionId: message.reactionId,
+          },
+        );
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnGetMeetingReaction)
+  async getMeetingReactions(@ConnectedSocket() socket: Socket) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meetingReactions = await this.meetingReactionsService.findMany({
           query: { meeting: user.meeting },
           session,
           populatePaths: 'user',
         });
 
-        const plainMeetingNotes = plainToInstance(
-          MeetingNoteDTO,
-          meetingNotes,
+        const plainMeetingReactions = plainToInstance(
+          MeetingReactionDTO,
+          meetingReactions,
           {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
@@ -134,7 +134,7 @@ export class MeetingReactionsGateway extends BaseGateway {
         );
 
         return wsResult({
-          meetingNotes: plainMeetingNotes,
+          meetingReactions: plainMeetingReactions,
         });
       },
       {

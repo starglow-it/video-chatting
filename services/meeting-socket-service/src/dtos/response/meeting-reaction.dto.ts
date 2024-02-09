@@ -1,17 +1,17 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { CommonUserDTO } from './common-user.dto';
 import { ICommonUser } from 'shared-types';
-import { IMeetingNote } from '../../interfaces/meeting-note.interface';
-import { MeetingNoteDocument } from '../../schemas/meeting-note.schema';
+import { IMeetingReaction } from '../../interfaces/meeting-reaction.interface';
+import { MeetingReactionDocument } from '../../schemas/meeting-reaction.schema';
 import { serializeInstance } from '../serialization';
 
-export class MeetingNoteDTO implements IMeetingNote {
+export class MeetingReactionDTO implements IMeetingReaction {
   @Expose()
   @Transform((data) => data.obj['_id']?.toString())
   id: string;
 
   @Expose()
-  content: string;
+  emojiName: string;
 
   @Expose()
   @Type(() => CommonUserDTO)
@@ -22,5 +22,5 @@ export class MeetingNoteDTO implements IMeetingNote {
   createdAt: string;
 }
 
-export const meetingNoteSerialization = (meetingNote: MeetingNoteDocument) =>
-  serializeInstance(meetingNote, MeetingNoteDTO);
+export const meetingReactionSerialization = (meetingReaction: MeetingReactionDocument) =>
+  serializeInstance(meetingReaction, MeetingReactionDTO);

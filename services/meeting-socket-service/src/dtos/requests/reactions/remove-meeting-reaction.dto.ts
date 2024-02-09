@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
-import { IRemoveMeetingNote } from '../../../interfaces/remove-meeting-note.interface';
+import { IRemoveMeetingReaction } from '../../../interfaces/remove-meeting-reaction.interface';
 
-export class RemoveMeetingNoteRequestDTO implements IRemoveMeetingNote {
+export class RemoveMeetingReactionRequestDTO implements IRemoveMeetingReaction {
   @IsString()
-  noteId: string;
+  reactionId: string;
 }

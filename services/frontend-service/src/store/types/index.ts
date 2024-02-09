@@ -253,6 +253,8 @@ export type MeetingNote = {
 
 export type MeetingReaction = {
     id: string,
+    user: string,
+    name: string,
     src: string
 }
 

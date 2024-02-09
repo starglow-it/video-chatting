@@ -24,10 +24,10 @@ export const sendMeetingReactionSocketEvent = createMeetingSocketEvent<
     { meetingReaction: MeetingReaction },
     void
 >(MeetingSocketEmitters.SendMeetingReaction);
-// export const removeMeetingReactionSocketEvent = createMeetingSocketEvent<
-//     { ReactionId: MeetingReaction['id'] },
-//     void
-// >(MeetingSocketEmitters.RemoveMeetingReaction);
+export const removeMeetingReactionSocketEvent = createMeetingSocketEvent<
+    { ReactionId: MeetingReaction['id'] },
+    void
+>(MeetingSocketEmitters.RemoveMeetingReaction);
 export const getMeetingReactionSocketEvent = createMeetingSocketEvent<
     void,
     { meetingReaction: MeetingReaction }
