@@ -18,6 +18,10 @@
     width: 45%;
     height: 115px;
   }
+    
+  @media only screen and (max-width: 280px) {
+    width: 95% !important;
+  }
 
   z-index: 10;
 
