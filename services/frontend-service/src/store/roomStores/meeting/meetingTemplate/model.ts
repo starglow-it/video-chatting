@@ -89,6 +89,24 @@ export const $isOwnerInMeeting = combine<{
     ),
 );
 
+export const $isOwnerDoNotDisturb = combine<{
+    template: IUserTemplate;
+    users: MeetingUser[];
+}>({
+    users: $meetingUsersStore,
+    template: $meetingTemplateStore,
+}).map(({ users, template }) =>
+    Boolean(
+        users.find(
+            user =>
+                user.profileId === template?.meetingInstance?.owner &&
+                user.doNotDisturb //For 'do not disturb' action in meeting
+        ),
+    ),
+);
+
+
+
 export const setIsUserSendEnterRequest = meetingDomain.createEvent<boolean>(
     'setIsUserSendEnterRequest',
 );

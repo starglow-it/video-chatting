@@ -106,6 +106,12 @@ export class MeetingUser {
     required: false,
   })
   lastOldMessage: MeetingChatDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  doNotDisturb: boolean;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

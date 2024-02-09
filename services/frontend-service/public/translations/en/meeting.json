@@ -41,6 +41,10 @@
     "title": "Host has left the room",
     "text": "You can leave a message"
   },
+  "hostWaitingNotify": {
+    "title": "The host has been notified",
+    "text": "Please wait or leave a message"
+  },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
   "cam": "Camera",
@@ -92,6 +96,9 @@
     "forAttendee": "Leave?",
     "hint": "When you Leave callers can still look around and\nsend payments",
     "tooltip": "Exit"
+  },
+  "doNotDisturb": {
+    "tooltip": "Do not disturb"
   },
   "invite": {
     "title": "Invite now",
