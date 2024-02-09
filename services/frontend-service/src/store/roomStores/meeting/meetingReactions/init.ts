@@ -2,7 +2,8 @@ import {
     $meetingReactionsStore,
     $meetingEmojiListVisibilityStore,
     setEmojiListVisibilityEvent,
-    getMeetingReactionSocketEvent,
+    getMeetingReactionsSocketEvent,
+    setMeetingReactionsEvent,
     addMeetingReactionsEvent,
     removeMeetingReactionEvent,
 } from './model';
@@ -10,9 +11,10 @@ import { resetRoomStores } from '../../../root';
 
 $meetingReactionsStore
     .on(addMeetingReactionsEvent, (state, data) => [...state, data])
-    .on(getMeetingReactionSocketEvent.doneData, (state, { meetingReaction }) => [
+    .on(setMeetingReactionsEvent, (state, data) => [...state, ...(data || [])])
+    .on(getMeetingReactionsSocketEvent.doneData, (state, { meetingReactions }) => [
         ...state,
-        meetingReaction,
+        (meetingReactions || []),
     ])
     .on(removeMeetingReactionEvent, (state, data) =>
         state.filter(reaction => reaction.id !== data),

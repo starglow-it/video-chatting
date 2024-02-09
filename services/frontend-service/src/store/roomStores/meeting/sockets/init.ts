@@ -434,6 +434,26 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     }
 
     socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingReactions,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingReactions,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnRemoveMeetingReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnRemoveMeetingReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnSendMeetingReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnSendMeetingReaction,
+        ),
+    );
+
+
+    socketInstance?.on(
         MeetingSubscribeEvents.OnMeetingError,
         getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnMeetingError),
     );

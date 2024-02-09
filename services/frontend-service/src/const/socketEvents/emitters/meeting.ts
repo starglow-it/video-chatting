@@ -11,6 +11,7 @@ export enum MeetingSocketEmitters {
     RemoveMeetingNote = 'meeting:notes:delete',
     GetMeetingNotes = 'meeting:notes:get',
     SendMeetingReaction = 'meeting:reaction:create',
+    RemoveMeetingReaction = 'meeting:reaction:delete',
     GetMeetingReaction = 'meeting:reaction:get',
     SendReconnectMeeting = 'meeting:reconnect',
     JoinWithAudience = 'meeting:audience:join',

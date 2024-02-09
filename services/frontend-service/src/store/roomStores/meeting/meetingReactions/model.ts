@@ -16,19 +16,24 @@ export const setEmojiListVisibilityEvent = meetingDomain.createEvent<{ isEmojiLi
 export const addMeetingReactionsEvent = meetingDomain.createEvent<MeetingReaction>(
     'addMeetingReactionsEvent',
 );
+
+export const setMeetingReactionsEvent = meetingDomain.createEvent<MeetingReaction[]>(
+    'setMeetingReactionsEvent',
+);
+
 export const removeMeetingReactionEvent = meetingDomain.createEvent<
     MeetingReaction['id']
 >('removeMeetingReactionEvent');
 
 export const sendMeetingReactionSocketEvent = createMeetingSocketEvent<
-    { meetingReaction: MeetingReaction },
+    { emojiName: string },
     void
 >(MeetingSocketEmitters.SendMeetingReaction);
 export const removeMeetingReactionSocketEvent = createMeetingSocketEvent<
-    { ReactionId: MeetingReaction['id'] },
+    { reactionId: MeetingReaction['id'] },
     void
 >(MeetingSocketEmitters.RemoveMeetingReaction);
-export const getMeetingReactionSocketEvent = createMeetingSocketEvent<
+export const getMeetingReactionsSocketEvent = createMeetingSocketEvent<
     void,
-    { meetingReaction: MeetingReaction }
+    { meetingReactions: MeetingReaction[] }
 >(MeetingSocketEmitters.GetMeetingReaction);
