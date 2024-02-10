@@ -6,23 +6,22 @@
   position: absolute;
   top: 0;
   flex-direction: column;
-  padding: 140px 10px;
+  padding: 150px 20px 0px;
   height: 100%;
   width: 100%;
-  min-height: 1000px;
+  min-height: 900px;
 }
 
 .paper {
-  width: 40%;
-  min-width: rem(700px);
+  width: 700px;
+  max-width: 80%;
   min-height: rem(474px);
   height: fit-content;
   padding: rem(32px);
-  margin: rem(0px 20px);
 
   &.mobile {
-    min-width: rem(400px);
-    margin-top: rem(65px);
+    // min-width: rem(200px);
+    max-width: 100%;
   }
 }
 
@@ -31,17 +30,18 @@
 }
 
 .monetizationPanel {
-  width: 40%;
-  min-width: rem(700px);
+  width: 700px;
+  max-width: 80%;
   height: fit-content;
   padding: 8px 30px;
   color: white;
-  margin: rem(0px 20px);
+  // margin: rem(0px 20px);
   margin-top: rem(40px);
 
   &.mobile {
-    min-width: rem(400px);
-    margin-top: rem(20px);
+    // min-width: rem(400px);
+    max-width: 100%;
+    // margin-top: rem(20px);
   }
 }
 

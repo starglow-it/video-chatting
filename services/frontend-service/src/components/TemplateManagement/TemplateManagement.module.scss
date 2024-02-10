@@ -5,7 +5,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .controlPanel {
@@ -17,6 +18,8 @@
   .navigationPaper {
     max-width: rem(591px);
     width: 100%;
+    // width: 591px;
+    // margin-right: 50px;
   }
 
   .navigationPaper:after {
@@ -24,6 +27,9 @@
   }
 
   .closeButton {
+    position: absolute;
+    right: rem(28px);
+    top: rem(28px);
     background-color: #333333;
     width: rem(46px);
     height: rem(46px);
@@ -49,6 +55,17 @@
     .privacyIcon {
       color: rgba($primary-white, 0.6);
     }
+  }
+}
+
+@media screen and (max-width: 660px) {
+  .controlPanel {
+    flex-direction: column;
+  }
+  .navigationPaper {
+    margin: 0 40px;
+    align-self: center;
+    justify-self: center;
   }
 }
 

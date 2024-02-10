@@ -5,8 +5,8 @@
   height: 100%;
   position: absolute;
   top: 0;
-  padding: rem(100px 30px);
-  min-height: 800px;
+  padding: rem(150px 20px 0);
+  min-height: 900px;
 }
 
 .title {
@@ -15,13 +15,11 @@
 
 .paper {
   padding: rem(32px);
-  min-width: rem(600px);
-  width: 40%;
+  width: 600px;
+  max-width: 80%;
 
   &.mobile {
-    min-width: rem(400px);
-    width: 100%;
-    margin-top: rem(40px);
+    max-width: 100%;
   }
 }
 
@@ -69,14 +67,13 @@
 }
 
 .eventPaper {
-  margin-top: rem(60px);
-  min-width: rem(500px);
-  width: 40%;
+  margin-top: rem(40px);
+  width: 600px;
+  max-width: 80%;
   padding: 30px;
 
   &.mobile {
-    min-width: rem(400px);
-    width: 100%;
+    max-width: 100%;
   }
 }
 
