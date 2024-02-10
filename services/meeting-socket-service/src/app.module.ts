@@ -21,6 +21,7 @@ import {
   UsersGateway,
   MeetingQuestionAnswersGateway
 } from './gateways';
+import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import {
     MeetingsModule,
     UsersModule,
     MeetingNotesModule,
+    MeetingReactionsModule,
     MeetingTimeModule,
     MeetingQuestionAnswersModule,
   ],

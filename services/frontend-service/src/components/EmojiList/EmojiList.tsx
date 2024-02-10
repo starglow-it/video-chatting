@@ -1,12 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-// custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-
-// components
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // const
 
@@ -70,22 +65,9 @@ const Component = () => {
     // }, []);
 
     const addReaction = (e) => {
-        // if (meetingNotes.length < 3) {
-        // sendMeetingNoteSocketEvent(getValues());
-        // reset();
-        // } else {
-        //     addNotificationEvent({
-        //         message: 'Notes is limited to 3 on screen',
-        //         type: NotificationType.validationError,
-        //     });
         console.log(meetingReactions)
-        addMeetingReactionsEvent({
-            id: e.target.dataset.key,
-            src: e.target.src
-        });
         sendMeetingReactionSocketEvent({
-            id: e.target.dataset.key,
-            src: e.target.src
+            emojiName: e.target.dataset.key,
         })
     }
 
