@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -22,14 +23,20 @@ import styles from './TemplateBackgroundPreview.module.scss';
 const Component = ({
     children,
     isFileUploading,
+    activeValue
 }: TemplateBackgroundPreviewProps) => {
     const { control } = useFormContext();
 
     const url = useWatch({ control, name: 'url' });
     const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
 
+    console.log(activeValue);
+
     return (
-        <CustomGrid className={styles.background}>
+        <CustomGrid className={clsx(styles.background, {
+            [styles.settings]: activeValue === 2,
+            [styles.privacy]: activeValue === 5
+        })}>
             <ConditionalRender
                 condition={Boolean(url) && isVideoFile(url) && !youtubeUrl}
             >

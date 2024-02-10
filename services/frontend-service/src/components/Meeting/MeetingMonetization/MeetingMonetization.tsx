@@ -1,12 +1,14 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useRef, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 // icons
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
+import CloseIcon from '@mui/icons-material/Close';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import IconButton from '@mui/material/IconButton';
 
 // common
 // validation
@@ -144,6 +146,16 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
         initialValue: tabs[0].value,
     });
 
+    useEffect(() => {
+        if (isRoomCreate) {
+            const backdropElement = document.querySelector('.MuiBackdrop-root');
+
+            if (backdropElement) {
+                backdropElement.style.display = 'none';
+            }
+        }
+    }, []);
+
     const onSubmit = useCallback(async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
@@ -208,6 +220,12 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
 
     return (
         <>
+            {
+                isRoomCreate &&
+                <IconButton className={styles.closeIconBtn} onClick={() => onUpdate?.()}>
+                    <CloseIcon className={styles.closeIcon} />
+                </IconButton>
+            }
             <CustomGrid
                 container
                 columnGap={4}
