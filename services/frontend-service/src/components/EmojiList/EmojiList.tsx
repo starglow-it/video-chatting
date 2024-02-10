@@ -3,36 +3,21 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-// const
-
-// validation
-
-// stores
-
-// styles
 import { ClickAwayListener } from '@mui/material';
 import clsx from 'clsx';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { useStore } from 'effector-react';
-import { $profileStore, addNotificationEvent } from 'src/store';
-import { NotificationType } from 'src/store/types';
+import { $profileStore } from 'src/store';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import styles from './EmojiList.module.scss';
 import {
     $isAudience,
     $meetingEmojiListVisibilityStore,
-    sendMeetingNoteSocketEvent,
     $meetingReactionsStore,
-    addMeetingReactionsEvent,
     removeMeetingReactionEvent,
     sendMeetingReactionSocketEvent
 } from '../../store/roomStores';
-import { simpleStringSchemaWithLength } from '../../validation/common';
-import { MAX_NOTE_CONTENT } from '../../const/general';
-import config from '../../const/config';
-
-type FormType = { note: string };
 
 const Component = () => {
     const { isMobile } = useBrowserDetect();
@@ -41,28 +26,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
 
-    // const methods = useForm({
-    //     resolver,
-    //     defaultValues: { note: '' },
-    // });
-
-    // const { reset, register, getValues } = methods;
-
     const [isExpand, setIsExpand] = useState<boolean>(true);
-
-    // const { onChange, ...restRegisterData } = register('note', {
-    //     maxLength: MAX_NOTE_CONTENT,
-    // });
-
-    // const handleChange = useCallback(async (event: any) => {
-    //     if (event.target.value.length > MAX_NOTE_CONTENT) {
-    //         /* eslint-disable no-param-reassign */
-    //         event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);
-    //         /* eslint-enable no-param-reassign */
-    //     }
-
-    //     await onChange(event);
-    // }, []);
 
     const addReaction = (e) => {
         console.log(meetingReactions)

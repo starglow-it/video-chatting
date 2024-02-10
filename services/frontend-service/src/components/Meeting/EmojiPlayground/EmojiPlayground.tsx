@@ -3,11 +3,9 @@ import { useStore } from 'effector-react';
 
 // stores
 import { isMobile } from 'shared-utils';
-import { MeetingReaction } from 'src/store/types';
 import { $windowSizeStore } from '../../../store';
 import {
-    $meetingReactionsStore, getMeetingReactionsSocketEvent, removeMeetingReactionEvent,
-    // getMeetingNotesSocketEvent,
+    $meetingReactionsStore, getMeetingReactionsSocketEvent,
 } from '../../../store/roomStores';
 
 // gsap
@@ -155,8 +153,6 @@ const Component = () => {
             startReactionBubbling(meetingReactions[length - 1]);
         }
     }, [meetingReactions])
-
-
 
 
     return (
