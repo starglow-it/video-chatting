@@ -1,11 +1,11 @@
-import { React, memo, useEffect, useRef } from 'react';
+import { React, memo, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 
 // stores
 import { isMobile } from 'shared-utils';
 import { $windowSizeStore } from '../../../store';
 import {
-    $meetingReactionsStore, getMeetingReactionsSocketEvent,
+    $meetingReactionsStore, getMeetingReactionsSocketEvent, $isOwner, $isOwnerInMeeting, $meetingStore
 } from '../../../store/roomStores';
 
 // gsap
@@ -17,9 +17,11 @@ import styles from './EmojiPlayground.module.scss'
 
 gsap.registerPlugin(MotionPathPlugin);
 
-const Component = () => {
+const Component = ({ userId }: { userId: string }) => {
     const meetingReactions = useStore($meetingReactionsStore);
-    const { height } = useStore($windowSizeStore);
+    const meeting = useStore($meetingStore);
+
+    // const { height } = useStore($windowSizeStore);
 
     const container = useRef(null);
     const tempSvg = useRef(null);
@@ -28,7 +30,6 @@ const Component = () => {
     const { contextSafe } = useGSAP({ scope: container });
 
     const startReactionBubbling = contextSafe((reaction) => {
-        console.log('Animation Start')
 
         gsap.set(tempSvg.current, {
             height: `200%`,
@@ -65,7 +66,6 @@ const Component = () => {
             // }
         });
     })
-
 
     useEffect(() => {
         getMeetingReactionsSocketEvent();
@@ -149,11 +149,10 @@ const Component = () => {
     useEffect(() => {
         console.log(meetingReactions);
         const length = meetingReactions.length;
-        if (length > 0) {
+        if (length > 0 && meetingReactions[length - 1].user === userId) {
             startReactionBubbling(meetingReactions[length - 1]);
         }
     }, [meetingReactions])
-
 
     return (
         <div className={styles.playgroundWrapper} ref={container}>

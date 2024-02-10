@@ -431,7 +431,7 @@ const Component = () => {
                 </MeetingSettingsPanel>
             )}
 
-            <EmojiPlayground />
+            <EmojiPlayground userId={meeting.hostUserId} />
 
             <DevicesSettingsDialog />
             <EndMeetingDialog />
