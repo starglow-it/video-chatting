@@ -89,7 +89,8 @@
     "selfViewOff": "Self-View Off",
     "dragAndResize": "Drag & Resize",
     "microphone": "Mic on/off",
-    "stickyNotes": "Sticky Notes"
+    "stickyNotes": "Sticky Notes",
+    "userReactions": "User Reactions"
   },
   "endMeeting": {
     "forHost": "Leave?",
