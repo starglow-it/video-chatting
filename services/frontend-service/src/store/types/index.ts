@@ -252,6 +252,13 @@ export type MeetingNote = {
     id: string;
 };
 
+export type MeetingReaction = {
+    id: string,
+    user: string,
+    name: string,
+    src: string
+}
+
 export enum HttpMethods {
     Post = 'POST',
     Get = 'GET',

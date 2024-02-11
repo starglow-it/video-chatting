@@ -25,6 +25,7 @@ import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 
 // stores
@@ -51,6 +52,9 @@ import {
     $recordingStream,
     $doNotDisturbStore,
     $meetingNotesVisibilityStore,
+    $meetingEmojiListVisibilityStore,
+    setMeetingNotesVisibilityEvent,
+    setEmojiListVisibilityEvent,
     $meetingStore,
     setMeetingNotesVisibilityEvent,
     setDoNotDisturbEvent,
@@ -118,6 +122,7 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
     const { isVisible } = useStore($meetingNotesVisibilityStore);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
 
     const [recorder, setRecorder] = useState<RecordRTC | null>(null);
     const recordingStream = useStore($recordingStream);
@@ -242,6 +247,9 @@ const Component = () => {
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
+    const handleEmojiListToggle = () => {
+        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
+    }
 
     //Do not disturb acion
     const handleDoNotDisturb = () => {
@@ -276,6 +284,34 @@ const Component = () => {
                                     width="22px"
                                     height="22px"
                                 />
+                            }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={!isMobile}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="devices.userReactions"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleEmojiListToggle}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
+                            Icon={
+                                <FavoriteIcon fontSize="small" />
                             }
                         />
                     </CustomPaper>
