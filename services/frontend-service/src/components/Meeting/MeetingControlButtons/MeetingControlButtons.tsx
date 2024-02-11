@@ -56,7 +56,6 @@ import {
     setMeetingNotesVisibilityEvent,
     setEmojiListVisibilityEvent,
     $meetingStore,
-    setMeetingNotesVisibilityEvent,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
