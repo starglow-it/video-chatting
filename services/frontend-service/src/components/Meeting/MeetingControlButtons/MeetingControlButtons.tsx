@@ -275,9 +275,7 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleSetStickyNotesVisible}
-                            className={clsx(styles.deviceButton, {
-                                [styles.inactive]: !isMicActive,
-                            })}
+                            className={clsx(styles.deviceButton)}
                             Icon={
                                 <NotesIcon
                                     width="22px"
@@ -306,9 +304,7 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleEmojiListToggle}
-                            className={clsx(styles.deviceButton, {
-                                [styles.inactive]: !isMicActive,
-                            })}
+                            className={clsx(styles.deviceButton)}
                             Icon={
                                 <FavoriteIcon fontSize="small" />
                             }
