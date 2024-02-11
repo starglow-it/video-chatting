@@ -350,56 +350,6 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={isOwner}>
-                <CustomTooltip
-                    title={
-                        isAcceptNoLogin || subdomain ? (
-                            <Translation
-                                nameSpace="meeting"
-                                translation="disablePublicMeeting"
-                            />
-                        ) : (
-                            <Translation
-                                nameSpace="meeting"
-                                translation={
-                                    !isPublishAudience
-                                        ? 'lock.private'
-                                        : 'lock.public'
-                                }
-                            />
-                        )
-                    }
-                    placement="top"
-                    tooltipClassName={styles.containerTooltip}
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={() =>
-                                updateMeetingTemplateFxWithData({
-                                    isPublishAudience: !isPublishAudience,
-                                })
-                            }
-                            className={clsx(styles.deviceButton, {
-                                [styles.inactive]: !isPublishAudience,
-                            })}
-                            disabled={isAcceptNoLogin || !!subdomain}
-                            Icon={
-                                !isPublishAudience ? (
-                                    <LockIcon width="22px" height="22px" />
-                                ) : (
-                                    <UnlockIcon width="18px" height="18px" />
-                                )
-                            }
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
-
             <ConditionalRender condition={!isMobile && !isAudience}>
                 <CustomTooltip
                     title={
@@ -585,9 +535,6 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
 
-            {/* <ConditionalRender condition={!isAudience}>
-                <MeetingControlCollapse />
-            </ConditionalRender> */}
             <CustomGrid id="sideMenuBar" container gap={1.5} direction="column" className={styles.sideMenuWrapper}>
                 <MeetingMonetizationButton />
                 <CustomTooltip
