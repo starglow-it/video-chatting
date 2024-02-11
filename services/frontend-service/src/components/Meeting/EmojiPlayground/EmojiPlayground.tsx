@@ -37,8 +37,6 @@ const Component = ({ userId }: { userId: string }) => {
 
     const startReactionBubbling = contextSafe((reaction) => {
         if (reaction.user === meeting.hostUserId) {
-            console.log(reaction);
-
             gsap.set(`svg[data-key="${reaction.id}"]`, {
                 height: `1500px`,
                 width: "100%",
@@ -190,7 +188,6 @@ const Component = ({ userId }: { userId: string }) => {
     ];
 
     useEffect(() => {
-        console.log(meetingReactions);
         const length = meetingReactions.length;
         if (length > 0 && meetingReactions[length - 1].user === userId) {
             startReactionBubbling(meetingReactions[length - 1]);

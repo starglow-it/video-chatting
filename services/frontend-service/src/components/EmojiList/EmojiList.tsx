@@ -28,7 +28,6 @@ const Component = () => {
     const [isExpand, setIsExpand] = useState<boolean>(true);
 
     const addReaction = (e) => {
-        console.log(meetingReactions)
         sendMeetingReactionSocketEvent({
             emojiName: e.target.dataset.key,
         })
