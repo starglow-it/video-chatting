@@ -1,11 +1,12 @@
 import { React, memo, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
+import { clsx } from 'clsx';
 
 // stores
 import { isMobile } from 'shared-utils';
 import { $windowSizeStore } from '../../../store';
 import {
-    $meetingReactionsStore, getMeetingReactionsSocketEvent, $isOwner, $isOwnerInMeeting, $meetingStore
+    $meetingReactionsStore, getMeetingReactionsSocketEvent, $isOwner, $isOwnerInMeeting, $meetingStore, removeMeetingReactionEvent
 } from '../../../store/roomStores';
 
 // gsap
@@ -24,47 +25,85 @@ const Component = ({ userId }: { userId: string }) => {
     // const { height } = useStore($windowSizeStore);
 
     const container = useRef(null);
-    const tempSvg = useRef(null);
-    const tempPath = useRef(null);
 
     const { contextSafe } = useGSAP({ scope: container });
 
     const startReactionBubbling = contextSafe((reaction) => {
+        if (reaction.user === meeting.hostUserId) {
+            console.log(reaction);
 
-        gsap.set(tempSvg.current, {
-            height: `200%`,
-            width: "100%",
-            position: "absolute",
-            bottom: "-70%",
-            left: "15%",
-        });
-        gsap.set(tempPath.current, {
-            height: '100%'
-        });
-        gsap.set(`[data-key="${reaction.id}"]`, {
-            width: "40px",
-            height: "40px",
-            position: "absolute",
-            bottom: 0,
-            left: "50%",
-            // xPercent: -50,
-        })
+            gsap.set(`svg[data-key="${reaction.id}"]`, {
+                height: `1500px`,
+                width: "100%",
+                position: "absolute",
+                bottom: "-70%",
+                left: "15%",
+            });
+            gsap.set(`path[data-key="${reaction.id}"]`, {
+                height: '100%'
+            });
+            gsap.set(`img[data-key="${reaction.id}"]`, {
+                width: "40px",
+                height: "40px",
+                position: "absolute",
+                bottom: 0,
+                left: "50%",
+                // xPercent: -50,
+            })
 
-        gsap.to(`[data-key="${reaction.id}"]`, {
-            motionPath: {
-                path: tempPath.current,
-                align: tempPath.current,
-                alignOrigin: [0.5, 0.5],
-            },
-            width: `150px`,
-            height: `150px`,
-            duration: 7,
-            delay: 0,
-            ease: "power1.out",
-            // onComplete: () => {
-            //     removeMeetingReactionEvent(reaction.id);
-            // }
-        });
+            gsap.to(`img[data-key="${reaction.id}"]`, {
+                motionPath: {
+                    path: `path[data-key="${reaction.id}"]`,
+                    align: `path[data-key="${reaction.id}"]`,
+                    alignOrigin: [0.5, 0.5],
+                },
+                width: `150px`,
+                height: `150px`,
+                duration: 7,
+                delay: 0,
+                ease: "power1.out",
+                onComplete: () => {
+                    // removeMeetingReactionEvent(reaction.id);
+                }
+            });
+        } else {
+            gsap.set(`svg[data-key="${reaction.id}"]`, {
+                height: `500px`,
+                width: "100%",
+                position: "absolute",
+                bottom: "30px",
+                left: "0",
+            });
+            gsap.set(`path[data-key="${reaction.id}"]`, {
+                height: '100%'
+            });
+            gsap.set(`img[data-key="${reaction.id}"]`, {
+                width: "100px",
+                height: "100px",
+                position: "absolute",
+                bottom: 0,
+                left: "50%",
+                zIndex: 9999
+                // xPercent: -50,
+            })
+
+            gsap.to(`img[data-key="${reaction.id}"]`, {
+                motionPath: {
+                    path: `path[data-key="${reaction.id}"]`,
+                    align: `path[data-key="${reaction.id}"]`,
+                    alignOrigin: [0.5, 0.5],
+                },
+                width: `0px`,
+                height: `0px`,
+                display: 'none',
+                duration: 7,
+                delay: 0,
+                ease: "power1.out",
+                onComplete: () => {
+                    // removeMeetingReactionEvent(reaction.id);
+                }
+            });
+        }
     })
 
     useEffect(() => {
@@ -155,12 +194,12 @@ const Component = ({ userId }: { userId: string }) => {
     }, [meetingReactions])
 
     return (
-        <div className={styles.playgroundWrapper} ref={container}>
-            <svg viewBox="0 0 22 110" fill="none" xmlns="http://www.w3.org/2000/svg" ref={tempSvg}>
-                <path d="M14.6485 109C10.099 108.037 1 102.763 1 89.3636C1 72.615 22.6101 61.6417 20.904 40.8503C19.198 20.0588 15.7859 9.6631 1 1" ref={tempPath}></path>
-            </svg>
-            {meetingReactions.map(reaction => (
-                <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: 0, height: 0 }}></img>
+        <div className={clsx(styles.playgroundWrapper, { [styles.isParticipant]: userId !== meeting.hostUserId })} ref={container}>
+            {meetingReactions.filter(reaction => reaction.user === userId).map(reaction => (<>
+                <svg viewBox="0 0 22 110" fill="none" xmlns="http://www.w3.org/2000/svg" data-key={reaction.id} style={{ width: 0, height: 0 }}>
+                    <path d="M14.6485 109C10.099 108.037 1 102.763 1 89.3636C1 72.615 22.6101 61.6417 20.904 40.8503C19.198 20.0588 15.7859 9.6631 1 1" data-key={reaction.id}></path>
+                </svg>
+                <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: 0, height: 0 }}></img></>
             ))}
         </div>
     )

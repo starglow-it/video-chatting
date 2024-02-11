@@ -15,7 +15,6 @@ import {
     $isAudience,
     $meetingEmojiListVisibilityStore,
     $meetingReactionsStore,
-    removeMeetingReactionEvent,
     sendMeetingReactionSocketEvent
 } from '../../store/roomStores';
 
@@ -38,75 +37,93 @@ const Component = () => {
     const availableReactionArr = [
         {
             text: "rocket",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.gif",
+            isForAudience: true
         },
         {
             text: "party-popper",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f389/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f389/512.gif",
+            isForAudience: true
         },
         {
             text: "fire",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif",
+            isForAudience: true
         },
         {
             text: "raising-hands",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f64c/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f64c/512.gif",
+            isForAudience: true
         },
         {
             text: "sparkling-heart",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f496/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f496/512.gif",
+            isForAudience: true
         },
         {
             text: "folded-hands",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f64f/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f64f/512.gif",
+            isForAudience: true
         },
         {
             text: "partying-face",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.gif",
+            isForAudience: false
         },
         {
             text: "mind-blown",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f92f/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f92f/512.gif",
+            isForAudience: true
         },
         {
             text: "joy",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.gif",
+            isForAudience: true
         },
         {
             text: "screaming",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f631/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f631/512.gif",
+            isForAudience: false
         },
         {
             text: "hearted-eyes",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f60d/512.gif",
+            isForAudience: true
         },
         {
             text: "thinking-face",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f914/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f914/512.gif",
+            isForAudience: false
         },
         {
             text: "see-no-evil-monkeys",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f648/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f648/512.gif",
+            isForAudience: false
         },
         {
             text: "light-bulb",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/512.gif",
+            isForAudience: false
         },
         {
             text: "person-raising-hands",
-            icon: "https://img.icons8.com/emoji/96/person-raising-hand.png"
+            icon: "https://img.icons8.com/emoji/96/person-raising-hand.png",
+            isForAudience: false
         },
         {
             text: "thumbs-up",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d/512.gif",
+            isForAudience: true
         },
         {
             text: "wave",
-            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44b/512.gif"
+            icon: "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44b/512.gif",
+            isForAudience: true
         },
         {
             text: "okay",
-            icon: "https://img.icons8.com/emoji/96/ok-hand-emoji.png"
+            icon: "https://img.icons8.com/emoji/96/ok-hand-emoji.png",
+            isForAudience: true
         }
     ];
 
@@ -130,6 +147,15 @@ const Component = () => {
                                 condition={!isAudience || !!profile.id}
                             >
                                 {availableReactionArr.map(reaction => (
+                                    <CustomGrid item xs={4} className={styles.center}>
+                                        <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
+                                    </CustomGrid>
+                                ))}
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={isAudience}
+                            >
+                                {availableReactionArr.filter(reaction => reaction.isForAudience).map(reaction => (
                                     <CustomGrid item xs={4} className={styles.center}>
                                         <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
                                     </CustomGrid>

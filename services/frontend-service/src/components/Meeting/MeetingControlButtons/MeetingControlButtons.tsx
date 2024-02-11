@@ -270,7 +270,7 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={!isMobile && !isAudience}>
+            <ConditionalRender condition={!isMobile}>
                 <CustomTooltip
                     title={
                         <Translation

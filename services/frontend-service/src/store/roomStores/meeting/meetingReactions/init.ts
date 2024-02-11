@@ -15,6 +15,7 @@ $meetingReactionsStore
     .on(getMeetingReactionsSocketEvent.doneData, (state, { meetingReactions }) => [
         ...state,
         (meetingReactions || []),
+        // meetingReactions
     ])
     .on(removeMeetingReactionEvent, (state, data) =>
         state.filter(reaction => reaction.id !== data),
