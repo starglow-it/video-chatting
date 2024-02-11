@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
@@ -8,17 +8,12 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
 
 // shared
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { Translation } from '@library/common/Translation/Translation';
 
-// icons
-import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-
 // styles
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import styles from './Analytics.module.scss';
 import { $profileTemplatesStore, $templatesStore, getProfileTemplatesFx } from 'src/store';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
@@ -44,6 +39,13 @@ import {
     $roomsRatingStatistics,
     getRoomRatingStatisticsFx,
 } from '../../store';
+import {
+    $meetingSocketStore,
+    $isMeetingSocketConnected,
+    initiateMeetingSocketConnectionFx,
+    getMeetingUsersStatisticsFx,
+    getStatisticsSocketEvent,
+} from '../../store/roomStores';
 
 enum Tabs {
     TermsOfService = 'termsOfService',
@@ -109,12 +111,29 @@ const monetizationMockups = {
 const Component = () => {
     const { translation } = useLocalization('static');
     const profileStore = useStore($profileStore);
+    const meetingSocketStore = useStore($meetingSocketStore);
+    const isGetMeetingUsersStatisticsFxPending = useStore(getMeetingUsersStatisticsFx.pending);
     const roomsRatingStatistics = useStore($roomsRatingStatistics);
+    const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const [basedOnKey, setBasedOnKey] = useState('');
     const { activeTab, onChange: onChangeTab } = useNavigation({
         tabs: statisticTabs,
     });
     const router = useRouter();
+
+    useEffect(() => {
+        (async () => {
+            await initiateMeetingSocketConnectionFx({ isStatistics: true });
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (isMeetingSocketConnected) {
+                await getStatisticsSocketEvent({ profileId: '6391f2a2bb7bbb4a7dce4d4a' });
+            }
+        })();
+    }, [isMeetingSocketConnected]);
 
     useEffect(() => {
         if (router.query.section === 'privacy') {
@@ -163,6 +182,13 @@ const Component = () => {
     const handleChangeBasedOnKey = useCallback(({ target: { value } }) => {
         setBasedOnKey(value);
     }, []);
+
+    const handleSendMeetingUsresStatisticsRequest = async (meetingId) => {
+        await getMeetingUsersStatisticsFx({
+            meetingId,
+            userId: profileStore.id
+        });
+    };
 
     return (
         <CustomGrid

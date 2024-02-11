@@ -7,6 +7,9 @@ export class GetMeetingStatisticsRequestDTO {
   })
   meetingId?: string;
 
+  @IsString({
+    message: 'meeting.invalid',
+  })
   @ValidateNested({
     message: 'Invalid user id',
   })

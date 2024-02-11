@@ -30,6 +30,7 @@ import {
     joinWaitingRoomSocketEvent,
     leaveMeetingSocketEvent,
     startMeetingSocketEvent,
+    getMeetingUserStatisticsSocketEvent,
     updateMeetingSocketEvent,
     answerAccessMeetingRequestSocketEvent,
     cancelAccessMeetingRequestSocketEvent,
@@ -169,6 +170,17 @@ export const sendStartMeetingSocketEvent = attach<
     mapParams: (params, { meeting, user }) => ({
         meetingId: meeting?.id,
         user,
+    }),
+});
+
+export const sendGetMeetingUsersStatisticsSocketEvent = attach<
+    void,
+    typeof getMeetingUserStatisticsSocketEvent
+>({
+    effect: getMeetingUserStatisticsSocketEvent,
+    mapParams: (params) => ({
+        meetingId: !!params.meetingId || '' ,
+        userId: params.userId,
     }),
 });
 

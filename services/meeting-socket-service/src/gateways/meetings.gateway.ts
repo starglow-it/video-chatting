@@ -10,6 +10,7 @@ import { Socket } from 'socket.io';
 
 import { BaseGateway } from './base.gateway';
 
+import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
 import { MeetingsService } from '../modules/meetings/meetings.service';
 import { UsersService } from '../modules/users/users.service';
 import { TasksService } from '../modules/tasks/tasks.service';
@@ -28,7 +29,9 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
+import { GetMeetingStatisticsRequestDTO } from '../dtos/requests/get-meeting-statistics.dto';
 import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
+import { UpdateMeetingLinkRequestDTO } from '../dtos/requests/update-meetinglink.dto';
 import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
@@ -85,9 +88,9 @@ import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 })
 export class MeetingsGateway
   extends BaseGateway
-  implements OnGatewayDisconnect
-{
+  implements OnGatewayDisconnect {
   constructor(
+    private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private meetingsService: MeetingsService,
     private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
@@ -206,7 +209,7 @@ export class MeetingsGateway
         $in: [
           MeetingAccessStatusEnum.InMeeting,
           ...(isMeetingHost &&
-          user.accessStatus === MeetingAccessStatusEnum.Disconnected
+            user.accessStatus === MeetingAccessStatusEnum.Disconnected
             ? [MeetingAccessStatusEnum.Disconnected]
             : []),
         ],
@@ -464,8 +467,8 @@ export class MeetingsGateway
 
           throwWsError(
             mainUser &&
-              mainUser.maxMeetingTime === 0 &&
-              this.meetingsCommonService.checkCurrentUserPlain(mainUser),
+            mainUser.maxMeetingTime === 0 &&
+            this.meetingsCommonService.checkCurrentUserPlain(mainUser),
             MeetingI18nErrorEnum.TIME_LIMIT,
           );
         }
@@ -578,6 +581,13 @@ export class MeetingsGateway
           session,
         );
 
+        const links = !!template.links
+          ? template.links.map(link => ({
+            url: link.item,
+            users: []
+          }))
+          : [];
+
         const userUpdated = await this.usersComponent.findOneAndUpdate({
           query: { socketId: socket.id },
           data: {
@@ -592,6 +602,7 @@ export class MeetingsGateway
             ...(!!lastOldMessage && {
               lastOldMessage,
             }),
+            links
           },
           session,
         });
@@ -704,6 +715,159 @@ export class MeetingsGateway
     );
   }
 
+  @WsEvent(MeetingSubscribeEvents.OnClickMeetingLink)
+  async updateMeetingLink(
+    @MessageBody() message: UpdateMeetingLinkRequestDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+
+        const { meetingId, userId } = message;
+
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        const meetingLink = meeting.links.find(link => link.url === message?.url);
+        if (meetingLink) {
+          meetingLink.users.push(userId);
+        }
+
+        await this.meetingsService.findByIdAndUpdate({
+          id: meetingId,
+          data: {
+            links: [...meeting.links, meetingLink]
+
+          },
+          session,
+        });
+
+        return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  // Get meetings and meeting users by meeting id
+  @WsEvent(MeetingSubscribeEvents.OnGetMeetingUsersStatistics)
+  async getMeetingUsersStatistics(
+    @MessageBody() message: GetMeetingStatisticsRequestDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        console.log(message)
+        const { userId } = message;
+        subscribeWsError(socket);
+
+        const meetings = await this.meetingsService.findMany({
+          query: {
+            ownerProfileId: userId
+          },
+          session
+        });
+
+        throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meeting = await this.meetingsService.findById({
+          id: !!message.meetingId || meetings[0]['_id'],
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const { users } = await meeting.populate('users');
+
+        const participants = users.filter(user => user.meetingRole === 'participant');
+        const audience = users.filter(user => user.meetingRole === 'audience');
+
+        const totalParticipants = participants.length;
+        const totalAudience = audience.length;
+
+        const participantJoinTimes = participants.map(user => user.joinedAt);
+        const audienceJoinTimes = audience.map(user => user.joinedAt);
+
+        const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+        const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+
+        const participantLeaveTimes = participants.map(user => user.leaveAt);
+        const audienceLeaveTimes = audience.map(user => user.leaveAt);
+
+        const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+        const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+
+        const participantAverageMeetingTime = participantAverageLeaveTime - participantAverageJoinTime;
+        const audienceAverageMeetingTime = audienceAverageLeaveTime - audienceAverageJoinTime;
+
+        const attendeesData = {
+          totalParticipants,
+          totalAudience,
+          participantAverageMeetingTime,
+          audienceAverageMeetingTime,
+        };
+
+        //get Locations
+        const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
+
+        for (const user of users) {
+          const profileId = user.profileId;
+          const profile = await this.coreService.findUserById({ userId: profileId });
+
+          let country = "Other";
+          let state: string | undefined;
+
+          if (profile && profile.country) {
+            country = profile.country;
+            if (["Canada", "United States"].includes(country) && profile.state) {
+              state = profile.state;
+            }
+          }
+
+          const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
+          countriesMap.set(country, countryInfo);
+          countryInfo.count++;
+
+          if (state) {
+            const stateCount = countryInfo.states?.get(state) || 0;
+            countryInfo.states?.set(state, stateCount + 1);
+          }
+        }
+
+        const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
+          country,
+          count: countryInfo.count,
+          ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
+        }));
+
+        const qaStatistics = await this.meetingQuestionAnswersService.getDocumentCounts(meeting._id);
+
+        console.log('++++++');
+        console.log({
+          attendeesData,
+          countriesArray,
+          qaStatistics
+        });
+
+        return wsResult({
+          totalParticipants,
+          totalAudience,
+          participantAverageMeetingTime,
+          audienceAverageMeetingTime,
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
   @Roles([MeetingRole.Participant])
   @WsEvent(MeetingSubscribeEvents.OnSendAccessRequest)
   async sendEnterMeetingRequest(
@@ -778,7 +942,7 @@ export class MeetingsGateway
         if (
           meeting?.hostUserId?.socketId &&
           meeting?.hostUserId?.accessStatus ===
-            MeetingAccessStatusEnum.InMeeting
+          MeetingAccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
             meeting?.hostUserId?.socketId,
@@ -1402,10 +1566,10 @@ export class MeetingsGateway
 
         throwWsError(
           profileUser &&
-            profileUser?.maxMeetingTime === 0 &&
-            [PlanKeys.House, PlanKeys.Professional].includes(
-              profileUser?.subscriptionPlanKey,
-            ),
+          profileUser?.maxMeetingTime === 0 &&
+          [PlanKeys.House, PlanKeys.Professional].includes(
+            profileUser?.subscriptionPlanKey,
+          ),
           'meeting.userHasNoTimeLeft',
         );
 

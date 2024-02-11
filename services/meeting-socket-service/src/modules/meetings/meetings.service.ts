@@ -7,6 +7,7 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   GetModelByIdQuery,
   GetModelSingleQuery,
+  GetModelMultipleQuery,
   InsertModelQuery,
   UpdateModelByIdQuery,
 } from '../../types/mongoose';
@@ -14,7 +15,7 @@ import {
 export class MeetingsService {
   constructor(
     @InjectModel(Meeting.name) private meeting: Model<MeetingDocument>,
-  ) {}
+  ) { }
 
   async createMeeting({
     data,
@@ -40,6 +41,21 @@ export class MeetingsService {
       )
       .exec();
   }
+
+  async findMany({
+    query,
+    populatePaths,
+    session,
+  }: GetModelMultipleQuery<MeetingDocument>): Promise<MeetingDocument[]> {
+    return this.meeting
+      .find(
+        query,
+        {},
+        { session: session?.session, populate: populatePaths },
+      )
+      .exec();
+  }
+
 
   async findById({
     id,

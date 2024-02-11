@@ -37,6 +37,12 @@ export class MeetingUser {
   joinedAt: number;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: Date.now,
+  })
+  leaveAt: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
     default: 'inactive',
   })

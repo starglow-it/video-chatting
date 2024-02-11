@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingUserDocument } from './meeting-user.schema';
 import { DEFAULT_MEETING_VOLUME } from 'shared-const';
+import { meetingLink } from 'shared-types';
 
 @Schema()
 export class Meeting {
@@ -79,6 +80,16 @@ export class Meeting {
     default: true,
   })
   isBlockAudiences: boolean;
+
+  @Prop({
+    type: [
+      {
+        url: mongoose.Schema.Types.String,
+        users: [mongoose.Schema.Types.ObjectId]
+      }
+    ]
+  })
+  links: meetingLink[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],

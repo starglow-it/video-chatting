@@ -8,7 +8,13 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 // stores
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $isGoodsVisible } from '../../../store';
-import { $meetingTemplateStore } from '../../../store/roomStores';
+import {
+    $meetingStore,
+    $localUserStore,
+    $meetingTemplateStore,
+    $isOwner,
+    clickMeetingLinkSocketEvent
+} from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingGoodsLinks.module.scss';
@@ -16,6 +22,9 @@ import styles from './MeetingGoodsLinks.module.scss';
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const localUserStore = useStore($localUserStore);
+    const meetingStore = useStore($meetingStore);
+    const isOwner = useStore($isOwner);
 
     const renderItems = useMemo(
         () =>
@@ -25,8 +34,12 @@ const Component = () => {
                     '--left': `${link.position.left * 100}%`,
                 } as React.CSSProperties;
 
-                const handleOpenLink = () => {
+                const handleOpenLink = async () => {
                     let url = link.item;
+
+                    if (!isOwner) {
+                        await clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url, userId: localUserStore.id });
+                    }
 
                     if (!url.match(/^https?:\/\//i)) {
                         url = `http://${url}`;

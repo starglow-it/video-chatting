@@ -5,19 +5,28 @@ import { getMeetingInstanceSocketUrl } from '../../../../utils/functions/getMeet
 import { sendReconnectMeetingSocketEvent } from '../../meeting/sockets/init';
 
 export const handleConnectSocket = async ({
-    serverIp,
+    serverIp = frontendConfig.defaultServerIp,
+    isStatistics = false
 }: {
     serverIp: IUserTemplate['meetingInstance']['serverIp'];
+    isStatistics?: boolean
 }) => {
     const socketUrl =
         !['localhost', frontendConfig.defaultServerIp].includes(serverIp) &&
-        serverIp
+            serverIp
             ? getMeetingInstanceSocketUrl(serverIp)
             : frontendConfig.meetingSocketUrl;
 
-    const socketInstance = io(socketUrl, {
-        transports: ['websocket'],
-    });
+    const socketInstance = !isStatistics ?
+        io(socketUrl, {
+            transports: ['websocket'],
+        })
+        : io(socketUrl, {
+            transports: ['websocket'],
+            query: {
+                isStatistics: true
+            }
+        });
 
     let isDisconnect = false;
 

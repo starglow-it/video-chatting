@@ -13,6 +13,8 @@ import {
     JoinWaitingRoomPayload,
     LeaveMeetingPayload,
     StartMeetingPayload,
+    ClickMeetingLinkPayload,
+    GetMeetingUsersStatisticsPayload,
     JoinWaitingRoomResponse,
     StartMeetingResponse,
     EnterMeetingRequestResponse,
@@ -60,10 +62,18 @@ export const leaveMeetingSocketEvent = createMeetingSocketEvent<
     LeaveMeetingPayload,
     void
 >(MeetingSocketEmitters.LeaveMeeting);
+export const getMeetingUserStatisticsSocketEvent = createMeetingSocketEvent<
+    GetMeetingUsersStatisticsPayload,
+    StartMeetingResponse
+>(MeetingSocketEmitters.GetMeetingUserStatistics);
 export const startMeetingSocketEvent = createMeetingSocketEvent<
     StartMeetingPayload,
     StartMeetingResponse
 >(MeetingSocketEmitters.StartMeeting);
+export const clickMeetingLinkSocketEvent = createMeetingSocketEvent<
+ClickMeetingLinkPayload,
+    void
+>(MeetingSocketEmitters.ClickMeetingLink);
 export const updateMeetingSocketEvent = createMeetingSocketEvent<
     Partial<Meeting>,
     Meeting

@@ -24,9 +24,13 @@ import { CoreService } from '../services/core/core.service';
 
 // dtos
 import { UpdateUserRequestDTO } from '../dtos/requests/users/update-user.dto';
+import { getUsersDTO } from '../dtos/requests/users/get-users.dto';
+import { GetStatisticsDTO } from '../dtos/requests/users/get-statistics-dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
+
+import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
 
 // helpers
 import {
@@ -59,6 +63,7 @@ export class UsersGateway extends BaseGateway {
     private meetingsService: MeetingsService,
     private usersService: UsersService,
     private coreService: CoreService,
+    private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private readonly usersComponent: UsersComponent,
     @InjectConnection() private connection: Connection,
   ) {
@@ -162,6 +167,122 @@ export class UsersGateway extends BaseGateway {
               ...(message.userSize && { userSize: message?.userSize }),
             },
           },
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(UsersSubscribeEvents.OnGetStatistics)
+  async getStatistics(
+    @MessageBody() message: GetStatisticsDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        const { profileId } = message;
+        subscribeWsError(socket);
+
+        const meetings = await this.meetingsService.findMany({
+          query: {
+            ownerProfileId: profileId
+          },
+          session
+        });
+
+        throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meeting = await this.meetingsService.findById({
+          id: !!message.meetingId || meetings.length && meetings[0]['_id'],
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const { users } = await meeting.populate('users');
+
+        const participants = users.filter(user => user.meetingRole === 'participant');
+        const audiences = users.filter(user => user.meetingRole === 'audience');
+
+        const totalParticipants = participants.length;
+        const totalAudience = audiences.length;
+
+        const participantJoinTimes = participants.map(user => user.joinedAt);
+        const audienceJoinTimes = audiences.map(user => user.joinedAt);
+
+        const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+        const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+
+        const participantLeaveTimes = participants.map(user => user.leaveAt);
+        const audienceLeaveTimes = audiences.map(user => user.leaveAt);
+
+        const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+        const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+
+        const participantAverageMeetingTime = totalParticipants !== 0 ? (participantAverageLeaveTime - participantAverageJoinTime) / (1000 * 60) : 0;
+        const audienceAverageMeetingTime = totalAudience !== 0 ? (audienceAverageLeaveTime - audienceAverageJoinTime) / (1000 * 60) : 0;
+
+        const attendeesData = {
+          totalParticipants,
+          totalAudience,
+          participantAverageMeetingTime,
+          audienceAverageMeetingTime,
+        };
+
+        console.log('attendeesData +++++++++++++');
+        console.log(attendeesData);
+
+        //get Locations
+        const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
+
+        for (const user of users) {
+          
+          const profileId = user.profileId;
+          const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
+
+          let country = "Other";
+          let state: string | undefined;
+
+          if (profile && profile.country) {
+            country = profile.country;
+            if (["Canada", "United States"].includes(country) && profile.state) {
+              state = profile.state;
+            }
+          }
+
+          const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
+          countriesMap.set(country, countryInfo);
+          countryInfo.count++;
+
+          if (state) {
+            const stateCount = countryInfo.states?.get(state) || 0;
+            countryInfo.states?.set(state, stateCount + 1);
+          }
+        }
+
+        const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
+          country,
+          count: countryInfo.count,
+          ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
+        }));
+
+        const qaStatistics = await this.meetingQuestionAnswersService.getDocumentCounts(meeting._id);
+
+        console.log('++++++');
+        console.log({
+          attendeesData,
+          countriesArray,
+          qaStatistics
+        });
+
+        return wsResult({
+          totalParticipants,
+          totalAudience,
+          participantAverageMeetingTime,
+          audienceAverageMeetingTime,
         });
       },
       {

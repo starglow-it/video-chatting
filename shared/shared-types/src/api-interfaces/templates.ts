@@ -22,6 +22,11 @@ export type TemplateLink = {
   position: { top: number; left: number };
 };
 
+export type meetingLink = {
+  url: string;
+  users: string[];
+};
+
 interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
