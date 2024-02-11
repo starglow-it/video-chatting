@@ -4,11 +4,11 @@
 .container {
   width: 100%;
   height: 100%;
-  min-height: 600px;
+  min-height: 700px;
   position: absolute;
   top: 0;
   left: 0;
-  padding: 10px;
+  padding: rem(150px 10px 0);
 
   &.active {
     background: rgba($primary-black, 0.6);
@@ -17,6 +17,10 @@
     .content {
       border: rem(2px) dashed rgba($primary-white, 0.6);
     }
+  }
+
+  &.mobile {
+    padding: rem(170px 10px 0);
   }
 }
 
@@ -89,8 +93,8 @@
 }
 
 .paper {
-  max-width: rem(320px);
-  width: 100%;
+  width: 320px;
+  max-width: 80%;
   height: 150px;
   padding: rem(14px 12px);
 }
@@ -115,12 +119,11 @@
   border-radius: 16px;
   background-color: #333333;
   padding: 30px;
-  width: 50%;
-  min-width: rem(700px);
+  width: 700px;
+  max-width: 80%;
 
   &.mobile {
-    width: 100%;
-    min-width: rem(400px);
+    max-width: 100%;
   }
 }
 
@@ -132,6 +135,12 @@
 .innerUploadBackgroundContent {
   border-radius: 16px;
   padding: 30px;
+}
+
+@media screen and (max-width: 900px) {
+  .innerUploadBackgroundContent {
+    flex-direction: column;
+  }
 }
 
 .youtubeInputWrapper {

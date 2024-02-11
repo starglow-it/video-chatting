@@ -39,6 +39,7 @@ import {
     $isMicActiveStore,
     $isOwner,
     $isOwnerInMeeting,
+    $isOwnerDoNotDisturb,
     $isStreamRequestedStore,
     $localUserStore,
     $meetingTemplateStore,
@@ -55,6 +56,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
+    rejoinMeetingEvent
 } from '../../store/roomStores';
 
 // types
@@ -111,6 +113,7 @@ const Component = () => {
     });
 
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
 
     const isUserSentEnterRequest =
         localUser.accessStatus === MeetingAccessStatusEnum.RequestSent;
@@ -212,6 +215,8 @@ const Component = () => {
         updateUserSocketEvent({
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
+
+        await rejoinMeetingEvent();
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
@@ -279,16 +284,82 @@ const Component = () => {
                             className={styles.title}
                             variant="h3bold"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.title"
+                            translation="hostWaitingNotify.title"
                         />
                         <CustomTypography
                             variant="body1"
                             color="text.secondary"
                             nameSpace="meeting"
-                            translation="meetingNotStarted.text"
+                            translation="hostWaitingNotify.text"
                         />
                     </CustomGrid>
                 </ConditionalRender>
+                {/* <CustomGrid container direction="column">
+                    <CustomTypography
+                        className={styles.title}
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.title"
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        color="text.secondary"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.text"
+                    />
+                </CustomGrid> */}
+                <CustomGrid className={styles.titleLeaveMessage}>
+                    <span>Leave a Message</span>
+                </CustomGrid>
+                <CustomGrid className={styles.actions} gap={2}>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToDefault}
+                    >
+                        <CustomImage
+                            src="/images/default-gmail.jpg"
+                            width={60}
+                            height={60}
+                            objectFit="cover"
+                        />
+                        <span>Default Email</span>
+                    </CustomGrid>
+                    <CustomGrid
+                        className={styles.actionItem}
+                        onClick={linkToGmail}
+                    >
+                        <CustomImage
+                            src="/images/gmail.png"
+                            alt=""
+                            width={52}
+                            height={52}
+                            objectFit="cover"
+                        />
+                        <span>Gmail</span>
+                    </CustomGrid>
+                </CustomGrid>
+            </>
+        );
+    };
+
+    const renderMeetingDoNotDisturb = () => {
+        return (
+            <>
+                <CustomGrid container direction="column">
+                    <CustomTypography
+                        className={styles.title}
+                        variant="h3bold"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.title"
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        color="text.secondary"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.text"
+                    />
+                </CustomGrid>
+
                 <CustomGrid className={styles.titleLeaveMessage}>
                     <span>Leave a Message</span>
                 </CustomGrid>
@@ -420,6 +491,7 @@ const Component = () => {
                         >
                             {renderMeetingNotStartedYet()}
                         </ConditionalRender>
+
                     </>
                 );
 
@@ -444,10 +516,19 @@ const Component = () => {
                                 />
                             </CustomGrid>
                         </ConditionalRender>
-
-                        {renderMeetingNotStartedYet()}
+                        <ConditionalRender
+                            condition={!isOwnerDoNotDisturb}
+                        >
+                            {renderMeetingNotStartedYet()}
+                        </ConditionalRender>
+                        <ConditionalRender
+                            condition={isHasMeeting && isOwnerInMeeting && isOwnerDoNotDisturb}
+                        >
+                            {renderMeetingDoNotDisturb()}
+                        </ConditionalRender>
                     </>
                 );
+
             default:
                 return null;
         }
@@ -477,9 +558,9 @@ const Component = () => {
     const openSystemSettings = (): void => {
         const userAgent: string = navigator.userAgent;
         const deviceSetting = showDeviceError === "video" ? 'camera' : 'microphone';
-    
+
         let preferencesURI: string;
-    
+
         if (/Mac|Macintosh|OS X/.test(userAgent)) {
             const macSetting = deviceSetting === 'camera' ? 'Privacy_Camera' : 'Privacy_Microphone';
             preferencesURI = `x-apple.systempreferences:com.apple.preference.security?${macSetting}`;
@@ -490,7 +571,7 @@ const Component = () => {
             // Default to Linux or other OS
             preferencesURI = `gnome-control-center ${deviceSetting}`;
         }
-    
+
         openPreferences(preferencesURI);
     };
     const openPreferences = (preferencesURI: string): void => {
@@ -505,12 +586,12 @@ const Component = () => {
         if (showDeviceError == "") {
             return (
                 <CustomTypography
-                        textAlign="center"
-                        fontSize={14}
-                        nameSpace="meeting"
-                        translation="allowAccess.desktop.noDevice"
-                        className={styles.devicesError}
-                    />
+                    textAlign="center"
+                    fontSize={14}
+                    nameSpace="meeting"
+                    translation="allowAccess.desktop.noDevice"
+                    className={styles.devicesError}
+                />
             );
         }
         const error = showDeviceError == "audio" ? audioError : videoError;

@@ -10,8 +10,10 @@ export const $meetingNotesStore = meetingDomain.createStore<MeetingNote[]>(
 );
 
 export const $meetingNotesVisibilityStore = meetingDomain.createStore<{ isVisible: boolean }>({ isVisible: false });
+export const $doNotDisturbStore = meetingDomain.createStore<{ isVisible: boolean }>(false);
 
 export const setMeetingNotesVisibilityEvent = meetingDomain.createEvent<{ isVisible: boolean }>('setMeetingNotesVisibilityEvent');
+export const setDoNotDisturbEvent = meetingDomain.createEvent<{ isVisible: boolean }>('setDoNotDisturbEvent');
 
 export const setMeetingNotesEvent = meetingDomain.createEvent<MeetingNote[]>(
     'setMeetingNotesEvent',

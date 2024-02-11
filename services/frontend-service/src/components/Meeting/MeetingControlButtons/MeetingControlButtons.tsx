@@ -26,6 +26,7 @@ import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -49,11 +50,14 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     $recordingStream,
+    $doNotDisturbStore,
     $meetingNotesVisibilityStore,
     $meetingEmojiListVisibilityStore,
     setMeetingNotesVisibilityEvent,
     setEmojiListVisibilityEvent,
     $meetingStore,
+    setMeetingNotesVisibilityEvent,
+    setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
     sendLeaveMeetingSocketEvent,
@@ -68,6 +72,7 @@ import {
     updateMeetingTemplateFxWithData,
     $isToggleSchedulePanel,
     $isHaveNewQuestion,
+    updateUserSocketEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -123,9 +128,18 @@ const Component = () => {
     const recordingStream = useStore($recordingStream);
     const isRecording = useStore($isRecordingStore);
 
+    const doNotDisturbStore = useStore($doNotDisturbStore);
+
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
     }, [isMeetingHost, isThereNewRequests]);
+
+
+    useEffect(() => {
+        updateUserSocketEvent({
+            doNotDisturb: doNotDisturbStore,
+        });
+    }, [doNotDisturbStore]);
 
     useEffect(() => {
         if (isAudioError) {
@@ -236,6 +250,11 @@ const Component = () => {
     const handleEmojiListToggle = () => {
         setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
     }
+
+    //Do not disturb acion
+    const handleDoNotDisturb = () => {
+        setDoNotDisturbEvent(!doNotDisturbStore);
+    };
 
     return (
         <CustomGrid id="menuBar" container gap={1.5} className={styles.devicesWrapper}>
@@ -492,6 +511,34 @@ const Component = () => {
                     />
                 </CustomPaper>
             </CustomTooltip>
+            {/* Do not disturb button */}
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="doNotDisturb.tooltip"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleDoNotDisturb}
+                            className={clsx(styles.deviceButton,
+                                styles.doNotDisturbButton,
+                                { [styles.disabled]: doNotDisturbStore }
+                            )}
+                            Icon={<DoNotDisturbAltIcon sx={{ fontSize: 20 }} />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
             <CustomTooltip
                 title={
                     <Translation

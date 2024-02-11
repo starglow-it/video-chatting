@@ -212,6 +212,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
             justifyContent="center"
             className={clsx(styles.container, {
                 [styles.active]: isDragActive,
+                [styles.mobile]: isMobile
             })}
             {...rootProps}
         >
@@ -263,7 +264,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     >
                         <CustomGrid
                             container
-                            direction={ isMobile ? "column" : "row" }
+                            direction={isMobile ? "column" : "row"}
                             gap={isMobile ? 8 : 1.5}
                             alignItems="flex-start"
                             justifyContent="space-between"

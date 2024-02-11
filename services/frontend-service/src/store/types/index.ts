@@ -36,6 +36,7 @@ export type MeetingUser = {
     userSize?: number;
     meetingAvatarId?: string;
     meetingRole: MeetingRole;
+    doNotDisturb: boolean;
 };
 
 export type joyride = {

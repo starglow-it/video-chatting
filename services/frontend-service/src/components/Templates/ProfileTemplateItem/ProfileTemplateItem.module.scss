@@ -6,12 +6,22 @@
   position: relative;
   border-radius: rem(8px);
   overflow: hidden;
+  width: 45%;
   max-width: rem(334px);
 
   align-self: center;
   justify-self: center;
 
   z-index: 10;
+
+  @media only screen and (max-width: 600px) {
+    height: 115px;
+  }
+
+  
+  @media only screen and (max-width: 280px) {
+    width: 95% !important;
+  }
 
   &.mobile {
     width: 45%;
