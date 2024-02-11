@@ -557,8 +557,7 @@ const Component = () => {
                             onAction={handleSharing}
                             className={clsx(styles.deviceButton)}
                             Icon={
-                                !isRecording &&
-                                <SharingIcon width="22px" height="22px" />
+                                <SharingIcon width="22px" height="22px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
                             }
                         />
                     </CustomPaper>
