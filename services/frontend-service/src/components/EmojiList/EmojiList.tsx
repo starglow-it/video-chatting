@@ -148,7 +148,9 @@ const Component = () => {
                             >
                                 {availableReactionArr.map(reaction => (
                                     <CustomGrid item xs={4} className={styles.center}>
-                                        <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
+                                        <div className={styles.emojiBox}>
+                                            <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
+                                        </div>
                                     </CustomGrid>
                                 ))}
                             </ConditionalRender>
@@ -157,7 +159,9 @@ const Component = () => {
                             >
                                 {availableReactionArr.filter(reaction => reaction.isForAudience).map(reaction => (
                                     <CustomGrid item xs={4} className={styles.center}>
-                                        <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
+                                        <div className={styles.emojiBox}>
+                                            <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
+                                        </div>
                                     </CustomGrid>
                                 ))}
                             </ConditionalRender>

@@ -13,7 +13,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { isMobile } from 'shared-utils';
 import { $windowSizeStore } from '../../../store';
 import {
-    $meetingReactionsStore, getMeetingReactionsSocketEvent, $localUserStore, $meetingStore, removeMeetingReactionEvent
+    $meetingReactionsStore, getMeetingReactionsSocketEvent, $localUserStore, $meetingStore, removeMeetingReactionEvent, $meetingUsersStore
 } from '../../../store/roomStores';
 
 // gsap
@@ -29,8 +29,7 @@ const Component = ({ userId }: { userId: string }) => {
     const meetingReactions = useStore($meetingReactionsStore);
     const meeting = useStore($meetingStore);
     const localUser = useStore($localUserStore);
-
-    // const { height } = useStore($windowSizeStore);
+    const meetingUsers = useStore($meetingUsersStore);
 
     const container = useRef(null);
 
@@ -57,7 +56,6 @@ const Component = ({ userId }: { userId: string }) => {
                 position: "absolute",
                 bottom: 0,
                 left: "50%",
-                // xPercent: -50,
             })
 
             gsap.to(`div[data-key="${reaction.id}"]`, {
@@ -72,7 +70,6 @@ const Component = ({ userId }: { userId: string }) => {
                 delay: 0,
                 ease: "power1.out",
                 onComplete: () => {
-                    // removeMeetingReactionEvent(reaction.id);
                 }
             });
         } else {
@@ -93,7 +90,6 @@ const Component = ({ userId }: { userId: string }) => {
                 bottom: 0,
                 left: "50%",
                 zIndex: 9999
-                // xPercent: -50,
             })
 
             gsap.to(`img[data-key="${reaction.id}"]`, {
@@ -109,7 +105,6 @@ const Component = ({ userId }: { userId: string }) => {
                 delay: 0,
                 ease: "power1.out",
                 onComplete: () => {
-                    // removeMeetingReactionEvent(reaction.id);
                 }
             });
         }
@@ -221,7 +216,7 @@ const Component = ({ userId }: { userId: string }) => {
                                 variant="body3"
                                 className={styles.username}
                             >
-                                {localUser.username}
+                                {meetingUsers.find(user => user?.id === userId)?.username}
                             </CustomTypography>
                         </CustomPaper>
                     </ConditionalRender>

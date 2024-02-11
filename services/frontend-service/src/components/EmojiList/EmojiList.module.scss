@@ -91,5 +91,21 @@
 }
 
 .center {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emojiBox {
+  padding: 5px 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background: transparent;
+  transition: 0.5s ease;
+}
+
+.emojiBox:hover {
+  background: rgba(0,0,0,0.3);
+  transition: 0.5s ease;
 }
