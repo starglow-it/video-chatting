@@ -87,11 +87,7 @@ export const MeetingRoleGroup = forwardRef(
                         popperClassName={styles.popperTooltip}
                         tooltipClassName={styles.containerTooltip}
                     >
-                        <QuestionMarkIcon
-                            width="13px"
-                            height="13px"
-                            className={styles.tooltip}
-                        />
+                        <div className={clsx(styles.tooltip, styles.exclamationMark)}>!</div>
                     </CustomTooltip>
                 </CustomGrid>
 
@@ -136,11 +132,7 @@ export const MeetingRoleGroup = forwardRef(
                         popperClassName={styles.popperTooltip}
                         tooltipClassName={styles.containerTooltip}
                     >
-                        <QuestionMarkIcon
-                            width="13px"
-                            height="13px"
-                            className={styles.tooltip}
-                        />
+                        <div className={clsx(styles.tooltip, styles.exclamationMark)}>!</div>
                     </CustomTooltip>
                 </CustomGrid>
             </CustomGrid>
