@@ -43,3 +43,14 @@
     opacity: 0.4;
     pointer-events: none;
 }
+
+.exclamationMark {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: black;
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  line-height: 14px;
+}

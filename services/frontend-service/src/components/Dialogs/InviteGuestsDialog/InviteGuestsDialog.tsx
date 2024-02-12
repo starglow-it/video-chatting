@@ -143,8 +143,7 @@ export const InviteGuestsDialog = () => {
 
     const handleChangeRole = (role: MeetingRole) => {
         setLink(
-            `${getClientMeetingUrlWithDomain(router.query.token as string)}${
-                role === MeetingRole.Audience ? '?role=audience' : ''
+            `${getClientMeetingUrlWithDomain(router.query.token as string)}${role === MeetingRole.Audience ? '?role=audience' : ''
             }`,
         );
     };
@@ -195,11 +194,18 @@ export const InviteGuestsDialog = () => {
                     <CustomGrid className={styles.header}>
                         <span>Invite Guests to this room</span>
                     </CustomGrid>
+                    <MeetingSwitchPrivate />
+                    <MeetingRoleGroup
+                        className={styles.roleGroup}
+                        ref={refRoleGroup}
+                        onChangeValue={handleChangeRole}
+                        isBlockAudience={!isPublishAudience}
+                    />
                     <CustomGrid id="inviteGuests" className={styles.actions} gap={2}>
                         <CopyToClipboard text={link} onCopy={handleLinkCopied}>
                             <CustomGrid className={styles.actionItem}>
                                 <CustomImage
-                                    src="/images/copy-link.png"
+                                    src="/images/white-link.jpg"
                                     width={40}
                                     height={40}
                                     className={styles.button}
@@ -232,13 +238,6 @@ export const InviteGuestsDialog = () => {
                             <span>Gmail</span>
                         </CustomGrid>
                     </CustomGrid>
-                    <MeetingSwitchPrivate />
-                    <MeetingRoleGroup
-                        className={styles.roleGroup}
-                        ref={refRoleGroup}
-                        onChangeValue={handleChangeRole}
-                        isBlockAudience={!isPublishAudience}
-                    />
                 </CustomGrid>
             </CustomDialog>
         </>
