@@ -24,13 +24,9 @@ import { CoreService } from '../services/core/core.service';
 
 // dtos
 import { UpdateUserRequestDTO } from '../dtos/requests/users/update-user.dto';
-import { getUsersDTO } from '../dtos/requests/users/get-users.dto';
-import { GetStatisticsDTO } from '../dtos/requests/users/get-statistics-dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
-
-import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
 
 // helpers
 import {
@@ -62,6 +58,7 @@ export class UsersGateway extends BaseGateway {
   constructor(
     private meetingsService: MeetingsService,
     private usersService: UsersService,
+    private meetingReactionsService: MeetingReactionsService,
     private coreService: CoreService,
     private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private readonly usersComponent: UsersComponent,
@@ -112,6 +109,24 @@ export class UsersGateway extends BaseGateway {
       },
     });
   }
+
+  private dateFormat = (value) => {
+    let date = new Date(value);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+
+    // Get components
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const hours = date.getHours() % 12 || 12; // Convert to 12-hour format
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${timezone}`;
+
+    return formattedDate;
+  };
 
   @WsEvent(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
@@ -184,106 +199,192 @@ export class UsersGateway extends BaseGateway {
       this.connection,
       async (session) => {
         const { profileId } = message;
+        let meetingLinks = [];
+        let meetingNames = [];
         subscribeWsError(socket);
 
         const meetings = await this.meetingsService.findMany({
           query: {
             ownerProfileId: profileId
           },
+          populatePaths: 'templateId',
           session
         });
 
         throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-        const meeting = await this.meetingsService.findById({
-          id: !!message.meetingId || meetings.length && meetings[0]['_id'],
-          session,
-        });
+        if (meetings) {
+          for (const meeting of meetings) {
+            let meetingInstance = {
+              id: meeting._id,
+              name: 'Anonymous',
+              startedAt: this.dateFormat(meeting.startAt)
+            };
 
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+            const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
 
-        const { users } = await meeting.populate('users');
+            if (template) {
+              meetingInstance.name = template.name
+            }
 
-        const participants = users.filter(user => user.meetingRole === 'participant');
-        const audiences = users.filter(user => user.meetingRole === 'audience');
+            meetingNames.push(meetingInstance);
+          }
 
-        const totalParticipants = participants.length;
-        const totalAudience = audiences.length;
+          const meeting = await this.meetingsService.findById({
+            id: message.meetingId || meetings[0]['_id'],
+            session,
+          });
 
-        const participantJoinTimes = participants.map(user => user.joinedAt);
-        const audienceJoinTimes = audiences.map(user => user.joinedAt);
+          throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-        const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-        const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+          const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId })
 
-        const participantLeaveTimes = participants.map(user => user.leaveAt);
-        const audienceLeaveTimes = audiences.map(user => user.leaveAt);
+          const { users } = await meeting.populate('users');
 
-        const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-        const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
+          const participants = users.filter(user => user.meetingRole === 'participant');
+          const audiences = users.filter(user => user.meetingRole === 'audience');
 
-        const participantAverageMeetingTime = totalParticipants !== 0 ? (participantAverageLeaveTime - participantAverageJoinTime) / (1000 * 60) : 0;
-        const audienceAverageMeetingTime = totalAudience !== 0 ? (audienceAverageLeaveTime - audienceAverageJoinTime) / (1000 * 60) : 0;
+          const totalParticipants = participants.length;
+          const totalAudiences = audiences.length;
 
-        const attendeesData = {
-          totalParticipants,
-          totalAudience,
-          participantAverageMeetingTime,
-          audienceAverageMeetingTime,
-        };
+          const participantJoinTimes = participants.map(user => user.joinedAt);
+          const audienceJoinTimes = audiences.map(user => user.joinedAt);
 
-        console.log('attendeesData +++++++++++++');
-        console.log(attendeesData);
+          const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+          const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
 
-        //get Locations
-        const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
+          const participantLeaveTimes = participants.map(user => user.leaveAt);
+          const audienceLeaveTimes = audiences.map(user => user.leaveAt);
 
-        for (const user of users) {
-          
-          const profileId = user.profileId;
-          const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
+          const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+          const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
 
-          let country = "Other";
-          let state: string | undefined;
+          const participantAverageMeetingTime = totalParticipants !== 0 ? (participantAverageLeaveTime - participantAverageJoinTime) / (1000 * 60) : 0;
+          const audienceAverageMeetingTime = totalAudiences !== 0 ? (audienceAverageLeaveTime - audienceAverageJoinTime) / (1000 * 60) : 0;
 
-          if (profile && profile.country) {
-            country = profile.country;
-            if (["Canada", "United States"].includes(country) && profile.state) {
-              state = profile.state;
+          const attendeesData = {
+            totalParticipants,
+            totalAudiences,
+            participantAverageMeetingTime: participantAverageMeetingTime > 1
+              ? Math.floor(participantAverageMeetingTime)
+              : participantAverageMeetingTime <= 0
+                ? 0
+                : 1,
+            audienceAverageMeetingTime: audienceAverageMeetingTime > 1
+              ? Math.floor(audienceAverageMeetingTime)
+              : audienceAverageMeetingTime <= 0
+                ? 0
+                : 1,
+          };
+
+          if (meeting.links && meeting.links.length > 0) {
+
+            meetingLinks = meeting.links.map(link => {
+              return {
+                url: link.url,
+                clicks: link.users.length,
+                clickThroughRate: link.users.length > 0 ? (link.users.length / (totalParticipants + totalAudiences)) * 100 : 0
+              };
+            });
+          }
+
+          //get Locations
+          const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
+
+          for (const user of users) {
+
+            const profileId = user.profileId;
+            const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
+
+            let country = "Other";
+            let state: string | undefined;
+
+            if (profile && profile.country) {
+              country = profile.country;
+              if (["Canada", "United States"].includes(country) && profile.state) {
+                state = profile.state;
+              }
+            }
+
+            const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
+            countriesMap.set(country, countryInfo);
+            countryInfo.count++;
+
+            if (state) {
+              const stateCount = countryInfo.states?.get(state) || 0;
+              countryInfo.states?.set(state, stateCount + 1);
             }
           }
 
-          const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
-          countriesMap.set(country, countryInfo);
-          countryInfo.count++;
+          const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
+            country,
+            count: countryInfo.count,
+            ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
+          }));
 
-          if (state) {
-            const stateCount = countryInfo.states?.get(state) || 0;
-            countryInfo.states?.set(state, stateCount + 1);
+          const reactionData = await this.meetingReactionsService.findMany({
+            query: {
+              meeting: meeting._id
+            },
+            populatePaths: 'user',
+            session
+          });
+
+          const qaData = await this.meetingQuestionAnswersService.findMany({
+            query: {
+              meeting: meeting._id
+            },
+            populatePaths: 'sender',
+            session
+          });
+
+          let qaStatistics = {};
+
+          if (qaData) {
+            qaStatistics = qaData.map(data => {
+              return {
+                content: data.body,
+                who: data.sender.username,
+                answered: data.reactions.size !== 0
+              };
+            });
           }
+
+          const monetization = {
+            entryFee: template.isMonetizationEnabled ? template.templatePrice : 0,
+            totalFees: template.isMonetizationEnabled ? template.templatePrice * (totalParticipants + totalAudiences) : 0,
+            donations: 0
+          };
+
+          const reactions = {
+            participants: 0,
+            audiences: 0,
+            reactions: [
+              { name: '', participants: 0, audience: 0 }
+            ]
+          };
+
+          const result = {
+            meetingNames,
+            attendeesData,
+            countriesArray,
+            reactions,
+            qaStatistics,
+            meetingLinks,
+            monetization,
+          };
+
+          this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, result);
+
+          return wsResult({
+            attendeesData,
+            countriesArray,
+            qaStatistics,
+            meetingNames,
+            meetingLinks,
+            monetization
+          });
         }
-
-        const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
-          country,
-          count: countryInfo.count,
-          ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
-        }));
-
-        const qaStatistics = await this.meetingQuestionAnswersService.getDocumentCounts(meeting._id);
-
-        console.log('++++++');
-        console.log({
-          attendeesData,
-          countriesArray,
-          qaStatistics
-        });
-
-        return wsResult({
-          totalParticipants,
-          totalAudience,
-          participantAverageMeetingTime,
-          audienceAverageMeetingTime,
-        });
       },
       {
         onFinaly: (err) => wsError(socket, err),

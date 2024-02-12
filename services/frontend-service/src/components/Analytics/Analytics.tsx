@@ -36,14 +36,12 @@ import {
 //store
 import {
     $profileStore,
-    $roomsRatingStatistics,
+    $roomsStatistics,
     getRoomRatingStatisticsFx,
 } from '../../store';
 import {
-    $meetingSocketStore,
     $isMeetingSocketConnected,
     initiateMeetingSocketConnectionFx,
-    getMeetingUsersStatisticsFx,
     getStatisticsSocketEvent,
 } from '../../store/roomStores';
 
@@ -51,13 +49,6 @@ enum Tabs {
     TermsOfService = 'termsOfService',
     PrivacyPolicy = 'privacyPolicy',
 }
-
-//mockups
-const roomNameMockups = [
-    { id: 1, name: "room-1" },
-    { id: 2, name: "room-2" },
-    { id: 3, name: "room-3" },
-];
 
 const numberOfAttendeesMockups = {
     totalNumber: 43,
@@ -111,15 +102,80 @@ const monetizationMockups = {
 const Component = () => {
     const { translation } = useLocalization('static');
     const profileStore = useStore($profileStore);
-    const meetingSocketStore = useStore($meetingSocketStore);
-    const isGetMeetingUsersStatisticsFxPending = useStore(getMeetingUsersStatisticsFx.pending);
-    const roomsRatingStatistics = useStore($roomsRatingStatistics);
+    const roomsStatistics = useStore($roomsStatistics);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const [basedOnKey, setBasedOnKey] = useState('');
     const { activeTab, onChange: onChangeTab } = useNavigation({
         tabs: statisticTabs,
     });
     const router = useRouter();
+    const [roomNames, setRoomNames] = useState([]);
+    const [attendeesData, setAttendeesData] = useState({});
+    const [locationData, setLocationData] = useState({ data: [] });
+    const [reactions, setReactions] = useState({});
+    const [qa, setQa] = useState([]);
+    const [meetingLinks, setMeetingLinks] = useState({});
+    const [monetization, setMonetization] = useState({});
+
+    useEffect(() => {
+        const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
+            ? roomsStatistics.meetingNames.map(meeting => ({
+                id: meeting.id,
+                name: `${meeting.name} - ${meeting.startedAt}`
+            }))
+            : [];
+
+        const attendeesDataInstance = {
+            totalNumber: roomsStatistics.attendeesData.totalParticipants + roomsStatistics.attendeesData.totalAudiences,
+            participants: roomsStatistics.attendeesData.totalParticipants,
+            audience: roomsStatistics.attendeesData.totalAudiences,
+            participantsAvgMin: roomsStatistics.attendeesData.participantAverageMeetingTime,
+            audienceAvgMin: roomsStatistics.attendeesData.audienceAverageMeetingTime,
+        };
+
+        const locationStatistics = {
+            data: Array.isArray(roomsStatistics.countriesArray)
+                ? roomsStatistics.countriesArray.map(country => {
+                    return {
+                        country: country.country,
+                        state: country?.states?.map(state => ({
+                            name: state.state,
+                            num: state.count
+                        })),
+                        num: country.count
+                    };
+                })
+                : []
+        };
+
+        const qaStatistics = {
+            data: {
+                questions: roomsStatistics.qaStatistics
+            }
+        };
+
+        const meetingLinksStatistics = {
+            data: Array.isArray(roomsStatistics.countriesArray)
+                ? roomsStatistics.meetingLinks.map(link => ({
+                    link: link.url,
+                    click: link.clicks,
+                    clickThroughRate: link.clickThroughRate
+                }))
+                : []
+        };
+
+        const monetizationStatistics = {
+            data: roomsStatistics.monetization
+        };
+
+        setRoomNames(roomNamesList);
+        setAttendeesData(attendeesDataInstance);
+        setLocationData(locationStatistics);
+        setReactions(roomsStatistics.reactions);
+        setQa(qaStatistics);
+        setMeetingLinks(meetingLinksStatistics);
+        setMonetization(monetizationStatistics);
+    }, [roomsStatistics]);
 
     useEffect(() => {
         (async () => {
@@ -130,7 +186,7 @@ const Component = () => {
     useEffect(() => {
         (async () => {
             if (isMeetingSocketConnected) {
-                await getStatisticsSocketEvent({ profileId: '6391f2a2bb7bbb4a7dce4d4a' });
+                await getStatisticsSocketEvent({ profileId: profileStore.id });
             }
         })();
     }, [isMeetingSocketConnected]);
@@ -148,14 +204,20 @@ const Component = () => {
         });
     }, []);
 
+    useEffect(() => {
+        (() =>
+            getStatisticsSocketEvent({ meetingId: basedOnKey, profileId: profileStore.id })
+        )();
+    }, [basedOnKey]);
+
     const renderRooms = useMemo(
         () =>
-            roomNameMockups.map(room => (
+            roomNames.map(room => (
                 <MenuItem key={room.id} value={room.id}>
                     {room.name}
                 </MenuItem>
             )),
-        [],
+        [roomNames],
     );
 
     const renderTabs = useMemo(
@@ -179,15 +241,12 @@ const Component = () => {
         [activeTab],
     );
 
-    const handleChangeBasedOnKey = useCallback(({ target: { value } }) => {
-        setBasedOnKey(value);
-    }, []);
-
     const handleSendMeetingUsresStatisticsRequest = async (meetingId) => {
-        await getMeetingUsersStatisticsFx({
-            meetingId,
-            userId: profileStore.id
-        });
+        await getStatisticsSocketEvent({ meetingId, profileId: profileStore.id });
+    };
+
+    const handleChangeBasedOnKey = ({ target: { value } }) => {
+        setBasedOnKey(value);
     };
 
     return (
@@ -225,10 +284,17 @@ const Component = () => {
                 container
                 alignItems="center"
                 justifyContent="center"
-                gap={8}
                 className={styles.tabs}
             >
-                {renderTabs}
+                <CustomGrid
+                    item
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    className={styles.innerTabs}
+                >
+                    {renderTabs}
+                </CustomGrid>
             </CustomGrid>
             <CustomGrid item container className={styles.fadeWrapper}>
                 <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
@@ -239,15 +305,15 @@ const Component = () => {
                         gap={3}
                     >
                         <AttendeesAnalytics
-                            statistic={numberOfAttendeesMockups}
+                            statistic={attendeesData}
                             className={styles.statisticBlock}
                         />
                         <LocationAnalytics
-                            statistic={locationMockups}
+                            statistic={locationData}
                             className={styles.statisticBlock}
                         />
                         <ReactionsAnalytics
-                            statistic={numberOfAttendeesMockups}
+                            statistic={attendeesData}
                             className={styles.statisticBlock}
                         />
                     </CustomGrid>
@@ -265,7 +331,7 @@ const Component = () => {
                         gap={2}
                     >
                         <QAAnalytics
-                            statistic={qaMockups}
+                            statistic={qa}
                             className={styles.qaAnalyticsBlock}
                         />
                     </CustomGrid>
@@ -280,7 +346,7 @@ const Component = () => {
                         gap={2}
                     >
                         <LinksAnalytics
-                            statistic={linksMockups}
+                            statistic={meetingLinks}
                             className={styles.qaAnalyticsBlock}
                         />
                     </CustomGrid>
@@ -295,7 +361,7 @@ const Component = () => {
                         gap={2}
                     >
                         <MonetizationAnalytics
-                            statistic={monetizationMockups}
+                            statistic={monetization}
                             className={styles.qaAnalyticsBlock}
                         />
                     </CustomGrid>

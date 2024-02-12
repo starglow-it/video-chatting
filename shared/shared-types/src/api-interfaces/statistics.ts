@@ -21,7 +21,7 @@ export interface AttendeesNumbers {
   audienceAvgMin: number;
 }
 export interface LocationStatistics {
-  data: {country: string, state?: { name: string, num: number }[], num: number}[]
+  data: { country: string, state?: { name: string, num: number }[], num: number }[]
 }
 export interface qaStatistics {
   data: {

@@ -92,6 +92,18 @@ export class Meeting {
   links: meetingLink[];
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 0,
+  })
+  entryFees: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 0,
+  })
+  donations: number;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],
   })
   users: MeetingUserDocument[];

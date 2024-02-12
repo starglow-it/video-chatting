@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -10,7 +10,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles
-import { linksStatistics } from 'shared-types';
 import styles from './MonetizationAnalytics.module.scss';
 
 const MonetizationAnalytics = memo(
@@ -18,7 +17,11 @@ const MonetizationAnalytics = memo(
         className,
         statistic,
     }: PropsWithClassName<{
-        statistic: linksStatistics;
+        statistic: {
+            entryFee: number,
+            totalFees: number,
+            donations: number
+        };
     }>) => {
 
         return (
@@ -56,7 +59,7 @@ const MonetizationAnalytics = memo(
                             /> - ${statistic.data.entryFee} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.total}
+                            ${statistic.data.totalFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid

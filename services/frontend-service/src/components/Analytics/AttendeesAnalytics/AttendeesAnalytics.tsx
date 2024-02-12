@@ -128,9 +128,14 @@ const AttendeesAnalytics = memo(
                         alignItems="center"
                     >
                         <CustomGrid item xs={10} container>
-                            <BorderLinearProgress variant="determinate" value={(statistic.participantsAvgMin / 60) * 100} bgColor="#9243B7" />
+                            <BorderLinearProgress
+                                variant="determinate"
+                                value={(statistic.participantsAvgMin / (statistic.participantsAvgMin + statistic.audienceAvgMin)) * 100
+                                }
+                                bgColor="#9243B7"
+                            />
                         </CustomGrid>
-                        <CustomGrid item xs={2} container>
+                        <CustomGrid item xs={2} container justifyContent="flex-end">
                             <CustomTypography variant="body2">
                                 {statistic.participantsAvgMin}
                                 <CustomTypography variant="body2" className={styles.avgMinUnit} >
@@ -148,9 +153,13 @@ const AttendeesAnalytics = memo(
                         alignItems="center"
                     >
                         <CustomGrid item xs={10} container>
-                            <BorderLinearProgress variant="determinate" value={(statistic.audienceAvgMin / 60) * 100} bgColor="#27C54A"/>
+                            <BorderLinearProgress
+                                variant="determinate"
+                                value={(statistic.audienceAvgMin / (statistic.participantsAvgMin + statistic.audienceAvgMin)) * 100}
+                                bgColor="#27C54A"
+                            />
                         </CustomGrid>
-                        <CustomGrid item xs={2} container>
+                        <CustomGrid item xs={2} container justifyContent="flex-end">
                             <CustomTypography variant="body2">
                                 {statistic.audienceAvgMin}
                                 <CustomTypography variant="body2" className={styles.avgMinUnit} >

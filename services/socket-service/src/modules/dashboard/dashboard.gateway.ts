@@ -91,17 +91,6 @@ export class DashboardGateway extends BaseGateway {
     }
   }
 
-  @SubscribeMessage(DashboardSubscribeEvents.OnGetMeetingStatisticsData)
-  async getMeetingStatisticsData(
-    @MessageBody() message: { userId: string },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    console.log('++++++');
-    console.log(message.userId);
-
-    
-  }
-
   @SubscribeMessage(DashboardSubscribeEvents.OnMeetingAvailable)
   async sendMeetingAvailable(
     @MessageBody() message: { templateId: string },

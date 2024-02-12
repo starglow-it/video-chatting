@@ -158,8 +158,7 @@ const MeetingContainer = memo(() => {
 
     const isFirstime = useRef(true);
 
-    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
-        useToggle(false);
+    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
 
     useEffect(() => {
         if (roleUrl) {

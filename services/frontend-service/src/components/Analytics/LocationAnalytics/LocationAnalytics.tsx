@@ -26,7 +26,7 @@ const LocationAnalytics = memo(
     }: PropsWithClassName<{
         statistic: LocationStatistics;
     }>) => {
-        const data = statistic.data.map(item => {
+        const data = (statistic.data || []).map(item => {
             return { label: item.country, value: item.num };
         });
         const pieData = data.map((item, index) => ({

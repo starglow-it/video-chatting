@@ -34,3 +34,47 @@ export type UserProfileIdState = StateWithError<UserProfileId>;
 export type CommonTemplatesListState = StateWithError<CommonTemplatesList>;
 export type CommonTemplateState = StateWithError<ICommonTemplate | undefined>;
 export type BusinessCategoriesState = StateWithError<BusinessCategoryList>;
+export type MeetingStatisticsState = {
+    meetingNames: {
+        id: string;
+        name: string;
+        startedAt: string;
+    };
+    attendeesData: {
+        totalParticipants: number;
+        totalAudiences: number;
+        participantAverageMeetingTime: number
+        audienceAverageMeetingTime: number
+    };
+    countriesArray: {
+        country: string;
+        count: number;
+        states?: string;
+    }[];
+    reactions: {
+        participants: number,
+        audiences: number,
+        reactions: [
+            {
+                name: string,
+                participants: number,
+                audience: number
+            }
+        ]
+    };
+    qaStatistics: {
+        content: string,
+        who: string,
+        answered: boolean
+    }[];
+    meetingLinks: {
+        url: string;
+        clicks: number;
+        clickThroughRate: number
+    }[];
+    monetization: {
+        entryFee: number;
+        totalFees: number;
+        donations: number;
+    };
+}

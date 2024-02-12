@@ -22,6 +22,7 @@ import styles from './MeetingGoodsLinks.module.scss';
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
+    console.log(meetingTemplate);
     const localUserStore = useStore($localUserStore);
     const meetingStore = useStore($meetingStore);
     const isOwner = useStore($isOwner);
@@ -34,15 +35,15 @@ const Component = () => {
                     '--left': `${link.position.left * 100}%`,
                 } as React.CSSProperties;
 
-                const handleOpenLink = async () => {
+                const handleOpenLink = () => {
                     let url = link.item;
-
-                    if (!isOwner) {
-                        await clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url, userId: localUserStore.id });
-                    }
 
                     if (!url.match(/^https?:\/\//i)) {
                         url = `http://${url}`;
+                    }
+
+                    if (!isOwner) {
+                        clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url: url, userId: localUserStore.id });
                     }
 
                     return window.open(url, '_blank');

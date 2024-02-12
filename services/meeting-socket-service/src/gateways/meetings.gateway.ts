@@ -351,6 +351,7 @@ export class MeetingsGateway
 
         const updateData = {
           accessStatus: accessStatusUpdate,
+          leaveAt: new Date()
         };
 
         if (this.isChangeVideoContainer(user)) {
@@ -440,6 +441,13 @@ export class MeetingsGateway
           session,
         });
 
+        const links = !!template.links
+          ? template.links.map(link => ({
+            url: link.item,
+            users: []
+          }))
+          : null;
+
         if (message.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting({
             data: {
@@ -448,6 +456,7 @@ export class MeetingsGateway
               ownerProfileId: message.profileId,
               maxParticipants: message.maxParticipants,
               templateId: message.templateId,
+              links
             },
             session,
           });
@@ -581,13 +590,6 @@ export class MeetingsGateway
           session,
         );
 
-        const links = !!template.links
-          ? template.links.map(link => ({
-            url: link.item,
-            users: []
-          }))
-          : [];
-
         const userUpdated = await this.usersComponent.findOneAndUpdate({
           query: { socketId: socket.id },
           data: {
@@ -602,7 +604,6 @@ export class MeetingsGateway
             ...(!!lastOldMessage && {
               lastOldMessage,
             }),
-            links
           },
           session,
         });
@@ -725,142 +726,31 @@ export class MeetingsGateway
       async (session) => {
         subscribeWsError(socket);
 
-        const { meetingId, userId } = message;
+        const { meetingId, userId, url } = message;
 
         const meeting = await this.meetingsService.findById({
           id: meetingId,
           session,
         });
 
-        const meetingLink = meeting.links.find(link => link.url === message?.url);
-        if (meetingLink) {
-          meetingLink.users.push(userId);
-        }
-
-        await this.meetingsService.findByIdAndUpdate({
-          id: meetingId,
-          data: {
-            links: [...meeting.links, meetingLink]
-
-          },
-          session,
+        const meetingLinks = meeting.links.map(link => {
+          if (link.url == url) {
+            link.users.push(userId);
+          }
+          
+          return link;
         });
+
+          await this.meetingsService.findByIdAndUpdate({
+            id: meetingId,
+            data: {
+              links: [...meetingLinks]
+
+            },
+            session,
+          });
 
         return wsResult();
-      },
-      {
-        onFinaly: (err) => wsError(socket, err),
-      },
-    );
-  }
-
-  // Get meetings and meeting users by meeting id
-  @WsEvent(MeetingSubscribeEvents.OnGetMeetingUsersStatistics)
-  async getMeetingUsersStatistics(
-    @MessageBody() message: GetMeetingStatisticsRequestDTO,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    return withTransaction(
-      this.connection,
-      async (session) => {
-        console.log(message)
-        const { userId } = message;
-        subscribeWsError(socket);
-
-        const meetings = await this.meetingsService.findMany({
-          query: {
-            ownerProfileId: userId
-          },
-          session
-        });
-
-        throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
-        const meeting = await this.meetingsService.findById({
-          id: !!message.meetingId || meetings[0]['_id'],
-          session,
-        });
-
-        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
-        const { users } = await meeting.populate('users');
-
-        const participants = users.filter(user => user.meetingRole === 'participant');
-        const audience = users.filter(user => user.meetingRole === 'audience');
-
-        const totalParticipants = participants.length;
-        const totalAudience = audience.length;
-
-        const participantJoinTimes = participants.map(user => user.joinedAt);
-        const audienceJoinTimes = audience.map(user => user.joinedAt);
-
-        const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-        const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
-
-        const participantLeaveTimes = participants.map(user => user.leaveAt);
-        const audienceLeaveTimes = audience.map(user => user.leaveAt);
-
-        const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-        const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudience;
-
-        const participantAverageMeetingTime = participantAverageLeaveTime - participantAverageJoinTime;
-        const audienceAverageMeetingTime = audienceAverageLeaveTime - audienceAverageJoinTime;
-
-        const attendeesData = {
-          totalParticipants,
-          totalAudience,
-          participantAverageMeetingTime,
-          audienceAverageMeetingTime,
-        };
-
-        //get Locations
-        const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
-
-        for (const user of users) {
-          const profileId = user.profileId;
-          const profile = await this.coreService.findUserById({ userId: profileId });
-
-          let country = "Other";
-          let state: string | undefined;
-
-          if (profile && profile.country) {
-            country = profile.country;
-            if (["Canada", "United States"].includes(country) && profile.state) {
-              state = profile.state;
-            }
-          }
-
-          const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
-          countriesMap.set(country, countryInfo);
-          countryInfo.count++;
-
-          if (state) {
-            const stateCount = countryInfo.states?.get(state) || 0;
-            countryInfo.states?.set(state, stateCount + 1);
-          }
-        }
-
-        const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
-          country,
-          count: countryInfo.count,
-          ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
-        }));
-
-        const qaStatistics = await this.meetingQuestionAnswersService.getDocumentCounts(meeting._id);
-
-        console.log('++++++');
-        console.log({
-          attendeesData,
-          countriesArray,
-          qaStatistics
-        });
-
-        return wsResult({
-          totalParticipants,
-          totalAudience,
-          participantAverageMeetingTime,
-          audienceAverageMeetingTime,
-        });
       },
       {
         onFinaly: (err) => wsError(socket, err),
@@ -1401,6 +1291,7 @@ export class MeetingsGateway
           },
           data: {
             accessStatus: MeetingAccessStatusEnum.Left,
+            leaveAt: new Date()
           },
           session,
         });

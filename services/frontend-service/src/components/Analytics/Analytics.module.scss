@@ -33,6 +33,7 @@
   display: flex;
   justify-content: center;
   margin-top: rem(60px);
+  margin-bottom: rem(60px);
 }
 
 .statisticBlock {
@@ -84,4 +85,9 @@
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
   border-radius: 50%;
   cursor: pointer;
+}
+
+.innerTabs {
+  width: 40%;
+  min-width: 600px;
 }

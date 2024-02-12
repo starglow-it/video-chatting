@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateMeetingLinkRequestDTO {
   @IsNotEmpty({
@@ -7,19 +7,19 @@ export class UpdateMeetingLinkRequestDTO {
   @IsString({
     message: 'meeting.invalid',
   })
-  readonly meetingId: string;
+  meetingId: string;
 
   @IsNotEmpty({
-    message: 'Instance id property is empty',
+    message: 'url is empty',
   })
   @IsString({
-    message: 'meeting.invalid',
+    message: 'url.invalid',
   })
-  readonly url: string;
+  url: string;
 
   @IsNotEmpty()
   @IsString({
     message: 'Invalid userId',
   })
-  readonly userId: string;
+  userId: string;
 }

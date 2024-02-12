@@ -112,8 +112,23 @@ export class MeetingUser {
     required: false,
   })
   lastOldMessage: MeetingChatDocument;
+
+  @Prop({ default: Date.now })
+  createdAt: number;
+
+  @Prop({ default: Date.now })
+  updatedAt: number;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;
 
 export const MeetingUserSchema = SchemaFactory.createForClass(MeetingUser);
+
+MeetingUserSchema.pre('save', function (next) {
+  const now = Date.now();
+  this.updatedAt = now;
+  if (!this.createdAt) {
+    this.createdAt = now;
+  }
+  next();
+});

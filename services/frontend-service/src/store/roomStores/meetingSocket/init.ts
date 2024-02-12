@@ -102,6 +102,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
                 UsersSubscribeEvents.OnRequestSwitchRoleByAudience,
             ),
         );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnMeetingStatistics,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnMeetingStatistics,
+            ),
+        );
     }
 });
 

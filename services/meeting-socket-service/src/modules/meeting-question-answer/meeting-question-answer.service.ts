@@ -84,41 +84,4 @@ export class MeetingQuestionAnswersService {
       )
       .exec();
   }
-
-  async getDocumentCounts(meetingId: string): Promise<{
-    totalDocuments: number, reactedDocuments: number, documentsWithReactions: { body: string, username: string }[]
-  }> {
-    const pipeline = [
-      { $match: { meeting: meetingId } },
-      {
-        $group:
-        {
-          _id: null, totalDocuments: { $sum: 1 },
-          reactedDocuments: { $sum: { $cond: { if: { $gt: [{ $size: "$reactions" }, 0] }, then: 1, else: 0 } } }
-        }
-      },
-      { $project: { _id: 0, totalDocuments: 1, reactedDocuments: 1 } }
-    ];
-
-    const result = await this.meetingQuestionAnswer.aggregate(pipeline);
-
-    let documentsWithReactions: { body: string, username: string }[] = [];
-
-    if (result.length > 0) {
-      documentsWithReactions = await this.meetingQuestionAnswer.aggregate([
-        { $match: { meeting: meetingId, reactions: { $exists: true, $ne: new Map() } } },
-        { $unwind: "$reactions" },
-        { $unwind: "$reactions.v" },
-        { $lookup: { from: 'meetingusers', localField: 'reactions.v', foreignField: '_id', as: 'user' } },
-        { $unwind: "$user" },
-        { $project: { _id: 0, body: 1, username: "$user.username" } }
-      ]);
-    }
-
-    return {
-      totalDocuments: result.length > 0 ? result[0].totalDocuments : 0,
-      reactedDocuments: result.length > 0 ? result[0].reactedDocuments : 0,
-      documentsWithReactions
-    };
-  }
 }

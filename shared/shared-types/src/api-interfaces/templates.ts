@@ -100,6 +100,8 @@ export interface IUserTemplate extends ITemplate {
   author?: string;
   isAcceptNoLogin?: boolean;
   isPublishAudience: boolean;
+  isMonetizationEnabled?: boolean;
+  templatePrice?: number;
 }
 
 export interface IUpdateTemplate {

@@ -70,7 +70,11 @@ const ReactionsAnalytics = memo(
                         alignItems="center"
                         justifyContent="space-between"
                     >
-                        <BorderLinearProgress variant="determinate" value={(statistic.participantsAvgMin / 60) * 100} bgColor="#9243B7" />
+                        <BorderLinearProgress
+                            variant="determinate"
+                            value={(statistic.participantsAvgMin / (statistic.participantsAvgMin + statistic.audienceAvgMin)) * 100}
+                            bgColor="#9243B7"
+                        />
                         <CustomTypography variant="body3">
                             {statistic.participantsAvgMin}
                         </CustomTypography>
@@ -81,7 +85,11 @@ const ReactionsAnalytics = memo(
                         alignItems="center"
                         justifyContent="space-between"
                     >
-                        <BorderLinearProgress variant="determinate" value={(statistic.audienceAvgMin / 60) * 100} bgColor="#27C54A" />
+                        <BorderLinearProgress
+                            variant="determinate"
+                            value={(statistic.audienceAvgMin / (statistic.participantsAvgMin + statistic.audienceAvgMin)) * 100}
+                            bgColor="#27C54A"
+                        />
                         <CustomTypography variant="body3">
                             {statistic.audienceAvgMin}
                         </CustomTypography>
@@ -134,7 +142,7 @@ const ReactionsAnalytics = memo(
                         <CustomGrid item xs={6} container className={styles.reactionWrapper}>
                             <CustomGrid item xs={4}>
                                 <CustomTypography variant="h2" fontSize='30px'>
-                                🙏
+                                    🙏
                                 </CustomTypography>
                             </CustomGrid>
                             <CustomGrid
@@ -160,7 +168,7 @@ const ReactionsAnalytics = memo(
                         <CustomGrid item xs={6} container className={styles.reactionWrapper}>
                             <CustomGrid item xs={4}>
                                 <CustomTypography variant="h2" fontSize='30px'>
-                                🤯
+                                    🤯
                                 </CustomTypography>
                             </CustomGrid>
                             <CustomGrid
@@ -186,7 +194,7 @@ const ReactionsAnalytics = memo(
                         <CustomGrid item xs={6} container className={styles.reactionWrapper}>
                             <CustomGrid item xs={4}>
                                 <CustomTypography variant="h2" fontSize='30px'>
-                                😍
+                                    😍
                                 </CustomTypography>
                             </CustomGrid>
                             <CustomGrid
@@ -212,7 +220,7 @@ const ReactionsAnalytics = memo(
                         <CustomGrid item xs={6} container className={styles.reactionWrapper}>
                             <CustomGrid item xs={4}>
                                 <CustomTypography variant="h2" fontSize='30px'>
-                                🔥
+                                    🔥
                                 </CustomTypography>
                             </CustomGrid>
                             <CustomGrid
@@ -238,7 +246,7 @@ const ReactionsAnalytics = memo(
                         <CustomGrid item xs={6} container className={styles.reactionWrapper}>
                             <CustomGrid item xs={4}>
                                 <CustomTypography variant="h2" fontSize='30px'>
-                                👏
+                                    👏
                                 </CustomTypography>
                             </CustomGrid>
                             <CustomGrid

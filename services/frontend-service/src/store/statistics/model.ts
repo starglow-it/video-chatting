@@ -7,7 +7,35 @@ import {
     GetRoomRatingStatisticParams,
     GetMonetizationStatisticParams,
     MonetizationStatisticState,
+    MeetingStatisticsState
 } from '../types';
+
+const initialMeetingStatisticsState = {
+    meetingNames: {
+        id: '',
+        name: '',
+        startedAt: '',
+    },
+    attendeesData: {
+        totalParticipants: 0,
+        totalAudiences: 0,
+        participantAverageMeetingTime: 0,
+        audienceAverageMeetingTime: 0
+    },
+    countriesArray: [],
+    reactions: {
+        participants: 0,
+        audiences: 0,
+        reactions: []
+    },
+    qaStatistics: [],
+    meetingLinks: [],
+    monetization: {
+        entryFee: 0,
+        totalFees: 0,
+        donations: 0,
+    }
+}
 
 export const $usersStatisticsStore =
     statisticsDomain.createStore<UsersStatisticsState>({
@@ -28,22 +56,7 @@ export const $subscriptionsStatistics =
     });
 
 export const $roomsStatistics =
-    statisticsDomain.createStore<RoomsStatisticsState>({
-        state: {
-            data: [],
-            totalNumber: 0,
-        },
-        error: null,
-    });
-
-export const $roomsRatingStatistics =
-    statisticsDomain.createStore<RoomsRatingStatisticState>({
-        state: {
-            data: [],
-            totalNumber: 0,
-        },
-        error: null,
-    });
+    statisticsDomain.createStore<MeetingStatisticsState>(initialMeetingStatisticsState);
 
 export const $usersMonetizationStatistics =
     statisticsDomain.createStore<MonetizationStatisticState>({
@@ -97,6 +110,11 @@ export const getPlatformMonetizationStatisticsFx =
 export const resetUsersMonetization = statisticsDomain.createEvent(
     'resetUsersMonetization',
 );
+
+export const setRoomsStatisticsEvent = statisticsDomain.createEvent(
+    'setRoomsStatistics',
+);
+
 export const resetPlatformMonetization = statisticsDomain.createEvent(
     'resetPlatformMonetization',
 );

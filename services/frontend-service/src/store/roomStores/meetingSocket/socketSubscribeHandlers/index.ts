@@ -4,6 +4,7 @@ import { UsersSubscribeEvents } from '../../../../const/socketEvents/subscribers
 // handlers
 import { handleUpdateUser } from './handleUpdateUser';
 import { handleKickUser } from './handleKickUser';
+import { handleGetMeetingStatistics } from './handleGetMeetingStatistics';
 import { handleUpdateUsers } from './handleUpdateUsers';
 import { handleRemoveUsers } from './handleRemoveUsers';
 
@@ -26,6 +27,7 @@ const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
     [UsersSubscribeEvents.OnRemoveUsers, { handler: handleRemoveUsers }],
     [UsersSubscribeEvents.OnUpdateUsers, { handler: handleUpdateUsers }],
     [UsersSubscribeEvents.OnKickUser, { handler: handleKickUser }],
+    [UsersSubscribeEvents.OnMeetingStatistics, { handler: handleGetMeetingStatistics }],
     [UsersSubscribeEvents.OnUpdateUser, { handler: handleUpdateUser }],
     [
         UsersSubscribeEvents.OnAnswerSwitchRoleByHost,
