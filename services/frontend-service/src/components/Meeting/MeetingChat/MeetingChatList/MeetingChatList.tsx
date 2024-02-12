@@ -75,7 +75,7 @@ export const MeetingChatList = () => {
                         loading="eager"
                         alt="media-item"
                     />
-                    <span className={styles.textEmpty}>Chat is empy</span>
+                    <span className={styles.textEmpty}>Chat is empty</span>
                     <span className={styles.textEmpty}>
                         Please type a message and send.
                     </span>
