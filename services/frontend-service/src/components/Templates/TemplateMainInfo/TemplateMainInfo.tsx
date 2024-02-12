@@ -59,12 +59,12 @@ const Component = ({
                             authorThumbnail={authorThumbnail}
                             authorName={authorName}
                         />
-                        <ConditionalRender condition={Boolean(type)}>
+                        {/* <ConditionalRender condition={Boolean(type)}>
                             <TemplatePaymentType
                                 type={type}
                                 priceInCents={priceInCents}
                             />
-                        </ConditionalRender>
+                        </ConditionalRender> */}
                     </CustomGrid>
                 )}
             </CustomGrid>
