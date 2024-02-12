@@ -94,6 +94,9 @@
         "hint": "When you Leave callers can still look around and\nsend payments",
         "tooltip": "Exit"
     },
+    "doNotDisturb": {
+      "tooltip": "Do not disturb"
+    },
     "invite": {
         "title": "Invite now",
         "emailTitle": "Email invitation",
