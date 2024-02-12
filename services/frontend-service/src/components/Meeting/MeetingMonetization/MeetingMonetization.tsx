@@ -156,7 +156,8 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
         }
     }, []);
 
-    const onSubmit = useCallback(async () => {
+    const onSubmit = useCallback(async (event) => {
+        event.preventDefault();
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
         const payload = {
@@ -194,10 +195,12 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
             },
         };
         if (!isRoomCreate) {
+            console.log('111');
             updatePaymentMeetingEvent({
                 ...payload
             });
         } else {
+            console.log('222');
             setCreateRoomPaymentDataEvent({
                 ...payload
             });
