@@ -600,6 +600,7 @@ export class MeetingsGateway
             isAuraActive: message.user.isAuraActive,
             joinedAt: Date.now(),
             userPosition: u.position,
+            doNotDisturb: false,
             userSize: u.size,
             ...(!!lastOldMessage && {
               lastOldMessage,

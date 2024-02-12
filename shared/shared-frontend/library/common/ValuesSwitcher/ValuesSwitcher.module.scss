@@ -58,6 +58,7 @@
     border-radius: rem(8px);
     &.active {
       color: $primary-black;
+      background-color: white;
     }
     &.disabled {
       color: $normal-gray-scale;

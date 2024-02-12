@@ -1,5 +1,6 @@
 export enum MeetingSubscribeEvents {
     OnGetMeetingNotes = 'meeting:notes:get',
+    OnGetMeetingReactions = 'meeting:reaction:get',
     OnUpdateMeeting = 'meeting:update',
     OnUserAccepted = 'meeting:userAccepted',
     OnMeetingEnterRequest = 'meeting:accessRequest:receive',
@@ -7,6 +8,8 @@ export enum MeetingSubscribeEvents {
     OnUpdateMeetingTemplate = 'template:update',
     OnSendMeetingNote = 'meeting:notes:create',
     OnRemoveMeetingNote = 'meeting:notes:delete',
+    OnSendMeetingReaction = 'meeting:reaction:create',
+    OnRemoveMeetingReaction = 'meeting:reaction:delete',
     OnMeetingError = 'meeting:error',
     OnPlaySound = 'meeting:sounds.play',
     OnMeetingTimeLimit = 'meeting:timeLimit',

@@ -22,7 +22,7 @@ import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable
 import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore, addNotificationEvent } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isCameraActiveStore, $isOwner, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
+import { $isCameraActiveStore, $isOwner, $meetingStore, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -32,6 +32,7 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 import styles from './MeetingUserVideoItem.module.scss';
 import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
 import { NotificationType } from 'src/store/types';
+import { EmojiPlayground } from '../EmojiPlayground/EmojiPlayground';
 
 // utils
 
@@ -220,6 +221,7 @@ const Component = ({
     const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
 
     const [scale, setScale] = useState<number>(videoSize);
+    const meeting = useStore($meetingStore);
 
     useEffect(() => {
         setScale(videoSize);
@@ -278,6 +280,7 @@ const Component = ({
                     </CustomPaper>
                 </ConditionalRender>
             </CustomGrid>
+            {userId !== meeting.hostUserId ? < EmojiPlayground userId={userId} /> : null}
         </MeetingUserVideoPositionWrapper>
     );
 };

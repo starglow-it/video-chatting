@@ -113,6 +113,12 @@ export class MeetingUser {
   })
   lastOldMessage: MeetingChatDocument;
 
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  doNotDisturb: boolean;
+
   @Prop({ default: Date.now })
   createdAt: number;
 

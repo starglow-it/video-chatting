@@ -187,7 +187,7 @@ const Component = () => {
 
     const handleSubmit = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
-        if (userTemplate) {
+        if (!!userTemplate) {
             await router.push(dashboardRoute);
         }
     };
@@ -195,7 +195,7 @@ const Component = () => {
     const handleSubmitAndEnterMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (userTemplate) {
+        if (!!userTemplate) {
             const result = await createMeetingFx({ templateId: userTemplate?.id });
 
             if (result.template) {
@@ -211,7 +211,7 @@ const Component = () => {
     const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (userTemplate) {
+        if (!!userTemplate) {
             setScheduleTemplateIdEvent(userTemplate?.id);
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
@@ -232,50 +232,10 @@ const Component = () => {
         },
         [template?.id],
     );
-
-    const handleUpgradePlan = useCallback(
-        async (data: IUploadTemplateFormData) => {
-            if (!template?.templateId) {
-                return;
-            }
-
-            const payload = {
-                name: data.name,
-                description: data.description,
-                customLink: data.customLink,
-                isPublic: data.isPublic,
-                maxParticipants: data.participantsNumber,
-                usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
-                draft: false,
-                url: data.url,
-                previewUrls: data.previewUrls,
-                links: data.templateLinks?.map(link => ({
-                    item: link.value,
-                    title: link.title ?? '',
-                    position: {
-                        top: link.top,
-                        left: link.left,
-                    },
-                })),
-                mediaLink: data.youtubeUrl
-                    ? {
-                        src: data.youtubeUrl,
-                        thumb: mapToThumbYoutubeUrl(data.youtubeUrl),
-                        platform: 'youtube',
-                    }
-                    : null,
-            };
-
-            await editTemplateFx({
-                templateId: template.id,
-                data: payload as any,
-            });
-
-            onShowSubscriptions();
-        },
-        [onShowSubscriptions, template?.templateId],
-    );
+    
+    const handleUpgradePlan = () => {
+        onShowSubscriptions();
+    };
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean) => {

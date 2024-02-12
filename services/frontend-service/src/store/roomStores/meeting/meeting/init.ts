@@ -28,6 +28,7 @@ import {
 } from '../../videoChat/localMedia/model';
 import {
     $isMeetingInstanceExists,
+    $isOwnerDoNotDisturb,
     $isOwnerInMeeting,
     $meetingTemplateStore,
 } from '../meetingTemplate/model';
@@ -70,6 +71,7 @@ sample({
         isCameraActive: $isCameraActiveStore,
         // isOwner: $isOwner,
         isOwnerInMeeting: $isOwnerInMeeting,
+        isOwnerDoNotDisturb: $isOwnerDoNotDisturb,
         isMeetingInstanceExists: $isMeetingInstanceExists,
         changeStream: $changeStreamStore,
         isAuraActive: $isAuraActive,

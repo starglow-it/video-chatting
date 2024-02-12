@@ -32,6 +32,8 @@ import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttend
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/TemplateLinks';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -384,19 +386,9 @@ const Component = ({
         [onSubmitAndScheduleMeeting, isFileUploading],
     );
 
-    const handleUpgradePlanClick = useCallback(
-        onSubmitForm(async data => {
-            if (isFileUploading) {
-                addNotificationEvent({
-                    type: NotificationType.BackgroundFileIsNotUploadedYet,
-                    message: 'createRoom.uploadBackground.isPending',
-                });
-                return;
-            }
-            onUpgradePlan(data);
-        }),
-        [onUpgradePlan, isFileUploading],
-    );
+    const handleUpgradePlanClick = () => {
+        onUpgradePlan();
+    };
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherItem<number>) => {
@@ -468,6 +460,7 @@ const Component = ({
                 <form>
                     <TemplateBackgroundPreview
                         isFileUploading={isFileUploading}
+                        activeValue={activeValue}
                     >
                         <ConditionalRender
                             condition={activeValue === TabsValues.Background}
@@ -671,7 +664,7 @@ const Component = ({
                                 container
                                 flex={2}
                                 justifyContent="center"
-                                className={ styles.mobileNavigationBar }
+                                className={styles.mobileNavigationBar}
                             >
                                 <CustomPaper
                                     style={{ backgroundColor: '#333333' }}
@@ -690,6 +683,8 @@ const Component = ({
                 </form>
             </FormProvider>
             <ConfirmCancelRoomCreationDialog onConfirm={onCancel} />
+            <ScheduleMeetingDialog />
+            <DownloadIcsEventDialog />
         </CustomGrid>
     );
 };

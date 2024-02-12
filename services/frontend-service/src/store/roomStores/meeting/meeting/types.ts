@@ -22,6 +22,7 @@ export type JoinMeetingFxPayload = JoinMeetingEventPayload & {
     isAuraActive: boolean;
     currentVideoDevice: string;
     currentAudioDevice: string;
+    isOwnerDoNotDisturb: boolean;
 };
 
 export type JoinMeetingWithAudienceFxPayload = {
