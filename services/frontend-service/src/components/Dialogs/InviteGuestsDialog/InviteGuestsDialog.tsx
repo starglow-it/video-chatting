@@ -205,7 +205,7 @@ export const InviteGuestsDialog = () => {
                         <CopyToClipboard text={link} onCopy={handleLinkCopied}>
                             <CustomGrid className={styles.actionItem}>
                                 <CustomImage
-                                    src="/images/white-link.jpg"
+                                    src="/images/white-link.png"
                                     width={40}
                                     height={40}
                                     className={styles.button}
