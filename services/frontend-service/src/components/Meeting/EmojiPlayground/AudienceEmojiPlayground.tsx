@@ -21,11 +21,11 @@ import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useGSAP } from '@gsap/react';
 
-import styles from './EmojiPlayground.module.scss'
+import styles from './AudienceEmojiPlayground.module.scss'
 
 gsap.registerPlugin(MotionPathPlugin);
 
-const Component = ({ userId }: { userId: string }) => {
+const Component = () => {
     const meetingReactions = useStore($meetingReactionsStore);
     const meeting = useStore($meetingStore);
     const localUser = useStore($localUserStore);
@@ -33,79 +33,40 @@ const Component = ({ userId }: { userId: string }) => {
 
     const container = useRef(null);
 
+    const [emojiOwner, setEmojiOwner] = useState(null);
+
     const { contextSafe } = useGSAP({ scope: container });
 
     const startReactionBubbling = contextSafe((reaction) => {
-        if (reaction.user === meeting.hostUserId) {
-            gsap.set(`svg[data-key="${reaction.id}"]`, {
-                height: `1500px`,
-                width: "100%",
-                position: "absolute",
-                bottom: "-70%",
-                left: "15%",
-            });
-            gsap.set(`path[data-key="${reaction.id}"]`, {
-                height: '100%'
-            });
+        gsap.set(`svg[data-key="${reaction.id}"]`, {
+            height: `1500px`,
+            width: "100%",
+            position: "absolute",
+            bottom: "-70%",
+            left: "15%",
+        });
+        gsap.set(`path[data-key="${reaction.id}"]`, {
+            height: '100%'
+        });
 
-            gsap.set(`div[data-key="${reaction.id}"]`, {
-                width: "100px",
-                height: "115px",
-                position: "absolute",
-                bottom: 0,
-                left: "50%",
-            })
+        gsap.set(`div[data-key="${reaction.id}"]`, {
+            width: "50px",
+            height: "60px",
+            position: "absolute",
+            bottom: 0,
+            left: "50%",
+        })
 
-            gsap.to(`div[data-key="${reaction.id}"]`, {
-                motionPath: {
-                    path: `path[data-key="${reaction.id}"]`,
-                    align: `path[data-key="${reaction.id}"]`,
-                    alignOrigin: [0.5, 0.5],
-                },
-                width: `150px`,
-                height: `165px`,
-                duration: 10,
-                delay: 0,
-                ease: "power1.out",
-                onComplete: () => {
-                }
-            });
-        } else {
-            gsap.set(`svg[data-key="${reaction.id}"]`, {
-                height: `500px`,
-                width: "100%",
-                position: "absolute",
-                bottom: "30px",
-                left: "0",
-            });
-            gsap.set(`path[data-key="${reaction.id}"]`, {
-                height: '100%'
-            });
-            gsap.set(`img[data-key="${reaction.id}"]`, {
-                width: "100px",
-                height: "100px",
-                position: "absolute",
-                bottom: 0,
-                left: "50%",
-                zIndex: 9999
-            })
-
-            gsap.to(`img[data-key="${reaction.id}"]`, {
-                motionPath: {
-                    path: `path[data-key="${reaction.id}"]`,
-                    align: `path[data-key="${reaction.id}"]`,
-                    alignOrigin: [0.5, 0.5],
-                },
-                width: `0px`,
-                height: `0px`,
-                display: 'none',
-                duration: 7,
-                delay: 0,
-                ease: "power1.out",
-                onComplete: () => {
-                }
-            });
-        }
+        gsap.to(`div[data-key="${reaction.id}"]`, {
+            y: '-1500px',
+            width: `50px`,
+            height: `60px`,
+            duration: 10,
+            delay: 0,
+            ease: "power1.out",
+            onComplete: () => {
+            }
+        });
     })
 
     useEffect(() => {
@@ -189,34 +150,37 @@ const Component = ({ userId }: { userId: string }) => {
 
     useEffect(() => {
         const length = meetingReactions.length;
-        if (length > 0 && meetingReactions[length - 1].user === userId) {
+
+        // if (length > 0) {
+        //     setEmojiOwner(meetingUsers.find(user => user.id === meetingReactions[length - 1].user));
+        // }
+
+        if (length > 0 && meetingUsers.find(user => user.id === meetingReactions[length - 1].user)?.meetingRole === 'audience') {
             startReactionBubbling(meetingReactions[length - 1]);
         }
     }, [meetingReactions])
 
 
     return (
-        <div className={clsx(styles.playgroundWrapper, { [styles.isParticipant]: userId !== meeting.hostUserId })} ref={container}>
-            {meetingReactions.filter(reaction => reaction.user === userId).map(reaction => (<>
+        <div className={clsx(styles.playgroundWrapper)} ref={container}>
+            {meetingReactions.filter(reaction => meetingUsers.find(user => user.id === reaction.user)?.meetingRole === 'audience').map(reaction => (<>
                 <svg viewBox="0 0 22 110" fill="none" xmlns="http://www.w3.org/2000/svg" data-key={reaction.id} style={{ width: 0, height: 0 }}>
                     <path d="M14.6485 109C10.099 108.037 1 102.763 1 89.3636C1 72.615 22.6101 61.6417 20.904 40.8503C19.198 20.0588 15.7859 9.6631 1 1" data-key={reaction.id}></path>
                 </svg>
-                <div data-key={reaction.id} className={styles.emojiElement}>
+                <div data-key={reaction.id}>
                     <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: '100%', height: '100%' }}></img>
-                    <ConditionalRender condition={userId === meeting.hostUserId}>
-                        <CustomPaper
-                            className={styles.usernameWrapper}
-                            variant="black-glass"
+                    <CustomPaper
+                        className={styles.usernameWrapper}
+                        variant="black-glass"
+                    >
+                        <CustomTypography
+                            color="common.white"
+                            variant="body3"
+                            className={styles.username}
                         >
-                            <CustomTypography
-                                color="common.white"
-                                variant="body3"
-                                className={styles.username}
-                            >
-                                {meetingUsers.find(user => user?.id === userId)?.username}
-                            </CustomTypography>
-                        </CustomPaper>
-                    </ConditionalRender>
+                            {meetingUsers.find(user => user?.id === reaction.user)?.username}
+                        </CustomTypography>
+                    </CustomPaper>
                 </div>
             </>
             ))}
@@ -224,4 +188,4 @@ const Component = ({ userId }: { userId: string }) => {
     )
 }
 
-export const EmojiPlayground = memo(Component);
+export const AudienceEmojiPlayground = memo(Component);
