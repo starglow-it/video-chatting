@@ -65,6 +65,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                     src={template?.mediaLink?.thumb || ''}
                     width="334px"
                     height="190px"
+                    layout='fill'
                 />
             );
         }
@@ -75,6 +76,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                         src={template?.url || ''}
                         width="334px"
                         height="190px"
+                        layout='fill'
                     />
                 );
             case 'video':
