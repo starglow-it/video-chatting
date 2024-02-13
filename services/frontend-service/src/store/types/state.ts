@@ -55,14 +55,12 @@ export type MeetingStatisticsState = {
         total: number;
         participants: number,
         audiences: number,
-        reactions: [
-            {
-                totalReactions: number,
-                participantsNum: number,
-                audienceNum: number,
-                reactionName: string
-            }
-        ]
+        reactions: {
+            totalReactions: number,
+            participantsNum: number,
+            audienceNum: number,
+            reactionName: string
+        }[]
     };
     qaStatistics: {
         content: string,

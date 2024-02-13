@@ -10,7 +10,7 @@ import {
     MeetingStatisticsState
 } from '../types';
 
-const initialMeetingStatisticsState = {
+const initialMeetingStatisticsState:MeetingStatisticsState = {
     meetingNames: {
         id: '',
         name: '',
@@ -123,6 +123,6 @@ export const resetPlatformMonetization = statisticsDomain.createEvent(
     'resetPlatformMonetization',
 );
 
-export const setRoomStatisticsLoadingEvent = statisticsDomain.createEvent(
+export const setRoomStatisticsLoadingEvent = statisticsDomain.createEvent<boolean>(
     'setRoomStatisticsLoadingEvent',
 );

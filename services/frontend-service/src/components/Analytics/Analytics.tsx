@@ -48,9 +48,9 @@ import {
     getStatisticsSocketEvent,
 } from '../../store/roomStores';
 
-enum Tabs {
-    TermsOfService = 'termsOfService',
-    PrivacyPolicy = 'privacyPolicy',
+interface RoomName {
+    id: any; // Consider using a more specific type than 'any' for better type safety.
+    name: string;
 }
 
 const Component = () => {
@@ -59,11 +59,11 @@ const Component = () => {
     const roomsStatisticsLoading = useStore($roomsStatisticsLoading);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const [basedOnKey, setBasedOnKey] = useState('');
-    const [roomNames, setRoomNames] = useState([]);
+    const [roomNames, setRoomNames] = useState<RoomName[]>([]);
     const [attendeesData, setAttendeesData] = useState({});
-    const [locationData, setLocationData] = useState({ data: [] });
+    const [locationData, setLocationData] = useState<any>({ data: [] });
     const [reactions, setReactions] = useState({});
-    const [qa, setQa] = useState([]);
+    const [qa, setQa] = useState<any>([]);
     const [meetingLinks, setMeetingLinks] = useState({});
     const [monetization, setMonetization] = useState({});
     const { activeTab, onChange: onChangeTab } = useNavigation({
@@ -73,63 +73,68 @@ const Component = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
-            ? roomsStatistics.meetingNames.map(meeting => ({
-                id: meeting.id,
-                name: `${meeting.name} - ${meeting.startedAt}`
-            }))
-            : [];
-
-        const attendeesDataInstance = {
-            totalNumber: roomsStatistics.attendeesData.totalParticipants + roomsStatistics.attendeesData.totalAudiences,
-            participants: roomsStatistics.attendeesData.totalParticipants,
-            audience: roomsStatistics.attendeesData.totalAudiences,
-            participantsAvgMin: roomsStatistics.attendeesData.participantAverageMeetingTime,
-            audienceAvgMin: roomsStatistics.attendeesData.audienceAverageMeetingTime,
-        };
-
-        const locationStatistics = {
-            data: Array.isArray(roomsStatistics.countriesArray)
-                ? roomsStatistics.countriesArray.map(country => {
-                    return {
-                        country: country.country,
-                        state: country?.states?.map(state => ({
-                            name: state.state,
-                            num: state.count
-                        })),
-                        num: country.count
-                    };
-                })
-                : []
-        };
-
-        const qaStatistics = {
-            data: {
-                questions: roomsStatistics.qaStatistics
-            }
-        };
-
-        const meetingLinksStatistics = {
-            data: Array.isArray(roomsStatistics.countriesArray)
-                ? roomsStatistics.meetingLinks.map(link => ({
-                    link: link.url,
-                    click: link.clicks,
-                    clickThroughRate: link.clickThroughRate
+        if (Object.keys(roomsStatistics).length != 0) {
+            const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
+                ? roomsStatistics.meetingNames.map(meeting => ({
+                    id: meeting.id,
+                    name: `${meeting.name} - ${meeting.startedAt}`
                 }))
-                : []
-        };
+                : [];
 
-        const monetizationStatistics = {
-            data: roomsStatistics.monetization
-        };
+            const attendeesDataInstance = {
+                totalNumber: roomsStatistics.attendeesData.totalParticipants + roomsStatistics.attendeesData.totalAudiences,
+                participants: roomsStatistics.attendeesData.totalParticipants,
+                audience: roomsStatistics.attendeesData.totalAudiences,
+                participantsAvgMin: roomsStatistics.attendeesData.participantAverageMeetingTime,
+                audienceAvgMin: roomsStatistics.attendeesData.audienceAverageMeetingTime,
+            };
 
-        setRoomNames(roomNamesList);
-        setAttendeesData(attendeesDataInstance);
-        setLocationData(locationStatistics);
-        setReactions(roomsStatistics.reactions);
-        setQa(qaStatistics);
-        setMeetingLinks(meetingLinksStatistics);
-        setMonetization(monetizationStatistics);
+            const locationStatistics = {
+                data: Array.isArray(roomsStatistics.countriesArray)
+                    ? roomsStatistics.countriesArray.map(country => {
+                        return {
+                            country: country.country,
+                            state: country?.states?.map(state => ({
+                                name: state.state,
+                                num: state.count
+                            })),
+                            num: country.count
+                        };
+                    })
+                    : []
+            };
+
+            const qaStatistics = {
+                data: {
+                    questions: roomsStatistics.qaStatistics
+                }
+            };
+
+            const meetingLinksStatistics = {
+                data: Array.isArray(roomsStatistics.countriesArray)
+                    ? roomsStatistics.meetingLinks.map(link => ({
+                        link: link.url,
+                        click: link.clicks,
+                        clickThroughRate: link.clickThroughRate
+                    }))
+                    : []
+            };
+
+            const monetizationStatistics = {
+                data: roomsStatistics.monetization
+            };
+
+            setRoomNames(roomNamesList);
+            setAttendeesData(attendeesDataInstance);
+            setLocationData(locationStatistics);
+            setReactions(roomsStatistics.reactions);
+            setQa(qaStatistics);
+            setMeetingLinks(meetingLinksStatistics);
+            setMonetization(monetizationStatistics);
+            if (roomNamesList.length > 0 && !basedOnKey) {
+                setBasedOnKey(roomNamesList[0].id);
+            }
+        }
     }, [roomsStatistics]);
 
     useEffect(() => {
@@ -147,11 +152,6 @@ const Component = () => {
         })();
     }, [isMeetingSocketConnected]);
 
-    useEffect(() => {
-        if (router.query.section === 'privacy') {
-            onChangeTab(Tabs.PrivacyPolicy);
-        }
-    }, [router.query]);
 
     useEffect(() => {
         getRoomRatingStatisticsFx({
@@ -255,7 +255,8 @@ const Component = () => {
                 {
                     roomsStatisticsLoading
                         ? <CustomLoader className={styles.loader} />
-                        : <>
+                        : Object.keys(roomsStatistics).length > 0 ?
+                        <>
                             <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
                                 <CustomGrid
                                     item
@@ -320,7 +321,11 @@ const Component = () => {
                                         className={styles.qaAnalyticsBlock}
                                     />
                                 </CustomGrid>
-                            </ConditionalRender></>
+                            </ConditionalRender>
+                        </> : 
+                        <>
+                            
+                        </>
                 }
             </CustomGrid>
         </CustomGrid>

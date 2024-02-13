@@ -219,13 +219,12 @@ export class UsersGateway extends BaseGateway {
         });
 
         throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
-        if (meetings) {
+        if (meetings.length > 0) {
           for (const meeting of meetings) {
             let meetingInstance = {
               id: meeting._id,
               name: 'Anonymous',
-              startedAt: this.dateFormat(meeting.startAt)
+              startedAt: meeting.startAt ? this.dateFormat(meeting.startAt) : ""
             };
 
             const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
@@ -262,7 +261,6 @@ export class UsersGateway extends BaseGateway {
 
           const participantLeaveTimes = participants.map(user => user.leaveAt);
           const audienceLeaveTimes = audiences.map(user => user.leaveAt);
-
           const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
           const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
 
@@ -366,8 +364,8 @@ export class UsersGateway extends BaseGateway {
           }
 
           const monetization = {
-            entryFee: template.isMonetizationEnabled ? template.templatePrice : 0,
-            totalFees: template.isMonetizationEnabled ? template.templatePrice * (totalParticipants + totalAudiences) : 0,
+            entryFee: template?.isMonetizationEnabled ? template?.templatePrice ?? 0 : 0,
+            totalFees: template?.isMonetizationEnabled ? (template?.templatePrice ?? 0) * (totalParticipants + totalAudiences) : 0,
             donations: 0
           };
 
@@ -392,6 +390,11 @@ export class UsersGateway extends BaseGateway {
             meetingLinks,
             monetization
           });
+        } else {
+          
+          this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, null);
+
+          return wsResult(null);
         }
       },
       {

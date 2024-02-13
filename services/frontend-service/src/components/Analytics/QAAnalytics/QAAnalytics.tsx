@@ -20,7 +20,7 @@ const QAAnalytics = memo(
         statistic: qaStatistics;
     }>) => {
 
-        const renderedQuestions = useMemo(() => {
+        const renderedQuestions = () => {
             return statistic.data.questions.map((q, index) => {
                 return (
                     <CustomGrid
@@ -43,7 +43,7 @@ const QAAnalytics = memo(
                     </CustomGrid>
                 );
             });
-        }, []);
+        };
 
         return (
             <CustomPaper className={className}>
@@ -119,7 +119,7 @@ const QAAnalytics = memo(
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
-                    {renderedQuestions}
+                    {renderedQuestions()}
                 </CustomGrid>
             </CustomPaper>
         );

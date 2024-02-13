@@ -17,7 +17,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { LocationStatistics } from 'shared-types';
 import styles from './LocationAnalytics.module.scss';
 
-const pieChartColour = ['#3B1BFD', '#F81BFD', '#FBFF4E', '#27C54A', '#9243B7'];
+const pieChartColor = ['#3B1BFD', '#F81BFD', '#FBFF4E', '#27C54A', '#9243B7', '#F97A1C', '#00A6ED', '#E63946', '#F4E285'];
 
 const LocationAnalytics = memo(
     ({
@@ -31,7 +31,7 @@ const LocationAnalytics = memo(
         });
         const pieData = data.map((item, index) => ({
             ...item,
-            color: pieChartColour[index],
+            color: pieChartColor[index],
         }));
 
         const renderCountryAnalytics = useMemo(() => {
@@ -52,7 +52,7 @@ const LocationAnalytics = memo(
                             justifyContent="space-between"
                         >
                             <CustomGrid item container alignItems="center" className={styles.attendeesDescWrapper}>
-                                <FiberManualRecordIcon style={{ color: pieChartColour[index] }} className={styles.participantsIcon} />
+                                <FiberManualRecordIcon style={{ color: pieChartColor[index] }} className={styles.participantsIcon} />
                                 <CustomTypography variant="body2">
                                     {item.country}
                                 </CustomTypography>

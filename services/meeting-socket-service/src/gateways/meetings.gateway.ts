@@ -354,6 +354,9 @@ export class MeetingsGateway
           leaveAt: new Date()
         };
 
+        console.log('0000000000000000000')
+        console.log(updateData)
+
         if (this.isChangeVideoContainer(user)) {
           const u = await this.usersService.updateVideoContainer({
             userTemplate,
@@ -377,6 +380,8 @@ export class MeetingsGateway
           session,
         });
 
+        console.log('0000000 saved data')
+        console.log(userUpdated)
         if (isOwner) {
         }
 
@@ -1285,7 +1290,7 @@ export class MeetingsGateway
         throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
         const userId = user._id.toString();
-
+        console.log('[[[[[[[[[[[[[[[[[')
         await this.usersComponent.findOneAndUpdate({
           query: {
             socketId: socket.id,

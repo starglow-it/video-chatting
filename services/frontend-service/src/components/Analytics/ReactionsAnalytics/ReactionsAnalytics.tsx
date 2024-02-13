@@ -41,14 +41,14 @@ const ReactionsAnalytics = memo(
     }: PropsWithClassName<{
         statistic: ReactionStatistics;
     }>) => {
-        const [statisticsData, setStatisticsData] = useState([]);
+        const [statisticsData, setStatisticsData] = useState<ReactionStatistics['reactions']>([]);
 
         useEffect(() => {
             setStatisticsData(statistic.reactions);
         }, [statistic]);
 
         const renderEmojiIcon = (emojiName: string) => {
-            const emoji = AVAILABLE_REACTIONS.find(reaction => reaction.text === emojiName);
+            const emoji: any = AVAILABLE_REACTIONS.find(reaction => reaction.text === emojiName);
 
             return (
                 <div className={styles.emojiBox}>
@@ -58,7 +58,7 @@ const ReactionsAnalytics = memo(
         };
 
         const renderPopularReactions = () => {
-            const reactions = statisticsData.sort((prev, next) => next.totalReactions - prev.totalReactions).slice(0, 6);
+            const reactions = Array.isArray(statisticsData) ? statisticsData.sort((prev, next) => next.totalReactions - prev.totalReactions).slice(0, 6) : [];
             return reactions.map(reaction => (
                 <CustomGrid item xs={6} container className={styles.reactionWrapper} key={reaction.reactionName}>
                     <CustomGrid item xs={4}>
