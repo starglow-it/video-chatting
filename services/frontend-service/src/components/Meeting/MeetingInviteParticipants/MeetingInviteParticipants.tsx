@@ -12,6 +12,7 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { EmailIcon } from 'shared-frontend/icons/OtherIcons/EmailIcon';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
+import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
@@ -42,11 +43,11 @@ import styles from './MeetingInviteParticipants.module.scss';
 
 const Component = ({
     isParticipantPanelShow,
-    onAction, 
+    onAction,
     handleParticipantPanel
 }: {
-    isParticipantPanelShow:Boolean,
-    onAction?: () => void, 
+    isParticipantPanelShow: Boolean,
+    onAction?: () => void,
     handleParticipantPanel: (data: Boolean) => void
 }) => {
     const router = useRouter();
@@ -99,30 +100,17 @@ const Component = ({
 
     return (
         <>
+            <CustomTypography color="common.white" className={styles.headerTitle}>
+                Add Callers
+                <PersonPlusIcon width="18px" height="18px" className={styles.icon} />
+            </CustomTypography>
             <CustomGrid
                 container
                 alignItems="center"
             >
                 <CustomGrid
                     container
-                    alignItems="center"
-                >
-                    <Button
-                        variant="text"
-                        className={clsx(styles.title, styles.attendeeBtn, {
-                            [styles.activeBtn]: !isParticipantPanelShow
-                        })}
-                        onClick={() => handleParticipantPanel(false)}
-                    >Audiences</Button>
-                    <ConditionalRender condition={!localUser.isGenerated}>
-                        <div className={styles.statistics}>
-                            {audiences.length}
-                        </div>
-                    </ConditionalRender>
-                </CustomGrid>
-                <CustomGrid
-                    container
-                    className={clsx(styles.meetingInvitesWrapper, styles.attendeesStatistics)}
+
                     alignItems="center"
                 >
                     <Button
@@ -136,53 +124,69 @@ const Component = ({
                         <div className={styles.statistics}>
                             {participants.length}
                         </div>
+                        <CopyToClipboard
+                            text={getClientMeetingUrlWithDomain(
+                                router.query.token as string,
+                            )}
+                            onCopy={handleLinkCopied}
+                        >
+                            <CustomTooltip
+                                nameSpace="meeting"
+                                translation="invite.copyLink"
+                            >
+                                <ActionButton
+                                    className={styles.button}
+                                    Icon={<CopyLinkIcon width="24px" height="24px" />}
+                                />
+                            </CustomTooltip>
+                        </CopyToClipboard>
+                        <CustomTooltip
+                            nameSpace="meeting"
+                            translation="schedule.tooltip"
+                        >
+                            <ActionButton
+                                onAction={handleOpenScheduling}
+                                className={styles.button}
+                                Icon={<ScheduleIcon width="24px" height="24px" />}
+                            />
+                        </CustomTooltip>
                     </ConditionalRender>
                 </CustomGrid>
-                <CustomTypography
-                    color="common.white"
-                    className={styles.title}
-                    nameSpace="meeting"
-                    translation="invite.title"
-                />
-                <CopyToClipboard
-                    text={getClientMeetingUrlWithDomain(
-                        router.query.token as string,
-                    )}
-                    onCopy={handleLinkCopied}
-                >
-                    <CustomTooltip
-                        nameSpace="meeting"
-                        translation="invite.copyLink"
-                    >
-                        <ActionButton
-                            className={styles.button}
-                            Icon={<CopyLinkIcon width="24px" height="24px" />}
-                        />
-                    </CustomTooltip>
-                </CopyToClipboard>
-                <ConditionalRender condition={!localUser.isGenerated}>
-                    <CustomTooltip
-                        nameSpace="meeting"
-                        translation="invite.sendInvite"
-                    >
-                        <ActionButton
-                            onAction={handleOpenEmailInvite}
-                            className={styles.button}
-                            Icon={<EmailIcon width="24px" height="24px" />}
-                        />
-                    </CustomTooltip>
-                </ConditionalRender>
+
                 <CustomGrid
                     container
-                    className={styles.meetingInvitesWrapper}
                     alignItems="center"
+                    className={clsx(styles.meetingInvitesWrapper, styles.attendeesStatistics)}
                 >
-                    <CustomTypography
-                        color="common.white"
-                        className={styles.title}
-                        nameSpace="meeting"
-                        translation="schedule.title"
-                    />
+                    <Button
+                        variant="text"
+                        className={clsx(styles.title, styles.attendeeBtn, {
+                            [styles.activeBtn]: !isParticipantPanelShow
+                        })}
+                        onClick={() => handleParticipantPanel(false)}
+                    >Audiences</Button>
+                    <ConditionalRender condition={!localUser.isGenerated}>
+                        <div className={styles.statistics}>
+                            {audiences.length}
+                        </div>
+
+                    </ConditionalRender>
+                    <CopyToClipboard
+                        text={getClientMeetingUrlWithDomain(
+                            router.query.token as string,
+                        )}
+                        onCopy={handleLinkCopied}
+                    >
+                        <CustomTooltip
+                            nameSpace="meeting"
+                            translation="invite.copyLink"
+                        >
+                            <ActionButton
+                                className={styles.button}
+                                Icon={<CopyLinkIcon width="24px" height="24px" />}
+                            />
+                        </CustomTooltip>
+                    </CopyToClipboard>
                     <CustomTooltip
                         nameSpace="meeting"
                         translation="schedule.tooltip"
