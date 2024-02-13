@@ -122,6 +122,7 @@ const ProfileTemplateItem = memo(
                         src={template?.mediaLink?.thumb || ''}
                         width="334px"
                         height="190px"
+                        layout='fill'
                     />
                 );
             }
@@ -132,6 +133,7 @@ const ProfileTemplateItem = memo(
                             src={template?.url || ''}
                             width="334px"
                             height="190px"
+                            layout='fill'
                         />
                     );
                 case 'video':
