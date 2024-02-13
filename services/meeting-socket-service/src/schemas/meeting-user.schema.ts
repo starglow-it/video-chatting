@@ -37,6 +37,12 @@ export class MeetingUser {
   joinedAt: number;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: Date.now,
+  })
+  leaveAt: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
     default: 'inactive',
   })
@@ -112,8 +118,23 @@ export class MeetingUser {
     default: false,
   })
   doNotDisturb: boolean;
+
+  @Prop({ default: Date.now })
+  createdAt: number;
+
+  @Prop({ default: Date.now })
+  updatedAt: number;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;
 
 export const MeetingUserSchema = SchemaFactory.createForClass(MeetingUser);
+
+MeetingUserSchema.pre('save', function (next) {
+  const now = Date.now();
+  this.updatedAt = now;
+  if (!this.createdAt) {
+    this.createdAt = now;
+  }
+  next();
+});

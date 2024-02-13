@@ -1,7 +1,10 @@
 export enum MeetingSubscribeEvents {
+  OnGetMeetings = 'meeting:get',
+  OnGetMeetingUsersStatistics = 'meeting:get:users',
   OnUpdateMeeting = 'meeting:update',
   OnJoinWaitingRoom = 'meeting:waitingRoom:join',
   OnStartMeeting = 'meeting:start',
+  OnClickMeetingLink = 'meeting:link:click',
   OnSendAccessRequest = 'meeting:accessRequest:send',
   OnCancelAccessRequest = 'meeting:accessRequest:cancel',
   OnAnswerAccessRequest = 'meeting:accessRequest:answer',

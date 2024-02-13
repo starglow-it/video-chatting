@@ -195,12 +195,10 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
             },
         };
         if (!isRoomCreate) {
-            console.log('111');
             updatePaymentMeetingEvent({
                 ...payload
             });
         } else {
-            console.log('222');
             setCreateRoomPaymentDataEvent({
                 ...payload
             });

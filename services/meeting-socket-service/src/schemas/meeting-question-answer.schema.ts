@@ -26,7 +26,7 @@ export class MeetingQuestionAnswer {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'MeetingUser',
+    ref: 'Meeting',
   })
   meeting: MeetingDocument;
 

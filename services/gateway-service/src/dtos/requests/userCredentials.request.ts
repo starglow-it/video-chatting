@@ -46,4 +46,11 @@ export class UserCredentialsRequest implements IUserCredentials {
   @IsOptional()
   @ApiProperty()
   readonly country: string;
+
+  @IsString({
+    message: 'user.state.invalid',
+  })
+  @IsOptional()
+  @ApiProperty()
+  readonly state: string;
 }

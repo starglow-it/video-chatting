@@ -26,7 +26,7 @@ const LocationAnalytics = memo(
     }: PropsWithClassName<{
         statistic: LocationStatistics;
     }>) => {
-        const data = statistic.data.map(item => {
+        const data = (statistic.data || []).map(item => {
             return { label: item.country, value: item.num };
         });
         const pieData = data.map((item, index) => ({
@@ -61,12 +61,12 @@ const LocationAnalytics = memo(
                                 {item.num}
                             </CustomTypography>
                         </CustomGrid>
-                        {((item.country === 'canada' || item.country === 'united states') &&
-                            item.state
+                        {((item.country === 'Canada' || item.country === 'United States') &&
+                            !!item.state
                         ) &&
                             item.state.map((state, stateIndex) => (
                                 <CustomGrid
-                                    key={`${item.country}-${stateIndex}`} // Use a combination of country and index as the key
+                                    key={`${item.country}-${stateIndex}`}
                                     item
                                     container
                                     direction="row"
@@ -126,7 +126,13 @@ const LocationAnalytics = memo(
                         />
                     </CustomGrid>
                     <CustomScroll className={styles.scrollWrapper}>
-                        <CustomGrid item container direction="column" className={styles.countryListWrapper}>
+                        <CustomGrid
+                            item
+                            container
+                            direction="column"
+                            gap={1.5}
+                            className={styles.countryListWrapper}
+                        >
                             {renderCountryAnalytics}
                         </CustomGrid>
                     </CustomScroll>

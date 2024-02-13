@@ -1,28 +1,23 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import Router, { useRouter } from 'next/router';
+import { memo, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
-import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // shared
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { Translation } from '@library/common/Translation/Translation';
-
-// icons
-import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // styles
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import styles from './Analytics.module.scss';
-import { $profileTemplatesStore, $templatesStore, getProfileTemplatesFx } from 'src/store';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { Fade, MenuItem } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 //components
 import { AttendeesAnalytics } from './AttendeesAnalytics/AttendeesAnalytics';
@@ -32,6 +27,7 @@ import { QAAnalytics } from './QAAnalytics/QAAnalytics';
 import { LinksAnalytics } from './LinksAnalytics/LinksAnalytics';
 import { MonetizationAnalytics } from './MonetizationAnalytics/MonetizationAnalytics';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 import {
     StatisticsTabsValues,
@@ -41,80 +37,115 @@ import {
 //store
 import {
     $profileStore,
-    $roomsRatingStatistics,
+    $roomsStatistics,
+    $roomsStatisticsLoading,
     getRoomRatingStatisticsFx,
+    setRoomStatisticsLoadingEvent
 } from '../../store';
+import {
+    $isMeetingSocketConnected,
+    initiateMeetingSocketConnectionFx,
+    getStatisticsSocketEvent,
+} from '../../store/roomStores';
 
 enum Tabs {
     TermsOfService = 'termsOfService',
     PrivacyPolicy = 'privacyPolicy',
 }
 
-//mockups
-const roomNameMockups = [
-    { id: 1, name: "room-1" },
-    { id: 2, name: "room-2" },
-    { id: 3, name: "room-3" },
-];
-
-const numberOfAttendeesMockups = {
-    totalNumber: 43,
-    participants: 4,
-    audience: 39,
-    participantsAvgMin: 60,
-    audienceAvgMin: 30,
-};
-
-const locationMockups = {
-    data: [
-        {
-            country: 'canada',
-            state: [
-                { name: 'british columbia', num: 10 },
-                { name: 'toronto', num: 5 },
-                { name: 'ontario', num: 15 },
-            ],
-            num: 30
-        },
-        { country: 'united states', num: 39 },
-        { country: 'Germany', num: 5 },
-        { country: 'United Kingdom', num: 10 },
-        { country: 'Argentina', num: 2 },
-    ]
-}
-
-const qaMockups = {
-    data: {
-        questions: [
-            { content: 'What is your favorite color?', who: 'John Doe', answered: false },
-            { content: 'What is your favorite food?', who: 'John Jensen', answered: true },
-            { content: 'What day is it?', who: 'John Belle', answered: true },
-        ]
-    }
-}
-
-const linksMockups = {
-    data: [
-        { link: 'https://www.test1.com', click: 30, clickThroughRate: 5 },
-        { link: 'https://www.test2.com', click: 10, clickThroughRate: 10 },
-        { link: 'https://www.test3.com', click: 20, clickThroughRate: 50 },
-        { link: 'https://www.test4.com', click: 50, clickThroughRate: 70 },
-    ]
-}
-
-const monetizationMockups = {
-    data: { entryFee: 5, total: 255, donations: 0 }
-}
-
 const Component = () => {
-    const { translation } = useLocalization('static');
     const profileStore = useStore($profileStore);
-    // const roomsRatingStatistics = useStore($roomsRatingStatistics);
+    const roomsStatistics = useStore($roomsStatistics);
+    const roomsStatisticsLoading = useStore($roomsStatisticsLoading);
+    const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const [basedOnKey, setBasedOnKey] = useState('');
+    const [roomNames, setRoomNames] = useState([]);
+    const [attendeesData, setAttendeesData] = useState({});
+    const [locationData, setLocationData] = useState({ data: [] });
+    const [reactions, setReactions] = useState({});
+    const [qa, setQa] = useState([]);
+    const [meetingLinks, setMeetingLinks] = useState({});
+    const [monetization, setMonetization] = useState({});
     const { activeTab, onChange: onChangeTab } = useNavigation({
         tabs: statisticTabs,
     });
+    const { isMobile } = useBrowserDetect();
     const router = useRouter();
+
+    useEffect(() => {
+        const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
+            ? roomsStatistics.meetingNames.map(meeting => ({
+                id: meeting.id,
+                name: `${meeting.name} - ${meeting.startedAt}`
+            }))
+            : [];
+
+        const attendeesDataInstance = {
+            totalNumber: roomsStatistics.attendeesData.totalParticipants + roomsStatistics.attendeesData.totalAudiences,
+            participants: roomsStatistics.attendeesData.totalParticipants,
+            audience: roomsStatistics.attendeesData.totalAudiences,
+            participantsAvgMin: roomsStatistics.attendeesData.participantAverageMeetingTime,
+            audienceAvgMin: roomsStatistics.attendeesData.audienceAverageMeetingTime,
+        };
+
+        const locationStatistics = {
+            data: Array.isArray(roomsStatistics.countriesArray)
+                ? roomsStatistics.countriesArray.map(country => {
+                    return {
+                        country: country.country,
+                        state: country?.states?.map(state => ({
+                            name: state.state,
+                            num: state.count
+                        })),
+                        num: country.count
+                    };
+                })
+                : []
+        };
+
+        const qaStatistics = {
+            data: {
+                questions: roomsStatistics.qaStatistics
+            }
+        };
+
+        const meetingLinksStatistics = {
+            data: Array.isArray(roomsStatistics.countriesArray)
+                ? roomsStatistics.meetingLinks.map(link => ({
+                    link: link.url,
+                    click: link.clicks,
+                    clickThroughRate: link.clickThroughRate
+                }))
+                : []
+        };
+
+        const monetizationStatistics = {
+            data: roomsStatistics.monetization
+        };
+
+        setRoomNames(roomNamesList);
+        setAttendeesData(attendeesDataInstance);
+        setLocationData(locationStatistics);
+        setReactions(roomsStatistics.reactions);
+        setQa(qaStatistics);
+        setMeetingLinks(meetingLinksStatistics);
+        setMonetization(monetizationStatistics);
+    }, [roomsStatistics]);
+
+    useEffect(() => {
+        (async () => {
+            await initiateMeetingSocketConnectionFx({ isStatistics: true });
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (isMeetingSocketConnected) {
+                setRoomStatisticsLoadingEvent(true);
+                await getStatisticsSocketEvent({ profileId: profileStore.id });
+            }
+        })();
+    }, [isMeetingSocketConnected]);
 
     useEffect(() => {
         if (router.query.section === 'privacy') {
@@ -123,39 +154,40 @@ const Component = () => {
     }, [router.query]);
 
     useEffect(() => {
-        const handleProfileTemplatesPageChange = async () => {
-            await getProfileTemplatesFx({
-                limit: 100,
-                skip: 0,
-            });
-        };
-        handleProfileTemplatesPageChange();
-    }, []);
-
-    useEffect(() => {
         getRoomRatingStatisticsFx({
             basedOn: 'createdAt',
             roomType: profileStore.id,
         });
     }, []);
 
+    useEffect(() => {
+        (() => {
+            getStatisticsSocketEvent({ meetingId: basedOnKey, profileId: profileStore.id });
+            setRoomStatisticsLoadingEvent(true);
+        }
+        )();
+    }, [basedOnKey]);
+
     const renderRooms = useMemo(
         () =>
-            roomNameMockups.map(room => (
+            roomNames.map(room => (
                 <MenuItem key={room.id} value={room.id}>
                     {room.name}
                 </MenuItem>
             )),
-        [],
+        [roomNames],
     );
 
     const renderTabs = useMemo(
         () =>
             statisticTabs.map(({ value, translationKey }) => (
                 <CustomChip
-                    key={value}
+                    key={translationKey}
                     active={value === activeTab.value}
-                    className={styles.chip}
+                    className={clsx(styles.chip, {
+                        [styles.chipResponsiveVisible]: translationKey === 'monetizationResponsive',
+                        [styles.chipResponsiveInVisible]: translationKey === 'monetization'
+                    })}
                     label={
                         <CustomTypography>
                             <Translation
@@ -170,9 +202,9 @@ const Component = () => {
         [activeTab],
     );
 
-    const handleChangeBasedOnKey = useCallback(({ target: { value } }) => {
+    const handleChangeBasedOnKey = ({ target: { value } }) => {
         setBasedOnKey(value);
-    }, []);
+    };
 
     return (
         <CustomGrid
@@ -190,8 +222,7 @@ const Component = () => {
                 justifyContent="center"
                 className={styles.tabs}
             >
-                <CustomGrid item md={4} xs={3}></CustomGrid>
-                <CustomGrid item md={4} xs={6}>
+                <CustomBox item container className={clsx(styles.dropdownMenu, { [styles.mobile]: isMobile })}>
                     <CustomDropdown
                         nameSpace="common"
                         translation="statistics.rooms.rating.dropdownTitle"
@@ -201,89 +232,96 @@ const Component = () => {
                         value={basedOnKey}
                         onChange={handleChangeBasedOnKey}
                     />
-                </CustomGrid>
-                <CustomGrid item md={4} xs={3}></CustomGrid>
+                </CustomBox>
             </CustomGrid>
             <CustomGrid
                 item
                 container
                 alignItems="center"
                 justifyContent="center"
-                gap={8}
                 className={styles.tabs}
             >
-                {renderTabs}
+                <CustomGrid
+                    item
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    className={styles.innerTabs}
+                >
+                    {renderTabs}
+                </CustomGrid>
             </CustomGrid>
             <CustomGrid item container className={styles.fadeWrapper}>
-                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
-                    <CustomGrid
-                        item
-                        container
-                        justifyContent="center"
-                        gap={3}
-                    >
-                        <AttendeesAnalytics
-                            statistic={numberOfAttendeesMockups}
-                            className={styles.statisticBlock}
-                        />
-                        <LocationAnalytics
-                            statistic={locationMockups}
-                            className={styles.statisticBlock}
-                        />
-                        <ReactionsAnalytics
-                            statistic={numberOfAttendeesMockups}
-                            className={styles.statisticBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
-                    <CustomGrid
-                        container
-                        className={clsx(
-                            styles.fadeContainer,
-                            styles.roomsStatistics,
-                        )}
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <QAAnalytics
-                            statistic={qaMockups}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender
-                    condition={activeTab.value === StatisticsTabsValues.Links}
-                >
-                    <CustomGrid
-                        className={styles.fadeContainer}
-                        container
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <LinksAnalytics
-                            statistic={linksMockups}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender
-                    condition={activeTab.value === StatisticsTabsValues.Monetization}
-                >
-                    <CustomGrid
-                        className={styles.fadeContainer}
-                        container
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <MonetizationAnalytics
-                            statistic={monetizationMockups}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
+                {
+                    roomsStatisticsLoading
+                        ? <CustomLoader className={styles.loader} />
+                        : <>
+                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
+                                <CustomGrid
+                                    item
+                                    container
+                                    justifyContent="center"
+                                    gap={3}
+                                >
+                                    <AttendeesAnalytics
+                                        statistic={attendeesData}
+                                        className={styles.statisticBlock}
+                                    />
+                                    <LocationAnalytics
+                                        statistic={locationData}
+                                        className={styles.statisticBlock}
+                                    />
+                                    <ReactionsAnalytics
+                                        statistic={reactions}
+                                        className={styles.statisticBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <QAAnalytics
+                                        statistic={qa}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={activeTab.value === StatisticsTabsValues.Links}
+                            >
+                                <CustomGrid
+                                    className={styles.fadeContainer}
+                                    container
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <LinksAnalytics
+                                        statistic={meetingLinks}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={activeTab.value === StatisticsTabsValues.Monetization}
+                            >
+                                <CustomGrid
+                                    className={styles.fadeContainer}
+                                    container
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <MonetizationAnalytics
+                                        statistic={monetization}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender></>
+                }
             </CustomGrid>
         </CustomGrid>
     );

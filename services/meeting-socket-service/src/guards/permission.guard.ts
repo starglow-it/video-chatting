@@ -37,6 +37,10 @@ export class PermissionGuard implements CanActivate {
         return true;
       }
 
+      if (!!client.handshake.query.isStatistics) {
+        return true;
+      }
+
       const user = await this.usersComponent.findOne({
         query: {
           socketId: client.id,

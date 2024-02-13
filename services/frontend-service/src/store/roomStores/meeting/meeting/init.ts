@@ -7,6 +7,7 @@ import {
     $meetingConnectedStore,
     setMeetingConnectedEvent,
     joinMeetingFx,
+    getMeetingUsersStatisticsFx,
     joinMeetingEvent,
     joinMeetingInWaitingRoomFx,
     joinMeetingWithAudienceFx,
@@ -31,6 +32,7 @@ import {
     $isOwnerInMeeting,
     $meetingTemplateStore,
 } from '../meetingTemplate/model';
+import { handleGetMeetingUsers } from './handlers/handleGetMeetingUsersStatistics';
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
@@ -56,6 +58,7 @@ $isToggleLinksDrawer
     )
     .reset(resetRoomStores);
 
+getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
 joinMeetingWithAudienceFx.use(handleJoinMeetingWithAudience);

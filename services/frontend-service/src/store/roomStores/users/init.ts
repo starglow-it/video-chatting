@@ -32,6 +32,11 @@ export const updateUserSocketEvent = createMeetingSocketEvent<
     Partial<MeetingUser>,
     any
 >(UsersSocketEmitters.UpdateUser);
+
+export const getStatisticsSocketEvent = createMeetingSocketEvent<
+    Partial<MeetingUser>,
+    any
+>(UsersSocketEmitters.GetStatistics);
 export const removeUserSocketEvent = createMeetingSocketEvent<
     { id: MeetingUser['id'] },
     any

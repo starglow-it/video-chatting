@@ -9,6 +9,7 @@ import { $localUserStore } from '../../users/localUser/model';
 import {
     JoinMeetingEventPayload,
     JoinMeetingFxPayload,
+    GetMeetingUsersStatisticsPayload,
     JoinMeetingWithAudienceFxPayload,
 } from './types';
 import { joinWaitingRoomSocketEvent } from '../sockets/model';
@@ -58,6 +59,11 @@ export const joinMeetingFx = meetingDomain.createEffect<
     JoinMeetingFxPayload,
     void
 >('joinMeetingFx');
+
+export const getMeetingUsersStatisticsFx = meetingDomain.createEffect<
+    GetMeetingUsersStatisticsPayload,
+    void
+>('getMeetingUsersStatisticsFx');
 
 export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
     void,

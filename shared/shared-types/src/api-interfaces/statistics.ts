@@ -20,8 +20,21 @@ export interface AttendeesNumbers {
   participantsAvgMin: number;
   audienceAvgMin: number;
 }
+export interface ReactionStatistics {
+  total: number;
+  participants: number,
+  audiences: number,
+  reactions: [
+    {
+      totalReactions: number,
+      participantsNum: number,
+      audienceNum: number,
+      reactionName: string
+    }
+  ]
+}
 export interface LocationStatistics {
-  data: {country: string, state?: { name: string, num: number }[], num: number}[]
+  data: { country: string, state?: { name: string, num: number }[], num: number }[]
 }
 export interface qaStatistics {
   data: {
@@ -57,6 +70,11 @@ export interface IRoomsRatingStatistic {
   money: number;
   uniqueUsers: number;
 }
+export interface IRooms {
+  id: string;
+  template: { name: string };
+  updatedAt: string;
+}
 
 export interface IMonetizationStatistic {
   key: string;
@@ -68,6 +86,15 @@ export type UserStatistics = StatisticBase<ICountryStatistic[]>;
 export type SubscriptionsStatisticsType = StatisticBase<
   ISubscriptionsStatistics[]
 >;
+
+export type MeetingAttendeesStatistics = {
+  total: number;
+  participants: number;
+  audiences: number;
+  participantsAvgMin: number;
+  audienceAvgMin: number;
+};
+export type Rooms = StatisticBase<IRooms[]>;
 export type RoomsStatistics = StatisticBase<IRoomsStatistics[]>;
 export type RoomRatingStatistics = StatisticBase<IRoomsRatingStatistic[]>;
 export type MonetizationStatistics = StatisticBase<IMonetizationStatistic[]>;

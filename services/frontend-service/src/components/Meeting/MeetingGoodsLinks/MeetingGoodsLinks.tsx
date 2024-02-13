@@ -8,7 +8,13 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 // stores
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $isGoodsVisible } from '../../../store';
-import { $meetingTemplateStore } from '../../../store/roomStores';
+import {
+    $meetingStore,
+    $localUserStore,
+    $meetingTemplateStore,
+    $isOwner,
+    clickMeetingLinkSocketEvent
+} from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingGoodsLinks.module.scss';
@@ -16,6 +22,10 @@ import styles from './MeetingGoodsLinks.module.scss';
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
+    console.log(meetingTemplate);
+    const localUserStore = useStore($localUserStore);
+    const meetingStore = useStore($meetingStore);
+    const isOwner = useStore($isOwner);
 
     const renderItems = useMemo(
         () =>
@@ -30,6 +40,10 @@ const Component = () => {
 
                     if (!url.match(/^https?:\/\//i)) {
                         url = `http://${url}`;
+                    }
+
+                    if (!isOwner) {
+                        clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url: url, userId: localUserStore.id });
                     }
 
                     return window.open(url, '_blank');
