@@ -30,3 +30,43 @@
   color: #B8B6B6;
   padding-right: 8px;
 }
+
+.qaTitle {
+  width: 60%;
+}
+
+.qaStatistics {
+  width: 40%;
+}
+
+@media screen and (max-width: 650px) {
+  .qaTitle {
+    width: 50%;
+  }
+  
+  .qaStatistics {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 510px) {
+  .qaTitle {
+    width: 40%;
+  }
+  
+  .qaStatistics {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .qaTitle {
+    width: 100%;
+  }
+  
+  .qaStatistics {
+    margin-top: 20px;
+    width: 100%;
+    justify-content: space-around;
+  }
+}

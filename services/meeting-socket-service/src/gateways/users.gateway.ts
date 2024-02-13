@@ -20,6 +20,8 @@ import {
 // services
 import { MeetingsService } from '../modules/meetings/meetings.service';
 import { UsersService } from '../modules/users/users.service';
+import { MeetingReactionsService } from '../modules/meeting-reactions/meeting-reactions.service';
+import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
 import { CoreService } from '../services/core/core.service';
 
 // dtos
@@ -27,6 +29,7 @@ import { UpdateUserRequestDTO } from '../dtos/requests/users/update-user.dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
+import { GetStatisticsDTO } from '../dtos/requests/users/get-statistics-dto';
 
 // helpers
 import {
@@ -121,7 +124,11 @@ export class UsersGateway extends BaseGateway {
     const year = date.getFullYear();
     const hours = date.getHours() % 12 || 12; // Convert to 12-hour format
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezoneOffsetInMinutes = date.getTimezoneOffset();
+    const timezoneOffsetHours = Math.abs(Math.floor(timezoneOffsetInMinutes / 60));
+    const timezoneOffsetMinutes = Math.abs(timezoneOffsetInMinutes % 60);
+    const timezoneSign = timezoneOffsetInMinutes > 0 ? '-' : '+';
+    const timezone = `UTC${timezoneSign}${timezoneOffsetHours}:${String(timezoneOffsetMinutes).padStart(2, '0')}`;
 
     const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${timezone}`;
 
@@ -322,13 +329,21 @@ export class UsersGateway extends BaseGateway {
             ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
           }));
 
-          const reactionData = await this.meetingReactionsService.findMany({
-            query: {
-              meeting: meeting._id
-            },
-            populatePaths: 'user',
-            session
-          });
+          const reactionData = await this.meetingReactionsService.getReactionStats(meeting._id);
+
+          const reactions = {
+            total: 0,
+            participants: 0,
+            audiences: 0,
+            reactions: []
+          };
+
+          if (reactionData) {
+            reactions.total = reactionData.reduce((total, reaction) => total + reaction.totalReactions, 0);
+            reactions.participants = reactionData.reduce((total, reaction) => total + reaction.participantsNum, 0);
+            reactions.audiences = reactionData.reduce((total, reaction) => total + reaction.audienceNum, 0);
+            reactions.reactions = reactionData;
+          }
 
           const qaData = await this.meetingQuestionAnswersService.findMany({
             query: {
@@ -356,14 +371,6 @@ export class UsersGateway extends BaseGateway {
             donations: 0
           };
 
-          const reactions = {
-            participants: 0,
-            audiences: 0,
-            reactions: [
-              { name: '', participants: 0, audience: 0 }
-            ]
-          };
-
           const result = {
             meetingNames,
             attendeesData,
@@ -379,6 +386,7 @@ export class UsersGateway extends BaseGateway {
           return wsResult({
             attendeesData,
             countriesArray,
+            reactions,
             qaStatistics,
             meetingNames,
             meetingLinks,

@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react';
-import { useStore } from 'effector-react';
+import { memo } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';

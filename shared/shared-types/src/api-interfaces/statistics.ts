@@ -20,6 +20,19 @@ export interface AttendeesNumbers {
   participantsAvgMin: number;
   audienceAvgMin: number;
 }
+export interface ReactionStatistics {
+  total: number;
+  participants: number,
+  audiences: number,
+  reactions: [
+    {
+      totalReactions: number,
+      participantsNum: number,
+      audienceNum: number,
+      reactionName: string
+    }
+  ]
+}
 export interface LocationStatistics {
   data: { country: string, state?: { name: string, num: number }[], num: number }[]
 }

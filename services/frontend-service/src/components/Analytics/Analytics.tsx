@@ -1,23 +1,23 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
-import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // shared
 import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { Translation } from '@library/common/Translation/Translation';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // styles
 import styles from './Analytics.module.scss';
-import { $profileTemplatesStore, $templatesStore, getProfileTemplatesFx } from 'src/store';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { Fade, MenuItem } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 //components
 import { AttendeesAnalytics } from './AttendeesAnalytics/AttendeesAnalytics';
@@ -27,6 +27,7 @@ import { QAAnalytics } from './QAAnalytics/QAAnalytics';
 import { LinksAnalytics } from './LinksAnalytics/LinksAnalytics';
 import { MonetizationAnalytics } from './MonetizationAnalytics/MonetizationAnalytics';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 import {
     StatisticsTabsValues,
@@ -37,7 +38,9 @@ import {
 import {
     $profileStore,
     $roomsStatistics,
+    $roomsStatisticsLoading,
     getRoomRatingStatisticsFx,
+    setRoomStatisticsLoadingEvent
 } from '../../store';
 import {
     $isMeetingSocketConnected,
@@ -50,65 +53,12 @@ enum Tabs {
     PrivacyPolicy = 'privacyPolicy',
 }
 
-const numberOfAttendeesMockups = {
-    totalNumber: 43,
-    participants: 4,
-    audience: 39,
-    participantsAvgMin: 60,
-    audienceAvgMin: 30,
-};
-
-const locationMockups = {
-    data: [
-        {
-            country: 'canada',
-            state: [
-                { name: 'british columbia', num: 10 },
-                { name: 'toronto', num: 5 },
-                { name: 'ontario', num: 15 },
-            ],
-            num: 30
-        },
-        { country: 'united states', num: 39 },
-        { country: 'Germany', num: 5 },
-        { country: 'United Kingdom', num: 10 },
-        { country: 'Argentina', num: 2 },
-    ]
-}
-
-const qaMockups = {
-    data: {
-        questions: [
-            { content: 'What is your favorite color?', who: 'John Doe', answered: false },
-            { content: 'What is your favorite food?', who: 'John Jensen', answered: true },
-            { content: 'What day is it?', who: 'John Belle', answered: true },
-        ]
-    }
-}
-
-const linksMockups = {
-    data: [
-        { link: 'https://www.test1.com', click: 30, clickThroughRate: 5 },
-        { link: 'https://www.test2.com', click: 10, clickThroughRate: 10 },
-        { link: 'https://www.test3.com', click: 20, clickThroughRate: 50 },
-        { link: 'https://www.test4.com', click: 50, clickThroughRate: 70 },
-    ]
-}
-
-const monetizationMockups = {
-    data: { entryFee: 5, total: 255, donations: 0 }
-}
-
 const Component = () => {
-    const { translation } = useLocalization('static');
     const profileStore = useStore($profileStore);
     const roomsStatistics = useStore($roomsStatistics);
+    const roomsStatisticsLoading = useStore($roomsStatisticsLoading);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const [basedOnKey, setBasedOnKey] = useState('');
-    const { activeTab, onChange: onChangeTab } = useNavigation({
-        tabs: statisticTabs,
-    });
-    const router = useRouter();
     const [roomNames, setRoomNames] = useState([]);
     const [attendeesData, setAttendeesData] = useState({});
     const [locationData, setLocationData] = useState({ data: [] });
@@ -116,6 +66,11 @@ const Component = () => {
     const [qa, setQa] = useState([]);
     const [meetingLinks, setMeetingLinks] = useState({});
     const [monetization, setMonetization] = useState({});
+    const { activeTab, onChange: onChangeTab } = useNavigation({
+        tabs: statisticTabs,
+    });
+    const { isMobile } = useBrowserDetect();
+    const router = useRouter();
 
     useEffect(() => {
         const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
@@ -186,6 +141,7 @@ const Component = () => {
     useEffect(() => {
         (async () => {
             if (isMeetingSocketConnected) {
+                setRoomStatisticsLoadingEvent(true);
                 await getStatisticsSocketEvent({ profileId: profileStore.id });
             }
         })();
@@ -205,8 +161,10 @@ const Component = () => {
     }, []);
 
     useEffect(() => {
-        (() =>
-            getStatisticsSocketEvent({ meetingId: basedOnKey, profileId: profileStore.id })
+        (() => {
+            getStatisticsSocketEvent({ meetingId: basedOnKey, profileId: profileStore.id });
+            setRoomStatisticsLoadingEvent(true);
+        }
         )();
     }, [basedOnKey]);
 
@@ -224,9 +182,12 @@ const Component = () => {
         () =>
             statisticTabs.map(({ value, translationKey }) => (
                 <CustomChip
-                    key={value}
+                    key={translationKey}
                     active={value === activeTab.value}
-                    className={styles.chip}
+                    className={clsx(styles.chip, {
+                        [styles.chipResponsiveVisible]: translationKey === 'monetizationResponsive',
+                        [styles.chipResponsiveInVisible]: translationKey === 'monetization'
+                    })}
                     label={
                         <CustomTypography>
                             <Translation
@@ -240,10 +201,6 @@ const Component = () => {
             )),
         [activeTab],
     );
-
-    const handleSendMeetingUsresStatisticsRequest = async (meetingId) => {
-        await getStatisticsSocketEvent({ meetingId, profileId: profileStore.id });
-    };
 
     const handleChangeBasedOnKey = ({ target: { value } }) => {
         setBasedOnKey(value);
@@ -265,8 +222,7 @@ const Component = () => {
                 justifyContent="center"
                 className={styles.tabs}
             >
-                <CustomGrid item md={4} xs={3}></CustomGrid>
-                <CustomGrid item md={4} xs={6}>
+                <CustomBox item container className={clsx(styles.dropdownMenu, { [styles.mobile]: isMobile })}>
                     <CustomDropdown
                         nameSpace="common"
                         translation="statistics.rooms.rating.dropdownTitle"
@@ -276,8 +232,7 @@ const Component = () => {
                         value={basedOnKey}
                         onChange={handleChangeBasedOnKey}
                     />
-                </CustomGrid>
-                <CustomGrid item md={4} xs={3}></CustomGrid>
+                </CustomBox>
             </CustomGrid>
             <CustomGrid
                 item
@@ -297,75 +252,76 @@ const Component = () => {
                 </CustomGrid>
             </CustomGrid>
             <CustomGrid item container className={styles.fadeWrapper}>
-                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
-                    <CustomGrid
-                        item
-                        container
-                        justifyContent="center"
-                        gap={3}
-                    >
-                        <AttendeesAnalytics
-                            statistic={attendeesData}
-                            className={styles.statisticBlock}
-                        />
-                        <LocationAnalytics
-                            statistic={locationData}
-                            className={styles.statisticBlock}
-                        />
-                        <ReactionsAnalytics
-                            statistic={attendeesData}
-                            className={styles.statisticBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
-                    <CustomGrid
-                        container
-                        className={clsx(
-                            styles.fadeContainer,
-                            styles.roomsStatistics,
-                        )}
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <QAAnalytics
-                            statistic={qa}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender
-                    condition={activeTab.value === StatisticsTabsValues.Links}
-                >
-                    <CustomGrid
-                        className={styles.fadeContainer}
-                        container
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <LinksAnalytics
-                            statistic={meetingLinks}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender
-                    condition={activeTab.value === StatisticsTabsValues.Monetization}
-                >
-                    <CustomGrid
-                        className={styles.fadeContainer}
-                        container
-                        justifyContent="center"
-                        gap={2}
-                    >
-                        <MonetizationAnalytics
-                            statistic={monetization}
-                            className={styles.qaAnalyticsBlock}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
+                {
+                    roomsStatisticsLoading
+                        ? <CustomLoader className={styles.loader} />
+                        : <>
+                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
+                                <CustomGrid
+                                    item
+                                    container
+                                    justifyContent="center"
+                                    gap={3}
+                                >
+                                    <AttendeesAnalytics
+                                        statistic={attendeesData}
+                                        className={styles.statisticBlock}
+                                    />
+                                    <LocationAnalytics
+                                        statistic={locationData}
+                                        className={styles.statisticBlock}
+                                    />
+                                    <ReactionsAnalytics
+                                        statistic={reactions}
+                                        className={styles.statisticBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <QAAnalytics
+                                        statistic={qa}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={activeTab.value === StatisticsTabsValues.Links}
+                            >
+                                <CustomGrid
+                                    className={styles.fadeContainer}
+                                    container
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <LinksAnalytics
+                                        statistic={meetingLinks}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
+                            <ConditionalRender
+                                condition={activeTab.value === StatisticsTabsValues.Monetization}
+                            >
+                                <CustomGrid
+                                    className={styles.fadeContainer}
+                                    container
+                                    justifyContent="center"
+                                    gap={2}
+                                >
+                                    <MonetizationAnalytics
+                                        statistic={monetization}
+                                        className={styles.qaAnalyticsBlock}
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender></>
+                }
             </CustomGrid>
         </CustomGrid>
     );

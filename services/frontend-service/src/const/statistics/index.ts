@@ -20,6 +20,7 @@ export enum StatisticsTabsValues {
     QA = 'qa',
     Links = 'links',
     Monetization = 'monetization',
+    MonetizationResponsive = 'monetization',
 }
 
 export const statisticTabs: { value: string; translationKey: string }[] = [
@@ -38,5 +39,9 @@ export const statisticTabs: { value: string; translationKey: string }[] = [
     {
         value: StatisticsTabsValues.Monetization,
         translationKey: 'monetization',
+    },
+    {
+        value: StatisticsTabsValues.MonetizationResponsive,
+        translationKey: 'monetizationResponsive',
     },
 ];

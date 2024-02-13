@@ -24,6 +24,7 @@ const initialMeetingStatisticsState = {
     },
     countriesArray: [],
     reactions: {
+        total: 0,
         participants: 0,
         audiences: 0,
         reactions: []
@@ -57,6 +58,9 @@ export const $subscriptionsStatistics =
 
 export const $roomsStatistics =
     statisticsDomain.createStore<MeetingStatisticsState>(initialMeetingStatisticsState);
+
+export const $roomsStatisticsLoading =
+    statisticsDomain.createStore<boolean>(true);
 
 export const $usersMonetizationStatistics =
     statisticsDomain.createStore<MonetizationStatisticState>({
@@ -117,4 +121,8 @@ export const setRoomsStatisticsEvent = statisticsDomain.createEvent(
 
 export const resetPlatformMonetization = statisticsDomain.createEvent(
     'resetPlatformMonetization',
+);
+
+export const setRoomStatisticsLoadingEvent = statisticsDomain.createEvent(
+    'setRoomStatisticsLoadingEvent',
 );

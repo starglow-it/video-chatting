@@ -4,6 +4,7 @@ import {
     $usersStatisticsStore,
     $usersMonetizationStatistics,
     $platformMonetizationStatistics,
+    $roomsStatisticsLoading,
     getRoomRatingStatisticsFx,
     getUsersStatisticsFx,
     getSubscriptionsStatisticsFx,
@@ -11,7 +12,8 @@ import {
     getUsersMonetizationStatisticsFx,
     resetUsersMonetization,
     resetPlatformMonetization,
-    setRoomsStatisticsEvent
+    setRoomsStatisticsEvent,
+    setRoomStatisticsLoadingEvent
 } from './model';
 
 import { handleGetUsersStatistics } from './handlers/handleGetUsersStatistics';
@@ -26,16 +28,17 @@ getRoomRatingStatisticsFx.use(handleGetRoomsRatingStatistic);
 getUsersMonetizationStatisticsFx.use(handleGetUsersMonetizationStatistic);
 getPlatformMonetizationStatisticsFx.use(handleGetPlatformMonetizationStatistic);
 
-$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (sate, data) => data);
+$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (state, data) => data);
 $subscriptionsStatistics.on(
     getSubscriptionsStatisticsFx.doneData,
-    (sate, data) => data,
+    (state, data) => data,
 );
-$roomsStatistics.on(setRoomsStatisticsEvent, (sate, data) => data);
+$roomsStatistics.on(setRoomsStatisticsEvent, (state, data) => data);
 
 $usersMonetizationStatistics
-    .on(getUsersMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getUsersMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetUsersMonetization);
 $platformMonetizationStatistics
-    .on(getPlatformMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getPlatformMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetPlatformMonetization);
+$roomsStatisticsLoading.on(setRoomStatisticsLoadingEvent, (state, data) => data);

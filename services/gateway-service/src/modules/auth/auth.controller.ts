@@ -550,6 +550,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       if (!isUserExists) {
         isFirstLogin = true;
+        
         user = await this.authService.createUserFromGoogleAccount({
           password: 'default',
           email,

@@ -6,7 +6,6 @@ import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles

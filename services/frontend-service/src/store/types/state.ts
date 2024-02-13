@@ -52,13 +52,15 @@ export type MeetingStatisticsState = {
         states?: string;
     }[];
     reactions: {
+        total: number;
         participants: number,
         audiences: number,
         reactions: [
             {
-                name: string,
-                participants: number,
-                audience: number
+                totalReactions: number,
+                participantsNum: number,
+                audienceNum: number,
+                reactionName: string
             }
         ]
     };

@@ -20,6 +20,7 @@
   box-shadow: none;
   border: 2px solid #FF884E;
   border-radius: 30px;
+  margin-top: 10px;
 
   &:hover {
     background-color: #FF884E;
@@ -34,6 +35,7 @@
   justify-content: center;
   margin-top: rem(60px);
   margin-bottom: rem(60px);
+  padding: 0px 20px;
 }
 
 .statisticBlock {
@@ -49,6 +51,7 @@
 .qaAnalyticsBlock {
   padding: rem(30px);
   width: rem(640px);
+  max-width: 100%;
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -90,4 +93,56 @@
 .innerTabs {
   width: 40%;
   min-width: 600px;
+}
+
+.loader {
+  margin: auto;
+}
+
+.dropdownMenu {
+  width: 50%;
+}
+
+.chipResponsiveVisible {
+  display: none;
+}
+
+.chipResponsiveInVisible {
+  display: grid;
+}
+
+@media screen and (max-width: 1300px) {
+  .dropdownMenu {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .dropdownMenu {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .innerTabs {
+    min-width: 90%;
+  }
+
+  .chip {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .chip {
+    padding: 0px 16px;
+  }
+
+  .chipResponsiveVisible {
+    display: grid;
+  }
+
+  .chipResponsiveInVisible {
+    display: none;
+  }
 }

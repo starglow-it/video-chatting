@@ -61,12 +61,12 @@ const LocationAnalytics = memo(
                                 {item.num}
                             </CustomTypography>
                         </CustomGrid>
-                        {((item.country === 'canada' || item.country === 'united states') &&
-                            item.state
+                        {((item.country === 'Canada' || item.country === 'United States') &&
+                            !!item.state
                         ) &&
                             item.state.map((state, stateIndex) => (
                                 <CustomGrid
-                                    key={`${item.country}-${stateIndex}`} // Use a combination of country and index as the key
+                                    key={`${item.country}-${stateIndex}`}
                                     item
                                     container
                                     direction="row"

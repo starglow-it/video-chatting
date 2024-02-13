@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react';
-import { useStore } from 'effector-react';
+import { memo } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -60,14 +59,7 @@ const LinksAnalytics = memo(
                         </CustomGrid>
                     );
                 });
-            } else {
-                return (
-                    <CustomTypography variant="body2" className={styles.noItemText}>
-                        No Item
-                    </CustomTypography>
-                );
-            }
-
+            } 
         };
 
         return (
