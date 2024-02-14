@@ -49,7 +49,7 @@ const Component = ({
                     src={previewImage?.url || ''}
                     width="334px"
                     height="190px"
-                    layout='fill'
+                    
                 />
             </ConditionalRender>
             <Fade in={isChosenForReplace}>
