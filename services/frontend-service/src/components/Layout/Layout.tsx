@@ -492,9 +492,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         placement="right"
                                                         translation="pages.profile"
                                                     >
-                                                        <MenuItem>
+                                                        <MenuItem onClick={handleProfilePage}>
                                                             <PersonIcon
-                                                                onClick={handleProfilePage}
                                                                 width="28px"
                                                                 height="28px"
                                                                 className={clsx(styles.linkIcon, {
@@ -509,9 +508,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         translation="pages.templates"
                                                         placement="right"
                                                     >
-                                                        <MenuItem>
+                                                        <MenuItem onClick={handleTemplatesPage}>
                                                             <TemplatesIcon
-                                                                onClick={handleTemplatesPage}
                                                                 width="28px"
                                                                 height="28px"
                                                                 className={clsx(styles.linkIcon, {
@@ -526,9 +524,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         translation="pages.analytics"
                                                         placement="right"
                                                     >
-                                                        <MenuItem>
+                                                        <MenuItem onClick={handleAnalyticsPage}>
                                                             <StatisticsIcon
-                                                                onClick={handleAnalyticsPage}
                                                                 width="28px"
                                                                 height="28px"
                                                                 className={clsx(styles.linkIcon, {
@@ -542,9 +539,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         translation="pages.logout"
                                                         placement="right"
                                                     >
-                                                        <MenuItem>
+                                                        <MenuItem onClick={handleLogout}>
                                                             <ExitIcon
-                                                                onClick={handleLogout}
                                                                 className={styles.icon}
                                                                 width="28px"
                                                                 height="28px"
