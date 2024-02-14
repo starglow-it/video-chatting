@@ -192,7 +192,7 @@ export const InviteGuestsDialog = () => {
                         />
                     </CustomGrid>
                     <CustomGrid className={styles.header}>
-                        <span>Invite Guests to this room</span>
+                        <span>invite guests to this ruume</span>
                     </CustomGrid>
                     <MeetingSwitchPrivate />
                     <MeetingRoleGroup
