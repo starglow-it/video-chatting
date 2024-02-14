@@ -28,6 +28,12 @@ import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
+//@mui
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+
 
 import { Footer } from '@components/Footer/Footer';
 
@@ -75,6 +81,7 @@ import {
     roomRoute,
     welcomeRoute,
     analyticsRoute,
+    supportRoute
 } from '../../const/client-routes';
 
 // styles
@@ -308,6 +315,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         await router.push(analyticsRoute);
     }, []);
 
+    const handleSupportPage = useCallback(async () => {
+        handleMenuClose();
+        await router.push(supportRoute);
+    }, []);
+
     const isTemplatesLinkActive = router.pathname === dashboardRoute;
     const isAnalyticsLinkActive = router.pathname === analyticsRoute;
 
@@ -479,7 +491,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         })}
                                                     />
                                                 </IconButton>
-
                                                 <Menu
                                                     anchorEl={anchorEl}
                                                     keepMounted
@@ -487,35 +498,66 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                     onClose={handleMenuClose}
                                                     className={styles.menu}
                                                 >
+                                                    <MenuItem
+                                                        className={styles.menuItem}
+                                                    >
+                                                        <ListItemIcon>
+                                                            <ProfileAvatar
+                                                                src={profileState?.profileAvatar?.url}
+                                                                userName={profileState.fullName}
+                                                                className={clsx(styles.innerProfileImage, styles.linkIcon)}
+                                                            />
+                                                        </ListItemIcon>
+                                                        <ListItemText >
+                                                            <Typography variant="subtitle1" className={styles.profileName}>{profileState.fullName}</Typography>
+                                                            <Typography variant="caption" display="block" >{profileState.email}</Typography>
+                                                        </ListItemText>
+                                                    </MenuItem>
+                                                    <Divider />
                                                     <CustomTooltip
                                                         nameSpace="profile"
                                                         placement="right"
                                                         translation="pages.profile"
                                                     >
-                                                        <MenuItem onClick={handleProfilePage}>
-                                                            <PersonIcon
-                                                                width="28px"
-                                                                height="28px"
-                                                                className={clsx(styles.linkIcon, {
-                                                                    [styles.activeIcon]: isProfilePageActive,
-                                                                })}
-                                                            />
+                                                        <MenuItem
+                                                            className={styles.menuItem}
+                                                            onClick={handleProfilePage}
+                                                        >
+                                                            <ListItemIcon>
+                                                                <PersonIcon
+                                                                    width="28px"
+                                                                    height="28px"
+                                                                    className={clsx(styles.linkIcon, {
+                                                                        [styles.activeIcon]: isProfilePageActive,
+                                                                    })}
+                                                                />
+                                                            </ListItemIcon>
+                                                            <ListItemText >
+                                                                <Typography variant="caption" display="block" >profile</Typography>
+                                                            </ListItemText>
                                                         </MenuItem>
-
                                                     </CustomTooltip>
                                                     <CustomTooltip
                                                         nameSpace="profile"
                                                         translation="pages.templates"
                                                         placement="right"
                                                     >
-                                                        <MenuItem onClick={handleTemplatesPage}>
-                                                            <TemplatesIcon
-                                                                width="28px"
-                                                                height="28px"
-                                                                className={clsx(styles.linkIcon, {
-                                                                    [styles.activeIcon]: isTemplatesLinkActive,
-                                                                })}
-                                                            />
+                                                        <MenuItem
+                                                            className={styles.menuItem}
+                                                            onClick={handleTemplatesPage}
+                                                        >
+                                                            <ListItemIcon>
+                                                                <TemplatesIcon
+                                                                    width="28px"
+                                                                    height="28px"
+                                                                    className={clsx(styles.linkIcon, {
+                                                                        [styles.activeIcon]: isTemplatesLinkActive,
+                                                                    })}
+                                                                />
+                                                            </ListItemIcon>
+                                                            <ListItemText >
+                                                                <Typography variant="caption" display="block" >ruumes</Typography>
+                                                            </ListItemText>
                                                         </MenuItem>
 
                                                     </CustomTooltip>
@@ -524,14 +566,22 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         translation="pages.analytics"
                                                         placement="right"
                                                     >
-                                                        <MenuItem onClick={handleAnalyticsPage}>
-                                                            <StatisticsIcon
-                                                                width="28px"
-                                                                height="28px"
-                                                                className={clsx(styles.linkIcon, {
-                                                                    [styles.activeIcon]: isAnalyticsLinkActive,
-                                                                })}
-                                                            />
+                                                        <MenuItem
+                                                            className={styles.menuItem}
+                                                            onClick={handleAnalyticsPage}
+                                                        >
+                                                            <ListItemIcon>
+                                                                <StatisticsIcon
+                                                                    width="28px"
+                                                                    height="28px"
+                                                                    className={clsx(styles.linkIcon, {
+                                                                        [styles.activeIcon]: isAnalyticsLinkActive,
+                                                                    })}
+                                                                />
+                                                            </ListItemIcon>
+                                                            <ListItemText >
+                                                                <Typography variant="caption" display="block" >statistics</Typography>
+                                                            </ListItemText>
                                                         </MenuItem>
                                                     </CustomTooltip>
                                                     <CustomTooltip
@@ -539,15 +589,42 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         translation="pages.logout"
                                                         placement="right"
                                                     >
-                                                        <MenuItem onClick={handleLogout}>
-                                                            <ExitIcon
-                                                                className={styles.icon}
-                                                                width="28px"
-                                                                height="28px"
-                                                            />
-                                                        </MenuItem>
+                                                        <MenuItem
+                                                            className={styles.menuItem}
+                                                            onClick={handleLogout}
+                                                        >
 
+                                                            <ListItemIcon>
+                                                                <ExitIcon
+                                                                    className={styles.icon}
+                                                                    width="28px"
+                                                                    height="28px"
+                                                                />
+                                                            </ListItemIcon>
+                                                            <ListItemText >
+                                                                <Typography variant="caption" display="block" >log out</Typography>
+                                                            </ListItemText>
+                                                        </MenuItem>
                                                     </CustomTooltip>
+                                                    <Divider />
+                                                    <CustomTooltip
+                                                        nameSpace="profile"
+                                                        translation="pages.helpSupport"
+                                                        placement="right"
+                                                    >
+                                                        <MenuItem
+                                                            className={styles.menuItem}
+                                                            onClick={handleSupportPage}
+                                                        >
+                                                            <ListItemIcon>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 256 256" id="circle-wavy-question"><rect width="256" height="256" fill="none"></rect><path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12" d="M54.46089,201.53911c-9.204-9.204-3.09935-28.52745-7.78412-39.85C41.82037,149.95168,24,140.50492,24,127.99963,24,115.4945,41.82047,106.048,46.67683,94.31079c4.68477-11.32253-1.41993-30.6459,7.78406-39.8499s28.52746-3.09935,39.85-7.78412C106.04832,41.82037,115.49508,24,128.00037,24c12.50513,0,21.95163,17.82047,33.68884,22.67683,11.32253,4.68477,30.6459-1.41993,39.8499,7.78406s3.09935,28.52746,7.78412,39.85C214.17963,106.04832,232,115.49508,232,128.00037c0,12.50513-17.82047,21.95163-22.67683,33.68884-4.68477,11.32253,1.41993,30.6459-7.78406,39.8499s-28.52745,3.09935-39.85,7.78412C149.95168,214.17963,140.50492,232,127.99963,232c-12.50513,0-21.95163-17.82047-33.68884-22.67683C82.98826,204.6384,63.66489,210.7431,54.46089,201.53911Z"></path><circle cx="127.999" cy="180" r="10"></circle><path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12" d="M127.9995,144.0045v-8a28,28,0,1,0-28-28"></path></svg>
+                                                            </ListItemIcon>
+                                                            <ListItemText>
+                                                                <Typography variant="caption" display="block" >help & support</Typography>
+                                                            </ListItemText>
+                                                        </MenuItem>
+                                                    </CustomTooltip>
+
                                                 </Menu>
                                             </div>
                                         </ConditionalRender>
