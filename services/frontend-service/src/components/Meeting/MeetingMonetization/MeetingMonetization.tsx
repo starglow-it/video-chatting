@@ -21,7 +21,7 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 // stores
 
 // const
-import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
+import { DEFAULT_PAYMENT_CURRENCY, DEFAULT_PRICE, PaymentType, StripeCurrency } from 'shared-const';
 import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
@@ -34,12 +34,16 @@ import {
     $paymentPaywallAudience,
     $paymentPaywallParticipant,
     updatePaymentMeetingEvent,
-    setCreateRoomPaymentDataEvent
+    setCreateRoomPaymentDataEvent,
+    createMeetingPaymentEvent
 } from '../../../store/roomStores';
-import { $isConnectedStripe } from '../../../store';
+import { $isConnectedStripe, addNotificationEvent } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
 import { MeetingMonezationForm } from './MeetingMonezationForm';
 import { FormDataPayment, TabsValues } from './type';
+import { MeetingRole } from 'shared-types';
+import { MeetingPayment, PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
+import { NotificationType } from 'src/store/types';
 
 enum TabsLabels {
     Participants = 'Participants',
@@ -164,14 +168,14 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
             meeting: {
                 participant: {
                     enabled: paymentParticipant?.enabledMeeting ?? false,
-                    price: paymentParticipant?.templatePrice ?? 5,
+                    price: paymentParticipant?.templatePrice ?? DEFAULT_PRICE.participant,
                     currency:
                         paymentParticipant?.templateCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
                 audience: {
                     enabled: paymentAudience?.enabledMeeting ?? false,
-                    price: paymentAudience?.templatePrice ?? 5,
+                    price: paymentAudience?.templatePrice ?? DEFAULT_PRICE.audience,
                     currency:
                         paymentAudience?.templateCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
@@ -180,31 +184,76 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
             paywall: {
                 participant: {
                     enabled: paymentParticipant?.enabledPaywall ?? false,
-                    price: paymentParticipant?.paywallPrice ?? 5,
+                    price: paymentParticipant?.paywallPrice ?? DEFAULT_PRICE.participant,
                     currency:
                         paymentParticipant?.paywallCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
                 audience: {
                     enabled: paymentAudience?.enabledPaywall ?? false,
-                    price: paymentAudience?.paywallPrice ?? 5,
+                    price: paymentAudience?.paywallPrice ?? DEFAULT_PRICE.audience,
                     currency:
                         paymentAudience?.paywallCurrency ??
                         DEFAULT_PAYMENT_CURRENCY,
                 },
             },
         };
+        console.log(isRoomCreate)
         if (!isRoomCreate) {
             updatePaymentMeetingEvent({
                 ...payload
             });
+            onUpdate?.();
         } else {
+            // Helper function to create PaymentItem objects
+            const createPaymentItem = (
+                enabled: boolean,
+                price: number,
+                currency: StripeCurrency,
+                type: PaymentType,
+                meetingRole: MeetingRole
+            ): PaymentItem => {
+                return {
+                    enabled, // from PaymentBase
+                    price, // from PaymentBase
+                    currency, // from PaymentBase
+                    type, // additional property for PaymentItem
+                    meetingRole, // additional property for PaymentItem
+                };
+            };
+
+            const { participant, audience } = payload.meeting;
+            const paymentItems: MeetingPayment = [];
+
+            // Assuming PaymentType and MeetingRole enums are defined to match your use case
+            if (participant.enabled) {
+                paymentItems.push(createPaymentItem(participant.enabled, participant.price, participant.currency, PaymentType.Meeting, MeetingRole.Participant));
+            }
+            if (audience.enabled) {
+                paymentItems.push(createPaymentItem(audience.enabled, audience.price, audience.currency, PaymentType.Meeting, MeetingRole.Audience));
+            }
+
+            // Repeat for the paywall part if needed, adjust type accordingly
+            const { participant: paywallParticipant, audience: paywallAudience } = payload.paywall;
+
+            if (paywallParticipant.enabled) {
+                paymentItems.push(createPaymentItem(paywallParticipant.enabled, paywallParticipant.price, paywallParticipant.currency, PaymentType.Paywall, MeetingRole.Participant));
+            }
+            if (paywallAudience.enabled) {
+                paymentItems.push(createPaymentItem(paywallAudience.enabled, paywallAudience.price, paywallAudience.currency, PaymentType.Paywall, MeetingRole.Audience));
+            }
+
+            // Now paymentItems is an array of PaymentItem, matching the expected MeetingPayment type
+            createMeetingPaymentEvent(paymentItems);
             setCreateRoomPaymentDataEvent({
                 ...payload
             });
+            
+            addNotificationEvent({
+                type: NotificationType.PaymentSuccess,
+                message: 'meeting.monetization.saved',
+            });
         }
-
-        onUpdate?.();
     }, []);
 
     const handleFocusInput = () => {
