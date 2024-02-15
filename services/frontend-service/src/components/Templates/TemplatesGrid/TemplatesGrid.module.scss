@@ -58,6 +58,10 @@
   }
 }
 
+.descCreateRoomResponsive {
+  display: none;
+}
+
 .prevArrow {
   @extend %arrow;
   left: calc(50% - var(--offset));
@@ -81,12 +85,13 @@
   justify-self: center;
   z-index: 10;
   height: rem(190px);
+  padding-left: 10px;
   cursor: pointer;
 
   @media only screen and (max-width: 600px) {
     height: 115px;
   }
-  
+
   @media only screen and (max-width: 280px) {
     width: 95% !important;
   }
@@ -94,9 +99,36 @@
   &.addItemMobile {
     width: 45%;
     height: 115px;
-    
+
     @media only screen and (max-width: 280px) {
       width: 95% !important;
     }
+  }
+}
+
+.title {
+  margin-left: 10px;
+}
+
+.descCreateRoom {
+  width: 85%;
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 1101px) {
+  .descCreateRoom {
+    display: none;
+  }
+
+  .descCreateRoomResponsive {
+    display: flex;
+    width: 80%;
+    margin-left: 10px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .descriptionWrapper {
+    display: none;
   }
 }
