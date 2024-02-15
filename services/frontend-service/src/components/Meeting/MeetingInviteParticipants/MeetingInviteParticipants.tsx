@@ -119,7 +119,7 @@ const Component = ({
                             [styles.activeBtn]: isParticipantPanelShow
                         })}
                         onClick={() => handleParticipantPanel(true)}
-                    >Participants</Button>
+                    >participants</Button>
                     <ConditionalRender condition={!localUser.isGenerated}>
                         <div className={styles.statistics}>
                             {participants.length}
@@ -140,16 +140,7 @@ const Component = ({
                                 />
                             </CustomTooltip>
                         </CopyToClipboard>
-                        <CustomTooltip
-                            nameSpace="meeting"
-                            translation="schedule.tooltip"
-                        >
-                            <ActionButton
-                                onAction={handleOpenScheduling}
-                                className={styles.button}
-                                Icon={<ScheduleIcon width="24px" height="24px" />}
-                            />
-                        </CustomTooltip>
+
                     </ConditionalRender>
                 </CustomGrid>
 
@@ -164,7 +155,7 @@ const Component = ({
                             [styles.activeBtn]: !isParticipantPanelShow
                         })}
                         onClick={() => handleParticipantPanel(false)}
-                    >Audiences</Button>
+                    >audiences</Button>
                     <ConditionalRender condition={!localUser.isGenerated}>
                         <div className={styles.statistics}>
                             {audiences.length}
@@ -187,6 +178,19 @@ const Component = ({
                             />
                         </CustomTooltip>
                     </CopyToClipboard>
+
+                </CustomGrid>
+
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    className={clsx(styles.meetingInvitesWrapper, styles.attendeesStatistics, styles.schedule)}
+                >
+                    <CustomTypography
+                        variant="text"
+                        className={clsx(styles.title, styles.attendeeBtn)}
+                    >schedule</CustomTypography>
+
                     <CustomTooltip
                         nameSpace="meeting"
                         translation="schedule.tooltip"

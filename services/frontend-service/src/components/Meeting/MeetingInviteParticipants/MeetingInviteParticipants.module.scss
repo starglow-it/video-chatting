@@ -38,6 +38,7 @@
   border: none;
   color: $primary-white;
   margin: rem(0 6px);
+  cursor: pointer;
 
   &:hover {
     background: rgba($primary-white, 0.4);
@@ -73,10 +74,6 @@
   margin-bottom: 0px 0px 0px 20px;
 }
 
-// .attendeesStatistics {
-//   margin-bottom: 36px;
-// }
-
 .scheduleOpenPanel {
   position: absolute;
   max-width: rem(392px);
@@ -94,7 +91,7 @@
 }
 
 .attendeeBtn {
-  flex-basis: 60%;
+  flex-basis: 70%;
   text-align: left;
   font-size: 16px;
   padding: 0px;
@@ -103,4 +100,8 @@
 
 .activeBtn {
   color: #FF884E;
+}
+
+.schedule {
+  margin-top: 40px;
 }
