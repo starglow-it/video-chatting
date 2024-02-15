@@ -4,7 +4,8 @@
     "text": "For security a confirmation link has been sent \n to your email"
   },
   "getStarted": {
-    "title": "Get started",
+    "title1": "save this account",
+    "title2": "for free!",
     "socialLogin": {
       "google": "Continue with Google",
       "googleMobile": "Google",
