@@ -10,7 +10,6 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { EmailIcon } from 'shared-frontend/icons/OtherIcons/EmailIcon';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
@@ -24,15 +23,16 @@ import Button from '@mui/material/Button';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // stores
-import { appDialogsApi, setScheduleTemplateIdEvent } from '../../../store';
+import { addNotificationEvent, appDialogsApi, setScheduleTemplateIdEvent } from '../../../store';
 import {
     $localUserStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $meetingStore,
 } from '../../../store/roomStores';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 
 // utils
@@ -54,6 +54,7 @@ const Component = ({
 
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const { isPublishAudience } = useStore($meetingTemplateStore)
 
     const participants = useStoreMap({
         store: $meetingUsersStore,
@@ -84,12 +85,27 @@ const Component = ({
         onAction?.();
     }, []);
 
-    const handleLinkCopied = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+    const handleParticipantLinkCopied = () => {
+        addNotificationEvent({
+            type: NotificationType.LinkInfoCopied,
+            message: 'meeting.copy.link',
         });
-        onAction?.();
-    }, []);
+
+    };
+
+    const handleAudienceLinkCopied = () => {
+        if (!isPublishAudience) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+            });
+            onAction?.();
+        } else {
+            addNotificationEvent({
+                type: NotificationType.LinkInfoCopied,
+                message: 'meeting.copy.link',
+            });
+        }
+    };
 
     const handleOpenScheduling = () => {
         setScheduleTemplateIdEvent(meetingTemplate.id);
@@ -128,7 +144,7 @@ const Component = ({
                             text={getClientMeetingUrlWithDomain(
                                 router.query.token as string,
                             )}
-                            onCopy={handleLinkCopied}
+                            onCopy={handleParticipantLinkCopied}
                         >
                             <CustomTooltip
                                 nameSpace="meeting"
@@ -165,15 +181,15 @@ const Component = ({
                     <CopyToClipboard
                         text={getClientMeetingUrlWithDomain(
                             router.query.token as string,
-                        )}
-                        onCopy={handleLinkCopied}
+                        ) + '?role=audience'}
+                        onCopy={handleAudienceLinkCopied}
                     >
                         <CustomTooltip
                             nameSpace="meeting"
                             translation="invite.copyLink"
                         >
                             <ActionButton
-                                className={styles.button}
+                                className={clsx(styles.button, { [styles.disabled]: !isPublishAudience })}
                                 Icon={<CopyLinkIcon width="24px" height="24px" />}
                             />
                         </CustomTooltip>
