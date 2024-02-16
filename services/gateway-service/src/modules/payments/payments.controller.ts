@@ -218,13 +218,8 @@ export class PaymentsController {
   ): Promise<
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
-
-    let price: number;
-    let currency: string;
-    let user: any; // Adjust the type according to your user object
-    let userTemplate: any;
     try {
-      userTemplate = await this.userTemplatesService.getUserTemplateById({
+      const userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
 
@@ -240,10 +235,10 @@ export class PaymentsController {
         meetingRole: body.meetingRole,
       });
 
-      price = templatePayment.price;
-      currency = templatePayment.currency;
+      const price = templatePayment.price;
+      const currency = templatePayment.currency;
 
-      user = await this.coreService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: userTemplate.user.id,
       });
 
@@ -255,7 +250,14 @@ export class PaymentsController {
         templateId: userTemplate.id,
         meetingRole: body.meetingRole,
       });
-
+      console.log({
+        templatePrice: price,
+        templateCurrency: currency?.toLowerCase(),
+        stripeAccountId: user.stripeAccountId,
+        stripeSubscriptionId: user.stripeSubscriptionId,
+        templateId: userTemplate.id,
+        meetingRole: body.meetingRole,
+      });
       return {
         success: true,
         result: {
@@ -270,14 +272,7 @@ export class PaymentsController {
         JSON.stringify(err),
       );
 
-      throw new BadRequestException({err, payload: {
-        templatePrice: price,
-        templateCurrency: currency?.toLowerCase(),
-        stripeAccountId: user.stripeAccountId,
-        stripeSubscriptionId: user.stripeSubscriptionId,
-        templateId: userTemplate.id,
-        meetingRole: body.meetingRole,
-      }});
+      throw new BadRequestException(err);
     }
   }
 
