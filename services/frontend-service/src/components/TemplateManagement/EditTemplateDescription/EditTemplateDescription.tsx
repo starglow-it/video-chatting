@@ -250,8 +250,8 @@ const Component = ({
     const handleEditFees = () => {
         if (!enableMonetization) {
             setEnableMonetization(true);
-            setAnchorEl(document.getElementById('formPanel'));
         }
+        setAnchorEl(document.getElementById('formPanel'));
     };
 
     const handleCloseButton = () => {
@@ -412,7 +412,7 @@ const Component = ({
                             color="secondary"
                             aria-label="edit fees"
                             size="small"
-                            startIcon={<MonetizationOnIcon style={{ fontSize: '2.5rem' }}/>}
+                            startIcon={<MonetizationOnIcon style={{ fontSize: '2.5rem' }} />}
                             className={styles.editFeesBtn}
                             onClick={handleEditFees}
                         >
