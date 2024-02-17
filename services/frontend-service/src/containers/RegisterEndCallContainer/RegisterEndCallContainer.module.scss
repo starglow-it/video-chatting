@@ -1,19 +1,33 @@
 @import "../../styles/rem";
 @import "../../styles/variables.scss";
 
-.wrapper {
-  width: rem(472px);
+.outterWrapper {
+  width: rem(700px);
+  height: fit-content;
   max-width: 100%;
   max-height: 100%;
   padding: rem(24px 40px 24px 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #FF8E3B;
+  margin: 10px;
 }
 
-.wrapperMobile {
-  width: 100%;
-  max-width: 100%;
-  padding: rem(24px 40px 24px 40px);
-  margin-top: 150px;
-  margin-bottom: 15px;
+.innerWrapper {
+  width: rem(467px);
+  padding: 30px;
+  background-color: white;
+  border-radius: 18px;
+}
+
+.titleWrapper {
+  margin: 10px 0px 30px 0px;
+}
+
+.titleIcon {
+  margin-left: 6px;
 }
 
 .image {
@@ -22,8 +36,14 @@
   margin: 0 rem(12px);
 }
 
-.text {
+.textLight {
   max-height: rem(40px);
+  font-weight: lighter;
+}
+
+.textBold {
+  max-height: rem(40px);
+  margin-left: 8px;
 }
 
 .googleLogin {
@@ -90,4 +110,49 @@
 
 .buttonGG{
   height: 50px;
+}
+
+.logo {
+  margin: 30px 0px 10px 0px;
+}
+
+@media screen and (max-width: 600px) {
+  .outterWrapper {
+    width: 90%;
+    padding: rem(10px);
+    margin: 0px;
+    margin-top: 30px;
+  }
+
+  .innerWrapper {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .titleWrapper {
+    display: none;
+  }
+
+  .innerWrapper {
+    width: 100%;
+  }
+
+  .logo {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .titleWrapper {
+    display: none;
+  }
+
+  .innerWrapper {
+    width: 100%;
+  }
+
+  .logo {
+    display: none;
+  }
 }
