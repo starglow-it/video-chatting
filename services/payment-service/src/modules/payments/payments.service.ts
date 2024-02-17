@@ -61,29 +61,11 @@ export class PaymentsService {
     templateId,
   }: TCreatePaymentIntent) {
     const amount = templatePrice * 100;
-    console.log('[[[[[[[[[[[[[[[')
-    console.log({
-      templatePrice,
-      templateCurrency,
-      stripeAccountId,
-      platformFee,
-      templateId
-    })
-    this.logger.log({
-      message: `[[[[[[[[[[[createPaymentIntent input payload]]]]]]]]]]]`,
-      ctx: {
-        templatePrice,
-        templateCurrency,
-        stripeAccountId,
-        platformFee,
-        templateId
-      },
-    });
     return this.stripeClient.paymentIntents.create({
       amount,
       currency: templateCurrency,
       transfer_data: {
-        amount: Math.floor(amount - amount * platformFee) || 270,
+        amount: Math.floor(amount - (amount * platformFee)) || amount,
         destination: stripeAccountId,
       },
       metadata: {

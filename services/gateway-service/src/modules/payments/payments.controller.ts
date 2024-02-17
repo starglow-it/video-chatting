@@ -219,15 +219,9 @@ export class PaymentsController {
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
     try {
-      console.log(body.templateId)
       const userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
-      console.log('[[[[[[[[[[[userTemplate]]]]]]]]]]]')
-      console.log(userTemplate)
-      
-      console.log('[[[[[[[[[[[body]]]]]]]]]]]')
-      console.log(body)
 
       if (!userTemplate) {
         return {
@@ -241,9 +235,6 @@ export class PaymentsController {
         meetingRole: body.meetingRole,
       });
 
-      console.log('[[[[[[[[[[[templatePayment]]]]]]]]]]]')
-      console.log(templatePayment)
-      
       const price = templatePayment.price;
       const currency = templatePayment.currency;
 
@@ -259,14 +250,7 @@ export class PaymentsController {
         templateId: userTemplate.id,
         meetingRole: body.meetingRole,
       });
-      console.log({
-        templatePrice: price,
-        templateCurrency: currency?.toLowerCase(),
-        stripeAccountId: user.stripeAccountId,
-        stripeSubscriptionId: user.stripeSubscriptionId,
-        templateId: userTemplate.id,
-        meetingRole: body.meetingRole,
-      });
+
       return {
         success: true,
         result: {

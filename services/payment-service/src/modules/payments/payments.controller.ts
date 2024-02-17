@@ -334,17 +334,9 @@ export class PaymentsController {
       this.logger.log({
         message: `createPaymentIntent input payload`,
         ctx: payload,
-        test: 'asdfasdfasdfasdfasdf'
       });
-      
+
       let product: Stripe.Response<Stripe.Product> = null;
-
-      const plan = plans[product?.name || PlanKeys.House] as PlanData;
-      console.log('[[[[[[[[[[[[[[[', plan.features.comissionFee)
-      console.log('[[[[[[[[[[[[[[[', plan.features.comissionFee[payload.meetingRole])
-      const amount = plan.features.comissionFee[payload.meetingRole] * 100;
-
-      console.log( Math.floor(amount - amount * plan.features.comissionFee[payload.meetingRole]));
 
       if (payload.stripeSubscriptionId) {
         const subscription = await this.paymentService.getSubscription(
@@ -355,6 +347,8 @@ export class PaymentsController {
           subscription?.['plan']?.product,
         );
       }
+
+      const plan = plans[product?.name || PlanKeys.House] as PlanData;
 
       const paymentIntent = await this.paymentService.createPaymentIntent({
         templatePrice: payload.templatePrice,
