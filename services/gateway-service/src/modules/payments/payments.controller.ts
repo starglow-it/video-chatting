@@ -219,9 +219,15 @@ export class PaymentsController {
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
     try {
+      console.log(body.templateId)
       const userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
+      console.log('[[[[[[[[[[[userTemplate]]]]]]]]]]]')
+      console.log(userTemplate)
+      
+      console.log('[[[[[[[[[[[body]]]]]]]]]]]')
+      console.log(body)
 
       if (!userTemplate) {
         return {
@@ -235,6 +241,9 @@ export class PaymentsController {
         meetingRole: body.meetingRole,
       });
 
+      console.log('[[[[[[[[[[[templatePayment]]]]]]]]]]]')
+      console.log(templatePayment)
+      
       const price = templatePayment.price;
       const currency = templatePayment.currency;
 
