@@ -27,6 +27,7 @@ const houseSubscription: PlanData = {
     templatesLimit: 1,
     timeLimit: null,
     comissionFee: {
+      recorder: 0,
       audience: 0.3,
       participant: 0.1,
     },
@@ -43,6 +44,7 @@ const professionalSubscription: PlanData = {
     templatesLimit: 20,
     timeLimit: null,
     comissionFee: {
+      recorder: 0,
       audience: 0.2,
       participant: 0.05,
     },
@@ -61,6 +63,7 @@ const businessSubscription: PlanData = {
     templatesLimit: 50,
     timeLimit: null,
     comissionFee: {
+      recorder: 0,
       audience: 0.1,
       participant: 0,
     },
