@@ -28,7 +28,10 @@
     "deleteBackgroundSuccess": "Delete background success",
     "deleteBackgroundError": "Delete background error",
     "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
-    "connectionError": "Meeting is not connected."
+    "connectionError": "Meeting is not connected.",
+    "monetization": {
+      "saved": "Your payment settings saved"
+    }
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",

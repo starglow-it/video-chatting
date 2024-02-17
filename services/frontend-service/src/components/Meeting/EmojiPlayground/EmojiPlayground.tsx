@@ -81,7 +81,7 @@ const Component = ({ userId }: { userId: string }) => {
             gsap.set(`path[data-key="${reaction.id}"]`, {
                 height: '100%'
             });
-            gsap.set(`img[data-key="${reaction.id}"]`, {
+            gsap.set(`div[data-key="${reaction.id}"]`, {
                 width: "100px",
                 height: "100px",
                 position: "absolute",
@@ -90,7 +90,7 @@ const Component = ({ userId }: { userId: string }) => {
                 zIndex: 9999
             })
 
-            gsap.to(`img[data-key="${reaction.id}"]`, {
+            gsap.to(`div[data-key="${reaction.id}"]`, {
                 motionPath: {
                     path: `path[data-key="${reaction.id}"]`,
                     align: `path[data-key="${reaction.id}"]`,
@@ -203,20 +203,20 @@ const Component = ({ userId }: { userId: string }) => {
                 </svg>
                 <div data-key={reaction.id} className={styles.emojiElement}>
                     <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: '100%', height: '100%' }}></img>
-                    <ConditionalRender condition={userId === meeting.hostUserId}>
-                        <CustomPaper
-                            className={styles.usernameWrapper}
-                            variant="black-glass"
+                    {/* <ConditionalRender> */}
+                    <CustomPaper
+                        className={styles.usernameWrapper}
+                        variant="black-glass"
+                    >
+                        <CustomTypography
+                            color="common.white"
+                            variant="body3"
+                            className={styles.username}
                         >
-                            <CustomTypography
-                                color="common.white"
-                                variant="body3"
-                                className={styles.username}
-                            >
-                                {meetingUsers.find(user => user?.id === userId)?.username}
-                            </CustomTypography>
-                        </CustomPaper>
-                    </ConditionalRender>
+                            {meetingUsers.find(user => user?.id === userId)?.username}
+                        </CustomTypography>
+                    </CustomPaper>
+                    {/* </ConditionalRender> */}
                 </div>
             </>
             ))}

@@ -66,7 +66,8 @@
     "templates": "My rooms",
     "analytics": "Statistics",
     "logout": "Log out",
-    "discovery": "Discovery"
+    "discovery": "Discovery",
+    "helpSupport": "help & support"
   },
   "delete": "Delete Profile",
   "deleteProfileConfirm": "Delete Profile?"

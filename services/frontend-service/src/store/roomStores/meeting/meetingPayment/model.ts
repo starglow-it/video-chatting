@@ -1,7 +1,7 @@
 import { attach, combine, Store } from 'effector-next';
 import { ErrorState, IUserTemplate, MeetingRole } from 'shared-types';
 
-import { DEFAULT_PAYMENT_CURRENCY, PaymentType } from 'shared-const';
+import { DEFAULT_PAYMENT_CURRENCY, DEFAULT_PRICE, PaymentType } from 'shared-const';
 import { meetingDomain, paymentsDomain } from '../../../domains';
 import {
     CancelPaymentIntentPayload,
@@ -192,7 +192,7 @@ export const $paymentMeetingParticipant = $meetingPaymentStore.map(
         ) ??
         ({
             enabled: false,
-            price: 5,
+            price: DEFAULT_PRICE.participant,
             type: PaymentType.Meeting,
             meetingRole: MeetingRole.Participant,
             currency: DEFAULT_PAYMENT_CURRENCY,
@@ -208,7 +208,7 @@ export const $paymentMeetingAudience = $meetingPaymentStore.map(
         ) ??
         ({
             enabled: false,
-            price: 5,
+            price: DEFAULT_PRICE.audience,
             type: PaymentType.Meeting,
             meetingRole: MeetingRole.Audience,
             currency: DEFAULT_PAYMENT_CURRENCY,
@@ -224,7 +224,7 @@ export const $paymentPaywallParticipant = $meetingPaymentStore.map(
         ) ??
         ({
             enabled: false,
-            price: 5,
+            price: DEFAULT_PRICE.participant,
             type: PaymentType.Paywall,
             meetingRole: MeetingRole.Participant,
             currency: DEFAULT_PAYMENT_CURRENCY,
@@ -240,7 +240,7 @@ export const $paymentPaywallAudience = $meetingPaymentStore.map(
         ) ??
         ({
             enabled: false,
-            price: 5,
+            price: DEFAULT_PRICE.audience,
             type: PaymentType.Paywall,
             meetingRole: MeetingRole.Audience,
             currency: DEFAULT_PAYMENT_CURRENCY,
@@ -281,8 +281,12 @@ export const updatePaymentMeetingEvent = attach<
 });
 
 export const setCreateRoomPaymentDataEvent = meetingDomain.createEffect<
-    UpdatePaymentMeetingParams
+UpdatePaymentMeetingParams,
+Store<IUserTemplate>
 >('setCreateRoomPaymentDataEvent');
 
 export const receivePaymentMeetingEvent =
     meetingDomain.createEvent<MeetingPayment>('receivePaymentMeetingEvent');
+
+export const createMeetingPaymentEvent =
+    meetingDomain.createEvent<MeetingPayment>('createMeetingPaymentEvent');

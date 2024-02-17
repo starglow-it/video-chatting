@@ -6,12 +6,15 @@
 }
 .react-resizable-handle {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     background-repeat: no-repeat;
     background-origin: content-box;
     box-sizing: border-box;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA00lEQVR4nL3UMQ4BQRQG4I2IksQVSNyC3inIzsxqSJCQaOYMu29sghvoFHSoMG9MufchG3YpSOzMxkte+xX//2Yc55/D+bHIBA6YUDMayCHnt4IRRAM5oYA6XiKwY4R44tpOkQA3fB2VMiO9UDUIyFMCMYHNzIi7iqoE5C5FQIVG4VKQywShIJH5upYZIoDTF4KaAI6swn3uvu/LsjVEAA9soSuO7d3QR1tjI+hT2K44142wuH4KuLWq/9tB0rlqGWNeHk8kmffwXbh0jaHcvpFf5g4T5r0KsmVK5AAAAABJRU5ErkJggg==");
+    background-size: cover;
+    filter: brightness(0.7) contrast(3);
+    transform: scale(2);
     padding: 0 -3px -3px 0;
     display: none;
 }

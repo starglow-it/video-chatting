@@ -76,11 +76,6 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                 className={styles.title}
             >
                 {subLabel ? <>{subLabel} </> : null}
-                <CustomTypography
-                    variant={isPreEvent ? 'body3' : 'h3bold'}
-                    color={isPreEvent ? 'black' : colorMain}>
-                    Please Pay
-                </CustomTypography>
                 &nbsp;
                 <CustomTypography
                     sx={{

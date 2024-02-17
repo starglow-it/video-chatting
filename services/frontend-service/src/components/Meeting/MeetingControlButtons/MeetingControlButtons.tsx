@@ -533,31 +533,33 @@ const Component = () => {
 
             <CustomGrid id="sideMenuBar" container gap={1.5} direction="column" className={styles.sideMenuWrapper}>
                 <MeetingMonetizationButton />
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation={isAbleToToggleSharing ? `modes.screensharing.${isSharingActive ? 'off' : 'on'
-                                }` : 'modes.screensharing.busy'}
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
+                <ConditionalRender condition={!isAudience}>
+                    <CustomTooltip
+                        title={
+                            <Translation
+                                nameSpace="meeting"
+                                translation={isAbleToToggleSharing ? `modes.screensharing.${isSharingActive ? 'off' : 'on'
+                                    }` : 'modes.screensharing.busy'}
+                            />
+                        }
+                        placement="top"
                     >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleSharing}
-                            className={clsx(styles.deviceButton)}
-                            Icon={
-                                <SharingIcon width="22px" height="22px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
-                            }
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
+                        <CustomPaper
+                            variant="black-glass"
+                            borderRadius={8}
+                            className={styles.deviceButton}
+                        >
+                            <ActionButton
+                                variant="transparentBlack"
+                                onAction={handleSharing}
+                                className={clsx(styles.deviceButton)}
+                                Icon={
+                                    <SharingIcon width="22px" height="22px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
+                                }
+                            />
+                        </CustomPaper>
+                    </CustomTooltip>
+                </ConditionalRender>
                 <CustomTooltip
                     title={
                         <Translation

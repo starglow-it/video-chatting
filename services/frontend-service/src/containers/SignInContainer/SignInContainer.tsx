@@ -174,23 +174,12 @@ const Component = () => {
                     objectFit="cover"
                 />
             </MeetingBackgroundVideo>
-            <CenteredPaper className={styles.wrapper}>
+            <CenteredPaper className={styles.outterWrapper}>
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
-                    marginBottom="10px"
-                >
-                    <CustomImage
-                        src="/images/Ruume.svg"
-                        width="150px"
-                        height="35px"
-                    />
-                </CustomGrid>
-                <CustomGrid
-                    container
-                    alignItems="center"
-                    justifyContent="center"
+                    className={styles.titleWrapper}
                 >
                     <CustomBox className={styles.image}>
                         <CustomImage
@@ -207,76 +196,98 @@ const Component = () => {
                         translation="login.welcome"
                     />
                 </CustomGrid>
-                <SignInGoogle />
+                <CustomGrid
+                    item
+                    container
+                    flexDirection="column"
+                    alignItems="center"
+                    className={styles.innerWrapper}
+                >
+                    <SignInGoogle />
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        justifyContent="center"
+                        marginTop="18px"
+                    >
+                        <CustomTypography
+                            className={styles.textOr}
+                            nameSpace="register"
+                            translation="signUpEndCall.or"
+                        />
+                    </CustomGrid>
+                    <FormProvider {...methods}>
+                        <form className={styles.socialsWrapper} onSubmit={onSubmit}>
+                            <CustomGrid container>
+                                <CustomGrid item className={styles.input}>
+                                    <EmailInput
+                                        onClear={handleResetEmailField}
+                                        {...register('email')}
+                                    />
+                                    {errors?.email?.length && (
+                                        <CustomGrid
+                                            className={styles.errorContainer}
+                                        >
+                                            {emailErrorMessages}
+                                        </CustomGrid>
+                                    )}
+                                </CustomGrid>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    alignItems="flex-end"
+                                    justifyContent="flex-end"
+                                    className={styles.input}
+                                >
+                                    <PasswordInput {...register('password')} />
+                                    {errors?.password?.length && (
+                                        <CustomGrid
+                                            className={styles.errorContainer}
+                                        >
+                                            {passwordErrorMessages}
+                                        </CustomGrid>
+                                    )}
+                                    <ForgotPassword className={styles.forgotPass} />
+                                </CustomGrid>
+
+                                {authState?.error?.message &&
+                                    authState?.error?.message !==
+                                    USER_IS_BLOCKED.message && (
+                                        <ErrorMessage
+                                            className={styles.errorContainer}
+                                            error={authState?.error?.message}
+                                        />
+                                    )}
+                            </CustomGrid>
+
+                            <CustomButton
+                                className={styles.signInBtn}
+                                disabled={!isCredentialsEntered || isLoginPending}
+                                label={
+                                    <Translation
+                                        nameSpace="common"
+                                        translation="buttons.login"
+                                    />
+                                }
+                                type="submit"
+                            />
+                        </form>
+                    </FormProvider>
+                </CustomGrid>
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
-                    marginTop="18px"
+                    marginBottom="10px"
+                    marginTop="20px"
+                    className={styles.logoWrapper}
                 >
-                    <CustomTypography
-                        className={styles.textOr}
-                        nameSpace="register"
-                        translation="signUpEndCall.or"
+                    <CustomImage
+                        src="/images/ruumeWhite.png"
+                        width="150px"
+                        height="45px"
                     />
                 </CustomGrid>
-                <FormProvider {...methods}>
-                    <form className={styles.socialsWrapper} onSubmit={onSubmit}>
-                        <CustomGrid container>
-                            <CustomGrid item className={styles.input}>
-                                <EmailInput
-                                    onClear={handleResetEmailField}
-                                    {...register('email')}
-                                />
-                                {errors?.email?.length && (
-                                    <CustomGrid
-                                        className={styles.errorContainer}
-                                    >
-                                        {emailErrorMessages}
-                                    </CustomGrid>
-                                )}
-                            </CustomGrid>
-                            <CustomGrid
-                                container
-                                direction="column"
-                                alignItems="flex-end"
-                                justifyContent="flex-end"
-                                className={styles.input}
-                            >
-                                <PasswordInput {...register('password')} />
-                                {errors?.password?.length && (
-                                    <CustomGrid
-                                        className={styles.errorContainer}
-                                    >
-                                        {passwordErrorMessages}
-                                    </CustomGrid>
-                                )}
-                                <ForgotPassword className={styles.forgotPass} />
-                            </CustomGrid>
-
-                            {authState?.error?.message &&
-                                authState?.error?.message !==
-                                    USER_IS_BLOCKED.message && (
-                                    <ErrorMessage
-                                        className={styles.errorContainer}
-                                        error={authState?.error?.message}
-                                    />
-                                )}
-                        </CustomGrid>
-
-                        <CustomButton
-                            className={styles.signInBtn}
-                            disabled={!isCredentialsEntered || isLoginPending}
-                            label={
-                                <Translation
-                                    nameSpace="common"
-                                    translation="buttons.login"
-                                />
-                            }
-                            type="submit"
-                        />
-                    </form>
-                </FormProvider>
             </CenteredPaper>
             <EmailResetPasswordDialog />
             <UserBlockedDialog />

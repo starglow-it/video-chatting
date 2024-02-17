@@ -297,27 +297,28 @@ export class UsersGateway extends BaseGateway {
           const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
 
           for (const user of users) {
+            if (user.profileId != profileId) {
+              const profileId = user.profileId;
+              const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
 
-            const profileId = user.profileId;
-            const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
+              let country = "Other";
+              let state: string | undefined;
 
-            let country = "Other";
-            let state: string | undefined;
-
-            if (profile && profile.country) {
-              country = profile.country;
-              if (["Canada", "United States"].includes(country) && profile.state) {
-                state = profile.state;
+              if (profile && profile.country) {
+                country = profile.country;
+                if (["Canada", "United States"].includes(country) && profile.state) {
+                  state = profile.state;
+                }
               }
-            }
 
-            const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
-            countriesMap.set(country, countryInfo);
-            countryInfo.count++;
+              const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
+              countriesMap.set(country, countryInfo);
+              countryInfo.count++;
 
-            if (state) {
-              const stateCount = countryInfo.states?.get(state) || 0;
-              countryInfo.states?.set(state, stateCount + 1);
+              if (state) {
+                const stateCount = countryInfo.states?.get(state) || 0;
+                countryInfo.states?.set(state, stateCount + 1);
+              }
             }
           }
 
@@ -391,7 +392,7 @@ export class UsersGateway extends BaseGateway {
             monetization
           });
         } else {
-          
+
           this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, null);
 
           return wsResult(null);

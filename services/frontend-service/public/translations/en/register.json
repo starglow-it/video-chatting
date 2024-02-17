@@ -4,7 +4,8 @@
     "text": "For security a confirmation link has been sent \n to your email"
   },
   "getStarted": {
-    "title": "Get started",
+    "title1": "save this account",
+    "title2": "for free!",
     "socialLogin": {
       "google": "Continue with Google",
       "googleMobile": "Google",
@@ -20,7 +21,8 @@
     "redirect": "You will be redirected to login page"
   },
   "signUpEndCall": {
-    "title": "Save this free Account",
+    "titleLight": "save this account",
+    "titleBold": "for free!",
     "button": "Sign Up with email",
     "or": "Or"
   }
