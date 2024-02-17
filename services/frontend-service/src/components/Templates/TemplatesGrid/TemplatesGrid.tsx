@@ -30,11 +30,12 @@ const Component = <TemplateType extends { id: string }>({
             flexDirection="row"
             alignItems="center"
             justifyContent="flex-start"
+            className={styles.templateCreateWrapper}
         >
             <CustomBox className={styles.image}>
                 <CustomImage
-                    width="35"
-                    height="35"
+                    width="29"
+                    height="29"
                     src="/images/stars.webp"
                     alt="stars"
                 />
@@ -89,8 +90,8 @@ const Component = <TemplateType extends { id: string }>({
                                             <CustomImage
                                                 width="25"
                                                 height="25"
-                                                src="/images/pallette.png"
-                                                alt="pallette"
+                                                src="/images/immersion.png"
+                                                alt="immersion"
                                             />
                                         </CustomBox>
                                         <CustomGrid
@@ -104,18 +105,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.customizeTheImmersionTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                lineHeight="15px"
-                                                fontWeight="bold"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.customizeTheImmersionDesc"
                                                 textAlign="left"
-                                                lineHeight="15px"
-                                                fontSize={11}
+                                                lineHeight="17px"
+                                                fontSize={10}
                                                 color="#BEBEBE"
-                                                fontWeight="regular"
+                                                className={styles.createRoomDesc}
                                             />
                                         </CustomGrid>
                                         <CustomGrid
@@ -129,17 +130,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.customizeTheImmersionTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                lineHeight="15px"
-                                                fontWeight="bold"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.customizeTheImmersionDescResponsive"
                                                 textAlign="left"
-                                                lineHeight="15px"
-                                                fontSize={11}
+                                                lineHeight="17px"
+                                                fontSize={10}
                                                 color="#BEBEBE"
+                                                className={styles.createRoomDesc}
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
@@ -175,17 +177,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                fontWeight="bold"
-                                                lineHeight="15px"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksDesc"
                                                 textAlign="left"
-                                                fontSize={11}
-                                                lineHeight="15px"
+                                                fontSize={10}
+                                                lineHeight="17px"
                                                 color="#BEBEBE"
+                                                className={styles.createRoomDesc}
                                             />
                                         </CustomGrid>
                                         <CustomGrid
@@ -198,17 +201,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                fontWeight="bold"
-                                                lineHeight="15px"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksDescResponsive"
                                                 textAlign="left"
-                                                fontSize={11}
-                                                lineHeight="15px"
+                                                fontSize={10}
+                                                lineHeight="17px"
                                                 color="#BEBEBE"
+                                                className={styles.createRoomDesc}
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
@@ -244,17 +248,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                fontWeight="bold"
-                                                lineHeight="15px"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceDesc"
                                                 textAlign="left"
-                                                fontSize={11}
-                                                lineHeight="15px"
+                                                fontSize={10}
+                                                lineHeight="17px"
                                                 color="#BEBEBE"
+                                                className={styles.createRoomDesc}
                                             />
 
                                         </CustomGrid>
@@ -268,17 +273,18 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceTitle"
                                                 textAlign="left"
-                                                fontSize={13}
-                                                fontWeight="bold"
-                                                lineHeight="15px"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
                                             />
                                             <CustomTypography
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceDescResponsive"
                                                 textAlign="left"
-                                                fontSize={11}
-                                                lineHeight="15px"
+                                                fontSize={10}
+                                                lineHeight="17px"
                                                 color="#BEBEBE"
+                                                className={styles.createRoomDesc}
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
