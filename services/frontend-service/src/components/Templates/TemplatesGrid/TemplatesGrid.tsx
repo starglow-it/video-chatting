@@ -24,11 +24,17 @@ const Component = <TemplateType extends { id: string }>({
     onCreate,
     isCustomElementCreate = false,
     ElementCreate = (
-        <CustomGrid id="templateCreate" display="flex" flexDirection="row" alignItems="center">
+        <CustomGrid
+            id="templateCreate"
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="flex-start"
+        >
             <CustomBox className={styles.image}>
                 <CustomImage
-                    width="28"
-                    height="28"
+                    width="35"
+                    height="35"
                     src="/images/stars.webp"
                     alt="stars"
                 />
@@ -58,12 +64,10 @@ const Component = <TemplateType extends { id: string }>({
                     <CustomGrid
                         className={clsx(styles.addItem, { [styles.addItemMobile]: isMobile })}
                         container
-                        justifyContent="center"
                         alignItems="center"
                         flexDirection="column"
                         onClick={onCreate}
                         key="create-a-template"
-                        gap={1}
                     >
                         {ElementCreate}
                         {!isCustomElementCreate && (
@@ -83,8 +87,8 @@ const Component = <TemplateType extends { id: string }>({
                                     >
                                         <CustomBox className={styles.image}>
                                             <CustomImage
-                                                width="28"
-                                                height="28"
+                                                width="25"
+                                                height="25"
                                                 src="/images/pallette.png"
                                                 alt="pallette"
                                             />
@@ -109,7 +113,9 @@ const Component = <TemplateType extends { id: string }>({
                                                 translation="descCreateRoom.customizeTheImmersionDesc"
                                                 textAlign="left"
                                                 lineHeight="15px"
-                                                fontSize={12}
+                                                fontSize={11}
+                                                color="#BEBEBE"
+                                                fontWeight="regular"
                                             />
                                         </CustomGrid>
                                         <CustomGrid
@@ -132,7 +138,8 @@ const Component = <TemplateType extends { id: string }>({
                                                 translation="descCreateRoom.customizeTheImmersionDescResponsive"
                                                 textAlign="left"
                                                 lineHeight="15px"
-                                                fontSize={12}
+                                                fontSize={11}
+                                                color="#BEBEBE"
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
@@ -152,8 +159,8 @@ const Component = <TemplateType extends { id: string }>({
                                     >
                                         <CustomBox className={styles.image}>
                                             <CustomImage
-                                                width="28"
-                                                height="28"
+                                                width="25"
+                                                height="25"
                                                 src="/images/white-link.png"
                                                 alt="white link"
                                             />
@@ -176,8 +183,9 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksDesc"
                                                 textAlign="left"
-                                                fontSize={12}
+                                                fontSize={11}
                                                 lineHeight="15px"
+                                                color="#BEBEBE"
                                             />
                                         </CustomGrid>
                                         <CustomGrid
@@ -198,8 +206,9 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.addYourLinksDescResponsive"
                                                 textAlign="left"
-                                                fontSize={12}
+                                                fontSize={11}
                                                 lineHeight="15px"
+                                                color="#BEBEBE"
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
@@ -219,8 +228,8 @@ const Component = <TemplateType extends { id: string }>({
                                     >
                                         <CustomBox className={styles.image}>
                                             <CustomImage
-                                                width="28"
-                                                height="28"
+                                                width="25"
+                                                height="25"
                                                 src="/images/creditCard.png"
                                                 alt="credit card"
                                             />
@@ -243,8 +252,9 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceDesc"
                                                 textAlign="left"
-                                                fontSize={12}
+                                                fontSize={11}
                                                 lineHeight="15px"
+                                                color="#BEBEBE"
                                             />
 
                                         </CustomGrid>
@@ -266,8 +276,9 @@ const Component = <TemplateType extends { id: string }>({
                                                 nameSpace="templates"
                                                 translation="descCreateRoom.monetizeAttendanceDescResponsive"
                                                 textAlign="left"
-                                                fontSize={12}
+                                                fontSize={11}
                                                 lineHeight="15px"
+                                                color="#BEBEBE"
                                             />
                                         </CustomGrid>
                                     </CustomGrid>
