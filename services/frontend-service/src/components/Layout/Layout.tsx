@@ -499,18 +499,19 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                     className={styles.menu}
                                                 >
                                                     <MenuItem
-                                                        className={styles.menuItem}
+                                                        className={styles.profileItem}
                                                     >
                                                         <ListItemIcon>
                                                             <ProfileAvatar
                                                                 src={profileState?.profileAvatar?.url}
                                                                 userName={profileState.fullName}
                                                                 className={clsx(styles.innerProfileImage, styles.linkIcon)}
+                                                                withoutShadow={true}
                                                             />
                                                         </ListItemIcon>
-                                                        <ListItemText >
+                                                        <ListItemText>
                                                             <Typography variant="subtitle1" className={styles.profileName}>{profileState.fullName}</Typography>
-                                                            <Typography variant="caption" display="block" >{profileState.email}</Typography>
+                                                            <Typography variant="caption" display="block" className={styles.profileEmail}>{profileState.email}</Typography>
                                                         </ListItemText>
                                                     </MenuItem>
                                                     <Divider />
@@ -532,7 +533,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                                     })}
                                                                 />
                                                             </ListItemIcon>
-                                                            <ListItemText >
+                                                            <ListItemText className={styles.menuText}>
                                                                 <Typography variant="caption" display="block" >profile</Typography>
                                                             </ListItemText>
                                                         </MenuItem>
@@ -555,7 +556,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                                     })}
                                                                 />
                                                             </ListItemIcon>
-                                                            <ListItemText >
+                                                            <ListItemText className={styles.menuText}>
                                                                 <Typography variant="caption" display="block" >ruumes</Typography>
                                                             </ListItemText>
                                                         </MenuItem>
@@ -579,7 +580,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                                     })}
                                                                 />
                                                             </ListItemIcon>
-                                                            <ListItemText >
+                                                            <ListItemText className={styles.menuText}>
                                                                 <Typography variant="caption" display="block" >statistics</Typography>
                                                             </ListItemText>
                                                         </MenuItem>
@@ -596,12 +597,12 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
                                                             <ListItemIcon>
                                                                 <ExitIcon
-                                                                    className={styles.icon}
+                                                                    className={styles.linkIcon}
                                                                     width="28px"
                                                                     height="28px"
                                                                 />
                                                             </ListItemIcon>
-                                                            <ListItemText >
+                                                            <ListItemText className={styles.menuText}>
                                                                 <Typography variant="caption" display="block" >log out</Typography>
                                                             </ListItemText>
                                                         </MenuItem>
@@ -619,7 +620,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                             <ListItemIcon>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 256 256" id="circle-wavy-question"><rect width="256" height="256" fill="none"></rect><path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12" d="M54.46089,201.53911c-9.204-9.204-3.09935-28.52745-7.78412-39.85C41.82037,149.95168,24,140.50492,24,127.99963,24,115.4945,41.82047,106.048,46.67683,94.31079c4.68477-11.32253-1.41993-30.6459,7.78406-39.8499s28.52746-3.09935,39.85-7.78412C106.04832,41.82037,115.49508,24,128.00037,24c12.50513,0,21.95163,17.82047,33.68884,22.67683,11.32253,4.68477,30.6459-1.41993,39.8499,7.78406s3.09935,28.52746,7.78412,39.85C214.17963,106.04832,232,115.49508,232,128.00037c0,12.50513-17.82047,21.95163-22.67683,33.68884-4.68477,11.32253,1.41993,30.6459-7.78406,39.8499s-28.52745,3.09935-39.85,7.78412C149.95168,214.17963,140.50492,232,127.99963,232c-12.50513,0-21.95163-17.82047-33.68884-22.67683C82.98826,204.6384,63.66489,210.7431,54.46089,201.53911Z"></path><circle cx="127.999" cy="180" r="10"></circle><path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12" d="M127.9995,144.0045v-8a28,28,0,1,0-28-28"></path></svg>
                                                             </ListItemIcon>
-                                                            <ListItemText>
+                                                            <ListItemText className={styles.menuText}>
                                                                 <Typography variant="caption" display="block" >help & support</Typography>
                                                             </ListItemText>
                                                         </MenuItem>

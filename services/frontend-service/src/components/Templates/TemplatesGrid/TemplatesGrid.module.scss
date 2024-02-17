@@ -15,6 +15,10 @@
   }
 }
 
+.templateCreateWrapper {
+  margin-top: 5px;
+}
+
 .dots {
   margin: rem(85px) 0 0 0;
 }
@@ -44,6 +48,10 @@
       background: #0F0F10;
     }
   }
+}
+
+.descriptionWrapper {
+  line-height: 35px;
 }
 
 %arrow {
@@ -109,12 +117,20 @@
 
 .title {
   margin-left: 4px;
-  font-size: 20px;
+  font-size: 17px;
+}
+
+.createRoomTitle {
+  font-weight: 600;
 }
 
 .descCreateRoom {
   width: 85%;
   margin-left: 10px;
+}
+
+.createRoomDesc {
+  font-weight: 400;
 }
 
 .image {
