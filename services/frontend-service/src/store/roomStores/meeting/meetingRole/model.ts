@@ -23,11 +23,13 @@ export const $meetingRoleStore = combine<{
     roleQueryUrl: $roleQueryUrlStore,
 }).map(({ meetingTemplate, profile, roleQueryUrl }) =>
     Boolean(profile.id) &&
-    meetingTemplate?.meetingInstance?.owner === profile.id
+        meetingTemplate?.meetingInstance?.owner === profile.id
         ? MeetingRole.Host
         : roleQueryUrl === MeetingRole.Audience
-        ? MeetingRole.Audience
-        : MeetingRole.Participant,
+            ? MeetingRole.Audience
+            : roleQueryUrl === MeetingRole.Recorder
+                ? MeetingRole.Recorder
+                : MeetingRole.Participant,
 );
 
 export const $isOwner = combine({
