@@ -66,6 +66,7 @@ const Component = () => {
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     localUser.id !== user.id &&
+                    user.meetingRole !== MeetingRole.Recorder &&
                     user.meetingRole !== MeetingRole.Audience,
             ),
     });
@@ -129,6 +130,7 @@ const Component = () => {
         }
     }, [isSideUsersOpen]);
 
+
     if (isScreenSharing && isMobile) {
         return (
             <CustomGrid
@@ -147,7 +149,7 @@ const Component = () => {
                     </ClickAwayListener>
                 </ConditionalRender>
                 {renderUsers}
-                <ConditionalRender condition={!isAudience}>
+                <ConditionalRender condition={!isAudience && localUser.meetingRole !== MeetingRole.Recorder}>
                     <MeetingUserVideoItem
                         key={localUser.id}
                         userId={localUser.id}
@@ -181,7 +183,7 @@ const Component = () => {
             id="drag-warpper"
         >
             {renderUsers}
-            <ConditionalRender condition={!isAudience}>
+            <ConditionalRender condition={!isAudience && localUser.meetingRole !== MeetingRole.Recorder}>
                 <MeetingUserVideoItem
                     userId={localUser.id}
                     key={localUser.id}

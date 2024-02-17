@@ -297,7 +297,7 @@ export class UsersGateway extends BaseGateway {
           const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
 
           for (const user of users) {
-            if (user.profileId != profileId) {
+            if (user.profileId != profileId && user.meetingRole !== MeetingRole.Recorder) {
               const profileId = user.profileId;
               const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
 

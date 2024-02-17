@@ -283,7 +283,6 @@ const MeetingContainer = memo(() => {
             }
 
             handleSetSettingsChecked();
-            console.log('before device alert');
         })();
     }, [isMeetingSocketConnected, isOwner]);
 
