@@ -16,6 +16,7 @@ import {
   UpdateUserProfileStatisticPayload,
   GetMeetingAvatarPayload,
   IMeetingAvatar,
+  ITemplatePayment
 } from 'shared-types';
 import {
   StatisticBrokerPatterns,
@@ -58,6 +59,14 @@ export class CoreService {
     id: IUserTemplate['id'];
   }): Promise<IUserTemplate> {
     const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplateById };
+
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+  async findTemplatePayment(payload: {
+    userTemplateId: string,
+    userId: string
+  }): Promise<any> {
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetTemplatePaymentForStatistics };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }

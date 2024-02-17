@@ -17,4 +17,5 @@ export enum UserTemplatesBrokerPatterns {
   UpdateUserTemplateUsageNumber = 'update_user_template_usage_number',
   DeleteLeastUsedTemplates = 'delete_least_user_templates',
   UpdateTemplatePayments = 'update_template_payments',
+  GetTemplatePaymentForStatistics = 'get_template_payment_for_statistics',
 }
