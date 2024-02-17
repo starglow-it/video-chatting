@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CustomImageProps } from './CustomImage.types';
 
 const Component = ({ loading = 'eager', ...props }: CustomImageProps) => (
-    <Image loading={loading} {...props} />
+    <Image loading={loading} objectFit="cover" {...props} />
 );
 
 const CustomImage = memo(Component);
