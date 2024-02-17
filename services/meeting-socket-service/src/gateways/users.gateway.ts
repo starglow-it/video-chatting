@@ -364,11 +364,21 @@ export class UsersGateway extends BaseGateway {
             });
           }
 
-          const monetization = {
-            entryFee: template?.isMonetizationEnabled ? template?.templatePrice ?? 0 : 0,
-            totalFees: template?.isMonetizationEnabled ? (template?.templatePrice ?? 0) * (totalParticipants + totalAudiences) : 0,
+          const { templatePayment } = await this.coreService.findTemplatePayment({
+            userTemplateId: meeting.templateId,
+            userId: profileId
+          });
+
+          let monetization = {
+            entryFee: 0,
+            totalFees: 0,
             donations: 0
           };
+
+          if (templatePayment && templatePayment.enabled) {
+            monetization.entryFee = templatePayment.price
+            monetization.totalFees = templatePayment.price * (totalParticipants + totalAudiences)
+          }
 
           const result = {
             meetingNames,

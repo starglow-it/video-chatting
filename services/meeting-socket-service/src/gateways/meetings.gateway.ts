@@ -231,23 +231,23 @@ export class MeetingsGateway
       user,
     });
 
-    if (!activeParticipants) {
-      await this.meetingsCommonService.handleClearMeetingData({
-        userId: meeting.owner._id,
-        templateId: userTemplate.id,
-        instanceId: userTemplate.meetingInstance.instanceId,
-        meetingId,
-        session,
-      });
-      this.emitToRoom(
-        `waitingRoom:${meeting.templateId}`,
-        MeetingEmitEvents.FinishMeeting,
-        {
-          reason: FinishMeetingReason.RemoveMeeting,
-        },
-      );
-      return;
-    }
+    // if (!activeParticipants) {
+    //   await this.meetingsCommonService.handleClearMeetingData({
+    //     userId: meeting.owner._id,
+    //     templateId: userTemplate.id,
+    //     instanceId: userTemplate.meetingInstance.instanceId,
+    //     meetingId,
+    //     session,
+    //   });
+    //   this.emitToRoom(
+    //     `waitingRoom:${meeting.templateId}`,
+    //     MeetingEmitEvents.FinishMeeting,
+    //     {
+    //       reason: FinishMeetingReason.RemoveMeeting,
+    //     },
+    //   );
+    //   return;
+    // }
 
     if (isMeetingHost) {
       const prevHost = await this.getPreviousHost(meeting);

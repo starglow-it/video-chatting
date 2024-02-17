@@ -74,7 +74,6 @@ const Component = () => {
 
     useEffect(() => {
         if (Object.keys(roomsStatistics).length != 0) {
-            console.log(roomsStatistics);
             const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
                 ? roomsStatistics.meetingNames.map(meeting => ({
                     id: meeting.id,
