@@ -250,8 +250,8 @@ const Component = ({
     const handleEditFees = () => {
         if (!enableMonetization) {
             setEnableMonetization(true);
-            setAnchorEl(document.getElementById('formPanel'));
         }
+        setAnchorEl(document.getElementById('formPanel'));
     };
 
     const handleCloseButton = () => {
@@ -398,7 +398,7 @@ const Component = ({
                         />
                     </CustomGrid>
                     <CustomGrid item md={5} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
-                        <div className={styles.customSwitchContainer} onClick={toggleSelected}>
+                        {/* <div className={styles.customSwitchContainer} onClick={toggleSelected}>
                             <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
                         </div>
                         <CustomTypography
@@ -407,15 +407,15 @@ const Component = ({
                             nameSpace="createRoom"
                             translation={enableMonetization ? "editDescription.form.monetizationContentOn" : "editDescription.form.monetizationContentOff"}
                             className={styles.monetizationContentToggleValue}
-                        />
+                        /> */}
                         <Button
                             color="secondary"
                             aria-label="edit fees"
                             size="small"
-                            startIcon={<MonetizationOnIcon style={{ fontSize: '2.5rem' }}/>}
                             className={styles.editFeesBtn}
                             onClick={handleEditFees}
                         >
+                            <span className={styles.editFeesIcon}>$</span>
                             edit fees
                         </Button>
                     </CustomGrid>
