@@ -63,6 +63,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             return (
                 <CustomImage
                     src={template?.mediaLink?.thumb || ''}
+                    objectFit="cover" layout="fixed"
                     width="334px"
                     height="190px"
                 />
@@ -73,6 +74,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 return (
                     <CustomImage
                         src={template?.url || ''}
+                        objectFit="cover" layout="fixed"
                         width="334px"
                         height="190px"
                     />

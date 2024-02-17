@@ -32,6 +32,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
             <ConditionalRender condition={Boolean(previewImage?.url)}>
                 <CustomImage
                     src={previewImage?.url || ''}
+                    objectFit="cover" layout="fixed"
                     width={334}
                     height={190}
                     alt="profile-template-item"
