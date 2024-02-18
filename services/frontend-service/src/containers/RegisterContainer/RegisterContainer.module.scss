@@ -1,43 +1,20 @@
 @import "../../styles/rem";
 
-.outterWrapper {
-  width: rem(700px);
+.wrapper {
+  width: rem(472px);
   max-width: 100%;
   max-height: 100%;
   padding: rem(24px 40px 24px 40px);
-  background-color: #FF8E3B;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: fit-content;
-}
-
-.innerWrapper {
-  width: 80%;
-  background-color: white;
-  border-radius: 8px;
-  padding: 30px;
-}
-
-.titleWrapper {
-  margin: 10px 0px 20px 0px;
 }
 
 .image {
-  width: rem(40px);
-  height: rem(40px);
+  width: rem(28px);
+  height: rem(28px);
   margin: 0 rem(12px);
 }
 
-.text1 {
+.text {
   max-height: rem(40px);
-  font-weight: lighter;
-}
-
-.textBold {
-  max-height: rem(40px);
-  margin-left: 8px;
 }
 
 .googleLogin {
@@ -54,7 +31,6 @@
 
 .input {
   width: 100%;
-
   &:first-child {
     margin: 0 0 rem(24px) 0;
   }
@@ -78,7 +54,6 @@
 
 .termsText {
   display: inline-block;
-
   &.termsLink {
     margin: 0 rem(6px);
   }
@@ -99,45 +74,4 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-}
-
-.ruumeLogo {
-  padding-top: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-@media screen and (max-width: 800px) {
-  .outterWrapper {
-    width: 95%;
-    padding: rem(20px);
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .innerWrapper {
-    width: 95%;
-  padding: 20px;
-  }
-}
-
-@media screen and (max-width: 375px) {
-  .outterWrapper {
-    width: 95%;
-    padding: 0px;
-    background-color: transparent;
-  }
-
-  .titleWrapper, .ruumeLogo {
-    display: none;
-  }
-
-  .text1 {
-    font-size: 20px;
-  }
-
-  .textBold {
-    font-size: 20px;
-  }
 }

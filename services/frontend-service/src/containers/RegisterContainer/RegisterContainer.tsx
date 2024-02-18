@@ -156,159 +156,135 @@ const Component = () => {
                     layout="fill"
                 />
             </CustomGrid>
-            <CenteredPaper className={styles.outterWrapper}>
+            <CenteredPaper className={styles.wrapper}>
                 <CustomGrid
                     container
                     alignItems="center"
                     justifyContent="center"
-                    className={styles.titleWrapper}
                 >
-                    <CustomTypography
-                        variant="h2"
-                        className={styles.text1}
-                        nameSpace="register"
-                        translation="getStarted.title1"
-                    />
-                    <CustomTypography
-                        variant="h2bold"
-                        className={styles.textBold}
-                        nameSpace="register"
-                        translation="getStarted.title2"
-                    />
                     <CustomBox className={styles.image}>
                         <CustomImage
-                            width="35"
-                            height="35"
-                            src="/images/happy-face.png"
-                            alt="happy-face"
+                            width="28"
+                            height="28"
+                            src="/images/hi-hand.webp"
+                            alt="hi-hand"
                         />
                     </CustomBox>
+                    <CustomTypography
+                        variant="h2bold"
+                        className={styles.text}
+                        nameSpace="register"
+                        translation="getStarted.title"
+                    />
                 </CustomGrid>
+                <SignInGoogle buttonText="buttons.registerGoogle" />
                 <CustomGrid
-                    item
                     container
-                    flex-direction="column"
                     alignItems="center"
                     justifyContent="center"
-                    className={styles.innerWrapper}
+                    marginTop="18px"
                 >
-                    <SignInGoogle buttonText="buttons.registerGoogle" />
-                    <CustomGrid
-                        container
-                        alignItems="center"
-                        justifyContent="center"
-                        marginTop="18px"
-                    >
-                        <CustomTypography
-                            className={styles.textOr}
-                            nameSpace="register"
-                            translation="signUpEndCall.or"
-                        />
-                    </CustomGrid>
-                    <FormProvider {...methods}>
-                        <form className={styles.socialsWrapper} onSubmit={onSubmit}>
-                            <CustomGrid container>
-                                <CustomGrid item className={styles.input}>
-                                    <EmailInput
-                                        error={
-                                            isNotRequiredMessage
-                                                ? currentEmailErrorMessage
-                                                : ''
-                                        }
-                                        onClear={handleResetEmailField}
-                                        {...register('email')}
-                                    />
-                                </CustomGrid>
-                                <CustomGrid item className={styles.input}>
-                                    <PasswordInput
-                                        fieldKey="password"
-                                        onFocus={handleFocusInput}
-                                        {...register('password')}
-                                        onCustomBlur={handleBlurInput}
-                                    />
-                                    <PasswordHints
-                                        show={showHints}
-                                        fieldKey="password"
-                                    />
-                                </CustomGrid>
-                            </CustomGrid>
-
-                            <CustomGrid
-                                container
-                                flexWrap="nowrap"
-                                justifyContent="center"
-                                alignItems="center"
-                                className={styles.termsWrapper}
-                            >
-                                <CustomCheckbox
-                                    className={styles.checkbox}
-                                    labelClassName={styles.label}
-                                    label={
-                                        <CustomGrid>
-                                            {!is480Media && (
-                                                <CustomTypography
-                                                    className={styles.termsText}
-                                                    variant="body2"
-                                                    nameSpace="common"
-                                                    translation="iAgree"
-                                                />
-                                            )}
-                                            <CustomLink
-                                                className={clsx(
-                                                    styles.termsText,
-                                                    styles.termsLink,
-                                                )}
-                                                href="/agreements"
-                                                variant="body2"
-                                                nameSpace="common"
-                                                translation="terms"
-                                            />
-                                            {!is480Media && (
-                                                <CustomTypography
-                                                    className={styles.termsText}
-                                                    variant="body2"
-                                                    nameSpace="common"
-                                                    translation="and"
-                                                />
-                                            )}
-                                            <CustomLink
-                                                className={clsx(
-                                                    styles.termsText,
-                                                    styles.termsLink,
-                                                )}
-                                                href="/agreements?section=privacy"
-                                                variant="body2"
-                                                nameSpace="common"
-                                                translation="privacy"
-                                            />
-                                        </CustomGrid>
+                    <CustomTypography
+                        className={styles.textOr}
+                        nameSpace="register"
+                        translation="signUpEndCall.or"
+                    />
+                </CustomGrid>
+                <FormProvider {...methods}>
+                    <form className={styles.socialsWrapper} onSubmit={onSubmit}>
+                        <CustomGrid container>
+                            <CustomGrid item className={styles.input}>
+                                <EmailInput
+                                    error={
+                                        isNotRequiredMessage
+                                            ? currentEmailErrorMessage
+                                            : ''
                                     }
-                                    {...register('terms')}
+                                    onClear={handleResetEmailField}
+                                    {...register('email')}
                                 />
                             </CustomGrid>
+                            <CustomGrid item className={styles.input}>
+                                <PasswordInput
+                                    fieldKey="password"
+                                    onFocus={handleFocusInput}
+                                    {...register('password')}
+                                    onCustomBlur={handleBlurInput}
+                                />
+                                <PasswordHints
+                                    show={showHints}
+                                    fieldKey="password"
+                                />
+                            </CustomGrid>
+                        </CustomGrid>
 
-                            <CustomButton
-                                className={styles.registerButton}
-                                disabled={!isTermsAccepted}
+                        <CustomGrid
+                            container
+                            flexWrap="nowrap"
+                            justifyContent="center"
+                            alignItems="center"
+                            className={styles.termsWrapper}
+                        >
+                            <CustomCheckbox
+                                className={styles.checkbox}
+                                labelClassName={styles.label}
                                 label={
-                                    <Translation
-                                        nameSpace="register"
-                                        translation="getStarted.button"
-                                    />
+                                    <CustomGrid>
+                                        {!is480Media && (
+                                            <CustomTypography
+                                                className={styles.termsText}
+                                                variant="body2"
+                                                nameSpace="common"
+                                                translation="iAgree"
+                                            />
+                                        )}
+                                        <CustomLink
+                                            className={clsx(
+                                                styles.termsText,
+                                                styles.termsLink,
+                                            )}
+                                            href="/agreements"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="terms"
+                                        />
+                                        {!is480Media && (
+                                            <CustomTypography
+                                                className={styles.termsText}
+                                                variant="body2"
+                                                nameSpace="common"
+                                                translation="and"
+                                            />
+                                        )}
+                                        <CustomLink
+                                            className={clsx(
+                                                styles.termsText,
+                                                styles.termsLink,
+                                            )}
+                                            href="/agreements?section=privacy"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="privacy"
+                                        />
+                                    </CustomGrid>
                                 }
-                                type="submit"
+                                {...register('terms')}
                             />
-                        </form>
-                    </FormProvider>
-                </CustomGrid>
-                <CustomBox className={styles.ruumeLogo}>
-                    <CustomImage
-                        width="150"
-                        height="45"
-                        src="/images/ruumeWhite.png"
-                        alt="ruume logo white"
-                    />
-                </CustomBox>
+                        </CustomGrid>
+
+                        <CustomButton
+                            className={styles.registerButton}
+                            disabled={!isTermsAccepted}
+                            label={
+                                <Translation
+                                    nameSpace="register"
+                                    translation="getStarted.button"
+                                />
+                            }
+                            type="submit"
+                        />
+                    </form>
+                </FormProvider>
             </CenteredPaper>
             <SuccessfulRegisterDialog />
         </CustomGrid>
