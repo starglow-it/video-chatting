@@ -8,7 +8,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { PropsWithClassName } from 'shared-frontend/types';
-import { addNotificationEvent, googleVerifyFx, setUserCountryFx } from '../../../store';
+import { addNotificationEvent, googleVerifyFx } from '../../../store';
 
 import { NotificationType } from '../../../store/types';
 
@@ -32,18 +32,8 @@ export const SignInGoogle = ({
     const handleSuccess = (token: string) => {
         googleVerifyFx({
             token,
-        }).then(async () => {
+        }).then(() => {
             setIsProcessing(false);
-            await setUserCountryFx();
-            if (!!buttonText) {
-                if (!localStorage.getItem("isFirstDashboardVisit")) {
-                    localStorage.setItem("isFirstDashboardVisit", "true");
-                }
-
-                if (!localStorage.getItem("isFirstMeeting")) {
-                    localStorage.setItem("isFirstMeeting", "true");
-                }
-            }
         });
     };
 
