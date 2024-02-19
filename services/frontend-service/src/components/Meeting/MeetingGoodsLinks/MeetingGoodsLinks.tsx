@@ -36,14 +36,14 @@ const Component = () => {
                 } as React.CSSProperties;
 
                 const handleOpenLink = () => {
-                    let url = link.item;
-
+                    let orgUrl = link.item;
+                    let url = orgUrl;
                     if (!url.match(/^https?:\/\//i)) {
                         url = `http://${url}`;
                     }
 
                     if (!isOwner) {
-                        clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url: url, userId: localUserStore.id });
+                        clickMeetingLinkSocketEvent({ meetingId: meetingStore.id, url: orgUrl, userId: localUserStore.id });
                     }
 
                     return window.open(url, '_blank');
