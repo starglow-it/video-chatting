@@ -37,6 +37,7 @@ export type MeetingUser = {
     meetingAvatarId?: string;
     meetingRole: MeetingRole;
     doNotDisturb: boolean;
+    isDonated: boolean;
 };
 
 export type joyride = {

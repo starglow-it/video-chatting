@@ -376,16 +376,31 @@ export class UsersGateway extends BaseGateway {
             donations: 0
           };
 
+          const donatedParticipants = participants.filter(participant => participant.isDonated).length;
+          const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
+
           if (templatePayments.length > 0) {
             templatePayments.forEach(templatePayment => {
-              if (templatePayment.meetingRole === MeetingRole.Participant) {
-                monetization.participantEntryFee = templatePayment.price;
-                monetization.totalFees += templatePayment.price * totalParticipants;
+              if (templatePayment.type === 'paywall') {
+                if (templatePayment.meetingRole === MeetingRole.Participant) {
+                  monetization.participantEntryFee = templatePayment.price;
+                  monetization.totalFees += templatePayment.price * totalParticipants;
+                }
+
+                if (templatePayment.meetingRole === MeetingRole.Audience) {
+                  monetization.audienceEntryFee = templatePayment.price;
+                  monetization.totalFees += templatePayment.price * totalAudiences;
+                }
               }
 
-              if (templatePayment.meetingRole === MeetingRole.Audience) {
-                monetization.audienceEntryFee = templatePayment.price;
-                monetization.totalFees += templatePayment.price * totalAudiences;
+              if (templatePayment.type === 'meeting') {
+                if (templatePayment.meetingRole === MeetingRole.Participant) {
+                  monetization.donations += templatePayment.price * donatedParticipants;
+                }
+
+                if (templatePayment.meetingRole === MeetingRole.Audience) {
+                  monetization.donations += templatePayment.price * donatedAudiences;
+                }
               }
             });
           }

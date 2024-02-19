@@ -119,6 +119,12 @@ export class MeetingUser {
   })
   doNotDisturb: boolean;
 
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isDonated: boolean;
+
   @Prop({ default: Date.now })
   createdAt: number;
 

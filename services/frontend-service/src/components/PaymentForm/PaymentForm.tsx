@@ -18,6 +18,7 @@ import { addNotificationEvent } from '../../store';
 import {
     $paymentIntent,
     createPaymentIntentWithData,
+    updateUserSocketEvent
 } from '../../store/roomStores';
 
 // styles
@@ -48,6 +49,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
             message: 'payments.paymentSuccess',
             withSuccessIcon: true,
         });
+        updateUserSocketEvent({ isDonated: true });
     }, []);
 
     const handleSubmitError = useCallback(() => {
