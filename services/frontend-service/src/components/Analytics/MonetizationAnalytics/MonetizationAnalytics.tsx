@@ -17,7 +17,8 @@ const MonetizationAnalytics = memo(
         statistic,
     }: PropsWithClassName<{
         statistic: {
-            entryFee: number,
+            participantEntryFee: number,
+            audienceEntryFee: number,
             totalFees: number,
             donations: number
         };
@@ -55,7 +56,7 @@ const MonetizationAnalytics = memo(
                             <Translation
                                 nameSpace="common"
                                 translation="statistics.users.monetizationAnalytics.entryFees"
-                            /> - ${statistic.data.entryFee} USD/person
+                            /> - ${statistic.data.participantEntryFee} USD/participant, ${statistic.data.audienceEntryFee} USD/audience
                         </CustomTypography>
                         <CustomTypography variant="body1">
                             ${statistic.data.totalFees}

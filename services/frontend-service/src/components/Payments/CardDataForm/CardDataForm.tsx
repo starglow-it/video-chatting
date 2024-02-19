@@ -32,7 +32,7 @@ const Component = ({
     isPreEvent = false,
     onSubmit,
     onError,
-    setMeetingPreviewShow,
+    setMeetingPreviewShow = () => {},
     paymentIntentSecret,
     colorForm = 'white',
     paymentType,

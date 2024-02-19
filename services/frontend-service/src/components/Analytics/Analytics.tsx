@@ -70,7 +70,6 @@ const Component = () => {
         tabs: statisticTabs,
     });
     const { isMobile } = useBrowserDetect();
-    const router = useRouter();
 
     useEffect(() => {
         if (Object.keys(roomsStatistics).length != 0) {
