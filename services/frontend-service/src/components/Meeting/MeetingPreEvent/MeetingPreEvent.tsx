@@ -43,16 +43,6 @@ import styles from './MeetingPreEvent.module.scss';
 // const
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
-const timeDifference = (targetDate: string | undefined): boolean => {
-    if (targetDate) {
-        const now = new Date();
-        const target = new Date(targetDate);
-        const timeDifference = target - now;
-        const minutesDifference = Math.floor(timeDifference / (1000 * 60));
-        return minutesDifference < 60;
-    } else return false;
-}
-
 const Component = ({
     isAllowBack = true,
     isShow = true,
@@ -65,11 +55,11 @@ const Component = ({
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
     const isRoomPaywalledStore = useStore($isRoomPaywalledStore);
+
     const startMeetingAt =
         meetingTemplate !== null &&
             meetingTemplate.meetingInstance !== null &&
             meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? parseCustomDateString(meetingTemplate.meetingInstance.startAt)?.formattedDate : '';
-    const isMeetingStartWithInFiveMin = timeDifference(parseCustomDateString(meetingTemplate.meetingInstance.startAt)?.formattedDateWithYear);
     const aboutTheHost = meetingTemplate !== null &&
         meetingTemplate.meetingInstance !== null &&
         meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? meetingTemplate.meetingInstance.aboutTheHost : '';
@@ -262,24 +252,10 @@ const Component = ({
                                 <CustomGrid item xs>
                                     <ActionButton
                                         variant="accept"
-                                        label={isMeetingStartWithInFiveMin ? 'Join Now' : 'add to Calendar'}
+                                        label="Enter"
                                         className={styles.actionButton}
-                                        onAction={() =>
-                                            isMeetingStartWithInFiveMin
-                                                ? handleSetMeetingPreviewShow()
-                                                : handleDownloadInviteICSFile()
-                                        }
+                                        onAction={handleSetMeetingPreviewShow}
                                     />
-                                    {!isMeetingStartWithInFiveMin &&
-                                        <CustomTypography
-                                            variant="body3"
-                                            nameSpace="createRoom"
-                                            translation="editDescription.form.preMeetingNtfText"
-                                            className={clsx(styles.preMeetingNtfText, {
-                                                [styles.mobile]: isMobile
-                                            })}
-                                        />
-                                    }
                                 </CustomGrid>
                             </CustomGrid>
                         </ConditionalRender>
