@@ -36,6 +36,7 @@ export type MeetingUser = {
     userSize?: number;
     meetingAvatarId?: string;
     meetingRole: MeetingRole;
+    doNotDisturb: boolean;
 };
 
 export type joyride = {
@@ -250,6 +251,13 @@ export type MeetingNote = {
     user: string;
     id: string;
 };
+
+export type MeetingReaction = {
+    id: string,
+    user: string,
+    name: string,
+    src: string
+}
 
 export enum HttpMethods {
     Post = 'POST',

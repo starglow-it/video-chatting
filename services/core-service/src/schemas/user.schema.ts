@@ -30,6 +30,11 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+  })
+  state: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
     required: true,
     default: UserRoles.User,
   })

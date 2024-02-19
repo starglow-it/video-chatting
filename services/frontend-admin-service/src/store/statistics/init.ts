@@ -29,19 +29,19 @@ getRoomRatingStatisticsFx.use(handleGetRoomsRatingStatistic);
 getUsersMonetizationStatisticsFx.use(handleGetUsersMonetizationStatistic);
 getPlatformMonetizationStatisticsFx.use(handleGetPlatformMonetizationStatistic);
 
-$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (sate, data) => data);
+$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (state, data) => data);
 $subscriptionsStatistics.on(
     getSubscriptionsStatisticsFx.doneData,
-    (sate, data) => data,
+    (state, data) => data,
 );
-$roomsStatistics.on(getRoomsStatisticsFx.doneData, (sate, data) => data);
+$roomsStatistics.on(getRoomsStatisticsFx.doneData, (state, data) => data);
 $roomsRatingStatistics.on(
     getRoomRatingStatisticsFx.doneData,
-    (sate, data) => data,
+    (state, data) => data,
 );
 $usersMonetizationStatistics
-    .on(getUsersMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getUsersMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetUsersMonetization);
 $platformMonetizationStatistics
-    .on(getPlatformMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getPlatformMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetPlatformMonetization);

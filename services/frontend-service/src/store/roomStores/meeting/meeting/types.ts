@@ -7,6 +7,11 @@ export type JoinMeetingEventPayload = {
     settingsBackgroundAudioVolume: number;
 };
 
+export type GetMeetingUsersStatisticsPayload = {
+    meetingId?: string,
+    userId: string
+};
+
 export type JoinMeetingFxPayload = JoinMeetingEventPayload & {
     isMicActive: boolean;
     isCameraActive: boolean;
@@ -17,6 +22,7 @@ export type JoinMeetingFxPayload = JoinMeetingEventPayload & {
     isAuraActive: boolean;
     currentVideoDevice: string;
     currentAudioDevice: string;
+    isOwnerDoNotDisturb: boolean;
 };
 
 export type JoinMeetingWithAudienceFxPayload = {

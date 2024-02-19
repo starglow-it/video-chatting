@@ -3,43 +3,58 @@
 @import "../../../styles/mixins";
 
 .label {
-    margin: 0;
-    text-transform: capitalize;
-  
-    &.active {
-      color: $primary-orange;
-    }
-  
-    // &:last-child {
-    //   margin-left: 25px;
-    // }
-  }
-  
-  .icon {
-    fill: none;
-  }
+  position: relative;
+  margin: 0;
+  text-transform: capitalize;
+}
 
-  .roleItem {
-    position: relative;
-  }
+.roleItem {
+  position: relative;
+}
 
-  .tooltip {
-    position: absolute;
-    right: -14px;
-    top: 8px;
-    cursor: pointer;
-  }
+.tooltip {
+  position: absolute;
+  right: -14px;
+  top: 8px;
+  cursor: pointer;
+}
 
-  .popperTooltip {
-    z-index: 9999;
-  }
+.popperTooltip {
+  z-index: 9999;
+}
 
-  .containerTooltip {
-    height: auto;
-    white-space: inherit;
+.containerTooltip {
+  height: auto;
+  white-space: inherit;
+}
+
+.block {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.exclamationMark {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: black;
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  line-height: 14px;
+}
+
+.roleWrapper {
+  padding-right: 24px;
+  border: 1px solid transparent;
+  margin-bottom: 20px;
+
+  &.active {
+    border: 1px solid black;
+    border-radius: 8px;
   }
-  
-  .block {
-    opacity: 0.4;
-    pointer-events: none;
+}
+
+.radioBtn {
+  color: black;
 }

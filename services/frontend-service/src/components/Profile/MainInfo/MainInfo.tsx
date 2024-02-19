@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // components
@@ -27,6 +27,7 @@ import styles from './MainInfo.module.scss';
 
 const MainInfo = memo(() => {
     const profileState = useStore($profileStore);
+    const [previewImage, setPreviewIamge] = useState('');
 
     const lastProfileTemplate = useStoreMap({
         store: $profileTemplatesStore,
@@ -44,7 +45,11 @@ const MainInfo = memo(() => {
         getProfileTemplatesFx({ limit: 6, skip: 0 });
     }, []);
 
-    const previewImage = getPreviewImage(lastProfileTemplate);
+    useEffect(() => {
+        if (!!lastProfileTemplate) {
+            setPreviewIamge(getPreviewImage(lastProfileTemplate));
+        }
+    }, [lastProfileTemplate]);
 
     return (
         <CustomPaper className={styles.wrapper}>

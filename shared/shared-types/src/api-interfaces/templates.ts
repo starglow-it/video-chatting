@@ -22,6 +22,11 @@ export type TemplateLink = {
   position: { top: number; left: number };
 };
 
+export type meetingLink = {
+  url: string;
+  users: string[];
+};
+
 interface ITemplate {
   authorThumbnail?: string;
   authorRole?: string;
@@ -95,6 +100,8 @@ export interface IUserTemplate extends ITemplate {
   author?: string;
   isAcceptNoLogin?: boolean;
   isPublishAudience: boolean;
+  isMonetizationEnabled?: boolean;
+  templatePrice?: number;
 }
 
 export interface IUpdateTemplate {

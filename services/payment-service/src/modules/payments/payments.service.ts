@@ -13,7 +13,7 @@ export class PaymentsService {
   constructor(
     private configService: ConfigClientService,
     @InjectStripe() private readonly stripeClient: Stripe,
-  ) {}
+  ) { }
 
   async createExpressAccount({ email }: { email: string }) {
     return this.stripeClient.accounts.create({
@@ -61,12 +61,11 @@ export class PaymentsService {
     templateId,
   }: TCreatePaymentIntent) {
     const amount = templatePrice * 100;
-
     return this.stripeClient.paymentIntents.create({
       amount,
       currency: templateCurrency,
       transfer_data: {
-        amount: Math.floor(amount - amount * platformFee),
+        amount: Math.floor(amount - (amount * platformFee)) || amount,
         destination: stripeAccountId,
       },
       metadata: {
@@ -180,19 +179,19 @@ export class PaymentsService {
       cancel_url: cancelUrl.href,
       ...(paymentMode === 'subscription'
         ? {
-            subscription_data: {
-              trial_period_days: trialPeriodEndTimestamp,
-              metadata,
-            },
-          }
+          subscription_data: {
+            trial_period_days: trialPeriodEndTimestamp,
+            metadata,
+          },
+        }
         : {}),
       ...(paymentMode === 'subscription'
         ? {}
         : {
-            payment_intent_data: {
-              metadata,
-            },
-          }),
+          payment_intent_data: {
+            metadata,
+          },
+        }),
       metadata,
       ...(paymentMode === 'subscription'
         ? { payment_method_collection: 'if_required' }
@@ -241,12 +240,12 @@ export class PaymentsService {
       unit_amount: productData.priceInCents,
       ...(productData.type === 'subscription'
         ? {
-            recurring: {
-              interval: ['demo', 'production'].includes(environment)
-                ? 'month'
-                : 'day',
-            },
-          }
+          recurring: {
+            interval: ['demo', 'production'].includes(environment)
+              ? 'month'
+              : 'day',
+          },
+        }
         : {}),
     });
 

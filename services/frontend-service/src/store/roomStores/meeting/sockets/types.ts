@@ -28,9 +28,18 @@ export type JoinWaitingRoomPayload = {
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
 export type LeaveMeetingPayload = { meetingId: Meeting['id'] };
+export type GetMeetingUsersStatisticsPayload = {
+    meetingId?: Meeting['id'];
+    userId: MeetingUser['id'];
+};
 export type StartMeetingPayload = {
     meetingId: Meeting['id'];
     user: MeetingUser;
+};
+export type ClickMeetingLinkPayload = {
+    meetingId: Meeting['id'];
+    url: string;
+    userId: MeetingUser['id'];
 };
 export type EnterMeetingRequestPayload = {
     meetingId: Meeting['id'];
@@ -49,6 +58,11 @@ export type UpdateMeetingTemplatePayload = {
 };
 
 export type JoinWaitingRoomResponse = {
+    user?: MeetingUser;
+    meeting?: Meeting;
+    users?: MeetingUser[];
+};
+export type GetMeetingUsersStatisticsResponse = {
     user?: MeetingUser;
     meeting?: Meeting;
     users?: MeetingUser[];

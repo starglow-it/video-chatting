@@ -20,7 +20,8 @@ import {
     togglePaymentFormEvent,
     toggleCreateRoomPaymentFormEvent,
     updatePaymentMeetingFx,
-    isRoomPaywalledFx
+    isRoomPaywalledFx,
+    createMeetingPaymentEvent
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
@@ -58,6 +59,7 @@ $meetingPaymentStore
         payments.success ? payments.data : state,
     )
     .on(receivePaymentMeetingEvent, (_, data) => data)
+    .on(createMeetingPaymentEvent, (_, data) => data)
     .reset(resetRoomStores);
 
 $isTogglePayment.on(togglePaymentFormEvent, (toggle, newToggle) =>

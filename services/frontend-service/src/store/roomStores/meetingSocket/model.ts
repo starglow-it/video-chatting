@@ -8,7 +8,7 @@ import {
     $meetingTemplateStore,
 } from '../meeting/meetingTemplate/model';
 import { createSocketEvent } from '../../socket/model';
-import { JoinRoomBeforeMeetingPayload } from '../../socket/types';
+import { JoinRoomBeforeMeetingPayload, getStatisticsDataPayload } from '../../socket/types';
 import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
 import {
     $backgroundAudioVolume,
@@ -67,7 +67,7 @@ export const meetingSocketEventRequest = meetingSocketDomain.effect<
 >('meetingSocketEventRequest');
 
 export const initiateMeetingSocketConnectionFx = meetingSocketDomain.effect<
-    { serverIp: IUserTemplate['meetingInstance']['serverIp'] },
+    { serverIp?: IUserTemplate['meetingInstance']['serverIp'] },
     SocketState
 >('initiateMeetingSocketConnectionFx');
 
@@ -110,3 +110,8 @@ export const joinRoomBeforeMeetingSocketEvent = createSocketEvent<
     JoinRoomBeforeMeetingPayload,
     void
 >(DashboardSocketEmitters.JoinRoomBeforeMeeting);
+
+export const getMeetingStatisticsData = createSocketEvent<
+    getStatisticsDataPayload,
+    void
+>(DashboardSocketEmitters.GetMeetingStatisticsData);

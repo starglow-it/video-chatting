@@ -17,7 +17,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { LocationStatistics } from 'shared-types';
 import styles from './LocationAnalytics.module.scss';
 
-const pieChartColour = ['#3B1BFD', '#F81BFD', '#FBFF4E', '#27C54A', '#9243B7'];
+const pieChartColor = ['#3B1BFD', '#F81BFD', '#FBFF4E', '#27C54A', '#9243B7', '#F97A1C', '#00A6ED', '#E63946', '#F4E285'];
 
 const LocationAnalytics = memo(
     ({
@@ -26,12 +26,12 @@ const LocationAnalytics = memo(
     }: PropsWithClassName<{
         statistic: LocationStatistics;
     }>) => {
-        const data = statistic.data.map(item => {
+        const data = (statistic.data || []).map(item => {
             return { label: item.country, value: item.num };
         });
         const pieData = data.map((item, index) => ({
             ...item,
-            color: pieChartColour[index],
+            color: pieChartColor[index],
         }));
 
         const renderCountryAnalytics = useMemo(() => {
@@ -52,7 +52,7 @@ const LocationAnalytics = memo(
                             justifyContent="space-between"
                         >
                             <CustomGrid item container alignItems="center" className={styles.attendeesDescWrapper}>
-                                <FiberManualRecordIcon style={{ color: pieChartColour[index] }} className={styles.participantsIcon} />
+                                <FiberManualRecordIcon style={{ color: pieChartColor[index] }} className={styles.participantsIcon} />
                                 <CustomTypography variant="body2">
                                     {item.country}
                                 </CustomTypography>
@@ -61,12 +61,12 @@ const LocationAnalytics = memo(
                                 {item.num}
                             </CustomTypography>
                         </CustomGrid>
-                        {((item.country === 'canada' || item.country === 'united states') &&
-                            item.state
+                        {((item.country === 'Canada' || item.country === 'United States') &&
+                            !!item.state
                         ) &&
                             item.state.map((state, stateIndex) => (
                                 <CustomGrid
-                                    key={`${item.country}-${stateIndex}`} // Use a combination of country and index as the key
+                                    key={`${item.country}-${stateIndex}`}
                                     item
                                     container
                                     direction="row"
@@ -126,7 +126,13 @@ const LocationAnalytics = memo(
                         />
                     </CustomGrid>
                     <CustomScroll className={styles.scrollWrapper}>
-                        <CustomGrid item container direction="column" className={styles.countryListWrapper}>
+                        <CustomGrid
+                            item
+                            container
+                            direction="column"
+                            gap={1.5}
+                            className={styles.countryListWrapper}
+                        >
                             {renderCountryAnalytics}
                         </CustomGrid>
                     </CustomScroll>

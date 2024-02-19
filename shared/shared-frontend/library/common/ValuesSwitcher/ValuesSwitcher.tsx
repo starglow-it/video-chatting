@@ -73,11 +73,6 @@ const Component = <
         [styles.transparent]: variant === "transparent",
       })}
     >
-      <CustomGrid
-        className={clsx(itemClassName, styles.transition)}
-        style={style}
-        container
-      />
       {renderValues}
     </CustomGrid>
   );

@@ -3,12 +3,13 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import { ObjectId, isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 
 // shared
 import { StatisticBrokerPatterns } from 'shared-const';
 import {
   GetRoomRatingStatisticPayload,
-  UpdateRoomRatingStatisticPayload,
+  UpdateRoomRatingStatisticPayload
 } from 'shared-types';
 
 // helpers
@@ -51,13 +52,9 @@ export class RoomsStatisticsController {
         },
         {
           $match: {
-            'template.isDeleted': false,
-            author:
-              payload.roomKey === 'custom'
-                ? { $not: { $size: 0 } }
-                : payload.roomKey === 'common'
-                  ? { $size: 0 }
-                  : payload.roomKey
+            author: payload.roomKey === 'custom'
+              ? { $not: { $size: 0 } }
+              : { $size: 0 }
           },
         },
         {

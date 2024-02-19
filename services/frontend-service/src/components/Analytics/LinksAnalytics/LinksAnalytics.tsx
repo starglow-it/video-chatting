@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react';
-import { useStore } from 'effector-react';
+import { memo } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -21,44 +20,47 @@ const LinksAnalytics = memo(
         statistic: linksStatistics;
     }>) => {
 
-        const renderedLinks = useMemo(() => {
-            return statistic.data.map(item => {
-                return (
-                    <CustomGrid
-                        key={item.link}
-                        item
-                        container
-                    >
+        const renderedLinks = () => {
+            if (statistic.data.length > 0) {
+                return statistic.data.map(item => {
+                    return (
                         <CustomGrid
+                            key={item.link}
                             item
-                            xs={6}
-                        >
-                            <CustomTypography variant="body2">
-                                {item.link}
-                            </CustomTypography>
-                        </CustomGrid>
-                        <CustomGrid
-                            item
-                            xs={3}
-                        >
-                            <CustomTypography variant="body2">
-                                {item.click}
-                            </CustomTypography>
-                        </CustomGrid>
-                        <CustomGrid
-                            item
-                            xs={3}
                             container
-                            justifyContent="center"
                         >
-                            <CustomTypography variant="body2">
-                                { item.clickThroughRate }%
-                            </CustomTypography>
+                            <CustomGrid
+                                item
+                                xs={6}
+                            >
+                                <CustomTypography variant="body2">
+                                    {item.link}
+                                </CustomTypography>
+                            </CustomGrid>
+                            <CustomGrid
+                                item
+                                xs={3}
+                                className={styles.clicksText}
+                            >
+                                <CustomTypography variant="body2">
+                                    {item.click}
+                                </CustomTypography>
+                            </CustomGrid>
+                            <CustomGrid
+                                item
+                                xs={3}
+                                container
+                                justifyContent="center"
+                            >
+                                <CustomTypography variant="body2">
+                                    {item.clickThroughRate}%
+                                </CustomTypography>
+                            </CustomGrid>
                         </CustomGrid>
-                    </CustomGrid>
-                );
-            });
-        }, []);
+                    );
+                });
+            } 
+        };
 
         return (
             <CustomPaper className={className}>
@@ -71,7 +73,7 @@ const LinksAnalytics = memo(
                         item
                         container
                         direction="row"
-                        alignItems="flex-start"
+                        alignItems="center"
                         justifyContent="flex-start"
                         className={styles.qaTitleWrapper}
                     >
@@ -93,6 +95,7 @@ const LinksAnalytics = memo(
                         <CustomGrid
                             item
                             xs={3}
+                            className={styles.clicksText}
                         >
                             <CustomTypography variant="body2bold">
                                 <Translation
@@ -113,7 +116,7 @@ const LinksAnalytics = memo(
                             </CustomTypography>
                         </CustomGrid>
                     </CustomGrid>
-                    {renderedLinks}
+                    {renderedLinks()}
                 </CustomGrid>
             </CustomPaper>
         );

@@ -120,6 +120,7 @@ const ProfileTemplateItem = memo(
                 return (
                     <CustomImage
                         src={template?.mediaLink?.thumb || ''}
+                        objectFit="cover" layout="fixed"
                         width="334px"
                         height="190px"
                     />
@@ -129,6 +130,7 @@ const ProfileTemplateItem = memo(
                 case 'image':
                     return (
                         <CustomImage
+                            objectFit="cover" layout="fixed"
                             src={template?.url || ''}
                             width="334px"
                             height="190px"

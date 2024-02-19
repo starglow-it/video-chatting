@@ -1,6 +1,7 @@
 import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import dynamic from "next/dynamic";
+
 const MeetingJoyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 // custom
@@ -26,6 +27,8 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { EmojiPlayground } from '@components/Meeting/EmojiPlayground/EmojiPlayground'
+import { AudienceEmojiPlayground } from '@components/Meeting/EmojiPlayground/AudienceEmojiPlayground'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // shared
@@ -34,6 +37,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { EmojiList } from '@components/EmojiList/EmojiList';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import {
     StorageKeysEnum,
@@ -78,6 +82,9 @@ import {
     updateUserSocketEvent,
 } from '../../../store/roomStores';
 
+//shared types
+import { MeetingRole } from 'shared-types';
+
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
@@ -90,6 +97,7 @@ import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDi
 import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
 import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
 // helpers
+
 
 const Component = () => {
     const meeting = useStore($meetingStore);
@@ -109,6 +117,8 @@ const Component = () => {
     const isVideoError = Boolean(videoError);
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
+    const container = useRef(null);
+    const test = useRef(null)
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -136,7 +146,6 @@ const Component = () => {
         width: "fit-content",
         zIndex: 9999,
         primaryColor: "#FF884E",
-
     };
 
     const joyrideSteps = [
@@ -217,13 +226,15 @@ const Component = () => {
         ) {
             prevHostUserId.current = hostUser.id;
 
-            addNotificationEvent({
-                type: NotificationType.HostChanged,
-                message:
-                    localUser.id === hostUser?.id
-                        ? 'You are host now'
-                        : `${hostUser.username} is host now`,
-            });
+            if (localUser.meetingRole !== MeetingRole.Recorder) {
+                addNotificationEvent({
+                    type: NotificationType.HostChanged,
+                    message:
+                        localUser.id === hostUser?.id
+                            ? 'You are host now'
+                            : `${hostUser.username} is host now`,
+                });
+            }
         }
     }, [
         hostUser?.id,
@@ -316,7 +327,7 @@ const Component = () => {
     const previewImage = getPreviewImage(meetingTemplate);
 
     return (
-        <CustomGrid className={styles.mainMeetingWrapper}>
+        <CustomGrid className={styles.mainMeetingWrapper} ref={container}>
             <MeetingJoyride
                 callback={handleJoyrideCallback}
                 steps={joyrideSteps}
@@ -380,6 +391,7 @@ const Component = () => {
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
+                    className="good"
                 >
                     <ConditionalRender
                         condition={
@@ -402,6 +414,7 @@ const Component = () => {
                     </ConditionalRender>
 
                     <LeaveNoteForm />
+                    <EmojiList />
                 </MeetingSettingsPanel>
             )}
             {Boolean(meetingTemplate?.id) && isMobileShared() && (
@@ -424,6 +437,10 @@ const Component = () => {
                 </MeetingSettingsPanel>
             )}
 
+            <EmojiPlayground userId={meeting.hostUserId} />
+
+            <AudienceEmojiPlayground />
+
             <DevicesSettingsDialog />
             <EndMeetingDialog />
             <InviteAttendeeDialog />
@@ -438,6 +455,7 @@ const Component = () => {
             <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
             <RecordVideoDownloadDialog />
+
         </CustomGrid>
     );
 };

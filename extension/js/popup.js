@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "🏠your immersive ruumes will appear here<br>🚀 click “start instant meeting” to begin";
         roomListDiv.appendChild(spanElement);
 
-        roomId = "65bd3c2bbdb4016bf65c383c";
+        roomId = "64f25807bc78bed6bd7b84f5";
         isFeatured = true;
       }
       for (const room of roomList) {
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
      Conditionally Render based on token existence
   */
   chrome.cookies.get(
-    { url: "https://stg-my.chatruume.com", name: "accessToken" },
+    { url: "https://my.chatruume.com", name: "accessToken" },
     function (cookie) {
       if (cookie) {
         notLoggedInDiv.style.display = "none";
@@ -151,13 +151,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   registerLink.addEventListener("click", function () {
     chrome.tabs.create({
-      url: "https://stg-my.chatruume.com/register",
+      url: "https://my.chatruume.com/register",
     });
   });
 
   forgotPasswordSpan.addEventListener("click", function () {
     chrome.tabs.create({
-      url: "https://stg-my.chatruume.com/login?forgot-password",
+      url: "https://my.chatruume.com/login?forgot-password",
     });
   });
 
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
       loading.style.display = "block";
     } else {
       chrome.tabs.create({
-        url: "https://stg-my.chatruume.com/dashboard",
+        url: "https://my.chatruume.com/dashboard",
       });
     }
   });

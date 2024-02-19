@@ -94,7 +94,7 @@ const Component = ({
     return (
         <CustomGrid
             container
-            className={styles.wrapper}
+            className={clsx(styles.wrapper, { [styles.mobile]: isMobile })}
             alignItems="center"
             direction="column"
             justifyContent="center"

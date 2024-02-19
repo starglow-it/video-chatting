@@ -1,47 +1,44 @@
 import {
-    $roomsRatingStatistics,
     $roomsStatistics,
     $subscriptionsStatistics,
     $usersStatisticsStore,
     $usersMonetizationStatistics,
     $platformMonetizationStatistics,
+    $roomsStatisticsLoading,
     getRoomRatingStatisticsFx,
-    getRoomsStatisticsFx,
     getUsersStatisticsFx,
     getSubscriptionsStatisticsFx,
     getPlatformMonetizationStatisticsFx,
     getUsersMonetizationStatisticsFx,
     resetUsersMonetization,
     resetPlatformMonetization,
+    setRoomsStatisticsEvent,
+    setRoomStatisticsLoadingEvent
 } from './model';
 
 import { handleGetUsersStatistics } from './handlers/handleGetUsersStatistics';
 import { handleGetSubscriptionsStatistics } from './handlers/handleGetSubscriptionsStatistics';
-import { handleGetRoomsStatistics } from './handlers/handleGetRoomsStatistics';
 import { handleGetRoomsRatingStatistic } from './handlers/handleGetRoomsRatingStatistic';
 import { handleGetUsersMonetizationStatistic } from './handlers/handleGetUsersMonetizationStatistic';
 import { handleGetPlatformMonetizationStatistic } from './handlers/handleGetPlatformMonetizationStatistic';
 
 getUsersStatisticsFx.use(handleGetUsersStatistics);
 getSubscriptionsStatisticsFx.use(handleGetSubscriptionsStatistics);
-getRoomsStatisticsFx.use(handleGetRoomsStatistics);
 getRoomRatingStatisticsFx.use(handleGetRoomsRatingStatistic);
 getUsersMonetizationStatisticsFx.use(handleGetUsersMonetizationStatistic);
 getPlatformMonetizationStatisticsFx.use(handleGetPlatformMonetizationStatistic);
 
-$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (sate, data) => data);
+$usersStatisticsStore.on(getUsersStatisticsFx.doneData, (state, data) => data);
 $subscriptionsStatistics.on(
     getSubscriptionsStatisticsFx.doneData,
-    (sate, data) => data,
+    (state, data) => data,
 );
-$roomsStatistics.on(getRoomsStatisticsFx.doneData, (sate, data) => data);
-$roomsRatingStatistics.on(
-    getRoomRatingStatisticsFx.doneData,
-    (sate, data) => data,
-);
+$roomsStatistics.on(setRoomsStatisticsEvent, (state, data) => data);
+
 $usersMonetizationStatistics
-    .on(getUsersMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getUsersMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetUsersMonetization);
 $platformMonetizationStatistics
-    .on(getPlatformMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .on(getPlatformMonetizationStatisticsFx.doneData, (state, data) => data)
     .reset(resetPlatformMonetization);
+$roomsStatisticsLoading.on(setRoomStatisticsLoadingEvent, (state, data) => data);

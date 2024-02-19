@@ -1,5 +1,6 @@
 export enum UsersSocketEmitters {
     UpdateUser = 'users:updateUser',
+    GetStatistics = 'users:get:statistics',
     RemoveUser = 'users:removeUser',
     ChangeHost = 'users:changeHost',
     RequestRoleByHost = 'users:switchRole:host:request:send',

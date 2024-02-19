@@ -48,12 +48,22 @@
   "welcomeTour": {
     "title": "How about a house tour?"
   },
-  "createRoom": "Create room",
+  "createRoom": "create a ruume",
   "addYourDesign": "Add your design",
   "featuredRooms": {
     "title": "Featured Rooms",
     "description": "Black ethan and then he retueneum"
   },
-  "descCreateRoom": "Upload your design or use a Youtube video as background",
+  "descCreateRoom": {
+    "customizeTheImmersionTitle": "customize the immersion",
+    "customizeTheImmersionDesc": "use your designs or Youtube as background",
+    "customizeTheImmersionDescResponsive": "use your designs or Youtube...",
+    "addYourLinksTitle": "add your links",
+    "addYourLinksDesc": "books, merch, courses, newsletters, websites...",
+    "addYourLinksDescResponsive": "books, merch, courses...",
+    "monetizeAttendanceTitle": "monetize attendance",
+    "monetizeAttendanceDesc": "option to set up entry fees, payments & donations",
+    "monetizeAttendanceDescResponsive": "set up entry fees..."
+  },
   "embedLinks": "Embed Links"
 }

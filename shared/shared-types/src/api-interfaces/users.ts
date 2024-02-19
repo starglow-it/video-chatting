@@ -21,6 +21,7 @@ export interface ICommonUser {
   id: string;
   email: string;
   country: string;
+  state?: string;
   registerTemplate: string;
   role: UserRoles;
   password: string;

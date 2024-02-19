@@ -1,6 +1,8 @@
 export enum MeetingSocketEmitters {
     JoinWaitingRoom = 'meeting:waitingRoom:join',
+    GetMeetingUserStatistics = 'meeting:get:users',
     StartMeeting = 'meeting:start',
+    ClickMeetingLink = 'meeting:link:click',
     EndMeeting = 'meeting:end',
     LeaveMeeting = 'meeting:leave',
     UpdateMeeting = 'meeting:update',
@@ -10,6 +12,9 @@ export enum MeetingSocketEmitters {
     SendMeetingNote = 'meeting:notes:create',
     RemoveMeetingNote = 'meeting:notes:delete',
     GetMeetingNotes = 'meeting:notes:get',
+    SendMeetingReaction = 'meeting:reaction:create',
+    RemoveMeetingReaction = 'meeting:reaction:delete',
+    GetMeetingReaction = 'meeting:reaction:get',
     SendReconnectMeeting = 'meeting:reconnect',
     JoinWithAudience = 'meeting:audience:join',
     SendMessage = 'meeting:chat:send',

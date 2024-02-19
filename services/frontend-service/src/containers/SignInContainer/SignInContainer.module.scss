@@ -1,11 +1,29 @@
 @import "../../styles/rem.scss";
 @import "../../styles/variables.scss";
 
-.wrapper {
-  width: rem(472px);
+.outterWrapper {
+  width: rem(700px);
   max-width: 100%;
   max-height: 100%;
   padding: rem(24px 40px 24px 40px);
+  background-color: #FF8E3B;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: fit-content;
+  box-shadow: 0px 3px 3px black;
+}
+
+.innerWrapper {
+  width: 80%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.titleWrapper {
+  margin: 10px 0px 20px 0px;
 }
 
 .image {
@@ -20,6 +38,7 @@
 
 .socialsWrapper {
   margin: rem(20px) 0 0 0;
+
   .googleLogin {
     margin: 0 0 rem(12px) 0;
   }
@@ -41,7 +60,8 @@
   margin: rem(18px) 0 0 0;
   padding: rem(16px) 0;
 }
-.btnGoogle{
+
+.btnGoogle {
   cursor: pointer;
   transition: box-shadow 200ms linear;
   padding: rem(8px 16px);
@@ -67,4 +87,28 @@
 
 .textOr {
   color: $normal-gray-scale;
+}
+
+@media screen and (max-width: 800px) {
+  .outterWrapper {
+    width: 95%;
+  }
+
+  .innerWrapper {
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .outterWrapper {
+    background-color: transparent;
+    padding: 0px;
+  }
+  .innerWrapper {
+    width: 100%;
+  }
+
+  .logoWrapper, .titleWrapper {
+    display: none;
+  }
 }

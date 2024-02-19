@@ -10,6 +10,7 @@ import { Socket } from 'socket.io';
 
 import { BaseGateway } from './base.gateway';
 
+import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
 import { MeetingsService } from '../modules/meetings/meetings.service';
 import { UsersService } from '../modules/users/users.service';
 import { TasksService } from '../modules/tasks/tasks.service';
@@ -28,7 +29,9 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
+import { GetMeetingStatisticsRequestDTO } from '../dtos/requests/get-meeting-statistics.dto';
 import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
+import { UpdateMeetingLinkRequestDTO } from '../dtos/requests/update-meetinglink.dto';
 import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
@@ -85,9 +88,9 @@ import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 })
 export class MeetingsGateway
   extends BaseGateway
-  implements OnGatewayDisconnect
-{
+  implements OnGatewayDisconnect {
   constructor(
+    private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private meetingsService: MeetingsService,
     private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
@@ -206,7 +209,7 @@ export class MeetingsGateway
         $in: [
           MeetingAccessStatusEnum.InMeeting,
           ...(isMeetingHost &&
-          user.accessStatus === MeetingAccessStatusEnum.Disconnected
+            user.accessStatus === MeetingAccessStatusEnum.Disconnected
             ? [MeetingAccessStatusEnum.Disconnected]
             : []),
         ],
@@ -348,6 +351,7 @@ export class MeetingsGateway
 
         const updateData = {
           accessStatus: accessStatusUpdate,
+          leaveAt: new Date()
         };
 
         if (this.isChangeVideoContainer(user)) {
@@ -372,7 +376,6 @@ export class MeetingsGateway
           data: updateData,
           session,
         });
-
         if (isOwner) {
         }
 
@@ -437,6 +440,13 @@ export class MeetingsGateway
           session,
         });
 
+        const links = !!template.links
+          ? template.links.map(link => ({
+            url: link.item,
+            users: []
+          }))
+          : null;
+
         if (message.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting({
             data: {
@@ -445,6 +455,7 @@ export class MeetingsGateway
               ownerProfileId: message.profileId,
               maxParticipants: message.maxParticipants,
               templateId: message.templateId,
+              links
             },
             session,
           });
@@ -464,8 +475,8 @@ export class MeetingsGateway
 
           throwWsError(
             mainUser &&
-              mainUser.maxMeetingTime === 0 &&
-              this.meetingsCommonService.checkCurrentUserPlain(mainUser),
+            mainUser.maxMeetingTime === 0 &&
+            this.meetingsCommonService.checkCurrentUserPlain(mainUser),
             MeetingI18nErrorEnum.TIME_LIMIT,
           );
         }
@@ -588,6 +599,7 @@ export class MeetingsGateway
             isAuraActive: message.user.isAuraActive,
             joinedAt: Date.now(),
             userPosition: u.position,
+            doNotDisturb: false,
             userSize: u.size,
             ...(!!lastOldMessage && {
               lastOldMessage,
@@ -704,6 +716,48 @@ export class MeetingsGateway
     );
   }
 
+  @WsEvent(MeetingSubscribeEvents.OnClickMeetingLink)
+  async updateMeetingLink(
+    @MessageBody() message: UpdateMeetingLinkRequestDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+
+        const { meetingId, userId, url } = message;
+
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        const meetingLinks = meeting.links.map(link => {
+          if (link.url == url) {
+            link.users.push(userId);
+          }
+          
+          return link;
+        });
+
+          await this.meetingsService.findByIdAndUpdate({
+            id: meetingId,
+            data: {
+              links: [...meetingLinks]
+
+            },
+            session,
+          });
+
+        return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
   @Roles([MeetingRole.Participant])
   @WsEvent(MeetingSubscribeEvents.OnSendAccessRequest)
   async sendEnterMeetingRequest(
@@ -778,7 +832,7 @@ export class MeetingsGateway
         if (
           meeting?.hostUserId?.socketId &&
           meeting?.hostUserId?.accessStatus ===
-            MeetingAccessStatusEnum.InMeeting
+          MeetingAccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
             meeting?.hostUserId?.socketId,
@@ -1230,13 +1284,13 @@ export class MeetingsGateway
         throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
 
         const userId = user._id.toString();
-
         await this.usersComponent.findOneAndUpdate({
           query: {
             socketId: socket.id,
           },
           data: {
             accessStatus: MeetingAccessStatusEnum.Left,
+            leaveAt: new Date()
           },
           session,
         });
@@ -1402,10 +1456,10 @@ export class MeetingsGateway
 
         throwWsError(
           profileUser &&
-            profileUser?.maxMeetingTime === 0 &&
-            [PlanKeys.House, PlanKeys.Professional].includes(
-              profileUser?.subscriptionPlanKey,
-            ),
+          profileUser?.maxMeetingTime === 0 &&
+          [PlanKeys.House, PlanKeys.Professional].includes(
+            profileUser?.subscriptionPlanKey,
+          ),
           'meeting.userHasNoTimeLeft',
         );
 

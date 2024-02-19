@@ -158,14 +158,13 @@ const MeetingContainer = memo(() => {
 
     const isFirstime = useRef(true);
 
-    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
-        useToggle(false);
+    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
 
     useEffect(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
-        if (!!roleUrl && roleUrl !== MeetingRole.Audience) {
+        if (!!roleUrl && (roleUrl !== MeetingRole.Audience || roleUrl !== 'recorder')) {
             router.push(NotFoundRoute);
         }
     }, [roleUrl]);
@@ -200,7 +199,7 @@ const MeetingContainer = memo(() => {
             });
 
             updateLocalUserEvent({
-                accessStatus: MeetingAccessStatusEnum.EnterName,
+                accessStatus: roleUrl === 'recorder' ? MeetingAccessStatusEnum.InMeeting : MeetingAccessStatusEnum.EnterName,
             });
         })();
 
@@ -258,7 +257,7 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                if (!isAudience) {
+                if (!isAudience && roleUrl !== 'recorder') {
                     await initDevicesEventFxWithStore();
                 }
                 await sendJoinWaitingRoomSocketEvent();
