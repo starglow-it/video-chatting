@@ -1,13 +1,10 @@
 import express, { Request, Response } from 'express';
 import { EgressClient, EncodedFileType } from 'livekit-server-sdk';
 import { getConfigVar } from "../services/config";
-import cors from 'cors';
 
 export const recordRoomMeeting = async () => {
     const app = express();
     app.use(express.json());
-    app.use(cors());
-
     interface RecordingInfo {
         egressId: string | undefined;
         filepath: string;
@@ -58,7 +55,9 @@ export const recordRoomMeeting = async () => {
     // Start Recording Endpoint
     app.post('/start-recording', async (req: Request, res: Response) => {
         const roomUrl = req.body.roomUrl as string;
-
+        if (!roomUrl) {
+            res.status(400).json({ error: 'Wrong parmas' });
+        }
         const urlObject = new URL(roomUrl);
         const pathname = urlObject.pathname;
         const roomId = pathname.split('/').pop();

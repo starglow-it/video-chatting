@@ -29,8 +29,12 @@ const proxy = {
     },
     '/media-server': {
         target: `http://media-server-service:9091`,
-        pathRewrite: { '/': '/' },
+        pathRewrite: { '^/media-server': '/' },
         changeOrigin: true,
+        logLevel: 'debug', // Enables verbose logging
+        onProxyReq: (proxyReq, req, res) => {
+            console.log(`Proxying request to: ${req.url}`);
+        },
     },
     '/socket.io': {
         target: `http://socket-service:8080`,
