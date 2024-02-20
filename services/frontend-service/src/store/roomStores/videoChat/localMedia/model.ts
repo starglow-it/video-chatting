@@ -1,7 +1,7 @@
 import { combine } from 'effector-next';
 
 import { videoChatDomain } from '../../../domains';
-import { CustomMediaStream, VideoBlob } from '../../../../types';
+import { recordMeetingResponse, CustomMediaStream, VideoBlob } from '../../../../types';
 import {
     ChangeStreamPayload,
     InitDevicesPayload,
@@ -11,6 +11,12 @@ import {
     UseMediaDevices,
 } from '../types';
 import { MediaStreamError } from 'src/helpers/media/getMediaStream';
+
+const initialRecordStream = {
+    message: '',
+    egressId: '',
+    url: ''
+};
 
 export const $audioDevicesStore = videoChatDomain.createStore<
     UseMediaDevices['audioDevices']
@@ -39,7 +45,7 @@ export const $sharingStream =
     videoChatDomain.createStore<CustomMediaStream>(null);
 
 export const $recordingStream =
-    videoChatDomain.createStore<CustomMediaStream>(null);
+    videoChatDomain.createStore<recordMeetingResponse>(initialRecordStream);
 
 export const $recordedVideoBlobStore =
     videoChatDomain.createStore<VideoBlob>(null);
@@ -129,11 +135,11 @@ export const chooseSharingStreamFx = videoChatDomain.createEffect<
 >('chooseSharingStreamFx');
 export const startRecordStreamFx = videoChatDomain.createEffect<
     void,
-    CustomMediaStream
+    recordMeetingResponse
 >('startRecordStreamFx');
 export const stopRecordStreamFx = videoChatDomain.createEffect<
-    VideoBlob,
-    VideoBlob
+    void,
+    recordMeetingResponse
 >('stopRecordStreamFx');
 export const uploadToS3Fx = videoChatDomain.createEffect<
     VideoBlob,

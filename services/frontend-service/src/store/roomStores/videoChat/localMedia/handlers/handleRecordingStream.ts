@@ -1,25 +1,36 @@
-import { getRecordingStream } from 'src/helpers/media/getRecordingStream';
-import { CustomMediaStream, VideoBlob } from 'src/types';
-import { trackEndedEvent } from '../../model';
+import { recordMeetingResponse } from 'src/types';
+import axios from 'axios';
+import { mediaServerUrl } from '../../../../../const/urls/common';
 
-export const handleStartRecordingStream = async (): Promise<CustomMediaStream | null> => {
+const startRecordingUrl: string = `${mediaServerUrl}/start-recording`;
+const stopRecordingUrl: string = `${mediaServerUrl}/stop-recording`;
+
+export const handleStartRecordingStream = async (url: string): Promise<recordMeetingResponse> => {
     try {
-        const recordingStream = await getRecordingStream();
-        const sharingTrack = recordingStream?.getVideoTracks()?.[0];
-        if (sharingTrack) {
-            sharingTrack.onended = () => {
-                trackEndedEvent();
-            };
+        if (url) {
+            const result = await axios.post(startRecordingUrl, { roomUrl: `${url}?role=recorder` });
+
+            if (result && result.data) {
+                return result.data;
+            }
         }
-        return recordingStream;
     } catch (e) {
         console.error(e);
-        return null;
     }
+    return null;
 };
 // Stopping the recording and returning the blob
-export const handleStopRecordingStream = async (data: VideoBlob): Promise<VideoBlob> => {
-    return new Promise((resolve, reject) => {
-        resolve(data)
-    });
+export const handleStopRecordingStream = async (url: string): Promise<recordMeetingResponse> => {
+    try {
+        if (url) {
+            const result = await axios.post(stopRecordingUrl, { roomUrl: `${url}?role=recorder` });
+
+            if (result && result.data) {
+                return result.data;
+            }
+        }
+    } catch (e) {
+        console.error(e);
+    }
+    return null;
 };

@@ -82,6 +82,9 @@ import {
     updateUserSocketEvent,
 } from '../../../store/roomStores';
 
+//shared types
+import { MeetingRole } from 'shared-types';
+
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
@@ -223,13 +226,15 @@ const Component = () => {
         ) {
             prevHostUserId.current = hostUser.id;
 
-            addNotificationEvent({
-                type: NotificationType.HostChanged,
-                message:
-                    localUser.id === hostUser?.id
-                        ? 'You are host now'
-                        : `${hostUser.username} is host now`,
-            });
+            if (localUser.meetingRole !== MeetingRole.Recorder) {
+                addNotificationEvent({
+                    type: NotificationType.HostChanged,
+                    message:
+                        localUser.id === hostUser?.id
+                            ? 'You are host now'
+                            : `${hostUser.username} is host now`,
+                });
+            }
         }
     }, [
         hostUser?.id,

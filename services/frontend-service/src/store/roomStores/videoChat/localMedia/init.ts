@@ -115,17 +115,17 @@ $isMicActiveStore
     .reset(resetRoomStores);
 
 $recordingStream
-    .on(startRecordStreamFx.doneData, (state, data) => data)
-    .on([stopRecordStreamFx.doneData, resetRoomStores], clearStreamStore);
+    .on(startRecordStreamFx.doneData, (state, data) => ({ ...data }))
+    .on(stopRecordStreamFx.doneData, (state, data) => ({ ...data }))
+    .reset(resetRoomStores);
 
 $recordedVideoBlobStore
-    .on(stopRecordStreamFx.doneData, (state, data) => data)
+    .on(stopRecordStreamFx.doneData, (state, data) => ({ ...data }))
     .on(resetRecordedVideoBlobStore, () => null);
 
 $isRecordingStore
     .on(startRecordStreamFx.doneData, (state, data) => Boolean(data))
     .on(stopRecordMeeting, () => false);
-
 
 $uploadVideoToS3Store
     .on(uploadToS3Fx.doneData, (state, data) => data)

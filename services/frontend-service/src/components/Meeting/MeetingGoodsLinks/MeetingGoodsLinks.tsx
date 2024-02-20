@@ -22,7 +22,6 @@ import styles from './MeetingGoodsLinks.module.scss';
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
-    console.log(meetingTemplate);
     const localUserStore = useStore($localUserStore);
     const meetingStore = useStore($meetingStore);
     const isOwner = useStore($isOwner);

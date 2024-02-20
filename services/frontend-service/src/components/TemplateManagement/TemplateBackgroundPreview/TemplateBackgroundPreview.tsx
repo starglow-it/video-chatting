@@ -30,8 +30,6 @@ const Component = ({
     const url = useWatch({ control, name: 'url' });
     const youtubeUrl = useWatch({ control, name: 'youtubeUrl' });
 
-    console.log(activeValue);
-
     return (
         <CustomGrid className={clsx(styles.background, {
             [styles.settings]: activeValue === 2,
