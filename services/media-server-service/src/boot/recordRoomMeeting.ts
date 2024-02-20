@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express';
 import { EgressClient, EncodedFileType } from 'livekit-server-sdk';
 import { getConfigVar } from "../services/config";
+import cors from 'cors';
 
 export const recordRoomMeeting = async () => {
     const app = express();
     app.use(express.json());
+    app.use(cors());
 
     interface RecordingInfo {
         egressId: string | undefined;
@@ -55,8 +57,13 @@ export const recordRoomMeeting = async () => {
 
     // Start Recording Endpoint
     app.post('/start-recording', async (req: Request, res: Response) => {
-        const roomName = req.body.roomName as string;
-        const filepath = `livekit-record/${getDateString()}/${roomName}-${Date.now()}.mp4`;
+        const roomUrl = req.body.roomUrl as string;
+
+        const urlObject = new URL(roomUrl);
+        const pathname = urlObject.pathname;
+        const roomId = pathname.split('/').pop();
+
+        const filepath = `livekit-record/${getDateString()}/${roomId}-${Date.now()}.mp4`;
         const output = {
             fileType: EncodedFileType.MP4,
             filepath: filepath,
@@ -71,8 +78,8 @@ export const recordRoomMeeting = async () => {
         const layout = { layout: 'speaker' };
 
         try {
-            const startInfo = await egressClient.startWebEgress(roomName, output);
-            egressIdMap.set(roomName, { egressId: startInfo.egressId, filepath });
+            const startInfo = await egressClient.startWebEgress(roomUrl, output);
+            egressIdMap.set(roomUrl, { egressId: startInfo.egressId, filepath });
             res.status(200).json({ message: 'Recording started', egressId: startInfo.egressId });
         } catch (error) {
             console.error('Error starting recording:', error);
@@ -82,8 +89,8 @@ export const recordRoomMeeting = async () => {
 
     // Stop Recording Endpoint
     app.post('/stop-recording', async (req: Request, res: Response) => {
-        const roomName = req.body.roomName as string;
-        const recordingInfo = egressIdMap.get(roomName);
+        const roomUrl = req.body.roomUrl as string;
+        const recordingInfo = egressIdMap.get(roomUrl);
 
         // Check if recording info is available for the room
         if (!recordingInfo) {
@@ -98,7 +105,7 @@ export const recordRoomMeeting = async () => {
 
             // Stop the recording
             await egressClient.stopEgress(recordingInfo.egressId);
-            egressIdMap.delete(roomName);
+            egressIdMap.delete(roomUrl);
 
             // Construct the recording URL
             const recordingUrl = `https://${S3_BUCKET_NAME}.${S3_HOSTNAME}/${recordingInfo.filepath}`;

@@ -17,49 +17,30 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // styles
 import styles from './RecordVideoDownloadDialog.module.scss';
-import { $recordedVideoBlobStore, $uploadVideoToS3Store, resetRecordedVideoBlobStore, resetUploadVideoToS3Store, uploadToS3Event } from 'src/store/roomStores';
-import { UploadArrowIcon } from 'shared-frontend/icons/OtherIcons/UploadArrow';
+import {
+    $recordingStream,
+} from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { LinearProgress } from '@mui/material';
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
-
+import clsx from 'clsx';
 
 const RecordVideoDownloadDialog = memo(() => {
     const recordVideoDownloadDialog = useStore($appDialogsStore).recordVideoDownloadDialog;
-    const videoRef = useRef<HTMLVideoElement | null>(null);
     const [videoUrl, setVideoUrl] = useState<string>('');
-    const [statusUploadingToS3, setStatusUploadingToS3] = useState<string>('');
-
-    const videoBlob = useStore($recordedVideoBlobStore);
-
-    const uploadVideoToS3Store = useStore($uploadVideoToS3Store);
+    const recordStream = useStore($recordingStream);
 
     useEffect(() => {
-        if (videoBlob) {
-            const url = URL.createObjectURL(videoBlob);
-            setVideoUrl(url);
-            return () => URL.revokeObjectURL(url);
+        if (!!recordStream.url) {
+            setVideoUrl(recordStream.url);
+            return () => URL.revokeObjectURL(recordStream.url);
         }
-    }, [videoBlob]);
-
-    useEffect(() => {
-        if (uploadVideoToS3Store) {
-            setStatusUploadingToS3('done');
-        }
-    }, [uploadVideoToS3Store]);
+    }, [recordStream]);
 
     const handleClose = () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
         });
-        if (videoUrl) {
-            URL.revokeObjectURL(videoUrl);
-            setVideoUrl('');
-        }
-        setStatusUploadingToS3('')
-        resetUploadVideoToS3Store();
-        resetRecordedVideoBlobStore();
     };
 
     const handleDownload = () => {
@@ -73,22 +54,12 @@ const RecordVideoDownloadDialog = memo(() => {
         a.click();
     };
 
-    const handleUploadS3 = () => {
-        if (!videoBlob) {
-            console.error('Video URL is empty');
-            return;
-        }
-        setStatusUploadingToS3('pending');
-        uploadToS3Event(videoBlob);
-    };
-
     const handleLinkCopied = useCallback(() => {
         addNotificationEvent({
             type: NotificationType.LinkInfoCopied,
             message: 'meeting.copy.link',
         });
     }, []);
-
 
     return (
         <CustomDialog
@@ -99,57 +70,28 @@ const RecordVideoDownloadDialog = memo(() => {
             <CustomGrid
                 container
                 direction="column"
-                alignItems="center"
+                alignItems="flex-start"
                 justifyContent="center"
+                className={styles.innerWrapper}
             >
                 <CustomTypography variant="h3bold" textAlign="center" className={styles.title}>
                     <Translation nameSpace="meeting" translation="recordVideoDownloadTitle" />
                 </CustomTypography>
-                <ConditionalRender condition={statusUploadingToS3 == ""}>
+                <ConditionalRender condition={!Boolean(videoUrl)}>
                     <CustomGrid
+                        item
                         container
-                        className={styles.wrapper}
-                        wrap="nowrap"
+                        justifyContent="center"
+                        alignItems="center"
                     >
-                        {videoBlob && (
-                            <video
-                                src={videoUrl}
-                                ref={videoRef}
-                                width={450}
-                                height={250}
-                                autoPlay
-                                controls
-                            />
-                        )}
-                    </CustomGrid>
-                    <CustomGrid container alignItems="center" justifyContent="space-between" className={styles.buttonsWrapper} wrap="nowrap">
-                        <CustomButton variant={"custom-cancel" as any} className={styles.button} onClick={handleDownload}>
-                            <Translation nameSpace="meeting" translation="buttons.download" />
-                        </CustomButton>
-                        <CustomButton className={styles.button} onClick={handleUploadS3}>
-                            <Translation nameSpace="meeting" translation="buttons.upload" />
-                        </CustomButton>
+                        <CustomLoader />
                     </CustomGrid>
                 </ConditionalRender>
-                <ConditionalRender condition={statusUploadingToS3 == "pending"}>
+                <ConditionalRender condition={Boolean(videoUrl)}>
                     <CustomGrid
                         container
                         className={styles.wrapper}
-                        wrap="nowrap"
-                    >
-                        <CustomLoader className={styles.loader} />
-                    </CustomGrid>
-
-                    <CustomGrid container alignItems="center" justifyContent="space-between" className={styles.buttonsWrapper} wrap="nowrap">
-                        <CustomButton variant={"custom-cancel" as any} className={styles.button} onClick={handleClose}>
-                            <Translation nameSpace="meeting" translation="buttons.close" />
-                        </CustomButton>
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender condition={statusUploadingToS3 == "done"}>
-                    <CustomGrid
-                        container
-                        className={styles.wrapper}
+                        justifyContent="space-between"
                     >
                         <CustomGrid
                             container
@@ -158,21 +100,15 @@ const RecordVideoDownloadDialog = memo(() => {
                         >
                             <CustomLinkIcon width="24px" height="24px" />
                             <CustomTypography className={styles.linkText}>
-                                <a href={uploadVideoToS3Store} target='_blank' >{uploadVideoToS3Store}</a>
+                                <a href={videoUrl} target='_blank' >{videoUrl}</a>
                             </CustomTypography>
                         </CustomGrid>
-                    </CustomGrid>
-                    <CustomGrid container alignItems="center" justifyContent="space-between" className={styles.buttonsWrapper} wrap="nowrap">
-                        <CustomButton variant={"custom-cancel" as any} className={styles.button} onClick={handleClose}>
-                            <Translation nameSpace="meeting" translation="buttons.close" />
-                        </CustomButton>
-
                         <CopyToClipboard
-                            text={uploadVideoToS3Store}
+                            text={videoUrl}
                             onCopy={handleLinkCopied}
                         >
                             <CustomButton
-                                className={styles.button}
+                                className={clsx(styles.button, styles.copyBtn)}
                                 label={
                                     <Translation
                                         nameSpace="common"
@@ -181,6 +117,14 @@ const RecordVideoDownloadDialog = memo(() => {
                                 }
                             />
                         </CopyToClipboard>
+                    </CustomGrid>
+                    <CustomGrid container alignItems="center" justifyContent="space-between" className={styles.buttonsWrapper} wrap="nowrap">
+                        <CustomButton variant={"custom-cancel" as any} className={styles.button} onClick={handleClose}>
+                            <Translation nameSpace="meeting" translation="buttons.close" />
+                        </CustomButton>
+                        <CustomButton variant={"custom-cancel" as any} className={clsx(styles.button, styles.downloadBtn)} onClick={handleDownload}>
+                            <Translation nameSpace="meeting" translation="buttons.download" />
+                        </CustomButton>
                     </CustomGrid>
                 </ConditionalRender>
             </CustomGrid>
