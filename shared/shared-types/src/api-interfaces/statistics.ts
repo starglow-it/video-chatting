@@ -43,7 +43,7 @@ export interface linksStatistics {
   data: { link: string, clicks: number, clickThroughRate: number }[]
 }
 export interface monetizationStatistics {
-  data: { entryFee: number, total: number, donations: number }
+  data: { participantEntryFee: number, audienceEntryFee: number, total: number, donations: number }
 }
 
 export interface ISubscriptionsStatistics {

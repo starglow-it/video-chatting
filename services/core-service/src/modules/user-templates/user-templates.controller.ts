@@ -1235,17 +1235,16 @@ export class UserTemplatesController {
         const query: FilterQuery<TemplatePaymentDocument> = {
           userTemplate: template._id,
           user: userId,
-          type: 'meeting',
-          meetingRole: 'audience'
+          type: 'paywall'
         };
 
-        const templatePayment = await this.templatePaymentsService.findOne({
+        const templatePayments = await this.templatePaymentsService.find({
           query,
           session,
         });
 
         return {
-          templatePayment
+          templatePayments
         };
       } catch (err) {
         throw new RpcException({

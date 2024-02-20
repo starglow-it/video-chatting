@@ -288,7 +288,7 @@ export class UsersGateway extends BaseGateway {
               return {
                 url: link.url,
                 clicks: link.users.length,
-                clickThroughRate: link.users.length > 0 ? (link.users.length / (totalParticipants + totalAudiences)) * 100 : 0
+                clickThroughRate: link.users.length > 0 ? ((link.users.length / (totalParticipants + totalAudiences)) * 100).toFixed(1) : 0
               };
             });
           }
@@ -364,20 +364,30 @@ export class UsersGateway extends BaseGateway {
             });
           }
 
-          const { templatePayment } = await this.coreService.findTemplatePayment({
+          const { templatePayments } = await this.coreService.findTemplatePayment({
             userTemplateId: meeting.templateId,
             userId: profileId
           });
 
           let monetization = {
-            entryFee: 0,
+            participantEntryFee: 0,
+            audienceEntryFee: 0,
             totalFees: 0,
             donations: 0
           };
 
-          if (templatePayment && templatePayment.enabled) {
-            monetization.entryFee = templatePayment.price
-            monetization.totalFees = templatePayment.price * (totalParticipants + totalAudiences)
+          if (templatePayments.length > 0) {
+            templatePayments.forEach(templatePayment => {
+              if (templatePayment.meetingRole === MeetingRole.Participant) {
+                monetization.participantEntryFee = templatePayment.price;
+                monetization.totalFees += templatePayment.price * totalParticipants;
+              }
+
+              if (templatePayment.meetingRole === MeetingRole.Audience) {
+                monetization.audienceEntryFee = templatePayment.price;
+                monetization.totalFees += templatePayment.price * totalAudiences;
+              }
+            });
           }
 
           const result = {

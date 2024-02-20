@@ -73,7 +73,8 @@ export type MeetingStatisticsState = {
         clickThroughRate: number
     }[];
     monetization: {
-        entryFee: number;
+        participantEntryFee: number;
+        audienceEntryFee: number;
         totalFees: number;
         donations: number;
     };

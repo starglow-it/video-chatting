@@ -32,7 +32,8 @@ const initialMeetingStatisticsState:MeetingStatisticsState = {
     qaStatistics: [],
     meetingLinks: [],
     monetization: {
-        entryFee: 0,
+        participantEntryFee: 0,
+        audienceEntryFee: 0,
         totalFees: 0,
         donations: 0,
     }

@@ -734,12 +734,13 @@ export class MeetingsGateway
         });
 
         const meetingLinks = meeting.links.map(link => {
-          if (link.url == url) {
-            link.users.push(userId);
+          if (link.url === url && !link.users.includes(userId)) {
+              link.users.push(userId);
           }
-          
+      
           return link;
-        });
+      });
+      
 
           await this.meetingsService.findByIdAndUpdate({
             id: meetingId,
