@@ -24,7 +24,6 @@ module.exports = withTM(
             gatewayUrl: process.env.GATEWAY_URL,
             gatewayPort: process.env.GATEWAY_PORT,
             gatewayHost: process.env.GATEWAY_HOST,
-            defaultServerIp: process.env.DEFAULT_SERVER_IP,
             mediaServicePort: process.env.MEDIA_SERVICE_PORT,
             turnUrl: process.env.TURN_URL,
             turnPassword: process.env.TURN_PASSWORD,

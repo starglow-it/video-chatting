@@ -281,8 +281,18 @@ services:
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.media_server.rule=Host(`stg-my.chatruume.com`) && PathPrefix(`/media-server`)"
+      - "traefik.http.routers.media_server.priority=1000"
+      - "traefik.http.routers.media_server.entrypoints=websecure"
+      - "traefik.http.routers.media_server.tls=true"
+      - "traefik.http.services.media_server.loadbalancer.server.port=9091"
     networks:
       - internal
+      - traefikpublic
 
   scaling-service:
     env_file:

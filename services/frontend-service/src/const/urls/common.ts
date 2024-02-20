@@ -7,4 +7,4 @@ export const serverUrl = isServer()
     ? `http://${publicRuntimeConfig.gatewayHost}:${publicRuntimeConfig.gatewayPort}/api`
     : '/api';
 
-export const mediaServerUrl = `http://${publicRuntimeConfig.defaultServerIp}:${publicRuntimeConfig.mediaServicePort}`
+export const mediaServerUrl = isServer() ? `http://${publicRuntimeConfig.defaultServerIp}:${publicRuntimeConfig.mediaServicePort}` : '/media-server';
