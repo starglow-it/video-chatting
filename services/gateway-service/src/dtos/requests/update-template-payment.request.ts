@@ -41,7 +41,7 @@ class UpdateTemplatePaymentsData {
 }
 
 class QueryTemplatePaymentsRequest
-  implements Record<Exclude<MeetingRole, 'host'>, UpdateTemplatePaymentsData>
+  implements Record<Exclude<MeetingRole, 'host' | 'recorder'>, UpdateTemplatePaymentsData>
 {
   @ApiProperty({
     type: UpdateTemplatePaymentsData,

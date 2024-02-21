@@ -74,11 +74,14 @@ const Component = () => {
     useEffect(() => {
         if (Object.keys(roomsStatistics).length != 0) {
             const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
-                ? roomsStatistics.meetingNames.map(meeting => ({
-                    id: meeting.id,
-                    name: `${meeting.name} - ${meeting.startedAt}`
-                }))
+                ? roomsStatistics.meetingNames
+                    .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
+                    .map(meeting => ({
+                        id: meeting.id,
+                        name: `${meeting.name} - ${meeting.startedAt}`
+                    }))
                 : [];
+
 
             const attendeesDataInstance = {
                 totalNumber: roomsStatistics.attendeesData.totalParticipants + roomsStatistics.attendeesData.totalAudiences,
@@ -255,76 +258,76 @@ const Component = () => {
                     roomsStatisticsLoading
                         ? <CustomLoader className={styles.loader} />
                         : Object.keys(roomsStatistics).length > 0 ?
-                        <>
-                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
-                                <CustomGrid
-                                    item
-                                    container
-                                    justifyContent="center"
-                                    gap={3}
+                            <>
+                                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.Users}>
+                                    <CustomGrid
+                                        item
+                                        container
+                                        justifyContent="center"
+                                        gap={3}
+                                    >
+                                        <AttendeesAnalytics
+                                            statistic={attendeesData}
+                                            className={styles.statisticBlock}
+                                        />
+                                        <LocationAnalytics
+                                            statistic={locationData}
+                                            className={styles.statisticBlock}
+                                        />
+                                        <ReactionsAnalytics
+                                            statistic={reactions}
+                                            className={styles.statisticBlock}
+                                        />
+                                    </CustomGrid>
+                                </ConditionalRender>
+                                <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
+                                    <CustomGrid
+                                        container
+                                        direction="column"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        gap={2}
+                                    >
+                                        <QAAnalytics
+                                            statistic={qa}
+                                            className={styles.qaAnalyticsBlock}
+                                        />
+                                    </CustomGrid>
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={activeTab.value === StatisticsTabsValues.Links}
                                 >
-                                    <AttendeesAnalytics
-                                        statistic={attendeesData}
-                                        className={styles.statisticBlock}
-                                    />
-                                    <LocationAnalytics
-                                        statistic={locationData}
-                                        className={styles.statisticBlock}
-                                    />
-                                    <ReactionsAnalytics
-                                        statistic={reactions}
-                                        className={styles.statisticBlock}
-                                    />
-                                </CustomGrid>
-                            </ConditionalRender>
-                            <ConditionalRender condition={activeTab.value === StatisticsTabsValues.QA}>
-                                <CustomGrid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    gap={2}
+                                    <CustomGrid
+                                        className={styles.fadeContainer}
+                                        container
+                                        justifyContent="center"
+                                        gap={2}
+                                    >
+                                        <LinksAnalytics
+                                            statistic={meetingLinks}
+                                            className={styles.qaAnalyticsBlock}
+                                        />
+                                    </CustomGrid>
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={activeTab.value === StatisticsTabsValues.Monetization}
                                 >
-                                    <QAAnalytics
-                                        statistic={qa}
-                                        className={styles.qaAnalyticsBlock}
-                                    />
-                                </CustomGrid>
-                            </ConditionalRender>
-                            <ConditionalRender
-                                condition={activeTab.value === StatisticsTabsValues.Links}
-                            >
-                                <CustomGrid
-                                    className={styles.fadeContainer}
-                                    container
-                                    justifyContent="center"
-                                    gap={2}
-                                >
-                                    <LinksAnalytics
-                                        statistic={meetingLinks}
-                                        className={styles.qaAnalyticsBlock}
-                                    />
-                                </CustomGrid>
-                            </ConditionalRender>
-                            <ConditionalRender
-                                condition={activeTab.value === StatisticsTabsValues.Monetization}
-                            >
-                                <CustomGrid
-                                    className={styles.fadeContainer}
-                                    container
-                                    justifyContent="center"
-                                    gap={2}
-                                >
-                                    <MonetizationAnalytics
-                                        statistic={monetization}
-                                        className={styles.qaAnalyticsBlock}
-                                    />
-                                </CustomGrid>
-                            </ConditionalRender>
-                        </> : 
-                        <>
-                            
-                        </>
+                                    <CustomGrid
+                                        className={styles.fadeContainer}
+                                        container
+                                        justifyContent="center"
+                                        gap={2}
+                                    >
+                                        <MonetizationAnalytics
+                                            statistic={monetization}
+                                            className={styles.qaAnalyticsBlock}
+                                        />
+                                    </CustomGrid>
+                                </ConditionalRender>
+                            </> :
+                            <>
+
+                            </>
                 }
             </CustomGrid>
         </CustomGrid>

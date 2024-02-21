@@ -82,6 +82,7 @@ export const SignInGoogle = ({
                 <CustomTypography
                     nameSpace="common"
                     translation={buttonText || 'buttons.loginGoogle'}
+                    className={styles.googleText}
                 />
             </ConditionalRender>
         </SocialLogin>

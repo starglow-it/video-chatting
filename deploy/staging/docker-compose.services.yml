@@ -275,12 +275,26 @@ services:
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile
+    ports:
+      - "9091:9091"
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.media-server.rule=Host(`stg-my.chatruume.com`) && PathPrefix(`/media-server`)"
+      - "traefik.http.routers.media-server.priority=1000"
+      - "traefik.http.routers.media-server.entrypoints=websecure"
+      - "traefik.http.routers.media-server.tls=true"
+      - "traefik.http.routers.media-server.middlewares=media-server-stripprefix"
+      - "traefik.http.services.media-server.loadbalancer.server.port=9091"
+      # Define the middleware to strip the /media-server prefix
+      - "traefik.http.middlewares.media-server-stripprefix.stripprefix.prefixes=/media-server"
     networks:
       - internal
+      - traefikpublic
 
   scaling-service:
     env_file:

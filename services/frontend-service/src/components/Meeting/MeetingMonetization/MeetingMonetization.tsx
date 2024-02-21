@@ -198,7 +198,6 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
                 },
             },
         };
-        console.log(isRoomCreate)
         if (!isRoomCreate) {
             updatePaymentMeetingEvent({
                 ...payload

@@ -36,8 +36,8 @@ export const startScreenSharing = videoChatDomain.createEvent<void>('');
 export const stopScreenSharing = videoChatDomain.createEvent<void>('');
 export const disconnectFromVideoChatEvent =
     videoChatDomain.createEvent<void>('');
-export const startRecordMeeting = videoChatDomain.createEvent<void>('');
-export const stopRecordMeeting = videoChatDomain.createEvent<VideoBlob>('');
+export const startRecordMeeting = videoChatDomain.createEvent<string>('');
+export const stopRecordMeeting = videoChatDomain.createEvent<string>('');
 export const trackEndedEvent = videoChatDomain.createEvent<void>();
 export const resetRecordedVideoBlobStore = videoChatDomain.createEvent<void>('');
 export const uploadToS3Event = videoChatDomain.createEvent<VideoBlob>('');

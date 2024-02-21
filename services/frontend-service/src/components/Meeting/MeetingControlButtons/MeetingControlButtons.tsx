@@ -1,6 +1,4 @@
-import { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
-import RecordRTC, { MediaStreamRecorder } from 'recordrtc';
-
+import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -23,10 +21,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
-import { UnlockIcon } from 'shared-frontend/icons/OtherIcons/UnlockIcon';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
-import { EllipsisIcon } from 'shared-frontend/icons/OtherIcons/EllipsisIcon';
-import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
@@ -39,7 +34,6 @@ import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
-import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 import { $authStore, addNotificationEvent, appDialogsApi, deleteDraftUsers } from '../../../store';
 import {
     $audioErrorStore,
@@ -51,9 +45,7 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
-    $meetingTemplateStore,
     $meetingUsersStore,
-    $recordingStream,
     $doNotDisturbStore,
     $meetingNotesVisibilityStore,
     $meetingEmojiListVisibilityStore,
@@ -70,9 +62,7 @@ import {
     stopRecordMeeting,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    trackEndedEvent,
     updateLocalUserEvent,
-    updateMeetingTemplateFxWithData,
     $isToggleSchedulePanel,
     $isHaveNewQuestion,
     updateUserSocketEvent,
@@ -84,16 +74,15 @@ import {
 // styles
 import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
-import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { AppDialogsEnum, NotificationType } from 'src/store/types';
-import { PlayIcon } from 'shared-frontend/icons/OtherIcons/PlayIcon';
 import { PauseIcon } from 'shared-frontend/icons/OtherIcons/PauseIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 
 const Component = () => {
     const router = useRouter();
+    const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
 
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
@@ -104,7 +93,6 @@ const Component = () => {
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
-    const { isAcceptNoLogin, subdomain } = useStore($meetingTemplateStore);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -125,23 +113,24 @@ const Component = () => {
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
-    const { isPublishAudience } = meeting;
 
     const { isMobile } = useBrowserDetect();
     const { isVisible } = useStore($meetingNotesVisibilityStore);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
-
-    const [recorder, setRecorder] = useState<RecordRTC | null>(null);
-    const recordingStream = useStore($recordingStream);
     const isRecording = useStore($isRecordingStore);
-
     const doNotDisturbStore = useStore($doNotDisturbStore);
-
     const isSharingActive = useStore($isScreenSharingStore);
-
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+
+    useEffect(() => {
+        return () => {
+            if (isRecording) {
+                stopRecordMeeting(fullUrl);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
@@ -160,37 +149,6 @@ const Component = () => {
         }
     }, [isAudioError]);
 
-    useEffect(() => {
-        if (recordingStream && isRecording) {
-            const options: RecordRTC.Options = {
-                type: 'video',
-                mimeType: 'video/mp4', // Attempt to set mimeType to MP4
-                recorderType: MediaStreamRecorder
-            };
-
-            const newRecorder = new RecordRTC(recordingStream, options);
-            newRecorder.startRecording();
-            setRecorder(newRecorder);
-        }
-    }, [recordingStream, isRecording]);
-
-    const stopRecording = () => {
-        if (recorder) {
-            recorder.stopRecording(() => {
-                const blob = recorder.getBlob();
-                stopRecordMeeting(blob);
-                appDialogsApi.openDialog({
-                    dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
-                });
-            });
-        }
-    };
-
-    useEffect(() => {
-        trackEndedEvent.watch(stopRecording);
-    }, [recorder]);
-
-
     const handleEndVideoChat = useCallback(async () => {
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
@@ -201,6 +159,11 @@ const Component = () => {
                 config.frontendUrl + clientRoutes.registerEndCallRoute;
             return;
         }
+
+        if (isRecording) {
+            stopRecordMeeting(fullUrl);
+        }
+
         await router.push(
             !isWithoutAuthen
                 ? localUser.isGenerated
@@ -252,9 +215,13 @@ const Component = () => {
 
     const handleRecordMeeting = async () => {
         if (!isRecording) {
-            startRecordMeeting();
+            startRecordMeeting(fullUrl);
         } else {
-            stopRecording();
+            stopRecordMeeting(fullUrl);
+
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
+            });
         }
     };
     const handleSetStickyNotesVisible = () => {
@@ -564,7 +531,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation="recordMeeting.start"
+                            translation={isRecording ? "recordMeeting.stop" : "recordMeeting.start"}
                         />
                     }
                     placement="top"
