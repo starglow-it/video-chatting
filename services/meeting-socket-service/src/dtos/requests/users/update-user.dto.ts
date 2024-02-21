@@ -27,4 +27,8 @@ export class UpdateUserRequestDTO implements Partial<ICommonMeetingUserDTO> {
   @IsOptional()
   @IsBoolean()
   doNotDisturb: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isDonated: boolean;
 }

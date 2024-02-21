@@ -107,4 +107,10 @@ export class MeetingUserDto implements ICommonMeetingUserDTO {
     message: 'Invalid doNotDisturb',
   })
   doNotDisturb: boolean;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'Invalid isDonated',
+  })
+  isDonated: boolean;
 }

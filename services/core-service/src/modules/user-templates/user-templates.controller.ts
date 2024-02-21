@@ -1235,7 +1235,6 @@ export class UserTemplatesController {
         const query: FilterQuery<TemplatePaymentDocument> = {
           userTemplate: template._id,
           user: userId,
-          type: 'paywall'
         };
 
         const templatePayments = await this.templatePaymentsService.find({
