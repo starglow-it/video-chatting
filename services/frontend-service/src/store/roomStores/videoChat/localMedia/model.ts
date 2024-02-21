@@ -15,7 +15,8 @@ import { MediaStreamError } from 'src/helpers/media/getMediaStream';
 const initialRecordStream = {
     message: '',
     egressId: '',
-    url: ''
+    url: '',
+    error: ''
 };
 
 export const $audioDevicesStore = videoChatDomain.createStore<

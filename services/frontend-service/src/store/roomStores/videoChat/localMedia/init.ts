@@ -117,6 +117,9 @@ $isMicActiveStore
 $recordingStream
     .on(startRecordStreamFx.doneData, (state, data) => ({ ...data }))
     .on(stopRecordStreamFx.doneData, (state, data) => ({ ...data }))
+    .on(stopRecordStreamFx.fail, (state, error) => {
+        return { ...state, error: 'An error occurred during recording.' };
+    })
     .reset(resetRoomStores);
 
 $recordedVideoBlobStore

@@ -1,4 +1,4 @@
-import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -139,7 +139,6 @@ const Component = () => {
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
     }, [isMeetingHost, isThereNewRequests]);
-
 
     useEffect(() => {
         updateUserSocketEvent({
@@ -557,7 +556,7 @@ const Component = () => {
                                     />
                                     : !isRecording
                                         ? <FiberManualRecordIcon />
-                                        : <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation}/>
+                                        : <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
                             }
                         />
                     </CustomPaper>
