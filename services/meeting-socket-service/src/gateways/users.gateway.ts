@@ -372,7 +372,8 @@ export class UsersGateway extends BaseGateway {
           let monetization = {
             participantEntryFee: 0,
             audienceEntryFee: 0,
-            totalFees: 0,
+            participantFees: 0,
+            audienceFees: 0,
             donations: 0
           };
 
@@ -380,12 +381,12 @@ export class UsersGateway extends BaseGateway {
             templatePayments.forEach(templatePayment => {
               if (templatePayment.meetingRole === MeetingRole.Participant) {
                 monetization.participantEntryFee = templatePayment.price;
-                monetization.totalFees += templatePayment.price * totalParticipants;
+                monetization.participantFees = templatePayment.price * totalParticipants;
               }
 
               if (templatePayment.meetingRole === MeetingRole.Audience) {
                 monetization.audienceEntryFee = templatePayment.price;
-                monetization.totalFees += templatePayment.price * totalAudiences;
+                monetization.audienceFees = templatePayment.price * totalAudiences;
               }
             });
           }

@@ -34,7 +34,8 @@ const initialMeetingStatisticsState:MeetingStatisticsState = {
     monetization: {
         participantEntryFee: 0,
         audienceEntryFee: 0,
-        totalFees: 0,
+        participantFees: 0,
+        audienceFees: 0,
         donations: 0,
     }
 }
