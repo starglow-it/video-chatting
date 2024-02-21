@@ -75,7 +75,8 @@ export type MeetingStatisticsState = {
     monetization: {
         participantEntryFee: number;
         audienceEntryFee: number;
-        totalFees: number;
+        participantFees: number;
+        audienceFees: number;
         donations: number;
     };
 }

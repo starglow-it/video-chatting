@@ -19,7 +19,8 @@ const MonetizationAnalytics = memo(
         statistic: {
             participantEntryFee: number,
             audienceEntryFee: number,
-            totalFees: number,
+            participantFees: number,
+            audienceFees: number,
             donations: number
         };
     }>) => {
@@ -36,7 +37,7 @@ const MonetizationAnalytics = memo(
                         container
                         direction="row"
                         alignItems="flex-start"
-                        justifyContent="flex-start"
+                        justifyContent="space-between"
                         className={styles.qaTitleWrapper}
                     >
                         <CustomTypography variant="h2">
@@ -44,6 +45,9 @@ const MonetizationAnalytics = memo(
                                 nameSpace="common"
                                 translation="statistics.users.monetizationAnalytics.title"
                             />
+                        </CustomTypography>
+                        <CustomTypography variant="h2">
+                            ${statistic.data.audienceFees + statistic.data.participantFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -55,11 +59,27 @@ const MonetizationAnalytics = memo(
                         <CustomTypography variant="body1">
                             <Translation
                                 nameSpace="common"
-                                translation="statistics.users.monetizationAnalytics.entryFees"
-                            /> - ${statistic.data.participantEntryFee} USD/participant, ${statistic.data.audienceEntryFee} USD/audience
+                                translation="statistics.users.monetizationAnalytics.attendeeEntryFee"
+                            /> - ${statistic.data.audienceEntryFee} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.totalFees}
+                            ${statistic.data.audienceFees}
+                        </CustomTypography>
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        container
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <CustomTypography variant="body1">
+                            <Translation
+                                nameSpace="common"
+                                translation="statistics.users.monetizationAnalytics.participantEntryFee"
+                            /> - ${statistic.data.participantEntryFee} USD/person
+                        </CustomTypography>
+                        <CustomTypography variant="body1">
+                            ${statistic.data.participantFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
