@@ -1,5 +1,4 @@
-import { memo, useCallback, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { React, memo, useState } from 'react';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
@@ -10,26 +9,27 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { useStore } from 'effector-react';
 import { $profileStore } from 'src/store';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import styles from './EmojiList.module.scss';
 import {
     $isAudience,
     $meetingEmojiListVisibilityStore,
-    $meetingReactionsStore,
-    sendMeetingReactionSocketEvent
+    sendMeetingReactionSocketEvent,
+    setEmojiListVisibilityEvent
 } from '../../store/roomStores';
 
 const Component = () => {
     const { isMobile } = useBrowserDetect();
-    const meetingReactions = useStore($meetingReactionsStore);
     const isAudience = useStore($isAudience);
     const profile = useStore($profileStore);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
 
-    const [isExpand, setIsExpand] = useState<boolean>(true);
+    // const [isExpand, setIsExpand] = useState<boolean>(true);
 
-    const addReaction = (e) => {
+    const addReaction = (event: React.MouseEvent<HTMLImageElement>) => {
         sendMeetingReactionSocketEvent({
-            emojiName: e.target.dataset.key,
+            emojiName: event.target.dataset.key,
         })
     }
 
@@ -126,9 +126,13 @@ const Component = () => {
         }
     ];
 
+    // console.log('isExpand: ', isExpand);
+    console.log('isEmojiListVisible: ', isEmojiListVisible);
+
     return (
-        <ClickAwayListener onClickAway={() => setIsExpand(false)}>
-            <div>
+        // <ClickAwayListener onClickAway={() => setIsExpand(false)}>
+        <ClickAwayListener onClickAway={() => setEmojiListVisibilityEvent({ isEmojiListVisible: false })}>
+            <>
                 {isEmojiListVisible &&
                     <CustomPaper
                         className={clsx(styles.commonOpenPanel, {
@@ -147,9 +151,9 @@ const Component = () => {
                             >
                                 {availableReactionArr.map(reaction => (
                                     <CustomGrid item xs={4} className={styles.center}>
-                                        <div className={styles.emojiBox}>
-                                            <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
-                                        </div>
+                                        <CustomBox className={styles.emojiBox}>
+                                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
+                                        </CustomBox>
                                     </CustomGrid>
                                 ))}
                             </ConditionalRender>
@@ -158,16 +162,16 @@ const Component = () => {
                             >
                                 {availableReactionArr.filter(reaction => reaction.isForAudience).map(reaction => (
                                     <CustomGrid item xs={4} className={styles.center}>
-                                        <div className={styles.emojiBox}>
-                                            <img className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} height="30" />
-                                        </div>
+                                        <CustomBox className={styles.emojiBox}>
+                                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
+                                        </CustomBox>
                                     </CustomGrid>
                                 ))}
                             </ConditionalRender>
                         </CustomGrid>
                     </CustomPaper>
                 }
-            </div>
+            </>
         </ClickAwayListener>
     );
 };
