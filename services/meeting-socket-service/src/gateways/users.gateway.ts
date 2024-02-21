@@ -385,12 +385,12 @@ export class UsersGateway extends BaseGateway {
               if (templatePayment.type === 'paywall') {
                 if (templatePayment.meetingRole === MeetingRole.Participant) {
                   monetization.participantEntryFee = templatePayment.price;
-                  monetization.totalFees += templatePayment.price * totalParticipants;
+                  monetization.participantFees = templatePayment.price * totalParticipants;
                 }
 
                 if (templatePayment.meetingRole === MeetingRole.Audience) {
                   monetization.audienceEntryFee = templatePayment.price;
-                  monetization.totalFees += templatePayment.price * totalAudiences;
+                  monetization.audienceFees = templatePayment.price * totalAudiences;
                 }
               }
 
