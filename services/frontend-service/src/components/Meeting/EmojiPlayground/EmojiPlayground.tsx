@@ -1,19 +1,14 @@
-import { React, memo, useEffect, useRef, useState } from 'react';
+import { React, memo, useEffect, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { clsx } from 'clsx';
 
 //custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-
-// common
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-
-// stores
-import { isMobile } from 'shared-utils';
-import { $windowSizeStore } from '../../../store';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import {
-    $meetingReactionsStore, getMeetingReactionsSocketEvent, $localUserStore, $meetingStore, removeMeetingReactionEvent, $meetingUsersStore
+    $meetingReactionsStore, getMeetingReactionsSocketEvent, $meetingStore, $meetingUsersStore
 } from '../../../store/roomStores';
 
 // gsap
@@ -23,19 +18,20 @@ import { useGSAP } from '@gsap/react';
 
 import styles from './EmojiPlayground.module.scss'
 
+import { MeetingReaction, MeetingUser } from 'src/store/types';
+
 gsap.registerPlugin(MotionPathPlugin);
 
 const Component = ({ userId }: { userId: string }) => {
     const meetingReactions = useStore($meetingReactionsStore);
     const meeting = useStore($meetingStore);
-    const localUser = useStore($localUserStore);
     const meetingUsers = useStore($meetingUsersStore);
 
     const container = useRef(null);
 
     const { contextSafe } = useGSAP({ scope: container });
 
-    const startReactionBubbling = contextSafe((reaction) => {
+    const startReactionBubbling = contextSafe((reaction: MeetingReaction) => {
         if (reaction.user === meeting.hostUserId) {
             gsap.set(`svg[data-key="${reaction.id}"]`, {
                 height: `1500px`,
@@ -196,14 +192,13 @@ const Component = ({ userId }: { userId: string }) => {
 
 
     return (
-        <div className={clsx(styles.playgroundWrapper, { [styles.isParticipant]: userId !== meeting.hostUserId })} ref={container}>
-            {meetingReactions.filter(reaction => reaction.user === userId).map(reaction => (<>
+        <CustomBox className={clsx(styles.playgroundWrapper, { [styles.isParticipant]: userId !== meeting.hostUserId })} ref={container}>
+            {meetingReactions.filter((reaction: MeetingReaction) => reaction.user === userId).map((reaction: MeetingReaction) => (<>
                 <svg viewBox="0 0 22 110" fill="none" xmlns="http://www.w3.org/2000/svg" data-key={reaction.id} style={{ width: 0, height: 0 }}>
                     <path d="M14.6485 109C10.099 108.037 1 102.763 1 89.3636C1 72.615 22.6101 61.6417 20.904 40.8503C19.198 20.0588 15.7859 9.6631 1 1" data-key={reaction.id}></path>
                 </svg>
-                <div data-key={reaction.id} className={styles.emojiElement}>
-                    <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: '100%', height: '100%' }}></img>
-                    {/* <ConditionalRender> */}
+                <CustomBox data-key={reaction.id} className={styles.emojiElement}>
+                    <CustomImage src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} width="100%" height="100%" />
                     <CustomPaper
                         className={styles.usernameWrapper}
                         variant="black-glass"
@@ -213,14 +208,14 @@ const Component = ({ userId }: { userId: string }) => {
                             variant="body3"
                             className={styles.username}
                         >
-                            {meetingUsers.find(user => user?.id === userId)?.username}
+                            {meetingUsers.find((user: MeetingUser) => user?.id === userId)?.username}
                         </CustomTypography>
                     </CustomPaper>
-                    {/* </ConditionalRender> */}
-                </div>
+                </CustomBox >
             </>
-            ))}
-        </div>
+            ))
+            }
+        </CustomBox >
     )
 }
 
