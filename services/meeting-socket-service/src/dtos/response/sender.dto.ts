@@ -15,4 +15,7 @@ export class SenderDto implements ISenderDto {
 
   @Expose()
   meetingAvatarId: ICommonMeetingUserDTO['meetingAvatarId'];
+
+  @Expose()
+  meetingRole: ICommonMeetingUserDTO['meetingRole'];
 }

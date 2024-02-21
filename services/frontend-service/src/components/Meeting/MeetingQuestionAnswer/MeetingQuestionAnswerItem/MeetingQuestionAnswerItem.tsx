@@ -24,7 +24,6 @@ export const MeetingQuestionAnswerItem = memo(
     }: QuestionAnswerItem) => {
         const localUser = useStore($localUserStore);
 
-
         const [showPreview, setShowPreview] = useState(false);
         const [isReaction, setIsReaction] = useState(false);
 
@@ -87,7 +86,7 @@ export const MeetingQuestionAnswerItem = memo(
                             <CustomGrid className={styles.right}>
                                 <ConditionalRender condition={!isLocal}>
                                     <span className={styles.userName}>
-                                        {sender.username}
+                                        {sender.username} - {sender.meetingRole}
                                     </span>
                                 </ConditionalRender>
                                 <div
@@ -144,13 +143,21 @@ export const MeetingQuestionAnswerItem = memo(
                 onMouseLeave={handleHidePreview}
             >
                 {renderItem()}
-                <ConditionalRender condition={showPreview && !isLocal}>
+                <ConditionalRender condition={showPreview && !isLocal && !isReaction}>
                     <span
                         onClick={(e: any) => {
                             handleReaction(MeetingReactionKind.Like)
                         }}
                         className={clsx(styles.emotionRight, styles.reactionButton)}
                     >✓</span>
+                </ConditionalRender>
+                <ConditionalRender condition={showPreview && !isLocal && isReaction}>
+                    <span
+                        onClick={(e: any) => {
+                            handleReaction(MeetingReactionKind.Like)
+                        }}
+                        className={clsx(styles.emotionRight, styles.reactionButton, styles.buttonRed)}
+                    >X</span>
                 </ConditionalRender>
             </CustomGrid>
         );
