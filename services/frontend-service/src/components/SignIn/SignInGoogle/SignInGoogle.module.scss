@@ -13,4 +13,10 @@
     opacity: 0.5;
     pointer-events: none;
   }
+
+  @media screen and (max-width: 289px) {
+    .googleText {
+      display: none;
+    }
+  }
 }
