@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
+import clsx from 'clsx';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
@@ -141,7 +142,7 @@ export const MeetingPeople = () => {
                         label={tab}
                         value={index}
                         {...a11yProps(index)}
-                        classes={{ root: styles.tab }}
+                        classes={{ root: clsx(styles.tab, { [styles.newRequest]: !!isThereNewQuestion && tab === 'questions' }) }}
                         onClick={() => handleResetNewMessage(tab)}
                     />
                 ))}
