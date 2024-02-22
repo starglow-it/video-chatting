@@ -156,8 +156,10 @@ export const MeetingQuestionAnswerItem = memo(
                         onClick={(e: any) => {
                             handleReaction(MeetingReactionKind.Like)
                         }}
-                        className={clsx(styles.emotionRight, styles.reactionButton, styles.buttonRed)}
-                    >X</span>
+                        className={clsx(styles.emotionRight, styles.reactionButton, styles.xBtn)}
+                    >
+                        &times;
+                    </span>
                 </ConditionalRender>
             </CustomGrid>
         );

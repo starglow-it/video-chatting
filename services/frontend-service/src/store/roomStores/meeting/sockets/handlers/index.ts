@@ -154,7 +154,7 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             },
         ],
         [
-            MeetingSubscribeEvents.OnReceiceUnReaction,
+            MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
             {
                 handler: handleReceiveQuestionUnReaction,
             },
