@@ -3,7 +3,7 @@
     "submit": "Create Room"
   },
   "cancel": {
-    "title": "Cancel Room creation?",
+    "title": "Cancel Ruume creation?",
     "description": "All your settings will be lost.",
     "buttons": {
       "cancel": "Cancel",
