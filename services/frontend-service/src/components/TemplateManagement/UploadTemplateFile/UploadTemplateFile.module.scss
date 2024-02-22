@@ -120,7 +120,7 @@
   background-color: #333333;
   padding: 30px;
   width: 700px;
-  max-width: 80%;
+  min-width: rem(700px);
 
   &.mobile {
     max-width: 100%;
@@ -138,6 +138,10 @@
 }
 
 @media screen and (max-width: 900px) {
+  .uploadBackgroundContentWrapper {
+    width: 100%;
+    min-width: 100%;
+  }
   .innerUploadBackgroundContent {
     flex-direction: column;
   }
@@ -145,7 +149,7 @@
 
 .youtubeInputWrapper {
   margin-top: 8px;
-  width: 70%;
+  width: rem(284px);
 
   .css-1qq5tj-MuiInputBase-input-MuiOutlinedInput-input {
     padding: 10px 14px;
