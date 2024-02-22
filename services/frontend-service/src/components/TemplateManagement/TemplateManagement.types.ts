@@ -16,6 +16,6 @@ export type TemplateManagementProps = {
     ) =>
         | Promise<GetEditingTemplateResponse | UploadTemplateFileResponse>
         | undefined;
-    onUpgradePlan: (data: IUploadTemplateFormData) => void;
+    onUpgradePlan: () => void;
     isFileUploading: boolean;
 };

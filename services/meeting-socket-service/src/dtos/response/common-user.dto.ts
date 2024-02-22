@@ -60,6 +60,12 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
 
   @Expose()
   userSize: ICommonMeetingUserDTO['userSize'];
+
+  @Expose()
+  doNotDisturb: ICommonMeetingUserDTO['doNotDisturb'];
+
+  @Expose()
+  isDonated: ICommonMeetingUserDTO['isDonated'];
 }
 
 export const userSerialization = <

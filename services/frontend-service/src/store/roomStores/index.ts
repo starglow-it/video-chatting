@@ -13,6 +13,7 @@ import * as meetingPayment from './meeting/meetingPayment/init';
 import * as meetingError from './meeting/meetingError/init';
 import * as meetingTemplate from './meeting/meetingTemplate/init';
 import * as meetingNotes from './meeting/meetingNotes/init';
+import * as meetingReactions from './meeting/meetingReactions/init';
 import * as meetingState from './meeting/meetingState/init';
 import * as meetingSounds from './meeting/meetingSounds/init';
 import * as meetingBackground from './meeting/meetingBackground/init';
@@ -46,6 +47,7 @@ export * from './meeting/meetingAudio/model';
 export * from './meeting/meetingRole/model';
 export * from './meeting/meetingChat/model';
 export * from './meeting/meetingQuestionAnswer/model';
+export * from './meeting/meetingReactions/model';
 
 export * from './videoChat/p2p/init';
 export * from './videoChat/localMedia/init';
@@ -68,6 +70,7 @@ export default {
     meetingError,
     meetingTemplate,
     meetingNotes,
+    meetingReactions,
     meetingState,
     meetingSounds,
     meetingBackground,

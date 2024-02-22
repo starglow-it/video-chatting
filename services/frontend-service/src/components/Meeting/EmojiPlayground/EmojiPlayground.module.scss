@@ -1,0 +1,55 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.playgroundWrapper {
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  width: 300px;
+  height: 0px;
+
+  &.isParticipant {
+    width: 100%;
+    bottom: 100%;
+  }
+}
+
+.usernameWrapper {
+  max-width: rem(146px);
+  min-width: rem(32px);
+  max-height: rem(34px);
+  min-height: rem(24px);
+  padding: rem(4px 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // margin: rem(8px) 0 0 0;
+
+  &.forSharing {
+    padding: rem(4px 8px);
+  }
+
+  .micIcon {
+    color: $primary-white;
+
+    &.noAudio {
+      color: $primary-red;
+    }
+
+    &.withAction {
+      cursor: pointer;
+    }
+  }
+
+  .username {
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.emojiElement {
+  z-index: 900;
+}

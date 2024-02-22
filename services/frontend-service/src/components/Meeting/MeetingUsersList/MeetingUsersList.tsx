@@ -40,7 +40,8 @@ const Component = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Audience,
+                    user.meetingRole !== MeetingRole.Audience &&
+                    user.meetingRole !== MeetingRole.Recorder,
             ),
     });
 

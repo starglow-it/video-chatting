@@ -30,4 +30,6 @@ RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 
+EXPOSE 9091
+
 CMD /wait && pnpm --filter media-server-service dev

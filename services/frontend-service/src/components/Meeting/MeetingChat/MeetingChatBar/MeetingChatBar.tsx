@@ -42,7 +42,7 @@ export const MeetingChatBar = () => {
             <CustomGrid width="100%">
                 <CustomEmojiPicker
                     ref={refPicker}
-                    width={280}
+                    width={262}
                     className={styles.picker}
                     onEmojiClick={handleChooseEmoji}
                 />

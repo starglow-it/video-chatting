@@ -5,10 +5,10 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // types
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 import { TemplateGridProps } from './types';
 
 // styles
@@ -24,9 +24,23 @@ const Component = <TemplateType extends { id: string }>({
     onCreate,
     isCustomElementCreate = false,
     ElementCreate = (
-        <CustomGrid id="templateCreate" display="flex" flexDirection="row" alignItems="center">
-            <PlusIcon width="22px" height="22px" />
-            <CustomTypography nameSpace="templates" translation="createRoom" />
+        <CustomGrid
+            id="templateCreate"
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            className={styles.templateCreateWrapper}
+        >
+            <CustomBox className={styles.image}>
+                <CustomImage
+                    width="29"
+                    height="29"
+                    src="/images/stars.webp"
+                    alt="stars"
+                />
+            </CustomBox>
+            <CustomTypography nameSpace="templates" translation="createRoom" className={styles.title} />
         </CustomGrid>
     ),
 }: TemplateGridProps<TemplateType>) => {
@@ -51,27 +65,230 @@ const Component = <TemplateType extends { id: string }>({
                     <CustomGrid
                         className={clsx(styles.addItem, { [styles.addItemMobile]: isMobile })}
                         container
-                        justifyContent="center"
                         alignItems="center"
                         flexDirection="column"
                         onClick={onCreate}
                         key="create-a-template"
-                        gap={1}
                     >
                         {ElementCreate}
                         {!isCustomElementCreate && (
                             <>
-                                <CustomTypography
-                                    nameSpace="templates"
-                                    translation="descCreateRoom"
-                                    textAlign="center"
-                                    fontSize={12}
-                                />
-                                <CustomTypography
-                                    nameSpace="templates"
-                                    translation="embedLinks"
-                                    textAlign="center"
-                                />
+                                <CustomGrid
+                                    item
+                                    container
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    className={styles.descriptionWrapper}
+                                >
+                                    <CustomGrid
+                                        item
+                                        container
+                                        justifyContent="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <CustomBox className={styles.image}>
+                                            <CustomImage
+                                                width="25"
+                                                height="25"
+                                                src="/images/immersion.png"
+                                                alt="immersion"
+                                            />
+                                        </CustomBox>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            justifyContent="center"
+                                            className={styles.descCreateRoom}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.customizeTheImmersionTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.customizeTheImmersionDesc"
+                                                textAlign="left"
+                                                lineHeight="17px"
+                                                fontSize={10}
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+                                        </CustomGrid>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            justifyContent="center"
+                                            className={styles.descCreateRoomResponsive}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.customizeTheImmersionTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.customizeTheImmersionDescResponsive"
+                                                textAlign="left"
+                                                lineHeight="17px"
+                                                fontSize={10}
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+                                        </CustomGrid>
+                                    </CustomGrid>
+                                </CustomGrid>
+                                <CustomGrid
+                                    item
+                                    container
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    className={styles.descriptionWrapper}
+                                >
+                                    <CustomGrid
+                                        item
+                                        container
+                                        justifyContent="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <CustomBox className={styles.image}>
+                                            <CustomImage
+                                                width="25"
+                                                height="25"
+                                                src="/images/white-link.png"
+                                                alt="white link"
+                                            />
+                                        </CustomBox>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            className={styles.descCreateRoom}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.addYourLinksTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.addYourLinksDesc"
+                                                textAlign="left"
+                                                fontSize={10}
+                                                lineHeight="17px"
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+                                        </CustomGrid>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            className={styles.descCreateRoomResponsive}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.addYourLinksTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.addYourLinksDescResponsive"
+                                                textAlign="left"
+                                                fontSize={10}
+                                                lineHeight="17px"
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+                                        </CustomGrid>
+                                    </CustomGrid>
+                                </CustomGrid>
+                                <CustomGrid
+                                    item
+                                    container
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    className={styles.descriptionWrapper}
+                                >
+                                    <CustomGrid
+                                        item
+                                        container
+                                        justifyContent="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <CustomBox className={styles.image}>
+                                            <CustomImage
+                                                width="25"
+                                                height="25"
+                                                src="/images/creditCard.png"
+                                                alt="credit card"
+                                            />
+                                        </CustomBox>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            className={clsx(styles.descCreateRoom)}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.monetizeAttendanceTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.monetizeAttendanceDesc"
+                                                textAlign="left"
+                                                fontSize={10}
+                                                lineHeight="17px"
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+
+                                        </CustomGrid>
+                                        <CustomGrid
+                                            item
+                                            container
+                                            flexDirection="column"
+                                            className={clsx(styles.descCreateRoomResponsive)}
+                                        >
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.monetizeAttendanceTitle"
+                                                textAlign="left"
+                                                fontSize={12}
+                                                lineHeight="17px"
+                                                className={styles.createRoomTitle}
+                                            />
+                                            <CustomTypography
+                                                nameSpace="templates"
+                                                translation="descCreateRoom.monetizeAttendanceDescResponsive"
+                                                textAlign="left"
+                                                fontSize={10}
+                                                lineHeight="17px"
+                                                color="#BEBEBE"
+                                                className={styles.createRoomDesc}
+                                            />
+                                        </CustomGrid>
+                                    </CustomGrid>
+                                </CustomGrid>
                             </>
                         )}
                     </CustomGrid>

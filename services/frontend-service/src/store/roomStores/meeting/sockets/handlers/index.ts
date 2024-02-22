@@ -22,6 +22,9 @@ import { handleRejoinMeeting } from './handleRejoinMeeting';
 import { handleReceiveQuestion } from './handleReceiveQuestion';
 import { handleReceiveQuestionReaction } from './handleReceiveQuestionReaction';
 import { handleReceiveQuestionUnReaction } from './handleReceiveQuestionUnReaction';
+import { handleSendMeetingReaction } from './handleSendMeetingReaction';
+import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
+import { handleGetMeetingReactions } from './handleGetMeetingReactions';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -70,6 +73,24 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnGetMeetingNotes,
             {
                 handler: handleGetMeetingNotes,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnSendMeetingReaction,
+            {
+                handler: handleSendMeetingReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnRemoveMeetingReaction,
+            {
+                handler: handleRemoveMeetingReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingReactions,
+            {
+                handler: handleGetMeetingReactions,
             },
         ],
         [
@@ -133,7 +154,7 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             },
         ],
         [
-            MeetingSubscribeEvents.OnReceiceUnReaction,
+            MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
             {
                 handler: handleReceiveQuestionUnReaction,
             },

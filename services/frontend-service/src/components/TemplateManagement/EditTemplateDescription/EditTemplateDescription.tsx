@@ -16,9 +16,13 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { MeetingMonetization } from '../../Meeting/MeetingMonetization/MeetingMonetization';
 
+//@mui
+import Button from '@mui/material/Button';
+
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/TemplateManagement/EditTemplateDescription/types';
@@ -58,6 +62,7 @@ const Component = ({
     const router = useRouter();
     const businessCategories = useStore($businessCategoriesStore);
     const profileStore = useStore($profileStore);
+
     const { isMobile } = useBrowserDetect();
 
     const {
@@ -131,6 +136,10 @@ const Component = ({
 
     useEffect(() => {
         toggleCreateRoomPaymentFormEvent(enableMonetization);
+
+        if (!enableMonetization) {
+            setAnchorEl(null);
+        }
     }, [enableMonetization]);
 
     const handleClickNextStep = useCallback(async () => {
@@ -238,12 +247,20 @@ const Component = ({
         }
     };
 
+    const handleEditFees = () => {
+        if (!enableMonetization) {
+            setEnableMonetization(true);
+        }
+        setAnchorEl(document.getElementById('formPanel'));
+    };
+
     const handleCloseButton = () => {
         setAnchorEl(null);
     };
 
     return (
         <CustomGrid
+            item
             container
             alignItems="center"
             justifyContent="center"
@@ -252,10 +269,11 @@ const Component = ({
             <CustomPopover
                 id="monetization"
                 open={Boolean(anchorEl)}
-                onClose={handleCloseButton}
                 anchorEl={anchorEl}
-                // style={{ zIndex: 20, left: isMobile ? "-10px" : '70px', top: isMobile ? "-25px" : '-40px' }}
-                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none'}}
+                style={{ zIndex: 20, left: windowSize.width > 1500 && '20px', maxWidth: 'none' }}
+                disableAutoFocus
+                disablePortal
+                onClose={() => { }}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: windowSize.width > 1500 ? 'right' : 'center',
@@ -267,7 +285,7 @@ const Component = ({
                 PaperProps={{
                     className: clsx(styles.popoverMonetization),
                 }}
-                className={clsx(styles.popover, {[styles.mobile]: isMobile})}
+                className={clsx(styles.popover, { [styles.mobile]: isMobile })}
             >
                 <CustomPaper
                     variant="black-glass"
@@ -364,7 +382,7 @@ const Component = ({
                     alignItems="center"
                     justifyContent="space-between"
                 >
-                    <CustomGrid item md={8} xs={7}>
+                    <CustomGrid item md={7} xs={7}>
                         <CustomTypography
                             variant="body2"
                             color="colors.white.primary"
@@ -379,8 +397,8 @@ const Component = ({
                             className={styles.monetizationContent}
                         />
                     </CustomGrid>
-                    <CustomGrid item md={4} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
-                        <div className={styles.customSwitchContainer} onClick={toggleSelected}>
+                    <CustomGrid item md={5} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
+                        {/* <div className={styles.customSwitchContainer} onClick={toggleSelected}>
                             <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
                         </div>
                         <CustomTypography
@@ -389,7 +407,17 @@ const Component = ({
                             nameSpace="createRoom"
                             translation={enableMonetization ? "editDescription.form.monetizationContentOn" : "editDescription.form.monetizationContentOff"}
                             className={styles.monetizationContentToggleValue}
-                        />
+                        /> */}
+                        <Button
+                            color="secondary"
+                            aria-label="edit fees"
+                            size="small"
+                            className={styles.editFeesBtn}
+                            onClick={handleEditFees}
+                        >
+                            <span className={styles.editFeesIcon}>$</span>
+                            edit fees
+                        </Button>
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

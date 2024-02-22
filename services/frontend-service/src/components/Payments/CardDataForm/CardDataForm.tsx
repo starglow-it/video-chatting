@@ -32,7 +32,7 @@ const Component = ({
     isPreEvent = false,
     onSubmit,
     onError,
-    setMeetingPreviewShow,
+    setMeetingPreviewShow = () => { },
     paymentIntentSecret,
     colorForm = 'white',
     paymentType,
@@ -48,24 +48,32 @@ const Component = ({
 
             if (stripe && elements) {
                 setIsLoading(true);
-                const result = await stripe.confirmCardPayment(
-                    paymentIntentSecret,
-                    {
-                        payment_method: {
-                            card: elements.getElement(CardNumberElement) ?? {
-                                token: '',
+
+                const { paymentIntent } = await stripe.retrievePaymentIntent(paymentIntentSecret);
+                let result;
+
+                if (paymentIntent.status === "succeeded") {
+                    console.log('Already succeeded')
+                } else {
+                    result = await stripe.confirmCardPayment(
+                        paymentIntentSecret,
+                        {
+                            payment_method: {
+                                card: elements.getElement(CardNumberElement) ?? {
+                                    token: '',
+                                },
                             },
                         },
-                    },
-                );
+                    );
 
-                if (result.error) {
-                    onError();
-                    setIsLoading(false);
-                } else {
-                    onSubmit();
-                    setIsLoading(false);
-                    setMeetingPreviewShow();
+                    if (result?.error) {
+                        onError();
+                        setIsLoading(false);
+                    } else {
+                        onSubmit();
+                        setIsLoading(false);
+                        setMeetingPreviewShow();
+                    }
                 }
             }
         },

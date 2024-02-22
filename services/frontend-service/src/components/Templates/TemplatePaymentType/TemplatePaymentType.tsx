@@ -29,6 +29,7 @@ const Component = ({
             color={
                 priceInCents ? 'colors.blue.primary' : 'colors.green.primary'
             }
+            className={styles.typeText}
         >
             {priceInCents ? priceInCents / 100 : type}
         </CustomTypography>

@@ -101,4 +101,16 @@ export class MeetingUserDto implements ICommonMeetingUserDTO {
   @IsOptional()
   @IsNumber()
   userSize: number;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'Invalid doNotDisturb',
+  })
+  doNotDisturb: boolean;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'Invalid isDonated',
+  })
+  isDonated: boolean;
 }

@@ -15,6 +15,7 @@ const initialMeetingUserState: MeetingUser = {
     meeting: '',
     isGenerated: false,
     isAuraActive: false,
+    doNotDisturb: false
 };
 
 export const $localUserStore = meetingUsersDomain.createStore<MeetingUser>(

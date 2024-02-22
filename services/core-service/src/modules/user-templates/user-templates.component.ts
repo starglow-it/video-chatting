@@ -68,11 +68,11 @@ export class UserTemplatesComponent {
       templateId: userTemplate.templateId,
       userTemplate: userTemplate._id,
       user: userTemplate.user,
-      meetingRole: MeetingRole.Participant as Exclude<MeetingRole, 'host'>,
+      meetingRole: MeetingRole.Participant as Exclude<MeetingRole, 'host' | 'recorder'>,
     };
 
     const meetingPaymentRoleData: {
-      [K in Exclude<MeetingRole, 'host'>]: Partial<TemplatePaymentDocument>;
+      [K in Exclude<MeetingRole, 'host' | 'recorder'>]: Partial<TemplatePaymentDocument>;
     } = {
       participant: { ...defaultPayment },
       audience: {

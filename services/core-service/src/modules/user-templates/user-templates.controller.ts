@@ -1213,4 +1213,44 @@ export class UserTemplatesController {
       }
     });
   }
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetTemplatePaymentForStatistics,
+  })
+  async getTemplatePaymentForStatistics(
+    @Payload() { userTemplateId, userId }: { userTemplateId: string, userId: string },
+  ): Promise<any> {
+    return withTransaction(this.connection, async (session) => {
+
+      try {
+        const template = await this.userTemplatesComponent.findById(
+          userTemplateId,
+          session,
+        );
+
+        throwRpcError(
+          template.user.toString() !== userId,
+          TemplateNativeErrorEnum.NOT_TEMPLATE_OWNER,
+        );
+
+        const query: FilterQuery<TemplatePaymentDocument> = {
+          userTemplate: template._id,
+          user: userId,
+        };
+
+        const templatePayments = await this.templatePaymentsService.find({
+          query,
+          session,
+        });
+
+        return {
+          templatePayments
+        };
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
+  }
 }

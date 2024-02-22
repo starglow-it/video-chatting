@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react';
-import { useStore } from 'effector-react';
+import { memo, useEffect, useState } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -14,8 +13,11 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles
-import { AttendeesNumbers } from 'shared-types';
 import styles from './ReactionsAnalytics.module.scss';
+
+//const
+import { AVAILABLE_REACTIONS } from '../../../const/meeting';
+import { ReactionStatistics } from 'shared-types';
 
 const BorderLinearProgress = styled(LinearProgress, {
     shouldForwardProp: (prop) => prop !== 'bgColor',
@@ -37,8 +39,53 @@ const ReactionsAnalytics = memo(
         className,
         statistic,
     }: PropsWithClassName<{
-        statistic: AttendeesNumbers;
+        statistic: ReactionStatistics;
     }>) => {
+        const [statisticsData, setStatisticsData] = useState<ReactionStatistics['reactions']>([]);
+
+        useEffect(() => {
+            setStatisticsData(statistic.reactions);
+        }, [statistic]);
+
+        const renderEmojiIcon = (emojiName: string) => {
+            const emoji: any = AVAILABLE_REACTIONS.find(reaction => reaction.text === emojiName);
+
+            return (
+                <div className={styles.emojiBox}>
+                    <img className={styles.emojiBtn} src={emoji.icon} data-key={emoji.text} height="30" />
+                </div>
+            );
+        };
+
+        const renderPopularReactions = () => {
+            const reactions = Array.isArray(statisticsData) ? statisticsData.sort((prev, next) => next.totalReactions - prev.totalReactions).slice(0, 6) : [];
+            return reactions.map(reaction => (
+                <CustomGrid item xs={6} container className={styles.reactionWrapper} key={reaction.reactionName}>
+                    <CustomGrid item xs={4}>
+                        {renderEmojiIcon(reaction.reactionName)}
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        xs={8}
+                        container
+                        direction="column"
+                    >
+                        <CustomTypography variant="body3" className={styles.popularReactionsText}>
+                            <Translation
+                                nameSpace="common"
+                                translation="statistics.users.reactionAnalytics.participants"
+                            /> - {reaction.participantsNum}
+                        </CustomTypography>
+                        <CustomTypography variant="body3" className={styles.popularReactionsText}>
+                            <Translation
+                                nameSpace="common"
+                                translation="statistics.users.reactionAnalytics.audience"
+                            /> - {reaction.audienceNum}
+                        </CustomTypography>
+                    </CustomGrid>
+                </CustomGrid>
+            ));
+        };
 
         return (
             <CustomPaper className={className}>
@@ -61,7 +108,7 @@ const ReactionsAnalytics = memo(
                             />
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            {statistic.totalNumber}
+                            {statistic.total}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -70,9 +117,13 @@ const ReactionsAnalytics = memo(
                         alignItems="center"
                         justifyContent="space-between"
                     >
-                        <BorderLinearProgress variant="determinate" value={(statistic.participantsAvgMin / 60) * 100} bgColor="#9243B7" />
+                        <BorderLinearProgress
+                            variant="determinate"
+                            value={(statistic.participants / (statistic.participants + statistic.audiences)) * 100}
+                            bgColor="#9243B7"
+                        />
                         <CustomTypography variant="body3">
-                            {statistic.participantsAvgMin}
+                            {statistic.participants}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -81,9 +132,13 @@ const ReactionsAnalytics = memo(
                         alignItems="center"
                         justifyContent="space-between"
                     >
-                        <BorderLinearProgress variant="determinate" value={(statistic.audienceAvgMin / 60) * 100} bgColor="#27C54A" />
+                        <BorderLinearProgress
+                            variant="determinate"
+                            value={(statistic.audiences / (statistic.participants + statistic.audiences)) * 100}
+                            bgColor="#27C54A"
+                        />
                         <CustomTypography variant="body3">
-                            {statistic.audienceAvgMin}
+                            {statistic.audiences}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -105,162 +160,7 @@ const ReactionsAnalytics = memo(
                         item
                         container
                     >
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                    💖
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                🙏
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                🤯
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                😍
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                🔥
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
-                        <CustomGrid item xs={6} container className={styles.reactionWrapper}>
-                            <CustomGrid item xs={4}>
-                                <CustomTypography variant="h2" fontSize='30px'>
-                                👏
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid
-                                item
-                                xs={8}
-                                container
-                                direction="column"
-                            >
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.participants"
-                                    /> - {statistic.participants}
-                                </CustomTypography>
-                                <CustomTypography variant="body3">
-                                    <Translation
-                                        nameSpace="common"
-                                        translation="statistics.users.reactionAnalytics.audience"
-                                    /> - {statistic.audience}
-                                </CustomTypography>
-                            </CustomGrid>
-                        </CustomGrid>
+                        {renderPopularReactions()}
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

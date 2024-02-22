@@ -276,8 +276,8 @@ export class MeetingQuestionAnswersGateway extends BaseGateway {
     );
   }
 
-  @WsEvent(MeetingSubscribeEvents.OnUnReactionMessage)
-  async unreactQuestion(
+  @WsEvent(MeetingSubscribeEvents.OnUnReactionQuestion)
+  async unreactQuestionMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: UnReactMeetingQuestionRequestDto,
   ) {
@@ -328,7 +328,7 @@ export class MeetingQuestionAnswersGateway extends BaseGateway {
           `meeting:${meeting._id.toString()}`,
           MeetingEmitEvents.ReceiveQuestionUnReaction,
           {
-            message: plainMessage,
+            question: plainMessage,
           },
         );
 

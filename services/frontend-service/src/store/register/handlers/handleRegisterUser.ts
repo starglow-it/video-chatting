@@ -5,7 +5,7 @@ import { registerUserUrl } from '../../../utils/urls';
 import frontendConfig from '../../../const/config';
 
 export const handleRegisterUser = async (params: RegisterUserParams) => {
-    const userData = await sendRequest<{ country_name: string }, ErrorState>({
+    const userData = await sendRequest<{ country_name: string, state_prov: string }, ErrorState>({
         url: `https://api.ipgeolocation.io/ipgeo?apiKey=${frontendConfig.geolocationApiKey}`,
         method: HttpMethods.Get,
     });
@@ -15,6 +15,7 @@ export const handleRegisterUser = async (params: RegisterUserParams) => {
         data: {
             ...params,
             country: userData?.result?.country_name,
+            state: userData?.result?.state_prov
         },
     });
 

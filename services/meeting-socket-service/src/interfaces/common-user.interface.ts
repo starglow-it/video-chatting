@@ -23,4 +23,6 @@ export interface ICommonMeetingUserDTO {
   meetingRole: MeetingRole;
   userPosition: IUserPosition;
   userSize: number;
+  doNotDisturb: boolean;
+  isDonated: boolean;
 }

@@ -18,7 +18,7 @@ import {
     uploadToS3Event,
 } from './model';
 import { ServerTypes, TrackKind } from '../../../const/webrtc';
-import { $activeStreamStore, startRecordStreamFx, stopRecordStreamFx, toggleDevicesEvent, uploadToS3Fx } from './localMedia/model';
+import { $activeStreamStore, $recordingStream, startRecordStreamFx, stopRecordStreamFx, toggleDevicesEvent, uploadToS3Fx } from './localMedia/model';
 import {
     changeSFUActiveStreamEvent,
     disconnectFromSFUEvent,
@@ -167,11 +167,13 @@ sample({
 
 sample({
     clock: startRecordMeeting,
+    fn: (_, data) => data,
     target: startRecordStreamFx,
 });
 
 sample({
     clock: stopRecordMeeting,
+    fn: (_, data) => data,
     target: stopRecordStreamFx,
 });
 

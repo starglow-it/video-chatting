@@ -17,8 +17,8 @@ import {
 export class MeetingQuestionAnswersService {
   constructor(
     @InjectModel(MeetingQuestionAnswer.name)
-    private meetingQuestionAnswer: Model<MeetingQuestionAnswerDocument>,
-  ) {}
+    private readonly meetingQuestionAnswer: Model<MeetingQuestionAnswerDocument>,
+  ) { }
 
   async create({ data, session = null }: InsertModelSingleQuery<MeetingQuestionAnswer>) {
     const [meetingQuestionAnswer] = await this.meetingQuestionAnswer.create([data], {

@@ -36,5 +36,6 @@
 
   .businessInfo {
     grid-area: businessInfo;
+    flex-wrap: nowrap;
   }
 }

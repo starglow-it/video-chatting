@@ -59,7 +59,7 @@ export class TemplatePayment {
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  meetingRole: Exclude<MeetingRole, 'host'>;
+  meetingRole: Exclude<MeetingRole, 'host' | 'recorder'>;
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -6,11 +6,9 @@ import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-
 import { Translation } from '@library/common/Translation/Translation';
 
 // styles
-import { linksStatistics } from 'shared-types';
 import styles from './MonetizationAnalytics.module.scss';
 
 const MonetizationAnalytics = memo(
@@ -18,7 +16,13 @@ const MonetizationAnalytics = memo(
         className,
         statistic,
     }: PropsWithClassName<{
-        statistic: linksStatistics;
+        statistic: {
+            participantEntryFee: number,
+            audienceEntryFee: number,
+            participantFees: number,
+            audienceFees: number,
+            donations: number
+        };
     }>) => {
 
         return (
@@ -33,7 +37,7 @@ const MonetizationAnalytics = memo(
                         container
                         direction="row"
                         alignItems="flex-start"
-                        justifyContent="flex-start"
+                        justifyContent="space-between"
                         className={styles.qaTitleWrapper}
                     >
                         <CustomTypography variant="h2">
@@ -41,6 +45,9 @@ const MonetizationAnalytics = memo(
                                 nameSpace="common"
                                 translation="statistics.users.monetizationAnalytics.title"
                             />
+                        </CustomTypography>
+                        <CustomTypography variant="h2">
+                            ${statistic.data.audienceFees + statistic.data.participantFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -52,11 +59,27 @@ const MonetizationAnalytics = memo(
                         <CustomTypography variant="body1">
                             <Translation
                                 nameSpace="common"
-                                translation="statistics.users.monetizationAnalytics.entryFees"
-                            /> - ${statistic.data.entryFee} USD/person
+                                translation="statistics.users.monetizationAnalytics.attendeeEntryFee"
+                            /> - ${statistic.data.audienceEntryFee} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.total}
+                            ${statistic.data.audienceFees}
+                        </CustomTypography>
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        container
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <CustomTypography variant="body1">
+                            <Translation
+                                nameSpace="common"
+                                translation="statistics.users.monetizationAnalytics.participantEntryFee"
+                            /> - ${statistic.data.participantEntryFee} USD/person
+                        </CustomTypography>
+                        <CustomTypography variant="body1">
+                            ${statistic.data.participantFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid

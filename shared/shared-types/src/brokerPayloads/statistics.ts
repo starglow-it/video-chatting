@@ -4,6 +4,14 @@ type IncreaseRoomTransactionStatisticPayload = {
   templateId: IUserTemplate['id'];
 };
 
+type GetRoomsPayload = {
+  author: string;
+};
+
+type GetMeetingAttendeesStatisticsPayload = {
+  meetingId: string;
+};
+
 type GetRoomRatingStatisticPayload = {
   ratingKey: string;
   roomKey: string;
@@ -43,6 +51,8 @@ type UpdateMonetizationStatisticPayload = {
 };
 
 export type {
+  GetRoomsPayload,
+  GetMeetingAttendeesStatisticsPayload,
   IncreaseRoomTransactionStatisticPayload,
   GetRoomRatingStatisticPayload,
   UpdateRoomRatingStatisticPayload,

@@ -1,5 +1,5 @@
 import { useStore } from 'effector-react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { Translation } from '@library/common/Translation/Translation';
@@ -50,6 +50,12 @@ export const MeetingMonetizationButton = () => {
         }
     }, [isOwner]);
 
+    useEffect(() => {
+        createPaymentIntentWithData({
+            paymentType: PaymentType.Meeting,
+        });
+    }, [])
+
     return (
         <>
             <ConditionalRender condition={isOwner}>
@@ -65,7 +71,7 @@ export const MeetingMonetizationButton = () => {
                     <MeetingMonetization onUpdate={handleCloseForm} />
                 </ChargeButtonBase>
             </ConditionalRender>
-            <ConditionalRender condition={enabledPaymentMeetingParticipant && true}>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
                 <ChargeButtonBase
                     tooltipButton={
                         <Translation

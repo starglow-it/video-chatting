@@ -53,6 +53,7 @@ export enum MeetingRole {
   Host = 'host',
   Participant = 'participant',
   Audience = 'audience',
+  Recorder = 'recorder'
 }
 
 export enum MeetingAccessStatusEnum {

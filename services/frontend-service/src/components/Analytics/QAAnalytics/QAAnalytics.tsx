@@ -1,5 +1,4 @@
 import { memo, useMemo } from 'react';
-import { useStore } from 'effector-react';
 
 // shared
 import { PropsWithClassName } from 'shared-frontend/types';
@@ -21,7 +20,7 @@ const QAAnalytics = memo(
         statistic: qaStatistics;
     }>) => {
 
-        const renderedQuestions = useMemo(() => {
+        const renderedQuestions = () => {
             return statistic.data.questions.map((q, index) => {
                 return (
                     <CustomGrid
@@ -44,7 +43,7 @@ const QAAnalytics = memo(
                     </CustomGrid>
                 );
             });
-        }, []);
+        };
 
         return (
             <CustomPaper className={className}>
@@ -63,8 +62,7 @@ const QAAnalytics = memo(
                     >
                         <CustomGrid
                             item
-                            xs={7}
-                            container
+                            className={styles.qaTitle}
                         >
                             <CustomTypography variant="h2">
                                 <Translation
@@ -75,10 +73,11 @@ const QAAnalytics = memo(
                         </CustomGrid>
                         <CustomGrid
                             item
-                            xs={5}
                             container
                             alignItems="center"
                             justifyContent="space-between"
+                            gap={0.1}
+                            className={styles.qaStatistics}
                         >
                             <CustomGrid
                                 item
@@ -120,7 +119,7 @@ const QAAnalytics = memo(
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
-                    {renderedQuestions}
+                    {renderedQuestions()}
                 </CustomGrid>
             </CustomPaper>
         );

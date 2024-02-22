@@ -215,9 +215,12 @@ services:
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile.dev
+    ports:
+      - "9091:9091"
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
+      
     volumes:
       - ../../services/media-server-service/src:/app/services/media-server-service/src
       - /app/services/media-server-service/dist

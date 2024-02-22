@@ -55,4 +55,18 @@ export class UsersComponent {
     throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
     return user;
   }
+
+  async findUsers({
+    query,
+    session,
+    populatePaths,
+  }: GetModelSingleQuery<MeetingUserDocument>) {
+    const user = await this.usersService.findUsers({
+      query,
+      session,
+      populatePaths,
+    });
+    throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
+    return user;
+  }
 }

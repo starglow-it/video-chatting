@@ -38,4 +38,6 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
+EXPOSE 9091
+
 CMD /wait && pnpm --filter media-server-service start

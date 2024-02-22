@@ -15,6 +15,7 @@ export const getStartedRoute = '/get-started';
 export const registerEndCallRoute = '/register-end-call';
 export const agreementsRoute = '/agreements';
 export const analyticsRoute = '/analytics';
+export const supportRoute = '/support';
 export const NotFoundRoute = '/404';
 
 export const clientRoutes = {

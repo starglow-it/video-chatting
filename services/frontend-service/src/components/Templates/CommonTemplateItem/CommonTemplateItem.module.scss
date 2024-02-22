@@ -13,8 +13,19 @@
 
   z-index: 10;
 
+  @media only screen and (max-width: 600px) {
+    width: 45%;
+    height: 115px;
+  }
+
   &.mobile {
     width: 45%;
+    height: 115px;
+  }
+
+  
+  @media only screen and (max-width: 280px) {
+    width: 95% !important;
     height: 115px;
   }
 
@@ -47,8 +58,4 @@
       }
     }
   }
-}
-
-.templateMainInfo {
-  padding: 12px;
 }

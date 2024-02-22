@@ -9,6 +9,7 @@ import {
 import { useCallback, useEffect, useRef } from 'react';
 import { MeetingReactionKind } from 'shared-types';
 import {
+    $isOwner,
     sendMeetingQuestionReactionEvent,
     sendMeetingQuestionUnReactionEvent,
 } from 'src/store/roomStores';
@@ -23,6 +24,8 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 export const MeetingQuestionAnswerList = () => {
     const { list } = useStore($meetingQuestionAnswer);
     const isThereNewQuestion = useStore($isThereNewQuestion);
+    const isOwner = useStore($isOwner);
+
 
     const refScroll = useRef<any>(null);
 
@@ -79,12 +82,22 @@ export const MeetingQuestionAnswerList = () => {
                             alt="media-item"
                         />
                     </CustomBox>
-                    <span className={styles.textEmpty}>
-                        please type a question and send.
-                    </span>
-                    <span className={styles.textEmpty}>
-                        only one question can be asked at a time.
-                    </span>
+                    <ConditionalRender condition={isOwner}>
+                        <span className={styles.textEmpty}>
+                            engage with your audience to get
+                        </span>
+                        <span className={styles.textEmpty}>
+                            those questions flowing.
+                        </span>
+                    </ConditionalRender>
+                    <ConditionalRender condition={!isOwner}>
+                        <span className={styles.textEmpty}>
+                            please type a question and send.
+                        </span>
+                        <span className={styles.textEmpty}>
+                            only one question can be asked at a time.
+                        </span>
+                    </ConditionalRender>
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender condition={!!list.length}>

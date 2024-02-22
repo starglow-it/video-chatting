@@ -30,6 +30,7 @@ import {
     joinWaitingRoomSocketEvent,
     leaveMeetingSocketEvent,
     startMeetingSocketEvent,
+    getMeetingUserStatisticsSocketEvent,
     updateMeetingSocketEvent,
     answerAccessMeetingRequestSocketEvent,
     cancelAccessMeetingRequestSocketEvent,
@@ -169,6 +170,17 @@ export const sendStartMeetingSocketEvent = attach<
     mapParams: (params, { meeting, user }) => ({
         meetingId: meeting?.id,
         user,
+    }),
+});
+
+export const sendGetMeetingUsersStatisticsSocketEvent = attach<
+    void,
+    typeof getMeetingUserStatisticsSocketEvent
+>({
+    effect: getMeetingUserStatisticsSocketEvent,
+    mapParams: (params) => ({
+        meetingId: !!params.meetingId || '' ,
+        userId: params.userId,
     }),
 });
 
@@ -432,6 +444,26 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             ),
         );
     }
+
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingReactions,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingReactions,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnRemoveMeetingReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnRemoveMeetingReaction,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnSendMeetingReaction,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnSendMeetingReaction,
+        ),
+    );
+
 
     socketInstance?.on(
         MeetingSubscribeEvents.OnMeetingError,

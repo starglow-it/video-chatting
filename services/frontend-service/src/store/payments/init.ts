@@ -18,7 +18,7 @@ deleteStripeAccountFx.use(handleDeleteStripeAccount);
 
 connectStripeAccountFx.doneData.watch(result => {
     if (result?.url) {
-        Router.push(result.url);
+        window.open(result.url, '_blank');
     }
 });
 

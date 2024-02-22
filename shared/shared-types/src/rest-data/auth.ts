@@ -10,6 +10,7 @@ export interface IUserCredentials {
   userId?: ICommonUser['id'];
   password: ICommonUser['password'];
   country?: ICommonUser['country'];
+  state?: ICommonUser['state'];
   registerType?: RegisterType;
   loginType?: ICommonUser['loginType'];
 }

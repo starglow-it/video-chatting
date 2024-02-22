@@ -18,4 +18,10 @@
   &.paid {
       color: $primary-blue;
   }
+  
+  @media only screen and (max-width: 337px) {
+    .typeText{
+      display: none;
+    }
+  }
 }
