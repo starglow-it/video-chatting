@@ -1,5 +1,5 @@
 import { useStore } from 'effector-react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { Translation } from '@library/common/Translation/Translation';
@@ -49,6 +49,12 @@ export const MeetingMonetizationButton = () => {
             cancelPaymentIntentWithData();
         }
     }, [isOwner]);
+
+    useEffect(() => {
+        createPaymentIntentWithData({
+            paymentType: PaymentType.Meeting,
+        });
+    }, [])
 
     return (
         <>
