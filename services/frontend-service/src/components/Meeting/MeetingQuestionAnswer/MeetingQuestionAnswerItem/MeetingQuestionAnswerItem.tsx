@@ -86,7 +86,8 @@ export const MeetingQuestionAnswerItem = memo(
                             <CustomGrid className={styles.right}>
                                 <ConditionalRender condition={!isLocal}>
                                     <span className={styles.userName}>
-                                        {sender.username} - {sender.meetingRole}
+                                        {sender.username} - 
+                                        <span className={styles.userRole}>{sender.meetingRole}</span>
                                     </span>
                                 </ConditionalRender>
                                 <div
