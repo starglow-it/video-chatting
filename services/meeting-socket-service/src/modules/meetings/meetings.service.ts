@@ -46,12 +46,13 @@ export class MeetingsService {
     query,
     populatePaths,
     session,
+    sort,
   }: GetModelMultipleQuery<MeetingDocument>): Promise<MeetingDocument[]> {
     return this.meeting
       .find(
         query,
         {},
-        { session: session?.session, populate: populatePaths },
+        { session: session?.session, populate: populatePaths, sort: sort },
       )
       .exec();
   }

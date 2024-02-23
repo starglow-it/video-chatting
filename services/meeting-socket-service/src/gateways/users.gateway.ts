@@ -215,10 +215,12 @@ export class UsersGateway extends BaseGateway {
             ownerProfileId: profileId
           },
           populatePaths: 'templateId',
-          session
+          session,
+          sort: { startAt: 'desc' },
         });
 
         throwWsError(!meetings, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+        let validMeetings = [];
         if (meetings.length > 0) {
           for (const meeting of meetings) {
             let meetingInstance = {
@@ -226,211 +228,203 @@ export class UsersGateway extends BaseGateway {
               name: 'Anonymous',
               startedAt: meeting.startAt ? this.dateFormat(meeting.startAt) : ""
             };
+            try {
 
-            const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
+              const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
 
-            if (template) {
-              meetingInstance.name = template.name
-            }
-
-            meetingNames.push(meetingInstance);
-          }
-
-          const meeting = await this.meetingsService.findById({
-            id: message.meetingId || meetings[0]['_id'],
-            session,
-          });
-
-          throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
-
-          const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId })
-
-          const { users } = await meeting.populate('users');
-
-          const participants = users.filter(user => user.meetingRole === 'participant');
-          const audiences = users.filter(user => user.meetingRole === 'audience');
-
-          const totalParticipants = participants.length;
-          const totalAudiences = audiences.length;
-
-          const participantJoinTimes = participants.map(user => user.joinedAt);
-          const audienceJoinTimes = audiences.map(user => user.joinedAt);
-
-          const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-          const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
-
-          const participantLeaveTimes = participants.map(user => user.leaveAt);
-          const audienceLeaveTimes = audiences.map(user => user.leaveAt);
-          const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
-          const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
-
-          const participantAverageMeetingTime = totalParticipants !== 0 ? (participantAverageLeaveTime - participantAverageJoinTime) / (1000 * 60) : 0;
-          const audienceAverageMeetingTime = totalAudiences !== 0 ? (audienceAverageLeaveTime - audienceAverageJoinTime) / (1000 * 60) : 0;
-
-          const attendeesData = {
-            totalParticipants,
-            totalAudiences,
-            participantAverageMeetingTime: participantAverageMeetingTime > 1
-              ? Math.floor(participantAverageMeetingTime)
-              : participantAverageMeetingTime <= 0
-                ? 0
-                : 1,
-            audienceAverageMeetingTime: audienceAverageMeetingTime > 1
-              ? Math.floor(audienceAverageMeetingTime)
-              : audienceAverageMeetingTime <= 0
-                ? 0
-                : 1,
-          };
-
-          if (meeting.links && meeting.links.length > 0) {
-
-            meetingLinks = meeting.links.map(link => {
-              return {
-                url: link.url,
-                clicks: link.users.length,
-                clickThroughRate: link.users.length > 0 ? ((link.users.length / (totalParticipants + totalAudiences)) * 100).toFixed(1) : 0
-              };
-            });
-          }
-
-          //get Locations
-          const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
-
-          for (const user of users) {
-            if (user.profileId != profileId && user.meetingRole !== MeetingRole.Recorder) {
-              const profileId = user.profileId;
-              const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
-
-              let country = "Other";
-              let state: string | undefined;
-
-              if (profile && profile.country) {
-                country = profile.country;
-                if (["Canada", "United States"].includes(country) && profile.state) {
-                  state = profile.state;
-                }
+              if (template) {
+                meetingInstance.name = template.name
+                validMeetings.push(meeting);
+                meetingNames.push(meetingInstance);
               }
 
-              const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
-              countriesMap.set(country, countryInfo);
-              countryInfo.count++;
-
-              if (state) {
-                const stateCount = countryInfo.states?.get(state) || 0;
-                countryInfo.states?.set(state, stateCount + 1);
-              }
+            } catch (error) {
+              console.error("Error finding meeting template:", error);
             }
           }
-
-          const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
-            country,
-            count: countryInfo.count,
-            ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
-          }));
-
-          const reactionData = await this.meetingReactionsService.getReactionStats(meeting._id);
-
-          const reactions = {
-            total: 0,
-            participants: 0,
-            audiences: 0,
-            reactions: []
-          };
-
-          if (reactionData) {
-            reactions.total = reactionData.reduce((total, reaction) => total + reaction.totalReactions, 0);
-            reactions.participants = reactionData.reduce((total, reaction) => total + reaction.participantsNum, 0);
-            reactions.audiences = reactionData.reduce((total, reaction) => total + reaction.audienceNum, 0);
-            reactions.reactions = reactionData;
-          }
-
-          const qaData = await this.meetingQuestionAnswersService.findMany({
-            query: {
-              meeting: meeting._id
-            },
-            populatePaths: 'sender',
-            session
-          });
-
-          let qaStatistics = {};
-
-          if (qaData) {
-            qaStatistics = qaData.map(data => {
-              return {
-                content: data.body,
-                who: data.sender.username,
-                answered: data.reactions.size !== 0
-              };
+          if (validMeetings.length > 0) {
+            const meeting = await this.meetingsService.findById({
+              id: message.meetingId || validMeetings[0]['_id'],
+              session,
             });
-          }
+            throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-          const { templatePayments } = await this.coreService.findTemplatePayment({
-            userTemplateId: meeting.templateId,
-            userId: profileId
-          });
+            const { users } = await meeting.populate('users');
+            const participants = users.filter(user => user.meetingRole === 'participant');
+            const audiences = users.filter(user => user.meetingRole === 'audience');
 
-          let monetization = {
-            participantEntryFee: 0,
-            audienceEntryFee: 0,
-            participantFees: 0,
-            audienceFees: 0,
-            donations: 0
-          };
+            const totalParticipants = participants.length;
+            const totalAudiences = audiences.length;
 
-          const donatedParticipants = participants.filter(participant => participant.isDonated).length;
-          const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
+            const participantJoinTimes = participants.map(user => user.joinedAt);
+            const audienceJoinTimes = audiences.map(user => user.joinedAt);
 
-          if (templatePayments.length > 0) {
-            templatePayments.forEach(templatePayment => {
-              if (templatePayment.type === 'paywall') {
-                if (templatePayment.meetingRole === MeetingRole.Participant) {
-                  monetization.participantEntryFee = templatePayment.price;
-                  monetization.participantFees = templatePayment.price * totalParticipants;
+            const participantAverageJoinTime = participantJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+            const audienceAverageJoinTime = audienceJoinTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
+
+            const participantLeaveTimes = participants.map(user => user.leaveAt);
+            const audienceLeaveTimes = audiences.map(user => user.leaveAt);
+            const participantAverageLeaveTime = participantLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalParticipants;
+            const audienceAverageLeaveTime = audienceLeaveTimes.reduce((acc, curr) => acc + curr, 0) / totalAudiences;
+
+            const participantAverageMeetingTime = totalParticipants !== 0 ? (participantAverageLeaveTime - participantAverageJoinTime) / (1000 * 60) : 0;
+            const audienceAverageMeetingTime = totalAudiences !== 0 ? (audienceAverageLeaveTime - audienceAverageJoinTime) / (1000 * 60) : 0;
+            const attendeesData = {
+              totalParticipants,
+              totalAudiences,
+              participantAverageMeetingTime: participantAverageMeetingTime > 1
+                ? Math.floor(participantAverageMeetingTime)
+                : participantAverageMeetingTime <= 0
+                  ? 0
+                  : 1,
+              audienceAverageMeetingTime: audienceAverageMeetingTime > 1
+                ? Math.floor(audienceAverageMeetingTime)
+                : audienceAverageMeetingTime <= 0
+                  ? 0
+                  : 1,
+            };
+
+            if (meeting.links && meeting.links.length > 0) {
+
+              meetingLinks = meeting.links.map(link => {
+                return {
+                  url: link.url,
+                  clicks: link.users.length,
+                  clickThroughRate: link.users.length > 0 ? ((link.users.length / (totalParticipants + totalAudiences)) * 100).toFixed(1) : 0
+                };
+              });
+            }
+            //get Locations
+            const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
+
+            for (const user of users) {
+              if (user.profileId != profileId && user.meetingRole !== MeetingRole.Recorder) {
+                const profileId = user.profileId;
+                const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
+
+                let country = "Other";
+                let state: string | undefined;
+
+                if (profile && profile.country) {
+                  country = profile.country;
+                  if (["Canada", "United States"].includes(country) && profile.state) {
+                    state = profile.state;
+                  }
                 }
 
-                if (templatePayment.meetingRole === MeetingRole.Audience) {
-                  monetization.audienceEntryFee = templatePayment.price;
-                  monetization.audienceFees = templatePayment.price * totalAudiences;
+                const countryInfo = countriesMap.get(country) || { count: 0, states: new Map<string, number>() };
+                countriesMap.set(country, countryInfo);
+                countryInfo.count++;
+
+                if (state) {
+                  const stateCount = countryInfo.states?.get(state) || 0;
+                  countryInfo.states?.set(state, stateCount + 1);
                 }
               }
+            }
+            const countriesArray = Array.from(countriesMap).map(([country, countryInfo]) => ({
+              country,
+              count: countryInfo.count,
+              ...(countryInfo.states && { states: Array.from(countryInfo.states).map(([state, count]) => ({ state, count })) })
+            }));
 
-              if (templatePayment.type === 'meeting') {
-                if (templatePayment.meetingRole === MeetingRole.Participant) {
-                  monetization.donations += templatePayment.price * donatedParticipants;
+            const reactionData = await this.meetingReactionsService.getReactionStats(meeting._id);
+
+            const reactions = {
+              total: 0,
+              participants: 0,
+              audiences: 0,
+              reactions: []
+            };
+            if (reactionData) {
+              reactions.total = reactionData.reduce((total, reaction) => total + reaction.totalReactions, 0);
+              reactions.participants = reactionData.reduce((total, reaction) => total + reaction.participantsNum, 0);
+              reactions.audiences = reactionData.reduce((total, reaction) => total + reaction.audienceNum, 0);
+              reactions.reactions = reactionData;
+            }
+
+            const qaData = await this.meetingQuestionAnswersService.findMany({
+              query: {
+                meeting: meeting._id
+              },
+              populatePaths: 'sender',
+              session
+            });
+
+            let qaStatistics = {};
+            if (qaData) {
+              qaStatistics = qaData.map(data => {
+                return {
+                  content: data.body,
+                  who: data.sender.username,
+                  answered: data.reactions.size !== 0
+                };
+              });
+            }
+            const { templatePayments } = await this.coreService.findTemplatePayment({
+              userTemplateId: meeting.templateId,
+              userId: profileId
+            });
+
+            let monetization = {
+              participantEntryFee: 0,
+              audienceEntryFee: 0,
+              participantFees: 0,
+              audienceFees: 0,
+              donations: 0
+            };
+            const donatedParticipants = participants.filter(participant => participant.isDonated).length;
+            const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
+
+            if (templatePayments.length > 0) {
+              templatePayments.forEach(templatePayment => {
+                if (templatePayment.type === 'paywall') {
+                  if (templatePayment.meetingRole === MeetingRole.Participant) {
+                    monetization.participantEntryFee = templatePayment.price;
+                    monetization.participantFees = templatePayment.price * totalParticipants;
+                  }
+
+                  if (templatePayment.meetingRole === MeetingRole.Audience) {
+                    monetization.audienceEntryFee = templatePayment.price;
+                    monetization.audienceFees = templatePayment.price * totalAudiences;
+                  }
                 }
 
-                if (templatePayment.meetingRole === MeetingRole.Audience) {
-                  monetization.donations += templatePayment.price * donatedAudiences;
+                if (templatePayment.type === 'meeting') {
+                  if (templatePayment.meetingRole === MeetingRole.Participant) {
+                    monetization.donations += templatePayment.price * donatedParticipants;
+                  }
+
+                  if (templatePayment.meetingRole === MeetingRole.Audience) {
+                    monetization.donations += templatePayment.price * donatedAudiences;
+                  }
                 }
-              }
+              });
+            }
+            const result = {
+              meetingNames,
+              attendeesData,
+              countriesArray,
+              reactions,
+              qaStatistics,
+              meetingLinks,
+              monetization,
+            };
+
+            this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, result);
+            return wsResult({
+              attendeesData,
+              countriesArray,
+              reactions,
+              qaStatistics,
+              meetingNames,
+              meetingLinks,
+              monetization
             });
           }
-
-          const result = {
-            meetingNames,
-            attendeesData,
-            countriesArray,
-            reactions,
-            qaStatistics,
-            meetingLinks,
-            monetization,
-          };
-
-          this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, result);
-
-          return wsResult({
-            attendeesData,
-            countriesArray,
-            reactions,
-            qaStatistics,
-            meetingNames,
-            meetingLinks,
-            monetization
-          });
-        } else {
-
+        }
+        if (meetings.length == 0 || validMeetings.length == 0) {
           this.emitToSocketId(socket.id, UserEmitEvents.MeetingStatistics, null);
-
           return wsResult(null);
         }
       },
