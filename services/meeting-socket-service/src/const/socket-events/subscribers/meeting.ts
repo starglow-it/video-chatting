@@ -19,6 +19,7 @@ export enum MeetingSubscribeEvents {
   OnUpdateMeetingTemplate = 'template:update',
   OnReconnect = 'meeting:reconnect',
   OnJoinMeetingWithAudience = 'meeting:audience:join',
+  OnJoinMeetingWithRecorder = 'meeting:recorder:join',
   OnSendMessage = 'meeting:chat:send',
   OnReactionMessage = 'meeting:chat:reaction:send',
   OnUnReactionMessage = 'meeting:chat:unreaction:send',

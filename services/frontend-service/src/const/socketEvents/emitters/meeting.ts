@@ -17,6 +17,7 @@ export enum MeetingSocketEmitters {
     GetMeetingReaction = 'meeting:reaction:get',
     SendReconnectMeeting = 'meeting:reconnect',
     JoinWithAudience = 'meeting:audience:join',
+    JoinWithRecorder = 'meeting:recorder:join',
     SendMessage = 'meeting:chat:send',
     ReactionMessage = 'meeting:chat:reaction',
     UnReactionMessage = 'meeting:chat:unreaction',

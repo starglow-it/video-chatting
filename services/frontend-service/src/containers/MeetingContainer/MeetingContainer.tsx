@@ -76,7 +76,7 @@ import {
     updateLocalUserEvent,
     updateMeetingEvent,
     updateMeetingSocketEvent,
-    isRoomPaywalledFx
+    isRoomPaywalledFx,
 } from '../../store/roomStores';
 
 // types
@@ -149,22 +149,19 @@ const MeetingContainer = memo(() => {
     );
     const isMeetingConnected = useStore($meetingConnectedStore);
     const [isMeetingPreviewShow, setIsMeetingPreviewShow] = useState(false);
-
     const { isMobile } = useBrowserDetect();
-
     const roleUrl = router.query.role as string;
     const queryToken = router.query.token as string;
     const isMuteYb = router.query.videoMute as string;
-
+    const isRecorder = roleUrl === MeetingRole.Recorder;
     const isFirstime = useRef(true);
-
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
 
     useEffect(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
-        if (!!roleUrl && (roleUrl !== MeetingRole.Audience && roleUrl !== MeetingRole.Recorder)) {
+        if (!!roleUrl && (roleUrl !== MeetingRole.Audience && !isRecorder)) {
             router.push(NotFoundRoute);
         }
     }, [roleUrl]);
@@ -199,7 +196,7 @@ const MeetingContainer = memo(() => {
             });
 
             updateLocalUserEvent({
-                accessStatus: roleUrl === 'recorder' ? MeetingAccessStatusEnum.InMeeting : MeetingAccessStatusEnum.EnterName,
+                accessStatus: MeetingAccessStatusEnum.EnterName,
             });
         })();
 
@@ -257,7 +254,7 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                if (!isAudience && roleUrl !== 'recorder') {
+                if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
                 await sendJoinWaitingRoomSocketEvent();

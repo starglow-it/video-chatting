@@ -251,6 +251,7 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
             addNotificationEvent({
                 type: NotificationType.PaymentSuccess,
                 message: 'meeting.monetization.saved',
+                withSuccessIcon: true
             });
         }
     }, []);
