@@ -7,6 +7,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { RoundErrorIcon } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
@@ -19,6 +20,7 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import styles from './RecordVideoDownloadDialog.module.scss';
 import {
     $recordingStream,
+    stopRecordStreamFx
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
@@ -29,11 +31,16 @@ const RecordVideoDownloadDialog = memo(() => {
     const recordVideoDownloadDialog = useStore($appDialogsStore).recordVideoDownloadDialog;
     const [videoUrl, setVideoUrl] = useState<string>('');
     const recordStream = useStore($recordingStream);
+    const [recordingError, setRecordingError] = useState('');
 
     useEffect(() => {
         if (!!recordStream.url) {
             setVideoUrl(recordStream.url);
             return () => URL.revokeObjectURL(recordStream.url);
+        } else {
+            if (Boolean(recordStream.error)) {
+                setRecordingError(recordStream.error);
+            }
         }
     }, [recordStream]);
 
@@ -77,7 +84,7 @@ const RecordVideoDownloadDialog = memo(() => {
                 <CustomTypography variant="h3bold" textAlign="center" className={styles.title}>
                     <Translation nameSpace="meeting" translation="recordVideoDownloadTitle" />
                 </CustomTypography>
-                <ConditionalRender condition={!Boolean(videoUrl)}>
+                <ConditionalRender condition={!Boolean(videoUrl) && !Boolean(recordingError)}>
                     <CustomGrid
                         item
                         container
@@ -87,7 +94,20 @@ const RecordVideoDownloadDialog = memo(() => {
                         <CustomLoader />
                     </CustomGrid>
                 </ConditionalRender>
-                <ConditionalRender condition={Boolean(videoUrl)}>
+                <ConditionalRender condition={Boolean(recordingError)}>
+                    <CustomGrid
+                        item
+                        container
+                        alignItems="center"
+                        justifyContent="space-around"
+                    >
+                        <RoundErrorIcon width="16px" height="16px" />
+                        <CustomTypography className={styles.errorText}>
+                            {recordingError}
+                        </CustomTypography>
+                    </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={Boolean(videoUrl) && !Boolean(recordingError)}>
                     <CustomGrid
                         container
                         className={styles.wrapper}

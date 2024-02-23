@@ -75,7 +75,6 @@ const Component = () => {
         if (Object.keys(roomsStatistics).length != 0) {
             const roomNamesList = Array.isArray(roomsStatistics.meetingNames)
                 ? roomsStatistics.meetingNames
-                    .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
                     .map(meeting => ({
                         id: meeting.id,
                         name: `${meeting.name} - ${meeting.startedAt}`

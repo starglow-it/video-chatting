@@ -38,6 +38,7 @@ import {
     enterWaitingRoomSocketEvent,
     sendReconnectMeetingEvent,
     joinMeetingAudienceEvent,
+    joinMeetingRecorderEvent
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -107,10 +108,33 @@ export const joinAudienceMeetingSocketEvent = attach<
         meeting: $meetingStore,
         localUser: $localUserStore,
     }),
-    mapParams: (_, { meeting, localUser }) => ({
-        meetingId: meeting.id,
-        username: localUser.username,
+    mapParams: (_, { meeting, localUser }) => {
+        return {
+            meetingId: meeting.id,
+            username: localUser.username,
+        };
+    },
+});
+
+export const joinRecorderMeetingSocketEvent = attach<
+    void,
+    Store<{
+        meeting: Meeting;
+        localUser: MeetingUser;
+    }>,
+    typeof joinMeetingRecorderEvent
+>({
+    effect: joinMeetingRecorderEvent,
+    source: combine({
+        meeting: $meetingStore,
+        localUser: $localUserStore,
     }),
+    mapParams: (_, { meeting, localUser }) => {
+        return {
+            meetingId: meeting.id,
+            username: localUser.username,
+        };
+    },
 });
 
 export const sendJoinWaitingRoomSocketEvent = attach<
@@ -179,7 +203,7 @@ export const sendGetMeetingUsersStatisticsSocketEvent = attach<
 >({
     effect: getMeetingUserStatisticsSocketEvent,
     mapParams: (params) => ({
-        meetingId: !!params.meetingId || '' ,
+        meetingId: !!params.meetingId || '',
         userId: params.userId,
     }),
 });
@@ -333,12 +357,12 @@ startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
 
     isHasSettings
         ? updateLocalUserEvent({
-              isAuraActive: savedSettings.auraSetting,
-              accessStatus: MeetingAccessStatusEnum.InMeeting,
-          })
+            isAuraActive: savedSettings.auraSetting,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+        })
         : updateLocalUserEvent({
-              accessStatus: MeetingAccessStatusEnum.InMeeting,
-          });
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+        });
     handleUpdateMeetingEntities(data);
 });
 startMeetingSocketEvent.failData.watch(data => {
@@ -361,6 +385,10 @@ sendReconnectMeetingEvent.failData.watch((error: any) => {
 });
 joinMeetingAudienceEvent.doneData.watch(handleUpdateMeetingEntities);
 joinMeetingAudienceEvent.failData.watch((error: any) => {
+    console.log('audience join fail', error);
+});
+joinMeetingRecorderEvent.doneData.watch(handleUpdateMeetingEntities);
+joinMeetingRecorderEvent.failData.watch((error: any) => {
     console.log('audience join fail', error);
 });
 

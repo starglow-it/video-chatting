@@ -49,7 +49,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
             message: 'payments.paymentSuccess',
             withSuccessIcon: true,
         });
-        updateUserSocketEvent({ isDonated: true });
+        // updateUserSocketEvent({ isDonated: true });
     }, []);
 
     const handleSubmitError = useCallback(() => {

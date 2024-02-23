@@ -157,3 +157,27 @@
   z-index: 1000;
   height: auto;
 }
+
+.recordLoading {
+  color: white;
+  width: 15px;
+  height: 15px;
+}
+
+.recordingBtnAnimation {
+  opacity: 1;
+  transition: all 1s;
+  animation: circular-transition 3s infinite;
+}
+
+@keyframes circular-transition {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}

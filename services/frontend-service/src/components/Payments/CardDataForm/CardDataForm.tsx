@@ -49,33 +49,27 @@ const Component = ({
             if (stripe && elements) {
                 setIsLoading(true);
 
-                const { paymentIntent } = await stripe.retrievePaymentIntent(paymentIntentSecret);
-                let result;
-
-                if (paymentIntent.status === "succeeded") {
-                    console.log('Already succeeded')
-                } else {
-                    result = await stripe.confirmCardPayment(
-                        paymentIntentSecret,
-                        {
-                            payment_method: {
-                                card: elements.getElement(CardNumberElement) ?? {
-                                    token: '',
-                                },
+                const result = await stripe.confirmCardPayment(
+                    paymentIntentSecret,
+                    {
+                        payment_method: {
+                            card: elements.getElement(CardNumberElement) ?? {
+                                token: '',
                             },
                         },
-                    );
+                    },
+                );
 
-                    if (result?.error) {
-                        onError();
-                        setIsLoading(false);
-                    } else {
-                        onSubmit();
-                        setIsLoading(false);
-                        setMeetingPreviewShow();
-                    }
+                if (result?.error) {
+                    onError();
+                    setIsLoading(false);
+                } else {
+                    onSubmit();
+                    setIsLoading(false);
+                    setMeetingPreviewShow();
                 }
             }
+
         },
         [stripe, elements],
     );

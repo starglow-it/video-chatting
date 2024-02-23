@@ -1,6 +1,8 @@
 import { recordMeetingResponse } from 'src/types';
 import axios from 'axios';
 import { mediaServerUrl } from '../../../../../const/urls/common';
+import { addNotificationEvent } from '../../../../../store';
+import { NotificationType } from '../../../../../store/types';
 
 const startRecordingUrl: string = `${mediaServerUrl}/start-recording`;
 const stopRecordingUrl: string = `${mediaServerUrl}/stop-recording`;
@@ -16,6 +18,11 @@ export const handleStartRecordingStream = async (url: string): Promise<recordMee
         }
     } catch (e) {
         console.error(e);
+        addNotificationEvent({
+            type: NotificationType.PaymentFail,
+            message: 'recording.startRecordingFail',
+            withErrorIcon: true,
+        });
     }
     return null;
 };
@@ -31,6 +38,7 @@ export const handleStopRecordingStream = async (url: string): Promise<recordMeet
         }
     } catch (e) {
         console.error(e);
+        throw e;
     }
     return null;
 };

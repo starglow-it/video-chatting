@@ -1017,6 +1017,70 @@ export class MeetingsGateway
     );
   }
 
+  @WsEvent(MeetingSubscribeEvents.OnJoinMeetingWithRecorder)
+  async joinMeetingWithRecorder(
+    @MessageBody() msg: AudienceJoinMeetingDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: msg.meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const updateData = {
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
+          joinedAt: Date.now(),
+          username: msg.username,
+          meetingAvatarId: msg.meetingAvatarId === '' ? '' : undefined,
+        };
+
+        const mU = await this.usersComponent.findOneAndUpdate({
+          query: {
+            socketId: socket.id,
+            meetingRole: MeetingRole.Recorder,
+          },
+          data: updateData,
+          session,
+        });
+
+        const host = await this.usersComponent.findOne({
+          query: {
+            _id: meeting.hostUserId,
+          },
+          session,
+        });
+
+        await meeting.populate(['users']);
+        socket.join(`recorder:${msg.meetingId}`);
+        socket.join(`meeting:${msg.meetingId}`);
+
+        const plainMeeting = meetingSerialization(meeting);
+        const plainUser = userSerialization(mU);
+        const plainUsers = userSerialization(meeting.users);
+        this.emitToSocketId(host.socketId, MeetingEmitEvents.UpdateMeeting, {
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
+
+        return wsResult({
+          meeting: plainMeeting,
+          user: plainUser,
+          users: plainUsers,
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
   @Roles([MeetingRole.Host])
   @WsEvent(MeetingSubscribeEvents.OnAnswerAccessRequest)
   async sendAccessAnswer(

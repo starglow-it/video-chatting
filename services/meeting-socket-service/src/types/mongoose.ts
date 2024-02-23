@@ -21,6 +21,7 @@ export type GetModelMultipleQuery<Entity> = {
   session?: ITransactionSession;
   populatePaths?: QueryOptions['populate'];
   options?: QueryParams;
+  sort?: QueryOptions['sort']; // Add the sort type here
 };
 
 export type GetModelSingleQuery<Entity> = Omit<
