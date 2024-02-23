@@ -98,9 +98,7 @@ export const MeetingQuestionAnswerItem = memo(
                                         __html: body,
                                     }}
                                 />
-                                <ConditionalRender condition={isLocal}>
                                     {renderEmotions()}
-                                </ConditionalRender>
                             </CustomGrid>
                         </CustomGrid>
                     );
@@ -118,9 +116,7 @@ export const MeetingQuestionAnswerItem = memo(
                                         __html: body,
                                     }}
                                 />
-                                <ConditionalRender condition={isLocal}>
                                     {renderEmotions()}
-                                </ConditionalRender>
                             </CustomGrid>
                         </CustomGrid>
                     );
