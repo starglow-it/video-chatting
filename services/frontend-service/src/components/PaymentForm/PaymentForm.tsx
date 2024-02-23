@@ -18,7 +18,6 @@ import { addNotificationEvent } from '../../store';
 import {
     $paymentIntent,
     createPaymentIntentWithData,
-    updateUserSocketEvent
 } from '../../store/roomStores';
 
 // styles
@@ -49,7 +48,6 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
             message: 'payments.paymentSuccess',
             withSuccessIcon: true,
         });
-        // updateUserSocketEvent({ isDonated: true });
     }, []);
 
     const handleSubmitError = useCallback(() => {
@@ -60,7 +58,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
         });
     }, []);
 
-    const colorMain = `colors.${payment.type === PaymentType.Paywall ? 'black' : 'white'}.primary`;
+    const colorMain = payment.type === PaymentType.Paywall ? 'black' : 'white';
 
     return (
         <CustomGrid container direction="column">
@@ -81,29 +79,13 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                 &nbsp;
                 <CustomTypography
                     sx={{
-                        color: `rgba(${colorMain}, 0.6)`,
+                        color: `${colorMain}`,
                     }}
                 >
                     {currencySigns[payment.currency]}
                     {payment.price}
                 </CustomTypography>
                 &nbsp;
-                <CustomTypography
-                    sx={{
-                        color: `rgba(${colorMain}, 0.6)`,
-                    }}
-                >
-                    &#8226;
-                </CustomTypography>
-                &nbsp;
-                <CustomTypography
-                    variant={isPreEvent ? 'body3' : 'h4'}
-                    nameSpace="meeting"
-                    translation="payments.perSession"
-                    sx={{
-                        color: `rgba(${colorMain}, 0.6)`,
-                    }}
-                />
             </CustomGrid>
             <CustomDivider light flexItem />
             {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
