@@ -106,6 +106,10 @@ export const joinMeetingAudienceEvent = createMeetingSocketEvent<
     JoinAudienceMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.JoinWithAudience);
+export const joinMeetingRecorderEvent = createMeetingSocketEvent<
+    JoinAudienceMeetingPayload,
+    EnterMeetingRequestResponse
+>(MeetingSocketEmitters.JoinWithRecorder);
 
 export const sendMeetingChatEvent = createMeetingSocketEvent<
     SendMessageChatPayload,

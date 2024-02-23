@@ -44,6 +44,9 @@
     "paymentFail": "An error occurred during the payment. Please try again",
     "connectAccountFail": "An error occurred during the connection. Please try again"
   },
+  "recording": {
+    "startRecordingFail": "An error occurred while trying to start the recording. Please try again."
+  },
   "subscriptions": {
     "noTimeLeft": "You've run out of meeting minutes",
     "subscriptionHouseSuccess": "Thank you for subscribing to Ruume House! You can manage subscription in your Profile",

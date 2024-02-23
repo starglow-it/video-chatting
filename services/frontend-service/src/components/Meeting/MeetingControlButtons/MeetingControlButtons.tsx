@@ -1,4 +1,4 @@
-import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -26,6 +26,7 @@ import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -68,6 +69,8 @@ import {
     updateUserSocketEvent,
     startScreenSharing,
     stopScreenSharing,
+    startRecordStreamFx,
+    stopRecordStreamFx,
     $isScreenSharingStore
 } from '../../../store/roomStores';
 
@@ -77,7 +80,6 @@ import { clientRoutes } from '../../../const/client-routes';
 import config from '../../../const/config';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { AppDialogsEnum, NotificationType } from 'src/store/types';
-import { PauseIcon } from 'shared-frontend/icons/OtherIcons/PauseIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 
 const Component = () => {
@@ -93,6 +95,8 @@ const Component = () => {
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const recordingStartPending = useStore(startRecordStreamFx.pending);
+    const recordingStopPending = useStore(stopRecordStreamFx.pending);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -135,7 +139,6 @@ const Component = () => {
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
     }, [isMeetingHost, isThereNewRequests]);
-
 
     useEffect(() => {
         updateUserSocketEvent({
@@ -546,12 +549,14 @@ const Component = () => {
                             onAction={handleRecordMeeting}
                             className={clsx(styles.deviceButton)}
                             Icon={
-                                !isRecording ?
-                                    <FiberManualRecordIcon
-                                    /> : <PauseIcon
-                                        width="22px"
-                                        height="22px"
+                                (recordingStartPending || recordingStopPending)
+                                    ? <CircularProgress
+                                        size={15}
+                                        sx={{ color: 'white' }}
                                     />
+                                    : !isRecording
+                                        ? <FiberManualRecordIcon />
+                                        : <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
                             }
                         />
                     </CustomPaper>

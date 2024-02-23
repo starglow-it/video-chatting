@@ -6,6 +6,7 @@ export type recordMeetingResponse = {
     message: string,
     egressId?: string | undefined,
     url?: string | undefined,
+    error?: string | undefined
 } | null;
 
 export type ParsedTimeStamp = {

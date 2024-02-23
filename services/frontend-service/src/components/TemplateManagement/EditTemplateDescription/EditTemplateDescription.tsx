@@ -22,7 +22,6 @@ import Button from '@mui/material/Button';
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/TemplateManagement/EditTemplateDescription/types';
@@ -238,14 +237,6 @@ const Component = ({
         }
         onChangeName(event);
     }, []);
-
-    const toggleSelected = (e: MouseEvent<HTMLElement>) => {
-        setEnableMonetization(prev => !prev);
-
-        if (!enableMonetization) {
-            setAnchorEl(document.getElementById('formPanel'));
-        }
-    };
 
     const handleEditFees = () => {
         if (!enableMonetization) {

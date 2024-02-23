@@ -82,6 +82,11 @@
     }
   }
 
+  .errorText {
+    color: red;
+    margin-left: 8px;
+  }
+
   @media screen and (max-width: 590px) {
     .content {
       padding: rem(20px);

@@ -4,6 +4,9 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
+//types
+import { MeetingRole } from 'shared-types';
+
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -38,8 +41,10 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     $isOwnerDoNotDisturb,
+    $meetingStore,
     getMeetingTemplateFx,
     joinAudienceMeetingSocketEvent,
+    joinRecorderMeetingSocketEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -67,6 +72,7 @@ const Component = () => {
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
+    const meetingStore = useStore($meetingStore);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -84,6 +90,8 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
     const [isJoinPaywall, setIsJoinPaywall] = useState(false);
+    const roleUrl = router.query.role as string;
+    const isRecorder = roleUrl === MeetingRole.Recorder;
 
     const {
         register,
@@ -103,6 +111,13 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(data => {
+            if (isRecorder) {
+                updateLocalUserEvent({
+                    username: 'recorder',
+                });
+                joinRecorderMeetingSocketEvent();
+            }
+
             if (isAudience) {
                 if (!isOwnerDoNotDisturb) {
                     updateLocalUserEvent({
@@ -126,7 +141,7 @@ const Component = () => {
                 });
             }
         }),
-        [enabledPaymentPaywallAudience, isAudience, isOwnerDoNotDisturb],
+        [enabledPaymentPaywallAudience, isAudience, isOwnerDoNotDisturb, roleUrl],
     );
 
     const handlePaymentSuccess = useCallback(() => {
@@ -136,13 +151,22 @@ const Component = () => {
     const fullNameError = errors.fullName?.message;
 
     useEffect(() => {
-        if (nameOnUrl) {
+        if (nameOnUrl && !isRecorder) {
             updateLocalUserEvent({
                 username: nameOnUrl,
                 accessStatus: MeetingAccessStatusEnum.Settings,
             });
         }
     }, []);
+
+    useEffect(() => {
+        if (isRecorder && !!meetingStore.id) {
+            updateLocalUserEvent({
+                username: 'recorder',
+            });
+            joinRecorderMeetingSocketEvent();
+        }
+    }, [meetingStore]);
 
     const EnterNameElement = (
         <>
@@ -273,7 +297,7 @@ const Component = () => {
                 [styles.contentWrapper]: isMobile,
             })}
         >
-            <ConditionalRender condition={!isJoinPaywall}>
+            <ConditionalRender condition={!isJoinPaywall && !isRecorder}>
                 {renderEnterName()}
             </ConditionalRender>
             <ConditionalRender condition={isJoinPaywall}>
