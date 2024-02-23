@@ -163,7 +163,7 @@
       },
       "monetizationAnalytics": {
         "title": "earnings",
-        "attendeeEntryFee": "attendee entry fee",
+        "audienceEntryFee": "audience entry fee",
         "participantEntryFee": "participant entry fee",
         "unit": "USD/person",
         "donations": "donations"
