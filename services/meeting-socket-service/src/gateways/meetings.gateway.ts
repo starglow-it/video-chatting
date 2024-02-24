@@ -79,6 +79,7 @@ import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
+import { AudienceRequestRecording } from 'src/dtos/requests/audience-request-recording.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -1848,6 +1849,43 @@ export class MeetingsGateway
             user: plainUser,
           },
         );
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecording)
+  async requestRecording(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: msg.meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveRequestRecording,
+          {
+            message: 'received request for recording',
+          },
+        );
+
+        return wsResult({
+          message: 'received request for recording',
+        });
       },
       {
         onFinaly: (err) => wsError(socket, err),

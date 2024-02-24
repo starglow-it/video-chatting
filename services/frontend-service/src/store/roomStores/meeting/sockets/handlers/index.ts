@@ -25,6 +25,7 @@ import { handleReceiveQuestionUnReaction } from './handleReceiveQuestionUnReacti
 import { handleSendMeetingReaction } from './handleSendMeetingReaction';
 import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
 import { handleGetMeetingReactions } from './handleGetMeetingReactions';
+import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -157,6 +158,12 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
             {
                 handler: handleReceiveQuestionUnReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecording,
+            {
+                handler: handleReceiveRequestRecording,
             },
         ],
     ]);

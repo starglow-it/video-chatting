@@ -557,4 +557,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnRejoinWaitingRoom,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecording,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecording,
+        ),
+    );
 });

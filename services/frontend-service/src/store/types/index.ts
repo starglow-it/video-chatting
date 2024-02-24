@@ -320,6 +320,7 @@ export enum NotificationType {
     DeleteMedia = 'DeleteMedia',
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
     RequestBecomeAudienceSuccess = 'request_become_audience_success',
+    RequestRecordingMeeting= 'request_recording_meeting',
 }
 
 export type Notification = {
@@ -394,6 +395,18 @@ export type GetRoomRatingStatisticParams = {
     roomType: string;
 };
 
+
+export type MeetingRecordVideo = {
+    id: string;
+    meetingId: string;
+    url: string;
+    // add more;
+};
+
+export type MeetingRecording = {
+    videos: MeetingRecordVideo[],
+    isRecording?: boolean;
+};
 export * from './state';
 export * from './response';
 export * from './requestParams';

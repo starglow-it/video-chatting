@@ -29,4 +29,5 @@ export enum MeetingSubscribeEvents {
   OnUnReactionQuestion = 'meeting:question:unreaction:send',
   OnLoadMoreQuestions = 'meeting:question:loadmore',
   OnUpdateTemplatePayments = 'template:payments:update',
+  OnRequestRecording = 'meeting:recording:request:send',
 }

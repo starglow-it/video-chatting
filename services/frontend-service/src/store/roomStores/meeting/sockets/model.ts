@@ -37,6 +37,8 @@ import {
     SendUnReactionQuestionResponse,
     SendQuestionResponse,
     SendReactionQuestionReponse,
+    RequestRecordingEventPayload,
+    RequestRecordingResponse,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -145,3 +147,8 @@ export const sendMeetingQuestionUnReactionEvent = createMeetingSocketEvent<
     SendUnReactionQuestionPayload,
     SendUnReactionQuestionResponse
 >(MeetingSocketEmitters.SendUnReactionQuestion);
+
+export const requestRecordingEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    RequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecording);
