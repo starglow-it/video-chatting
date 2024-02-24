@@ -20,4 +20,5 @@ export enum MeetingEmitEvents {
   ReceiveQuestion = 'meeting:question:question:receive',
   ReceiveQuestionReaction = 'meeting:question:reaction:receive',
   ReceiveQuestionUnReaction = 'meeting:question:unreaction:receive',
+  ReceiveRequestRecording= 'meeting:recording:request:receive',
 }

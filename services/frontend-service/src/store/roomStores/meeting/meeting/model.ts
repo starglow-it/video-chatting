@@ -3,7 +3,7 @@ import { Store, attach, combine } from 'effector-next';
 import { $profileStore } from 'src/store/profile/profile/model';
 import { ICommonUser, IUserTemplate, MeetingRole } from 'shared-types';
 import { $scheduleTemplateStore } from 'src/store/templates/model';
-import { Meeting, MeetingUser, Profile } from '../../../types';
+import { Meeting, MeetingRecording, MeetingUser, Profile } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
 import {
@@ -26,9 +26,16 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
+const initialMeetingRecordingState: MeetingRecording = {
+    videos: [],
+    isRecording: false
+}
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
 export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
+
+export const $meetingRecordingStore =
+    meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -144,3 +151,8 @@ export const sendUpdateMeetingTemplateEvent = attach<
         data: params,
     }),
 });
+
+
+export const receiveRequestRecordingEvent = meetingDomain.createEvent<{
+    message: string;
+}>('receiveRequestRecordingEvent');

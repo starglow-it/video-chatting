@@ -163,3 +163,14 @@ export type SendReactionQuestionReponse = {
 export type SendUnReactionQuestionResponse = {
     question: MeetingQuestionAnswer;
 };
+
+
+export type RequestRecordingEventPayload = {
+    meetingId: string;
+    username: string;
+    meetingAvatarId?: string;
+};
+
+export type RequestRecordingResponse = {
+    message: string
+};

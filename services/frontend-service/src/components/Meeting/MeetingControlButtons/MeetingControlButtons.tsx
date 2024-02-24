@@ -71,7 +71,8 @@ import {
     stopScreenSharing,
     startRecordStreamFx,
     stopRecordStreamFx,
-    $isScreenSharingStore
+    $isScreenSharingStore,
+    requestRecordingEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -217,14 +218,22 @@ const Component = () => {
     }, []);
 
     const handleRecordMeeting = async () => {
-        if (!isRecording) {
-            startRecordMeeting(fullUrl);
+        if (isAudience) {
+            requestRecordingEvent({
+                meetingId: meeting.id,
+                username: localUser.username,
+                meetingAvatarId: localUser.meetingAvatarId,
+            })
         } else {
-            stopRecordMeeting(fullUrl);
+            if (!isRecording) {
+                startRecordMeeting(fullUrl);
+            } else {
+                stopRecordMeeting(fullUrl);
 
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
-            });
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
+                });
+            }
         }
     };
     const handleSetStickyNotesVisible = () => {

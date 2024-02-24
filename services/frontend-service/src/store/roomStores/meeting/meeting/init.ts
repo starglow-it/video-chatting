@@ -17,6 +17,8 @@ import {
     $isToggleLinksDrawer,
     toggleLinksDrawerEvent,
     updateMeetingTemplateDashFx,
+    receiveRequestRecordingEvent,
+    $meetingRecordingStore,
 } from './model';
 import {
     $changeStreamStore,
@@ -57,6 +59,12 @@ $isToggleLinksDrawer
         newToggle !== undefined ? newToggle : !toggle,
     )
     .reset(resetRoomStores);
+
+// $meetingRecordingStore
+//     .on(receiveRequestRecordingEvent, (state, message) => ({
+//         ...state,
+//         isRecording: true,
+//     }));
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);
