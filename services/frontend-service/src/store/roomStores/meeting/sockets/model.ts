@@ -39,6 +39,7 @@ import {
     SendReactionQuestionReponse,
     RequestRecordingEventPayload,
     RequestRecordingResponse,
+    AnswerRequestRecordingResponse
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -152,3 +153,13 @@ export const requestRecordingEvent = createMeetingSocketEvent<
     RequestRecordingEventPayload,
     RequestRecordingResponse
 >(MeetingSocketEmitters.RequestRecording);
+
+export const requestRecordingRejectEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecordingReject);
+
+export const requestRecordingAcceptEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecordingAccept);

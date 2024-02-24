@@ -15,6 +15,7 @@ import { MeetingsService } from '../modules/meetings/meetings.service';
 import { UsersService } from '../modules/users/users.service';
 import { TasksService } from '../modules/tasks/tasks.service';
 import { CoreService } from '../services/core/core.service';
+import { MeetingRecordService } from '../modules/meeting-record/meeting-record.service';
 
 import {
   FinishMeetingReason,
@@ -29,7 +30,6 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
-import { GetMeetingStatisticsRequestDTO } from '../dtos/requests/get-meeting-statistics.dto';
 import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
 import { UpdateMeetingLinkRequestDTO } from '../dtos/requests/update-meetinglink.dto';
 import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
@@ -80,6 +80,7 @@ import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 import { AudienceRequestRecording } from 'src/dtos/requests/audience-request-recording.dto';
+import { SaveRecordingUrlRequest } from 'src/dtos/requests/save-recordingurl.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -93,6 +94,7 @@ export class MeetingsGateway
   constructor(
     private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private meetingsService: MeetingsService,
+    private meetingRecordService: MeetingRecordService,
     private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
     private coreService: CoreService,
@@ -1867,24 +1869,122 @@ export class MeetingsGateway
       async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
+        const { meetingId } = msg;
         const meeting = await this.meetingsService.findById({
-          id: msg.meetingId,
+          id: meetingId,
           session,
         });
 
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
+        const meetingUser = await this.usersComponent.findById({ id: user._id });
 
         this.emitToRoom(
           `meeting:${meeting._id.toString()}`,
           MeetingEmitEvents.ReceiveRequestRecording,
           {
-            message: 'received request for recording',
+            user: meetingUser.username
           },
         );
 
         return wsResult({
           message: 'received request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecordingRejected)
+  async requestRecordingRejected(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveRequestRecordingRejected,
+          {
+            isRecordingStart: false,
+          },
+        );
+
+        return wsResult({
+          message: 'rejected request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecordingAccepted)
+  async requestRecordingAccepted(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveRequestRecordingRejected,
+          {
+            isRecordingStart: true,
+          },
+        );
+
+        return wsResult({
+          message: 'accepted request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnSaveRecordingUrl)
+  async saveRecordingUrl(
+    @MessageBody() msg: SaveRecordingUrlRequest,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, url } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meetingId, url } });
+
+        return wsResult({
+          message: 'successfully saved',
         });
       },
       {

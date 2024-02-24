@@ -563,4 +563,16 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnReceiveRequestRecording,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+        ),
+    );
 });

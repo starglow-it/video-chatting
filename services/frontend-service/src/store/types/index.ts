@@ -405,6 +405,7 @@ export type MeetingRecordVideo = {
 
 export type MeetingRecording = {
     videos: MeetingRecordVideo[],
+    requestUsers?: [],
     isRecording?: boolean;
 };
 export * from './state';

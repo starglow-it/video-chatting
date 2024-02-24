@@ -33,7 +33,12 @@ export class MeetingRecordService {
     populatePaths,
     session,
   }: GetModelSingleQuery<MeetingRecordDocument>): Promise<MeetingRecordDocument> {
-    return this.meetingRecordModel.findOne(query).populate(populatePaths).session(session?.session).exec();
+    return this.meetingRecordModel.findOne(
+      query,
+      {},
+      { session: session?.session, populate: populatePaths },
+    )
+      .exec();
   }
 
   async findMany({
@@ -42,7 +47,12 @@ export class MeetingRecordService {
     session,
     sort,
   }: GetModelMultipleQuery<MeetingRecordDocument>): Promise<MeetingRecordDocument[]> {
-    return this.meetingRecordModel.find(query).populate(populatePaths).session(session?.session).sort(sort).exec();
+    return this.meetingRecordModel.find(
+      query,
+      {},
+      { session: session?.session, populate: populatePaths, sort: sort },
+    )
+      .exec();
   }
 
   async findById({
@@ -50,10 +60,10 @@ export class MeetingRecordService {
     session,
     populatePaths,
   }: GetModelByIdQuery<MeetingRecordDocument>): Promise<MeetingRecordDocument> {
-    const meetingRecord = await this.meetingRecordModel.findById(id).populate(populatePaths).session(session?.session).exec();
-    if (!meetingRecord) {
-      throw new NotFoundException('Meeting record not found');
-    }
+    const meetingRecord = await this.meetingRecordModel.findById(
+      id, {}, { populate: populatePaths, session: session?.session }
+    ).exec();
+
     return meetingRecord;
   }
 
@@ -85,7 +95,7 @@ export class MeetingRecordService {
       populate: populatePaths,
       session: session?.session,
     }).exec();
-    
+
     return meetingRecord;
   }
 }

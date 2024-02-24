@@ -220,9 +220,7 @@ const Component = () => {
     const handleRecordMeeting = async () => {
         if (isAudience) {
             requestRecordingEvent({
-                meetingId: meeting.id,
-                username: localUser.username,
-                meetingAvatarId: localUser.meetingAvatarId,
+                meetingId: meeting.id
             })
         } else {
             if (!isRecording) {

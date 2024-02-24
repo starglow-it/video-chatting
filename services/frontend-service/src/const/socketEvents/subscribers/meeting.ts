@@ -21,4 +21,6 @@ export enum MeetingSubscribeEvents {
     OnReceiveQuestionReaction = 'meeting:question:reaction:receive',
     OnReceiceQuestionUnReaction = 'meeting:question:unreaction:receive',
     OnReceiveRequestRecording = 'meeting:recording:request:receive',
+    OnReceiveRequestRecordingRejected = 'meeting:recording:request:rejected:receive',
+    OnReceiveRequestRecordingAccepted = 'meeting:recording:request:accepted:receive',
 }

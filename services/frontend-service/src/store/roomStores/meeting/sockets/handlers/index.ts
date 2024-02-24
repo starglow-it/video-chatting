@@ -26,6 +26,8 @@ import { handleSendMeetingReaction } from './handleSendMeetingReaction';
 import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
 import { handleGetMeetingReactions } from './handleGetMeetingReactions';
 import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
+import { handleReceiveRequestRecordingRejected } from './handleReceiveRequestRecordingRejected';
+import { handleReceiveRequestRecordingAccepted } from './handleReceiveRequestRecordingAccepted';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -164,6 +166,18 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiveRequestRecording,
             {
                 handler: handleReceiveRequestRecording,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+            {
+                handler: handleReceiveRequestRecordingAccepted,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+            {
+                handler: handleReceiveRequestRecordingRejected,
             },
         ],
     ]);

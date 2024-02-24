@@ -28,6 +28,7 @@ const initialMeetingState: Meeting = {
 
 const initialMeetingRecordingState: MeetingRecording = {
     videos: [],
+    requestUsers: [],
     isRecording: false
 }
 export const $meetingStore =
@@ -151,7 +152,6 @@ export const sendUpdateMeetingTemplateEvent = attach<
         data: params,
     }),
 });
-
 
 export const receiveRequestRecordingEvent = meetingDomain.createEvent<{
     message: string;

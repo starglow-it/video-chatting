@@ -167,10 +167,16 @@ export type SendUnReactionQuestionResponse = {
 
 export type RequestRecordingEventPayload = {
     meetingId: string;
-    username: string;
-    meetingAvatarId?: string;
 };
 
 export type RequestRecordingResponse = {
+    username: string
+};
+
+export type AnswerRequestRecordingResponse = {
     message: string
+};
+
+export type RecodingAnswerResponse = {
+    isRecordingStart: Boolean
 };

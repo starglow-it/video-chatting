@@ -1,6 +1,6 @@
 import { combine, sample } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { resetRoomStores } from '../../../root';
+import { resetRoomStores, resetMeetingRecordingStore } from '../../../root';
 import {
     $meetingStore,
     updateMeetingEvent,
@@ -60,11 +60,12 @@ $isToggleLinksDrawer
     )
     .reset(resetRoomStores);
 
-// $meetingRecordingStore
-//     .on(receiveRequestRecordingEvent, (state, message) => ({
-//         ...state,
-//         isRecording: true,
-//     }));
+$meetingRecordingStore
+    .on(receiveRequestRecordingEvent, (state, data) => ({
+        ...state,
+        requestUsers: [...state.requestUsers, data]
+    }))
+    .reset(resetMeetingRecordingStore);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);

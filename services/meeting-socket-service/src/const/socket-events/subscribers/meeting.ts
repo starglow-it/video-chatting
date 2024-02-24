@@ -30,4 +30,7 @@ export enum MeetingSubscribeEvents {
   OnLoadMoreQuestions = 'meeting:question:loadmore',
   OnUpdateTemplatePayments = 'template:payments:update',
   OnRequestRecording = 'meeting:recording:request:send',
+  OnRequestRecordingRejected = 'meeting:recording:request:rejected:send',
+  OnRequestRecordingAccepted = 'meeting:recording:request:accepted:send',
+  OnSaveRecordingUrl = 'meeting:save:recordingurl:send',
 }
