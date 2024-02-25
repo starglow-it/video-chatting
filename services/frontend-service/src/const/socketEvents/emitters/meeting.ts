@@ -29,4 +29,8 @@ export enum MeetingSocketEmitters {
     LoadMoreQuestions = 'meeting:question:loadmore',
     SendUnReactionQuestion = 'meeting:question:unreaction:send',
     RequestRecording = 'meeting:recording:request:send',
+    RequestRecordingReject = 'meeting:recording:request:rejected:send',
+    RequestRecordingAccept = 'meeting:recording:request:accepted:send',
+    SaveRecordingUrl = 'meeting:save:recording:url:send',
+    GetRecordingUrls = 'meeting:get:recording:urls:send',
 }

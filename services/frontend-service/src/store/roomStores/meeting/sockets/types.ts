@@ -169,8 +169,18 @@ export type RequestRecordingEventPayload = {
     meetingId: string;
 };
 
+export type SaveRecordingEventPayload = {
+    meetingId: string;
+    url: string;
+};
+
 export type RequestRecordingResponse = {
-    username: string
+    userId: string;
+    username: string;
+};
+
+export type ReceiveRecordingUrls = {
+    urls: string[]
 };
 
 export type AnswerRequestRecordingResponse = {

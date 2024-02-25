@@ -43,6 +43,7 @@ import {
     $isRecordingStore,
     uploadToS3Fx,
     $uploadVideoToS3Store,
+    recordingRequestAcceptedEvent
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { sendDevicesPermissionSocketEvent } from '../sockets/model';
@@ -127,6 +128,7 @@ $recordedVideoBlobStore
     .on(resetRecordedVideoBlobStore, () => null);
 
 $isRecordingStore
+    .on(recordingRequestAcceptedEvent, () => true)
     .on(startRecordStreamFx.doneData, (state, data) => Boolean(data))
     .on(stopRecordMeeting, () => false);
 

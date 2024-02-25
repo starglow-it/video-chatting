@@ -29,7 +29,7 @@ const initialMeetingState: Meeting = {
 const initialMeetingRecordingState: MeetingRecording = {
     videos: [],
     requestUsers: [],
-    isRecording: false
+    isRecordingStarted: false
 }
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
@@ -37,6 +37,9 @@ export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
 
 export const $meetingRecordingStore =
     meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
+
+export const $RecordingUrlsStore =
+    meetingDomain.createStore<string[]>([]);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -153,6 +156,10 @@ export const sendUpdateMeetingTemplateEvent = attach<
     }),
 });
 
+export const isRequestRecordingStartEvent = meetingDomain.createEvent<void>('isRequestRecordingStartEvent');
+
 export const receiveRequestRecordingEvent = meetingDomain.createEvent<{
-    message: string;
+    userId: string, username: string
 }>('receiveRequestRecordingEvent');
+
+export const receiveRecordingUrlsEvent = meetingDomain.createEvent<string[]>('receiveRecordingUrlsEvent');

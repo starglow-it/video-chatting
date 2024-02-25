@@ -39,7 +39,8 @@ import {
     SendReactionQuestionReponse,
     RequestRecordingEventPayload,
     RequestRecordingResponse,
-    AnswerRequestRecordingResponse
+    AnswerRequestRecordingResponse,
+    SaveRecordingEventPayload
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -74,7 +75,7 @@ export const startMeetingSocketEvent = createMeetingSocketEvent<
     StartMeetingResponse
 >(MeetingSocketEmitters.StartMeeting);
 export const clickMeetingLinkSocketEvent = createMeetingSocketEvent<
-ClickMeetingLinkPayload,
+    ClickMeetingLinkPayload,
     void
 >(MeetingSocketEmitters.ClickMeetingLink);
 export const updateMeetingSocketEvent = createMeetingSocketEvent<
@@ -163,3 +164,13 @@ export const requestRecordingAcceptEvent = createMeetingSocketEvent<
     RequestRecordingEventPayload,
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.RequestRecordingAccept);
+
+export const saveRecordingUrl = createMeetingSocketEvent<
+    SaveRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.SaveRecordingUrl);
+
+export const getRecordingUrls = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.GetRecordingUrls);

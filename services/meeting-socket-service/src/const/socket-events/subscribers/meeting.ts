@@ -32,5 +32,6 @@ export enum MeetingSubscribeEvents {
   OnRequestRecording = 'meeting:recording:request:send',
   OnRequestRecordingRejected = 'meeting:recording:request:rejected:send',
   OnRequestRecordingAccepted = 'meeting:recording:request:accepted:send',
-  OnSaveRecordingUrl = 'meeting:save:recordingurl:send',
+  OnSaveRecordingUrl = 'meeting:save:recording:url:send',
+  OnGetRecordingUrl = 'meeting:get:recording:urls:send',
 }

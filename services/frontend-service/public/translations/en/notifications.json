@@ -45,7 +45,9 @@
     "connectAccountFail": "An error occurred during the connection. Please try again"
   },
   "recording": {
-    "startRecordingFail": "An error occurred while trying to start the recording. Please try again."
+    "startRecordingFail": "An error occurred while trying to start the recording. Please try again.",
+    "recordingRequestReject": "recording request rejected",
+    "recordingRequestAcccept": "recording started"
   },
   "subscriptions": {
     "noTimeLeft": "You've run out of meeting minutes",

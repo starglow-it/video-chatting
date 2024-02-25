@@ -22,4 +22,6 @@ export enum MeetingEmitEvents {
   ReceiveQuestionUnReaction = 'meeting:question:unreaction:receive',
   ReceiveRequestRecording= 'meeting:recording:request:receive',
   ReceiveRequestRecordingRejected= 'meeting:recording:request:rejected:receive',
+  ReceiveRequestRecordingAccepted= 'meeting:recording:request:accepted:receive',
+  GetMeetingUrlsReceive= 'meeting:get:recording:urls:receive',
 }

@@ -53,6 +53,7 @@ import {
     setMeetingNotesVisibilityEvent,
     setEmojiListVisibilityEvent,
     $meetingStore,
+    $meetingRecordingStore,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -72,7 +73,7 @@ import {
     startRecordStreamFx,
     stopRecordStreamFx,
     $isScreenSharingStore,
-    requestRecordingEvent
+    requestRecordingEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -96,6 +97,7 @@ const Component = () => {
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const meetingRecordingStore = useStore($meetingRecordingStore);
     const recordingStartPending = useStore(startRecordStreamFx.pending);
     const recordingStopPending = useStore(stopRecordStreamFx.pending);
 
@@ -226,7 +228,11 @@ const Component = () => {
             if (!isRecording) {
                 startRecordMeeting(fullUrl);
             } else {
-                stopRecordMeeting(fullUrl);
+                if (meetingRecordingStore.requestUsers.length > 0) {
+                    stopRecordMeeting(fullUrl, true, meeting.id);
+                } else {
+                    stopRecordMeeting(fullUrl);
+                }
 
                 appDialogsApi.openDialog({
                     dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
@@ -541,7 +547,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isRecording ? "recordMeeting.stop" : "recordMeeting.start"}
+                            translation={isAudience ? "recordMeeting.recordingRequest" : isRecording ? "recordMeeting.stop" : "recordMeeting.start"}
                         />
                     }
                     placement="top"

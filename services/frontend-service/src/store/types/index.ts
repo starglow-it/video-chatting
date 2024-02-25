@@ -405,8 +405,8 @@ export type MeetingRecordVideo = {
 
 export type MeetingRecording = {
     videos: MeetingRecordVideo[],
-    requestUsers?: [],
-    isRecording?: boolean;
+    requestUsers?: {id: string, name: string}[],
+    isRecordingStarted?: boolean;
 };
 export * from './state';
 export * from './response';

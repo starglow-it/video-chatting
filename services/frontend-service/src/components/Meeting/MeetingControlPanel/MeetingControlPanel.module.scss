@@ -156,6 +156,32 @@
   }
 }
 
+.recordingRequestTitle {
+  margin-bottom: 24px;
+}
+
+.recordingRequestList {
+  position: absolute;
+  width: rem(360px);
+  padding: rem(20px);
+  right: 70px;
+  bottom: 30px;
+  color: white;
+  z-index: 9999;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.recordingRequestHandleBtn {
+  width: rem(150px);
+  padding: rem(6px);
+  color: white;
+}
+
 .mobileControlPanelWrapper {
   padding: rem(6px 12px);
 }

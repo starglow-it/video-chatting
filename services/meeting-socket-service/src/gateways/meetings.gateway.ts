@@ -235,13 +235,13 @@ export class MeetingsGateway
     });
 
     if (!activeParticipants) {
-    //   await this.meetingsCommonService.handleClearMeetingData({
-    //     userId: meeting.owner._id,
-    //     templateId: userTemplate.id,
-    //     instanceId: userTemplate.meetingInstance.instanceId,
-    //     meetingId,
-    //     session,
-    //   });
+      //   await this.meetingsCommonService.handleClearMeetingData({
+      //     userId: meeting.owner._id,
+      //     templateId: userTemplate.id,
+      //     instanceId: userTemplate.meetingInstance.instanceId,
+      //     meetingId,
+      //     session,
+      //   });
       this.emitToRoom(
         `waitingRoom:${meeting.templateId}`,
         MeetingEmitEvents.FinishMeeting,
@@ -738,21 +738,21 @@ export class MeetingsGateway
 
         const meetingLinks = meeting.links.map(link => {
           if (link.url === url && !link.users.includes(userId)) {
-              link.users.push(userId);
+            link.users.push(userId);
           }
-      
+
           return link;
-      });
-      
+        });
 
-          await this.meetingsService.findByIdAndUpdate({
-            id: meetingId,
-            data: {
-              links: [...meetingLinks]
 
-            },
-            session,
-          });
+        await this.meetingsService.findByIdAndUpdate({
+          id: meetingId,
+          data: {
+            links: [...meetingLinks]
+
+          },
+          session,
+        });
 
         return wsResult();
       },
@@ -1858,7 +1858,7 @@ export class MeetingsGateway
     );
   }
 
-  
+
   @WsEvent(MeetingSubscribeEvents.OnRequestRecording)
   async requestRecording(
     @MessageBody() msg: AudienceRequestRecording,
@@ -1883,7 +1883,8 @@ export class MeetingsGateway
           `meeting:${meeting._id.toString()}`,
           MeetingEmitEvents.ReceiveRequestRecording,
           {
-            user: meetingUser.username
+            userId: meetingUser._id,
+            username: meetingUser.username
           },
         );
 
@@ -1915,10 +1916,7 @@ export class MeetingsGateway
 
         this.emitToRoom(
           `meeting:${meeting._id.toString()}`,
-          MeetingEmitEvents.ReceiveRequestRecordingRejected,
-          {
-            isRecordingStart: false,
-          },
+          MeetingEmitEvents.ReceiveRequestRecordingRejected
         );
 
         return wsResult({
@@ -1949,10 +1947,7 @@ export class MeetingsGateway
 
         this.emitToRoom(
           `meeting:${meeting._id.toString()}`,
-          MeetingEmitEvents.ReceiveRequestRecordingRejected,
-          {
-            isRecordingStart: true,
-          },
+          MeetingEmitEvents.ReceiveRequestRecordingAccepted,
         );
 
         return wsResult({
@@ -1981,7 +1976,14 @@ export class MeetingsGateway
 
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
-        await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meetingId, url } });
+        await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, url } });
+        const urls = await this.meetingRecordService.findMany({ query: { meetingId: meeting._id }, session });
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.GetMeetingUrlsReceive,
+          { urls }
+        );
 
         return wsResult({
           message: 'successfully saved',

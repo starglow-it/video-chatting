@@ -1,12 +1,12 @@
-import { RecodingAnswerResponse } from '../types';
+import { addNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
+import { recordingRequestAcceptedEvent } from '../../../../../store/roomStores';
 
-export const handleReceiveRequestRecordingAccepted = ({
-    isRecordingStart
-}: RecodingAnswerResponse) => {
-    // addNotificationEvent({
-    //     type: NotificationType.RequestRecordingMeeting,
-    //     // message: `meeting.deviceErrors.${audioError?.type}`,
-    //     message: `${message}`,
-    // });
-    console.log(isRecordingStart);
+export const handleReceiveRequestRecordingAccepted = () => {
+    addNotificationEvent({
+        type: NotificationType.RequestRecordingMeeting,
+        message: "recording.recordingRequestAcccept",
+        withSuccessIcon: true
+    });
+    recordingRequestAcceptedEvent();
 };

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -11,6 +11,11 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { Translation } from '@library/common/Translation/Translation';
+
+//@mui
+import Divider from '@mui/material/Divider';
 
 // icons
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
@@ -24,7 +29,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
-import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
+import { $isPortraitLayout, setIsSideUsersOpenEvent, resetMeetingRecordingStore } from '../../../store';
 import {
     $enabledPaymentMeetingAudience,
     $enabledPaymentMeetingParticipant,
@@ -38,11 +43,18 @@ import {
     $paymentIntent,
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
+    $meetingRecordingStore,
+    $meetingStore,
+    $isAudience,
+    $RecordingUrlsStore,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
+    requestRecordingAcceptEvent,
+    requestRecordingRejectEvent,
+    startRecordMeeting,
 } from '../../../store/roomStores';
 
 // styles
@@ -53,6 +65,7 @@ import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -70,10 +83,23 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
-
+    const meetingRecordingStore = useStore($meetingRecordingStore);
+    const meeting = useStore($meetingStore);
+    const isAudience = useStore($isAudience);
+    const recordingUrlsStore = useStore($RecordingUrlsStore);
+    const [isRecordingRequestReceived, setIsRecordingRequestReceived] = useState(false);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();
+    const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    useEffect(() => {
+        if (meetingRecordingStore.requestUsers.length > 0) {
+            setIsRecordingRequestReceived(true);
+        } else {
+            setIsRecordingRequestReceived(false);
+        }
+    }, [meetingRecordingStore]);
 
     const handleClosePayment = useCallback(async () => {
         if (paymentIntent?.id) {
@@ -126,6 +152,17 @@ const Component = () => {
         }
     }, [isOwner]);
 
+    const handleRequestRecordingAccept = () => {
+        startRecordMeeting(fullUrl, true);
+        requestRecordingAcceptEvent();
+    };
+
+    const handleRequestRecordingReject = () => {
+        console.log(meeting);
+        requestRecordingRejectEvent({ meetingId: meeting.id });
+        resetMeetingRecordingStore();
+    };
+
     const commonContent = useMemo(
         () => (
             <>
@@ -143,6 +180,126 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
+                <Fade in={isRecordingRequestReceived && !isAudience && !meetingRecordingStore.isRecordingStarted}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.recordingRequestList, {
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                        })}
+                    >
+                        <CustomTypography variant="h4">
+                            <Translation
+                                nameSpace="meeting"
+                                translation="recordingRequestTitle"
+                            />
+                        </CustomTypography>
+                        <Divider light sx={{ margin: "24px 0px" }} />
+                        <CustomScroll>
+                            <CustomGrid
+                                container
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="center"
+                                gap={1}
+                                marginBottom={3}
+                            >
+                                {
+                                    meetingRecordingStore.requestUsers.map(user => (
+                                        <CustomTypography key={user.id}>{user.name}</CustomTypography>
+                                    ))
+                                }
+                            </CustomGrid>
+                        </CustomScroll>
+                        <CustomGrid
+                            container
+                            justifyContent="space-between"
+                        >
+                            <CustomButton
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="buttons.startRecording"
+                                    />
+                                }
+                                size="small"
+                                className={styles.recordingRequestHandleBtn}
+                                onClick={handleRequestRecordingAccept}
+                            />
+                            <CustomButton
+                                variant="custom-cancel"
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="buttons.reject"
+                                    />
+                                }
+                                className={styles.recordingRequestHandleBtn}
+                                onClick={handleRequestRecordingReject}
+                            />
+
+                        </CustomGrid>
+                    </CustomPaper>
+                </Fade>
+                <Fade in={recordingUrlsStore.length > 0}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.recordingRequestList, {
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                        })}
+                    >
+                        <CustomTypography variant="h4">
+                            <Translation
+                                nameSpace="meeting"
+                                translation="recordingRequestTitle"
+                            />
+                        </CustomTypography>
+                        <Divider light sx={{ margin: "24px 0px" }} />
+                        <CustomScroll>
+                            <CustomGrid
+                                container
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="center"
+                                gap={1}
+                                marginBottom={3}
+                            >
+                                {
+                                    recordingUrlsStore.map((url, index) => (
+                                        <CustomTypography key={index}>{url}</CustomTypography>
+                                    ))
+                                }
+                            </CustomGrid>
+                        </CustomScroll>
+                        <CustomGrid
+                            container
+                            justifyContent="space-between"
+                        >
+                            <CustomButton
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="buttons.startRecording"
+                                    />
+                                }
+                                size="small"
+                                className={styles.recordingRequestHandleBtn}
+                                onClick={handleRequestRecordingAccept}
+                            />
+                            <CustomButton
+                                variant="custom-cancel"
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="buttons.reject"
+                                    />
+                                }
+                                className={styles.recordingRequestHandleBtn}
+                                onClick={handleRequestRecordingReject}
+                            />
+
+                        </CustomGrid>
+                    </CustomPaper>
+                </Fade>
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
                         <div className={styles.scheduleOpenPanelWrapper}>

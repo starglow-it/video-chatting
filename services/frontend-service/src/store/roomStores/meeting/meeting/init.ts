@@ -3,6 +3,8 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { resetRoomStores, resetMeetingRecordingStore } from '../../../root';
 import {
     $meetingStore,
+    $meetingRecordingStore,
+    $RecordingUrlsStore,
     updateMeetingEvent,
     $meetingConnectedStore,
     setMeetingConnectedEvent,
@@ -18,7 +20,8 @@ import {
     toggleLinksDrawerEvent,
     updateMeetingTemplateDashFx,
     receiveRequestRecordingEvent,
-    $meetingRecordingStore,
+    isRequestRecordingStartEvent,
+    receiveRecordingUrlsEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -61,11 +64,18 @@ $isToggleLinksDrawer
     .reset(resetRoomStores);
 
 $meetingRecordingStore
-    .on(receiveRequestRecordingEvent, (state, data) => ({
-        ...state,
-        requestUsers: [...state.requestUsers, data]
-    }))
+    .on(isRequestRecordingStartEvent, (state, _) => ({...state, isRecordingStarted: true}))
+    .on(receiveRequestRecordingEvent, (state, { userId, username }) => {
+        if (state.requestUsers.findIndex(user => user.id === userId) == -1) {
+            return {
+                ...state,
+                requestUsers: [...state.requestUsers, { id: userId, name: username }]
+            }
+        }
+    })
     .reset(resetMeetingRecordingStore);
+
+$RecordingUrlsStore.on(receiveRecordingUrlsEvent, (state, data) => data);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);
