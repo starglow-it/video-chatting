@@ -72,7 +72,7 @@ sudo ./svc.sh uninstall
 # backup
 docker exec services-mongo-1 rm -rf /data/db/tlo-backup
 docker exec services-mongo-1 mongodump -d theliveoffice -o /data/db/tlo-backup
-scp -r /data/liveoffice/mongo/tlo-backup root@18.190.108.231:/data/liveoffice/mongo/tlo-backup
+scp -r /data/liveoffice/mongo/tlo-backup root@3.129.50.243:/data/liveoffice/mongo/tlo-backup
 
 
 new mongodb
