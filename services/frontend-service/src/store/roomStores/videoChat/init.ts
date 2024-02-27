@@ -167,13 +167,11 @@ sample({
 
 sample({
     clock: startRecordMeeting,
-    fn: (_, data) => data,
     target: startRecordStreamFx,
 });
 
 sample({
     clock: stopRecordMeeting,
-    fn: (_, data) => data,
     target: stopRecordStreamFx,
 });
 

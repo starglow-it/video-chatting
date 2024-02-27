@@ -58,6 +58,7 @@ const RecordVideoDownloadDialog = memo(() => {
         const a = document.createElement('a');
         a.href = videoUrl;
         a.download = 'recorded-video.mp4';
+        a.target = '_blank';
         a.click();
     };
 

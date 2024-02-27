@@ -1,8 +1,9 @@
 import { combine, sample } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { resetRoomStores } from '../../../root';
+import { resetRoomStores, resetMeetingRecordingStore } from '../../../root';
 import {
     $meetingStore,
+    $meetingRecordingStore,
     updateMeetingEvent,
     $meetingConnectedStore,
     setMeetingConnectedEvent,
@@ -17,6 +18,12 @@ import {
     $isToggleLinksDrawer,
     toggleLinksDrawerEvent,
     updateMeetingTemplateDashFx,
+    receiveRequestRecordingEvent,
+    isRequestRecordingStartEvent,
+    isRequestRecordingEndEvent,
+    setRecordingUrlsEvent,
+    setStartRecordingPendingEvent,
+    setStopRecordingPendingEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -57,6 +64,22 @@ $isToggleLinksDrawer
         newToggle !== undefined ? newToggle : !toggle,
     )
     .reset(resetRoomStores);
+
+$meetingRecordingStore
+    .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStopPending: true }))
+    .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStartPending: true }))
+    .on(setRecordingUrlsEvent, (state, data) => ({ ...state, videos: data }))
+    .on(isRequestRecordingStartEvent, (state, _) => ({ ...state, isRecordingStarted: true, byRequest: true }))
+    .on(isRequestRecordingEndEvent, (state, _) => ({ ...state, byRequest: false }))
+    .on(receiveRequestRecordingEvent, (state, data) => {
+        if (state.requestUsers.findIndex(user => user.id === data.id) == -1) {
+            return {
+                ...state,
+                requestUsers: [...state.requestUsers, data]
+            }
+        }
+    })
+    .reset(resetMeetingRecordingStore);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);

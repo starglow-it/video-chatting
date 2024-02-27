@@ -557,4 +557,46 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnRejoinWaitingRoom,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecording,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecording,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingUrlsReceiveFail,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceiveFail,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveStartRecordingPending,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveStartRecordingPending,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveStopRecordingPending,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveStopRecordingPending,
+        ),
+    );
 });

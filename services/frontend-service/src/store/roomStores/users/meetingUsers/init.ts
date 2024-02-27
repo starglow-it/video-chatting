@@ -4,11 +4,13 @@ import {
     $isToggleSchedulePanel,
     $isToggleUsersPanel,
     $meetingUsersStore,
+    $isRecordingUrlsListPanel,
     removeMeetingUsersEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
+    toggleRecordingUrlsListPanel
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
@@ -55,6 +57,10 @@ $isToggleUsersPanel.on(toggleUsersPanelEvent, (toggle, newToggle) =>
 );
 
 $isToggleSchedulePanel.on(toggleSchedulePanelEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isRecordingUrlsListPanel.on(toggleRecordingUrlsListPanel, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 

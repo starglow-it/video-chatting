@@ -3,7 +3,7 @@ import { Store, attach, combine } from 'effector-next';
 import { $profileStore } from 'src/store/profile/profile/model';
 import { ICommonUser, IUserTemplate, MeetingRole } from 'shared-types';
 import { $scheduleTemplateStore } from 'src/store/templates/model';
-import { Meeting, MeetingUser, Profile } from '../../../types';
+import { Meeting, MeetingRecording, MeetingUser, Profile } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
 import {
@@ -26,9 +26,20 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
+const initialMeetingRecordingState: MeetingRecording = {
+    videos: [],
+    requestUsers: [],
+    isRecordingStarted: false,
+    byRequest: false,
+    isStartRecordingPending: false,
+    isStopRecordingPending: false
+}
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
 export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
+
+export const $meetingRecordingStore =
+    meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -144,3 +155,12 @@ export const sendUpdateMeetingTemplateEvent = attach<
         data: params,
     }),
 });
+
+export const isRequestRecordingStartEvent = meetingDomain.createEvent<void>('isRequestRecordingStartEvent');
+export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isRequestRecordingEndEvent');
+
+export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
+
+export const setRecordingUrlsEvent = meetingDomain.createEvent<string[]>('setRecordingUrlsEvent');
+export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
+export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');

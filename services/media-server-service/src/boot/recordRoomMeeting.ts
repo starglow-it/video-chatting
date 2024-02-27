@@ -5,6 +5,8 @@ import { getConfigVar } from "../services/config";
 export const recordRoomMeeting = async () => {
     const app = express();
     app.use(express.json());
+
+    app.set('host', '127.0.0.1');
     interface RecordingInfo {
         egressId: string | undefined;
         filepath: string;
@@ -109,6 +111,12 @@ export const recordRoomMeeting = async () => {
             // Construct the recording URL
             const recordingUrl = `https://${S3_BUCKET_NAME}.${S3_HOSTNAME}/${recordingInfo.filepath}`;
             return res.status(200).json({ message: 'Recording successfully stopped.', url: recordingUrl });
+
+        // try {
+        //     // Stop the recording
+        //     await egressClient.stopEgress('EG_VPHfieVFBimU');
+        //     egressIdMap.delete(roomUrl);
+        //     return res.status(200).json({ message: 'Recording successfully stopped.'});
         } catch (error) {
             console.error('Error stopping recording:', error);
             res.status(500).json({ error: 'An error occurred while attempting to stop the recording.' });

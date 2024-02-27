@@ -74,7 +74,9 @@
         "move": "Move",
         "download": "download",
         "upload": "upload & share",
-        "close": "Close"
+        "close": "Close",
+        "startRecording": "start recording",
+        "reject": "reject"
     },
     "devices": {
         "turnOn": "Turn on",
@@ -149,7 +151,10 @@
     },
     "recordMeeting": {
         "start": "Start Recording",
-        "stop": "Stop Recording"
+        "stop": "Stop Recording",
+        "recordingRequest": "Recording Request",
+        "noAccess": "no access to stop recording",
+        "recordingUrlsList": "recorded urls list"
     },
     "features": {
         "blurBackground": "Background blur",
@@ -254,5 +259,10 @@
     "hostDeviceRequireTitle": "Microphone Requirement for Host",
     "hostDeviceRequire": "You are the host of this meeting. Your microphone and video camera is currently disabled. Would you like to navigate to the settings page to address this issue?",
     "recordVideoDownloadTitle": "Save your recording",
-    "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?"
+    "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?",
+    "recordingRequestTitle": "asking to record",
+    "recordingRequestReject": "recording request rejected",
+    "recordingRequestAcccept": "recording started",
+    "recordingUrlsListTitle": "urls list",
+    "noVideos": "no videos..."
 }

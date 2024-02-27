@@ -95,7 +95,7 @@ import {
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
 
-const NotMeetingComponent = memo(({ isShow = false }) => {
+const NotMeetingComponent = memo(({ isShow = false, isRecorder }: { isShow: boolean, isRecorder: boolean }) => {
     const localUser = useStore($localUserStore);
     const { isMobile } = useBrowserDetect();
 
@@ -118,6 +118,7 @@ const NotMeetingComponent = memo(({ isShow = false }) => {
                         isMobile &&
                         localUser.accessStatus ===
                         MeetingAccessStatusEnum.EnterName,
+                    [styles.isRecorder]: isRecorder
                 })}
                 id="anchor-unlock"
             >
@@ -439,7 +440,7 @@ const MeetingContainer = memo(() => {
                                 <>
                                     <MeetingPreview isShow={isMeetingPreviewShow} />
                                     <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
-                                    <NotMeetingComponent isShow={isMeetingPreviewShow} />
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder}/>
                                 </>
                             </ConditionalRender>
                         </CustomBox>
