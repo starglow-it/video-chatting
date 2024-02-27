@@ -265,7 +265,10 @@ export class MeetingsController {
   })
   async getMediaServerToken(@Body() body: GetMeetingTokenRequest) {
     try {
+      console.log('getMediaServerToken---------------------', body);
       const result = await this.mediaServerService.getMediaServerToken(body);
+
+      console.log('result-----------------------', result)
 
       if (!result?.result) {
         return {

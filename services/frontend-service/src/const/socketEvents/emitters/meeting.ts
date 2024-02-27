@@ -28,4 +28,5 @@ export enum MeetingSocketEmitters {
     ReactionQuestion = 'meeting:question:reaction',
     LoadMoreQuestions = 'meeting:question:loadmore',
     SendUnReactionQuestion = 'meeting:question:unreaction:send',
+    StartTranscription = 'meeting:transcription:start',
 }

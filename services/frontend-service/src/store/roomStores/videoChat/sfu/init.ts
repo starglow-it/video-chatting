@@ -57,11 +57,18 @@ sample({
         localUser: $localUserStore,
         template: $meetingTemplateStore,
     }),
-    fn: ({ template, localUser }) => ({
-        templateId: template.id,
+    fn: ({ template, localUser }) => {
+        console.log('--------------initSFUVideoChat-----------------------', template.id, localUser.id, template.meetingInstance.serverIp)
+
+        return {templateId: template.id,
         userId: localUser.id,
-        serverIp: template.meetingInstance.serverIp,
-    }),
+        serverIp: template.meetingInstance.serverIp,}
+    },
+    // fn: ({ template, localUser }) => ({
+    //     templateId: template.id,
+    //     userId: localUser.id,
+    //     serverIp: template.meetingInstance.serverIp,
+    // }),
     target: connectToSFUFx,
 });
 

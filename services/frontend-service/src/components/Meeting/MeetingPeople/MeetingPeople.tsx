@@ -16,6 +16,7 @@ import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessReq
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
 import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
+import { MeetingTranscribe } from '../MeetingChat/MeetingTranscribe';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -81,7 +82,7 @@ export const MeetingPeople = () => {
     const isThereNewMessage = useStore($isHaveNewMessage);
     const isThereNewQuestion = useStore($isHaveNewQuestion);
 
-    useEffect(()=> {
+    useEffect(() => {
         if (isThereNewMessage) {
             setActiveTabPanelEvent(0);
         }
@@ -155,14 +156,15 @@ export const MeetingPeople = () => {
                     <MeetingQuestionAnswer />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    <CustomGrid
+                    {/* <CustomGrid
                         display="flex"
                         flexDirection="column"
                         paddingTop={1}
                     >
                         {isMeetingHost && <MeetingAccessRequests />}
                         <MeetingUsersList />
-                    </CustomGrid>
+                    </CustomGrid> */}
+                    <MeetingTranscribe />
                 </CustomTabPanel>
             </ConditionalRender>
             <ConditionalRender condition={isAudience}>
@@ -171,6 +173,9 @@ export const MeetingPeople = () => {
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                     <MeetingQuestionAnswer />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <MeetingTranscribe />
                 </CustomTabPanel>
             </ConditionalRender>
         </CustomGrid>

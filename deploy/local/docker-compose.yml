@@ -128,6 +128,20 @@ services:
     networks:
       - liveoffice_local
 
+  aws-transcribe-service:
+    container_name: aws-transcribe-service
+    build:
+      context: ../../
+      dockerfile: ./services/aws-transcribe-service/Dockerfile.dev
+      args:
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
+    ports:
+      - "3010:3010"
+    env_file:
+      - .env
+    networks:
+      - liveoffice_local
+
   core-service:
     container_name: core-service
     build:

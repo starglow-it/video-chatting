@@ -34,3 +34,8 @@ export const getMeetingNotesSocketEvent = createMeetingSocketEvent<
     void,
     { meetingNotes: MeetingNote[] }
 >(MeetingSocketEmitters.GetMeetingNotes);
+
+export const startTranscription = createMeetingSocketEvent<
+    { note: string },
+    void
+>(MeetingSocketEmitters.StartTranscription);

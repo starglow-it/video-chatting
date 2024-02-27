@@ -21,6 +21,7 @@ import * as meetingAudio from './meeting/meetingAudio/init';
 import * as meetingRole from './meeting/meetingRole/init';
 import * as meetingChat from './meeting/meetingChat/init';
 import * as meetingQuestionAnswer from './meeting/meetingQuestionAnswer/init';
+import * as Transcription from './transcription/init';
 
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
@@ -48,6 +49,7 @@ export * from './meeting/meetingRole/model';
 export * from './meeting/meetingChat/model';
 export * from './meeting/meetingQuestionAnswer/model';
 export * from './meeting/meetingReactions/model';
+export * from './transcription/model';
 
 export * from './videoChat/p2p/init';
 export * from './videoChat/localMedia/init';
@@ -78,4 +80,5 @@ export default {
     meetingRole,
     meetingChat,
     meetingQuestionAnswer,
+    Transcription,
 };
