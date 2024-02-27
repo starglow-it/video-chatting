@@ -5,7 +5,6 @@ export class SaveRecordingUrlRequest implements ISaveRecordingUrlRequest {
   @IsString()
   meetingId: string;
 
-  @IsNotEmpty()
   @IsString()
   url: string;
 }

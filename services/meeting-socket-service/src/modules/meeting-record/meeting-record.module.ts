@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { MeetingRecordCommonService } from './meeting-record.common';
 import { MeetingRecordService } from './meeting-record.service';
 import { MeetingRecord, MeetingRecordSchema } from '../../schemas/meeting-record.schema';
 
@@ -14,7 +15,7 @@ import { MeetingRecord, MeetingRecordSchema } from '../../schemas/meeting-record
     ]),
   ],
   controllers: [],
-  providers: [MeetingRecordService],
-  exports: [MeetingRecordService],
+  providers: [MeetingRecordService, MeetingRecordCommonService],
+  exports: [MeetingRecordService, MeetingRecordCommonService],
 })
 export class MeetingRecordModule {}

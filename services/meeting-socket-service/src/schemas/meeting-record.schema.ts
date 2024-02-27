@@ -8,7 +8,8 @@ import { MeetingDocument } from './meeting.schema';
 })
 export class MeetingRecord {
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Meeting' }],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Meeting',
   })
   meetingId: MeetingDocument;
 

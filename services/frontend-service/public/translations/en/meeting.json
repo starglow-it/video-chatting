@@ -152,7 +152,9 @@
     "recordMeeting": {
         "start": "Start Recording",
         "stop": "Stop Recording",
-        "recordingRequest": "Recording Request"
+        "recordingRequest": "Recording Request",
+        "noAccess": "no access to stop recording",
+        "recordingUrlsList": "recorded urls list"
     },
     "features": {
         "blurBackground": "Background blur",
@@ -256,5 +258,7 @@
     "recordVideoDownloadDescription": "Do you want to upload to S3 Bucket?",
     "recordingRequestTitle": "asking to record",
     "recordingRequestReject": "recording request rejected",
-    "recordingRequestAcccept": "recording started"
+    "recordingRequestAcccept": "recording started",
+    "recordingUrlsListTitle": "urls list",
+    "noVideos": "no videos..."
 }

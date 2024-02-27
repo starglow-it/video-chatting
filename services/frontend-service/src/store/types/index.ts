@@ -395,7 +395,6 @@ export type GetRoomRatingStatisticParams = {
     roomType: string;
 };
 
-
 export type MeetingRecordVideo = {
     id: string;
     meetingId: string;
@@ -404,9 +403,12 @@ export type MeetingRecordVideo = {
 };
 
 export type MeetingRecording = {
-    videos: MeetingRecordVideo[],
-    requestUsers?: {id: string, name: string}[],
+    videos: string[],
+    requestUsers?: MeetingUser[],
     isRecordingStarted?: boolean;
+    byRequest?: boolean;
+    isStartRecordingPending?: boolean;
+    isStopRecordingPending?: boolean;
 };
 export * from './state';
 export * from './response';

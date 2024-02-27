@@ -1,6 +1,6 @@
 import { addNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
-import { recordingRequestAcceptedEvent, isRequestRecordingStartEvent } from '../../../../../store/roomStores';
+import { recordingRequestAcceptedEvent } from '../../../../../store/roomStores';
 
 export const handleReceiveRequestRecordingAccepted = ({ username }: { username: string }) => {
     addNotificationEvent({
@@ -8,6 +8,5 @@ export const handleReceiveRequestRecordingAccepted = ({ username }: { username: 
         message: `${username} started recording`,
         withSuccessIcon: true
     });
-    isRequestRecordingStartEvent();
     recordingRequestAcceptedEvent();
 };

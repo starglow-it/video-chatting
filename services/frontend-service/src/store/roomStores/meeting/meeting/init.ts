@@ -4,7 +4,6 @@ import { resetRoomStores, resetMeetingRecordingStore } from '../../../root';
 import {
     $meetingStore,
     $meetingRecordingStore,
-    $RecordingUrlsStore,
     updateMeetingEvent,
     $meetingConnectedStore,
     setMeetingConnectedEvent,
@@ -21,7 +20,10 @@ import {
     updateMeetingTemplateDashFx,
     receiveRequestRecordingEvent,
     isRequestRecordingStartEvent,
-    receiveRecordingUrlsEvent
+    isRequestRecordingEndEvent,
+    setRecordingUrlsEvent,
+    setStartRecordingPendingEvent,
+    setStopRecordingPendingEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -64,18 +66,20 @@ $isToggleLinksDrawer
     .reset(resetRoomStores);
 
 $meetingRecordingStore
-    .on(isRequestRecordingStartEvent, (state, _) => ({...state, isRecordingStarted: true}))
-    .on(receiveRequestRecordingEvent, (state, { userId, username }) => {
-        if (state.requestUsers.findIndex(user => user.id === userId) == -1) {
+    .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStopPending: true }))
+    .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStartPending: true }))
+    .on(setRecordingUrlsEvent, (state, data) => ({ ...state, videos: data }))
+    .on(isRequestRecordingStartEvent, (state, _) => ({ ...state, isRecordingStarted: true, byRequest: true }))
+    .on(isRequestRecordingEndEvent, (state, _) => ({ ...state, byRequest: false }))
+    .on(receiveRequestRecordingEvent, (state, data) => {
+        if (state.requestUsers.findIndex(user => user.id === data.id) == -1) {
             return {
                 ...state,
-                requestUsers: [...state.requestUsers, { id: userId, name: username }]
+                requestUsers: [...state.requestUsers, data]
             }
         }
     })
     .reset(resetMeetingRecordingStore);
-
-$RecordingUrlsStore.on(receiveRecordingUrlsEvent, (state, data) => data);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);

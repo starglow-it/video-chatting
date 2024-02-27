@@ -29,7 +29,10 @@ const initialMeetingState: Meeting = {
 const initialMeetingRecordingState: MeetingRecording = {
     videos: [],
     requestUsers: [],
-    isRecordingStarted: false
+    isRecordingStarted: false,
+    byRequest: false,
+    isStartRecordingPending: false,
+    isStopRecordingPending: false
 }
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
@@ -37,9 +40,6 @@ export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
 
 export const $meetingRecordingStore =
     meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
-
-export const $RecordingUrlsStore =
-    meetingDomain.createStore<string[]>([]);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -157,9 +157,10 @@ export const sendUpdateMeetingTemplateEvent = attach<
 });
 
 export const isRequestRecordingStartEvent = meetingDomain.createEvent<void>('isRequestRecordingStartEvent');
+export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isRequestRecordingEndEvent');
 
-export const receiveRequestRecordingEvent = meetingDomain.createEvent<{
-    userId: string, username: string
-}>('receiveRequestRecordingEvent');
+export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
 
-export const receiveRecordingUrlsEvent = meetingDomain.createEvent<string[]>('receiveRecordingUrlsEvent');
+export const setRecordingUrlsEvent = meetingDomain.createEvent<string[]>('setRecordingUrlsEvent');
+export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
+export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');

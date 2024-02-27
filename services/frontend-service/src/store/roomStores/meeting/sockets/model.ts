@@ -40,7 +40,8 @@ import {
     RequestRecordingEventPayload,
     RequestRecordingResponse,
     AnswerRequestRecordingResponse,
-    SaveRecordingEventPayload
+    SaveRecordingEventPayload,
+    SetIsMeetingRecordingPayload
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -170,7 +171,17 @@ export const saveRecordingUrl = createMeetingSocketEvent<
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.SaveRecordingUrl);
 
-export const getRecordingUrls = createMeetingSocketEvent<
+export const setIsMeetingRecording = createMeetingSocketEvent<
+    SetIsMeetingRecordingPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.SetIsMeetingRecording);
+
+export const recordingStartPendingEvent = createMeetingSocketEvent<
     RequestRecordingEventPayload,
     AnswerRequestRecordingResponse
->(MeetingSocketEmitters.GetRecordingUrls);
+>(MeetingSocketEmitters.recordingStartPending);
+
+export const recordingStopPendingEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.recordingStopPending);

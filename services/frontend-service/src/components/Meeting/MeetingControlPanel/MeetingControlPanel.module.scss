@@ -201,3 +201,26 @@
     color: rgba($primary-white, 0.6);
   }
 }
+
+.profileAvatar {
+  margin: rem(0 8px 0 0);
+  flex: 0 0 auto;
+}
+
+.copyBtn {
+  height: rem(30px);
+  width: rem(30px);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+
+.urlTypography {
+  width: 75%;
+  overflow-x: hidden;
+}
+
+.videosScroll {
+  max-height: 375px;
+  padding-right: 20px;
+}

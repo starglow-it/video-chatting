@@ -23,4 +23,8 @@ export enum MeetingSubscribeEvents {
     OnReceiveRequestRecording = 'meeting:recording:request:receive',
     OnReceiveRequestRecordingRejected = 'meeting:recording:request:rejected:receive',
     OnReceiveRequestRecordingAccepted = 'meeting:recording:request:accepted:receive',
+    OnReceiveStartRecordingPending = 'meeting:start:recording:pending:receive',
+    OnReceiveStopRecordingPending = 'meeting:stop:recording:pending:receive',
+    OnGetMeetingUrlsReceive = 'meeting:get:recording:urls:receive',
+    OnGetMeetingUrlsReceiveFail = 'meeting:get:recording:urls:receive:fail',
 }

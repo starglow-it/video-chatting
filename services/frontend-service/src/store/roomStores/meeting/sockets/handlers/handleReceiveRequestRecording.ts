@@ -1,9 +1,6 @@
 import { receiveRequestRecordingEvent } from '../../meeting/model';
-import { RequestRecordingResponse } from '../types';
+import { MeetingUser } from '../../../../../store/types';
 
-export const handleReceiveRequestRecording = ({
-    userId,
-    username
-}: RequestRecordingResponse) => {
-    receiveRequestRecordingEvent({userId, username});
+export const handleReceiveRequestRecording = ({ user }: { user:MeetingUser }) => {
+    receiveRequestRecordingEvent(user);
 };

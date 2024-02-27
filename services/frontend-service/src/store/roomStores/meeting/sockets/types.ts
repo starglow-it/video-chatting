@@ -167,11 +167,18 @@ export type SendUnReactionQuestionResponse = {
 
 export type RequestRecordingEventPayload = {
     meetingId: string;
+    recordingUrl: string;
 };
 
 export type SaveRecordingEventPayload = {
     meetingId: string;
     url: string;
+};
+
+export type SetIsMeetingRecordingPayload = {
+    meetingId: string;
+    isMeetingRecording: boolean;
+    recordingUrl: string;
 };
 
 export type RequestRecordingResponse = {

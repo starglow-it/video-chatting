@@ -15,7 +15,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
@@ -27,6 +27,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CircularProgress from '@mui/material/CircularProgress';
+import DvrIcon from '@mui/icons-material/Dvr';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -64,8 +65,10 @@ import {
     stopRecordMeeting,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
+    toggleRecordingUrlsListPanel,
     updateLocalUserEvent,
     $isToggleSchedulePanel,
+    $isRecordingUrlsListPanel,
     $isHaveNewQuestion,
     updateUserSocketEvent,
     startScreenSharing,
@@ -74,6 +77,7 @@ import {
     stopRecordStreamFx,
     $isScreenSharingStore,
     requestRecordingEvent,
+    recordingStopPendingEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -94,6 +98,7 @@ const Component = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
+    const isRecordingUrlsListPanel = useStore($isRecordingUrlsListPanel);
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
@@ -131,13 +136,31 @@ const Component = () => {
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
+    const users = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Audience &&
+                    user.meetingRole !== MeetingRole.Recorder,
+            ),
+    });
+
     useEffect(() => {
         return () => {
-            if (isRecording) {
-                stopRecordMeeting(fullUrl);
+            if (isRecording && users.length === 0) {
+                stopRecordMeeting({ url: fullUrl, byRequest: meetingRecordingStore.byRequest, meetingId: meeting.id });
             }
         }
-    }, []);
+    }, [users]);
+
+    useEffect(() => {
+        if (recordingStopPending && meetingRecordingStore.byRequest) {
+            recordingStopPendingEvent({ meetingId: meeting.id });
+        }
+    }, [recordingStopPending, meetingRecordingStore]);
 
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
@@ -167,7 +190,7 @@ const Component = () => {
         }
 
         if (isRecording) {
-            stopRecordMeeting(fullUrl);
+            stopRecordMeeting({ url: fullUrl, byRequest: meetingRecordingStore.byRequest, meetingId: meeting.id });
         }
 
         await router.push(
@@ -215,6 +238,11 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
+    const handleToggleRecordingUrlsListPanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleRecordingUrlsListPanel();
+    };
+
     const handleRequestToBecomeParticipant = useCallback(() => {
         requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
     }, []);
@@ -226,12 +254,12 @@ const Component = () => {
             })
         } else {
             if (!isRecording) {
-                startRecordMeeting(fullUrl);
+                startRecordMeeting({ url: fullUrl, byRequest: false, meetingId: meeting.id});
             } else {
-                if (meetingRecordingStore.requestUsers.length > 0) {
-                    stopRecordMeeting(fullUrl, true, meeting.id);
+                if (meetingRecordingStore.byRequest) {
+                    stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
                 } else {
-                    stopRecordMeeting(fullUrl);
+                    stopRecordMeeting({ url: fullUrl, byRequest: false, meetingId: meeting.id });
                 }
 
                 appDialogsApi.openDialog({
@@ -547,7 +575,15 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isAudience ? "recordMeeting.recordingRequest" : isRecording ? "recordMeeting.stop" : "recordMeeting.start"}
+                            translation={
+                                isAudience
+                                    ? isRecording
+                                        ? "recordMeeting.noAccess"
+                                        : "recordMeeting.recordingRequest"
+                                    : isRecording
+                                        ? "recordMeeting.stop"
+                                        : "recordMeeting.start"
+                            }
                         />
                     }
                     placement="top"
@@ -560,17 +596,40 @@ const Component = () => {
                         <ActionButton
                             variant="transparentBlack"
                             onAction={handleRecordMeeting}
-                            className={clsx(styles.deviceButton)}
+                            className={styles.deviceButton}
+                            disabled={isAudience && isRecording}
                             Icon={
-                                (recordingStartPending || recordingStopPending)
+                                (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
                                     ? <CircularProgress
                                         size={15}
                                         sx={{ color: 'white' }}
                                     />
-                                    : !isRecording
-                                        ? <FiberManualRecordIcon />
-                                        : <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
+                                    : isRecording
+                                        ? <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
+                                        : <FiberManualRecordIcon />
                             }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={"recordMeeting.recordingUrlsList"}
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleRecordingUrlsListPanel}
+                            className={clsx(styles.actionButton, { [styles.active]: isRecordingUrlsListPanel })}
+                            Icon={<DvrIcon sx={{ width: "20px", height:"20px" }}/>}
                         />
                     </CustomPaper>
                 </CustomTooltip>
