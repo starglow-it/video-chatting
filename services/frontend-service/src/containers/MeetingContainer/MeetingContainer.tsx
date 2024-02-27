@@ -2,6 +2,7 @@ import { memo, useState, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import Head from 'next/head';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
@@ -352,6 +353,9 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
+            <Head>
+                <title>Ruume {meetingTemplate.name}</title>
+            </Head>
             <ConditionalRender
                 condition={!meetingTemplate?.id && !isLoadingFetchMeeting}
             >
