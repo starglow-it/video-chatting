@@ -245,6 +245,10 @@
         "private": "Private Meeting. Only invited Participants",
         "public": "Public Meeting. Add an Audience"
     },
+    "hostWaitingNotify": {
+        "title": "The host has another ruume in progress.",
+        "text": "Please wait or leave a message"
+    },
     "meetingPrivate": "The Meeting is private",
     "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",
     "hostDeviceRequireTitle": "Microphone Requirement for Host",
