@@ -20,7 +20,7 @@ export class MeetingRecordCommonService {
 
   async stopRecording({ roomUrl }: { roomUrl: string }): Promise<any> {
     try {
-      const result = await this.axiosInstance.post('http://localhost:9091/stop-recording', { roomUrl });
+      const result = await this.axiosInstance.post('http://media-server-service:9091/stop-recording', { roomUrl });
       return result;
     } catch (error) {
       // Handle errors here

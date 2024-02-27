@@ -23,7 +23,6 @@ function removeQueryString(url: string): string {
 
 export const handleStartRecordingStream = async ({ url, byRequest = false, meetingId = '' }: { url: string, byRequest?: boolean, meetingId?: string }): Promise<recordMeetingResponse> => {
     try {
-        url = "https://stg-my.chatruume.com/room/hot-room";
         if (url) {
             url = removeQueryString(url);
             const result = await axios.post(startRecordingUrl, { roomUrl: `${url}?role=recorder` });
@@ -52,7 +51,6 @@ export const handleStartRecordingStream = async ({ url, byRequest = false, meeti
 // Stopping the recording and returning the blob
 export const handleStopRecordingStream = async ({ url, byRequest = false, meetingId = '' }: { url: string, byRequest?: boolean, meetingId?: string }): Promise<recordMeetingResponse> => {
     try {
-        url = "https://stg-my.chatruume.com/room/hot-room";
         if (url) {
             url = removeQueryString(url);
             const result = await axios.post(stopRecordingUrl, { roomUrl: `${url}?role=recorder` });
