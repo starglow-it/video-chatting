@@ -5,7 +5,7 @@ docker-compose -f docker-compose.proxy.yml down --remove-orphans
 
 docker-compose -f docker-compose.services.yml down --remove-orphans
 
-
+sudo docker-compose -f docker-compose.proxy.yml up -d
 ```
 
 - temp
@@ -82,7 +82,5 @@ docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice
 # restore
 #mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
 docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
-
-
 
 ```
