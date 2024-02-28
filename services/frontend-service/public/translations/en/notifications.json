@@ -46,6 +46,7 @@
   },
   "recording": {
     "startRecordingFail": "An error occurred while trying to start the recording. Please try again.",
+    "stopRecordingFail": "An error occurred while trying to stop the recording.",
     "recordingRequestReject": "recording request rejected",
     "recordingRequestAcccept": "recording started"
   },
