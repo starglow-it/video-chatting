@@ -77,7 +77,7 @@ import {
     stopRecordStreamFx,
     $isScreenSharingStore,
     requestRecordingEvent,
-    recordingStopPendingEvent
+    recordingStopPendingEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -254,17 +254,9 @@ const Component = () => {
             })
         } else {
             if (!isRecording) {
-                startRecordMeeting({ url: fullUrl, byRequest: false, meetingId: meeting.id});
+                startRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
             } else {
-                if (meetingRecordingStore.byRequest) {
-                    stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
-                } else {
-                    stopRecordMeeting({ url: fullUrl, byRequest: false, meetingId: meeting.id });
-                }
-
-                appDialogsApi.openDialog({
-                    dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
-                });
+                stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
             }
         }
     };
@@ -629,7 +621,7 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={handleToggleRecordingUrlsListPanel}
                             className={clsx(styles.actionButton, { [styles.active]: isRecordingUrlsListPanel })}
-                            Icon={<DvrIcon sx={{ width: "20px", height:"20px" }}/>}
+                            Icon={<DvrIcon sx={{ width: "20px", height: "20px" }} />}
                         />
                     </CustomPaper>
                 </CustomTooltip>

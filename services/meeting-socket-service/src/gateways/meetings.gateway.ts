@@ -2163,4 +2163,35 @@ export class MeetingsGateway
       },
     );
   }
+  @WsEvent(MeetingSubscribeEvents.OnErrorWhileStopRecording)
+  async errorWhileStopRecording(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveErrorWhileStopRecording,
+        );
+
+        return wsResult({
+          message: 'successfully error handled',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
 }
