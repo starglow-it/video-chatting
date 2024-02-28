@@ -599,4 +599,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnReceiveStopRecordingPending,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.onGetErrorWhileStopRecording,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.onGetErrorWhileStopRecording,
+        ),
+    );
 });

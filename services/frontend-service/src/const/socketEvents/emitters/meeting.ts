@@ -35,4 +35,5 @@ export enum MeetingSocketEmitters {
     SetIsMeetingRecording = 'meeting:set:is:meeting:recording:send',
     recordingStartPending = 'meeting:start:recording:pending',
     recordingStopPending = 'meeting:stop:recording:pending',
+    errorWhileStopRecording = 'meeting:error:while:stop:recording:send',
 }
