@@ -16,6 +16,9 @@ export const $isToggleUsersPanel =
 export const $isToggleSchedulePanel =
     meetingUsersDomain.createStore<boolean>(false);
 
+export const $isRecordingUrlsListPanel =
+    meetingUsersDomain.createStore<boolean>(false);
+
 export const updateMeetingUsersEvent =
     meetingUsersDomain.event<UpdateMeetingUsersPayload>(
         'updateMeetingUsersEvent',
@@ -34,3 +37,7 @@ export const toggleUsersPanelEvent = meetingUsersDomain.createEvent<
 export const toggleSchedulePanelEvent = meetingUsersDomain.createEvent<
     boolean | undefined
 >('toggleSchedulePanelEvent');
+
+export const toggleRecordingUrlsListPanel = meetingUsersDomain.createEvent<
+    boolean | undefined
+>('toggleRecordingUrlsListPanel');

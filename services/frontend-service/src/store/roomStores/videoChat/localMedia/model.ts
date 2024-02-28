@@ -146,3 +146,9 @@ export const uploadToS3Fx = videoChatDomain.createEffect<
     VideoBlob,
     string
 >('uploadToS3Fx');
+export const recordingRequestAcceptedEvent = videoChatDomain.createEvent<void>(
+    'recordingRequestAcceptedEvent',
+);
+export const stopRecordMeetingByOthers = videoChatDomain.createEvent<void>(
+    'stopRecordMeetingByOthers',
+);

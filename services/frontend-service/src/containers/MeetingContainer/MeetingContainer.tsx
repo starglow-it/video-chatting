@@ -2,6 +2,7 @@ import { memo, useState, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import Head from 'next/head';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
@@ -94,7 +95,7 @@ import {
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
 
-const NotMeetingComponent = memo(({ isShow = false }) => {
+const NotMeetingComponent = memo(({ isShow = false, isRecorder }: { isShow: boolean, isRecorder: boolean }) => {
     const localUser = useStore($localUserStore);
     const { isMobile } = useBrowserDetect();
 
@@ -117,6 +118,7 @@ const NotMeetingComponent = memo(({ isShow = false }) => {
                         isMobile &&
                         localUser.accessStatus ===
                         MeetingAccessStatusEnum.EnterName,
+                    [styles.isRecorder]: isRecorder
                 })}
                 id="anchor-unlock"
             >
@@ -352,6 +354,9 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
+            <Head>
+                <title>Ruume {meetingTemplate.name}</title>
+            </Head>
             <ConditionalRender
                 condition={!meetingTemplate?.id && !isLoadingFetchMeeting}
             >
@@ -435,7 +440,7 @@ const MeetingContainer = memo(() => {
                                 <>
                                     <MeetingPreview isShow={isMeetingPreviewShow} />
                                     <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
-                                    <NotMeetingComponent isShow={isMeetingPreviewShow} />
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder}/>
                                 </>
                             </ConditionalRender>
                         </CustomBox>

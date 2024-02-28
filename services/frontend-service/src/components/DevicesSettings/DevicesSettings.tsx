@@ -282,7 +282,7 @@ const Component = () => {
                     <CustomGrid container direction="column">
                         <CustomTypography
                             className={styles.title}
-                            variant="h3bold"
+                            variant="h4bold"
                             nameSpace="meeting"
                             translation="hostWaitingNotify.title"
                         />
@@ -297,7 +297,7 @@ const Component = () => {
                 {/* <CustomGrid container direction="column">
                     <CustomTypography
                         className={styles.title}
-                        variant="h3bold"
+                        variant="h4bold"
                         nameSpace="meeting"
                         translation="hostWaitingNotify.title"
                     />
@@ -348,7 +348,7 @@ const Component = () => {
                 <CustomGrid container direction="column">
                     <CustomTypography
                         className={styles.title}
-                        variant="h3bold"
+                        variant="h4bold"
                         nameSpace="meeting"
                         translation="hostWaitingNotify.title"
                     />
@@ -415,7 +415,7 @@ const Component = () => {
                         title={
                             <CustomTypography
                                 className={styles.title}
-                                variant="h3bold"
+                                variant="h4bold"
                                 nameSpace="meeting"
                                 translation={
                                     isMobile ? 'settings.main' : 'readyToJoin'
@@ -437,7 +437,7 @@ const Component = () => {
                             <CustomGrid container direction="column">
                                 <CustomTypography
                                     className={styles.title}
-                                    variant="h3bold"
+                                    variant="h4bold"
                                     nameSpace="meeting"
                                     translation="requestSent"
                                 />
@@ -471,7 +471,7 @@ const Component = () => {
                             <CustomGrid container direction="column">
                                 <CustomTypography
                                     className={styles.title}
-                                    variant="h3bold"
+                                    variant="h4bold"
                                     nameSpace="meeting"
                                     translation="hostLeftRoom.title"
                                 />
@@ -504,7 +504,7 @@ const Component = () => {
                             <CustomGrid container direction="column">
                                 <CustomTypography
                                     className={styles.title}
-                                    variant="h3bold"
+                                    variant="h4bold"
                                     nameSpace="meeting"
                                     translation="hostLeftRoom.title"
                                 />
