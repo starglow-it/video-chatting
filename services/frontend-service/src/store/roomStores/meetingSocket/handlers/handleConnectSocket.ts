@@ -14,6 +14,7 @@ export const handleConnectSocket = async ({
     console.log(serverIp)
     console.log(frontendConfig)
     console.log('[[[[[[[[[[[[[[serverIp]]]]]]]]]]]]]]')
+    serverIp = frontendConfig.defaultServerIp;
     const socketUrl =
         !['localhost', frontendConfig.defaultServerIp].includes(serverIp) &&
             serverIp
