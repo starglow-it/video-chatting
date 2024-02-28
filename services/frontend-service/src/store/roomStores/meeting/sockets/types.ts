@@ -175,10 +175,6 @@ export type SaveRecordingEventPayload = {
     url: string;
 };
 
-export type ErrorWhileStopRecordingPayload = {
-    meetingId: string;
-};
-
 export type SetIsMeetingRecordingPayload = {
     meetingId: string;
     isMeetingRecording: boolean;

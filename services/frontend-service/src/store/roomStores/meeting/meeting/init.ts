@@ -23,7 +23,8 @@ import {
     isRequestRecordingEndEvent,
     setRecordingUrlsEvent,
     setStartRecordingPendingEvent,
-    setStopRecordingPendingEvent
+    setStopRecordingPendingEvent,
+    resetMeetingRecordingStoreExceptVideosEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -66,8 +67,8 @@ $isToggleLinksDrawer
     .reset(resetRoomStores);
 
 $meetingRecordingStore
-    .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStopPending: true }))
-    .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isRecordingStartPending: true }))
+    .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isStopRecordingPending: true }))
+    .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isStartRecordingPending: true }))
     .on(setRecordingUrlsEvent, (state, data) => ({ ...state, videos: data }))
     .on(isRequestRecordingStartEvent, (state, _) => ({ ...state, isRecordingStarted: true, byRequest: true }))
     .on(isRequestRecordingEndEvent, (state, _) => ({ ...state, byRequest: false }))
@@ -79,6 +80,16 @@ $meetingRecordingStore
             }
         }
     })
+    .on(resetMeetingRecordingStoreExceptVideosEvent, (state, _) =>
+    ({
+        ...state,
+        requestUsers: [],
+        isRecordingStarted: false,
+        byRequest: false,
+        isStartRecordingPending: false,
+        isStopRecordingPending: false
+    })
+    )
     .reset(resetMeetingRecordingStore);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);

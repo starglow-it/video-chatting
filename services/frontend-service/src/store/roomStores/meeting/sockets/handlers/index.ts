@@ -207,7 +207,7 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             {
                 handler: handleReceiveStopRecordingPending,
             },
-        ],
+        ]
     ]);
 
 const MEETING_TEMPLATE_SUBSCRIBE_HANDLERS_REGISTRY: Map<

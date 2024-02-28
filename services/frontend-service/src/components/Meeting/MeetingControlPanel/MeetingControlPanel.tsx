@@ -52,14 +52,12 @@ import {
     $meetingStore,
     $isAudience,
     startRecordStreamFx,
-    stopRecordStreamFx,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     toggleRecordingUrlsListPanel,
-    requestRecordingAcceptEvent,
     requestRecordingRejectEvent,
     startRecordMeeting,
     recordingStartPendingEvent
@@ -126,7 +124,6 @@ const Component = () => {
         } else {
             setIsRecordingRequestReceived(false);
         }
-        console.log(meetingRecordingStore);
     }, [meetingRecordingStore]);
 
     useEffect(() => {
@@ -278,27 +275,29 @@ const Component = () => {
                             container
                             justifyContent="space-between"
                         >
-                            {recordingStartPending || meetingRecordingStore.isRecordingStartPending
-                                ? <CustomButton
-                                    label={
-                                        <CustomLoader />
-                                    }
-                                    size="small"
-                                    className={styles.recordingRequestHandleBtn}
-                                    disabled
-                                    onClick={handleRequestRecordingAccept}
-                                />
-                                : <CustomButton
-                                    label={
-                                        <Translation
-                                            nameSpace="meeting"
-                                            translation="buttons.startRecording"
-                                        />
-                                    }
-                                    size="small"
-                                    className={styles.recordingRequestHandleBtn}
-                                    onClick={handleRequestRecordingAccept}
-                                />}
+                            {
+                                recordingStartPending || meetingRecordingStore.isStartRecordingPending
+                                    ? <CustomButton
+                                        label={
+                                            <CustomLoader />
+                                        }
+                                        size="small"
+                                        className={styles.recordingRequestHandleBtn}
+                                        disabled
+                                        onClick={handleRequestRecordingAccept}
+                                    />
+                                    : <CustomButton
+                                        label={
+                                            <Translation
+                                                nameSpace="meeting"
+                                                translation="buttons.startRecording"
+                                            />
+                                        }
+                                        size="small"
+                                        className={styles.recordingRequestHandleBtn}
+                                        onClick={handleRequestRecordingAccept}
+                                    />
+                            }
 
                             <CustomButton
                                 variant="custom-cancel"
