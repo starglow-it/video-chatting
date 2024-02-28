@@ -83,4 +83,13 @@ docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice
 #mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
 docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
 
+
+sudo docker-compose -f docker-compose.proxy.yml down
+sudo docker network rm traefikpublic
+docker network inspect traefikpublic
+sudo docker network inspect traefikpublic
+docker network disconnect traefikpublic
+sudo docker network disconnect traefikpublic 4e01df01698a651449ea0cb9f3fe94bd2da59e68611dff1d47f86fa6dea73733
+sudo docker-compose -f docker-compose.proxy.yml up -d
+
 ```
