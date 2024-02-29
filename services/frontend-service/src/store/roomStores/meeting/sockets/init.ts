@@ -576,6 +576,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+        ),
+    );
+    socketInstance?.on(
         MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
@@ -606,9 +612,27 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
-        MeetingSubscribeEvents.onGetErrorWhileStopRecording,
+        MeetingSubscribeEvents.OnGetUrlByAttendee,
         getMeetingSocketSubscribeHandler(
-            MeetingSubscribeEvents.onGetErrorWhileStopRecording,
+            MeetingSubscribeEvents.OnGetUrlByAttendee,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
         ),
     );
 });

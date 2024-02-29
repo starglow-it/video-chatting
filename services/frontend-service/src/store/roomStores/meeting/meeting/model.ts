@@ -32,7 +32,8 @@ const initialMeetingRecordingState: MeetingRecording = {
     isRecordingStarted: false,
     byRequest: false,
     isStartRecordingPending: false,
-    isStopRecordingPending: false
+    isStopRecordingPending: false,
+    urlForCopy: ''
 }
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
@@ -161,7 +162,9 @@ export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isReq
 
 export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
 
-export const setRecordingUrlsEvent = meetingDomain.createEvent<string[]>('setRecordingUrlsEvent');
+export const setRecordingUrlEvent = meetingDomain.createEvent<{ id: string, endTime: string }>('setRecordingUrlEvent');
+export const setRecordingUrlsEvent = meetingDomain.createEvent<{ id: string, endTime: string }[]>('setRecordingUrlsEvent');
 export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
 export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');
 export const resetMeetingRecordingStoreExceptVideosEvent = meetingDomain.createEvent<void>('resetMeetingRecordingStoreExceptVideosEvent');
+export const setUrlForCopyEvent = meetingDomain.createEvent<string>('setUrlForCopyEvent');

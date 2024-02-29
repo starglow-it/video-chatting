@@ -403,12 +403,13 @@ export type MeetingRecordVideo = {
 };
 
 export type MeetingRecording = {
-    videos: string[],
+    videos: { id: string, endTime: string }[],
     requestUsers?: MeetingUser[],
     isRecordingStarted?: boolean;
     byRequest?: boolean;
     isStartRecordingPending?: boolean;
     isStopRecordingPending?: boolean;
+    urlForCopy?: string;
 };
 export * from './state';
 export * from './response';
