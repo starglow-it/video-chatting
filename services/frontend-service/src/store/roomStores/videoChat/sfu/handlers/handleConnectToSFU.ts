@@ -10,8 +10,6 @@ import {
     VideoPresets,
 } from 'livekit-client';
 
-import EgressHelper from '@livekit/egress-sdk';
-
 import { EgressClient } from 'livekit-server-sdk';
 
 import {
@@ -53,9 +51,7 @@ function streamAudioToWebSocket(userMediaStream: MediaStream) {
     micStream.setStream(userMediaStream);
 
     socket.binaryType = 'arraybuffer';
-    // micStream.on('format', (data: { sampleRate: any }) => {
-    //     inputSampleRate = data.sampleRate;
-    // });
+
     micStream.on(
         'data',
         (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
@@ -70,7 +66,6 @@ function streamAudioToWebSocket(userMediaStream: MediaStream) {
             }
         },
     );
-    // micStream.on('');
 }
 
 function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
@@ -139,7 +134,6 @@ const handleLocalTrackPublished = async (
     if (localTrackPublication.kind === 'audio') {
         console.log('Audio Track', localTrackPublication.kind);
         console.log('Local', localTrackPublication);
-    // fig.egressWss.toString());
         console.log('Starting - audio stream1');
         window.navigator.mediaDevices
             .getUserMedia({

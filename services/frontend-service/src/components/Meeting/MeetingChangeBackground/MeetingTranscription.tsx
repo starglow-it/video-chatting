@@ -66,6 +66,7 @@ const Component = () => {
             startTranscription({
                 note: `Your message after 4 seconds - ${new Date().toLocaleTimeString()}`,
             });
+            setTimeout(sendMessage, 4000);
         };
         sendMessage();
     }, []);

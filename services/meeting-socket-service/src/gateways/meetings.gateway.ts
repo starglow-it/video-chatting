@@ -1508,8 +1508,6 @@ export class MeetingsGateway
     @MessageBody() message: any,
     @ConnectedSocket() socket: Socket,
   ) {
-
-    console.log('-------------------------receiveTranscriptionResults----------------------------')
     const user = this.getUserFromSocket(socket);
     const eventName = 'Broadcast Transcription Message';
     this.logger.log({

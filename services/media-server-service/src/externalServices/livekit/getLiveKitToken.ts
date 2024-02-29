@@ -9,7 +9,6 @@ export const getLiveKitToken = async ({
     userId: string;
 }) => {
     try {
-        console.log('getLiveKitToken---------------', templateId, userId);
         const apiKey = await getConfigVar("livekitApiKey");
         const apiSecret = await getConfigVar("livekitApiSecret");
 
