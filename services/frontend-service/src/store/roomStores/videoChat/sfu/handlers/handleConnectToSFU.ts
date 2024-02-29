@@ -56,13 +56,13 @@ function streamAudioToWebSocket(userMediaStream: MediaStream) {
         'data',
         (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
             if (socket.readyState === socket.OPEN) {
-                console.log(
-                    `sending data  for -${myRoomName} - ${userName} - ${i} `
-                );
+                // console.log(
+                //     `sending data  for -${myRoomName} - ${userName} - ${i} `
+                // );
                 socket.send(rawAudioChunk);
                 i++;
             } else {
-                console.log(`Else condition- ${socket.readyState}`);
+                // console.log(`Else condition- ${socket.readyState}`);
             }
         },
     );
