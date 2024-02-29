@@ -1,7 +1,7 @@
 
 ```shell
 # down
-docker-compose -f docker-compose.proxy.yml down --remove-orphans
+sudo docker-compose -f docker-compose.proxy.yml down --remove-orphans
 
 docker-compose -f docker-compose.services.yml down --remove-orphans
 

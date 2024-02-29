@@ -8,4 +8,4 @@ export const serverUrl = isServer()
     : '/api';
 
 export const mediaServerUrl = isServer() ? `http://${publicRuntimeConfig.defaultServerIp}:${publicRuntimeConfig.mediaServicePort}` : '/media-server';
-export const awsTranscribeServiceUrl = isServer() ? `http://${publicRuntimeConfig.defaultServerIp}:3010` : 'aws-transcibe';
+export const awsTranscribeServiceUrl = isServer() ? `http://${publicRuntimeConfig.defaultServerIp}:3010` : 'aws-transcribe';
