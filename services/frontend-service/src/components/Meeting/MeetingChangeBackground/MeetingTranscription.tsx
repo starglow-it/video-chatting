@@ -1,27 +1,15 @@
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
 import {
     Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    LinearProgress,
 } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useRef, useState } from 'react';
-import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
-import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { UploadBackground } from './Upload';
 import styles from './MeetingChangeBackground.module.scss';
-import { Media } from './Media';
-import { Barge } from './Barge';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
@@ -78,10 +66,8 @@ const Component = () => {
             startTranscription({
                 note: `Your message after 4 seconds - ${new Date().toLocaleTimeString()}`,
             });
-            // setTimeout(sendMessage, 4000);
         };
         sendMessage();
-        // setTranscriptionResult('Hello This is test')
     }, []);
 
     useEffect(() => {

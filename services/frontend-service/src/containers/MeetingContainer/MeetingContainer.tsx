@@ -95,41 +95,6 @@ import {
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const mic = require('microphone-stream').default;
-
-let socket: WebSocket;
-
-let micState = false;
-function streamAudioToWebSocket(userMediaStream: MediaStream) {
-    // eslint-disable-next-line new-cap
-    const micStream = new mic();
-    micStream.setStream(userMediaStream);
-    socket.binaryType = 'arraybuffer';
-
-    if (socket.readyState === socket.OPEN && !micState) {
-        socket.send('close');
-    }
-
-    micStream.on(
-        'data',
-        (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
-            if (socket.readyState === socket.OPEN && micState) {
-                socket.send(rawAudioChunk);
-            }
-            socket.onmessage = function (event) {
-                console.log('Socket Message Received');
-                setTranscriptionResult(event.data.split('@')[1]);
-                setTranscriptionParticipant(event.data.split('@')[0]);
-            };
-        },
-    );
-
-    micStream.on('close', () => {
-        console.log('MicStream Closed');
-        socket.send('close');
-    });
-}
 
 const NotMeetingComponent = memo(({ isShow = false }) => {
     const localUser = useStore($localUserStore);
@@ -268,10 +233,6 @@ const MeetingContainer = memo(() => {
             !isMeetingSocketConnecting
         ) {
             initiateMeetingSocketConnectionEvent();
-
-            socket = new WebSocket(
-                `ws://localhost:3010?roomId=${meetingTemplate.id}&participantName=${localUser.username}`,
-            );
         }
     }, [
         meetingTemplate?.meetingInstance,

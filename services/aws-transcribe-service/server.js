@@ -67,7 +67,7 @@ wss.on("connection", (socket, req) => {
   const urlParams = new URLSearchParams(req.url.split("?")[1]);
   const participantName = urlParams.get("participantName");
   const roomId = urlParams.get("roomId");
-  console.log("Room - Participant", roomId, participantName);
+
   if (roomId && participantName) {
     if (!roomConnections.has(roomId)) {
       roomConnections.set(roomId, new Set());
@@ -77,7 +77,6 @@ wss.on("connection", (socket, req) => {
 
   const roomSocketSet = roomConnections.get(roomId);
   let url = createPresignedUrl();
-  console.debug("Presigned url:", url);
 
   let socketAWS = new WebSocket(url);
   socketAWS.binaryType = "arraybuffer";
@@ -103,10 +102,6 @@ wss.on("connection", (socket, req) => {
           }
         } catch (error) {
           console.log(error);
-          console.log(
-            "🚀 ~ file: server.js:85 ~ socket.on ~ rawAudioChunk:",
-            rawAudioChunk
-          );
         }
       }
     });
@@ -118,19 +113,9 @@ wss.on("connection", (socket, req) => {
   };
 
   function setupWebSocketListener(participantName, roomSocketSet) {
-    console.log("participantName: ----------------\n", participantName);
-
     socketAWS.onmessage = function (message) {
       let messageWrapper = eventStreamMarshaller.unmarshall(
         Buffer.from(message.data)
-      );
-      console.log(
-        "messageWrapper.headers-------------------\n",
-        messageWrapper.headers
-      );
-      console.log(
-        "messageWrapper.body-------------------\n",
-        messageWrapper.body
       );
       let messageBody = JSON.parse(String.fromCharCode(...messageWrapper.body));
 
@@ -194,7 +179,7 @@ wss.on("connection", (socket, req) => {
   }
 
   function createPresignedUrl() {
-    const region = "us-east-2";
+    const region = process.env.AWS_REGION;
     const languageCode = "en-US";
     let endpoint = "transcribestreaming." + region + ".amazonaws.com:8443";
 
@@ -205,8 +190,8 @@ wss.on("connection", (socket, req) => {
       "transcribe",
       crypto.createHash("sha256").update("", "utf8").digest("hex"),
       {
-        key: "AKIAT27I5GU7PWQMRKDV",
-        secret: "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",
+        key: process.env.AWS_ACCESS_KEY_ID,
+        secret: process.env.AWS_SECRET_ACCESS_KEY,
         sessionToken: "",
         protocol: "wss",
         expires: 15,

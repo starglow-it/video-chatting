@@ -10,9 +10,9 @@ import {
     VideoPresets,
 } from 'livekit-client';
 
-// import EgressHelper from '@livekit/egress-sdk';
+import EgressHelper from '@livekit/egress-sdk';
 
-// import { EgressClient } from 'livekit-server-sdk';
+import { EgressClient } from 'livekit-server-sdk';
 
 import {
     disconnectFromVideoChatEvent,
@@ -32,64 +32,64 @@ import { updateMeetingSocketEvent } from '../../../meeting/sockets/model';
 import frontendConfig from '../../../../../const/config';
 import { getMeetingInstanceLivekitUrl } from '../../../../../utils/functions/getMeetingInstanceLivekitUrl';
 import { getConnectionKey } from '../../../../../helpers/media/getConnectionKey';
-// import {
-//     setTranscriptionParticipant,
-//     setTranscriptionParticipantGuest,
-//     setTranscriptionQueue,
-//     setTranscriptionResult,
-//     setTranscriptionResultGuest,
-// } from '../../../transcription/model';
-// // eslint-disable-next-line @typescript-eslint/no-var-requires
-// const mic = require('microphone-stream').default;
+import {
+    setTranscriptionParticipant,
+    setTranscriptionParticipantGuest,
+    setTranscriptionQueue,
+    setTranscriptionResult,
+    setTranscriptionResultGuest,
+} from '../../../transcription/model';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const mic = require('microphone-stream').default;
 
-// let myRoomName = '';
-// let userName = '';
-// let socket: WebSocket;
+let myRoomName = '';
+let userName = '';
+let socket: WebSocket;
 
-// let i = 1;
-// function streamAudioToWebSocket(userMediaStream: MediaStream) {
-//     // eslint-disable-next-line new-cap
-//     const micStream = new mic();
-//     micStream.setStream(userMediaStream);
+let i = 1;
+function streamAudioToWebSocket(userMediaStream: MediaStream) {
+    // eslint-disable-next-line new-cap
+    const micStream = new mic();
+    micStream.setStream(userMediaStream);
 
-//     socket.binaryType = 'arraybuffer';
-//     // micStream.on('format', (data: { sampleRate: any }) => {
-//     //     inputSampleRate = data.sampleRate;
-//     // });
-//     micStream.on(
-//         'data',
-//         (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
-//             if (socket.readyState === socket.OPEN) {
-//                 console.log(
-//                     `sending data  for -${myRoomName} - ${userName} - ${i} `,
-//                 );
-//                 socket.send(rawAudioChunk);
-//                 i++;
-//             } else {
-//                 console.log(`Else condition- ${socket.readyState}`);
-//             }
-//         },
-//     );
-//     micStream.on('');
-// }
+    socket.binaryType = 'arraybuffer';
+    // micStream.on('format', (data: { sampleRate: any }) => {
+    //     inputSampleRate = data.sampleRate;
+    // });
+    micStream.on(
+        'data',
+        (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
+            if (socket.readyState === socket.OPEN) {
+                console.log(
+                    `sending data  for -${myRoomName} - ${userName} - ${i} `
+                );
+                socket.send(rawAudioChunk);
+                i++;
+            } else {
+                console.log(`Else condition- ${socket.readyState}`);
+            }
+        },
+    );
+    // micStream.on('');
+}
 
-// function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
-//     // Check if the new value partially matches the last element of the array (assuming all elements are strings)
-//     const lastElement = array[array.length - 1];
+function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
+    // Check if the new value partially matches the last element of the array (assuming all elements are strings)
+    const lastElement = array[array.length - 1];
 
-//     if (
-//         lastElement?.split('@')[0] === newValue.split('@')[0] &&
-//         lastElement?.split('@')[2] === newValue.split('@')[2]
-//     ) {
-//         // If there is a partial match, replace the last element with the new value
-//         array[array.length - 1] = newValue;
-//     } else {
-//         // If there is no partial match, push the new value to the array
-//         array.push(newValue);
-//     }
+    if (
+        lastElement?.split('@')[0] === newValue.split('@')[0] &&
+        lastElement?.split('@')[2] === newValue.split('@')[2]
+    ) {
+        // If there is a partial match, replace the last element with the new value
+        array[array.length - 1] = newValue;
+    } else {
+        // If there is no partial match, push the new value to the array
+        array.push(newValue);
+    }
 
-//     return array;
-// }
+    return array;
+}
 
 const getConnectionIdHelper = ({
     source,
@@ -130,41 +130,41 @@ const handleLocalTrackPublished = async (
     localTrackPublication: LocalTrackPublication,
     localParticipant: LocalParticipant,
 ) => {
-    // console.log(
-    //     'Publish Local Track',
-    //     localTrackPublication.trackSid,
-    //     RoomEvent.Connected,
-    // );
+    console.log(
+        'Publish Local Track',
+        localTrackPublication.trackSid,
+        RoomEvent.Connected,
+    );
 
-    // if (localTrackPublication.kind === 'audio') {
-    //     console.log('Audio Track', localTrackPublication.kind);
-    //     console.log('Local', localTrackPublication);
-    // // fig.egressWss.toString());
-    //     console.log('Starting - audio stream1');
-    //     window.navigator.mediaDevices
-    //         .getUserMedia({
-    //             video: false,
-    //             audio: true,
-    //         })
-    //         .then(streamAudioToWebSocket)
-    //         .catch(error => {
-    //             console.error(
-    //                 error,
-    //                 'There was an error streaming your audio to Amazon Transcribe. Please try again.',
-    //             );
-    //         });
+    if (localTrackPublication.kind === 'audio') {
+        console.log('Audio Track', localTrackPublication.kind);
+        console.log('Local', localTrackPublication);
+    // fig.egressWss.toString());
+        console.log('Starting - audio stream1');
+        window.navigator.mediaDevices
+            .getUserMedia({
+                video: false,
+                audio: true,
+            })
+            .then(streamAudioToWebSocket)
+            .catch(error => {
+                console.error(
+                    error,
+                    'There was an error streaming your audio to Amazon Transcribe. Please try again.',
+                );
+            });
 
-        // const info = await new EgressClient(
-        //     frontendConfig.livekitHost,
-        //     frontendConfig.livekitApi,
-        //     frontendConfig.livekitSecret,
-        // ).startTrackEgress(
-        //     myRoomName.toString(),
-        //     `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${userName}`,
-        //     localTrackPublication.trackSid.toString(),
-        // );
-        // console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
-    // }
+        const info = await new EgressClient(
+            frontendConfig.livekitHost,
+            frontendConfig.livekitApi,
+            frontendConfig.livekitSecret,
+        ).startTrackEgress(
+            myRoomName.toString(),
+            `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${userName}`,
+            localTrackPublication.trackSid.toString(),
+        );
+        console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
+    }
 
     setConnectionStream(
         setStreamDataHelper({
@@ -287,10 +287,6 @@ export const handleConnectToSFU = async ({
             .on(RoomEvent.Reconnected, () => {
                 console.log(RoomEvent.Reconnected);
             });
-    
-        console.log('serverIp: ', serverIp)
-        console.log('frontendConfig: ', frontendConfig)
-        console.log('getMeetinginstanceLivekitUrl: ', getMeetingInstanceLivekitUrl(serverIp))
         
         const livekitWssUrl = [
             'localhost',
@@ -298,61 +294,53 @@ export const handleConnectToSFU = async ({
         ].includes(serverIp)
             ? frontendConfig.livekitWss
             : getMeetingInstanceLivekitUrl(serverIp);
-    
-        console.log('livekitWssUrl: ', livekitWssUrl);
-
-        console.log('liveKitWssUrl, token--------------------------', livekitWssUrl, token)
 
         await room.connect(livekitWssUrl, token);
     
-        // myRoomName = room.name;
-        // userName = participantName;
-        // console.log(
-        //     '🚀 ~ file: handleConnectToSFU.ts:235 ~ myRoomName:',
-        //     myRoomName,
-        //     userName,
-        // );
+        myRoomName = room.name;
+        userName = participantName;
     
-        // socket = new WebSocket(
-        //     `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${participantName}`,
-        // );
-        // console.log('Socket created');
-        // // const participantNameInQueue: string[] = [];
-        // const transcriptionQueue: string[] = [];
-        // socket.onmessage = function (event) {
-        //     pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
+        socket = new WebSocket(
+            `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${participantName}`,
+        );
+        
+        console.log('Socket created');
+        const participantNameInQueue: string[] = [];
+        const transcriptionQueue: string[] = [];
+        socket.onmessage = function (event) {
+            pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
     
-        //     setTranscriptionQueue(transcriptionQueue);
+            setTranscriptionQueue(transcriptionQueue);
+
+            if (participantNameInQueue.length === 0) {
+                setTranscriptionResult(event.data.split('@')[1]);
+                setTranscriptionParticipant(event.data.split('@')[0]);
+            }
     
-        //     // if (participantNameInQueue.length === 0) {
-        //     //     setTranscriptionResult(event.data.split('@')[1]);
-        //     //     setTranscriptionParticipant(event.data.split('@')[0]);
-        //     // }
+            if (!participantNameInQueue.includes(event.data.split('@')[0])) {
+                participantNameInQueue.push(
+                    setTranscriptionParticipant(event.data.split('@')[0]),
+                );
+            }
     
-        //     // if (!participantNameInQueue.includes(event.data.split('@')[0])) {
-        //     //     participantNameInQueue.push(
-        //     //         setTranscriptionParticipant(event.data.split('@')[0]),
-        //     //     );
-        //     // }
+            if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
+                setTranscriptionResult(event.data.split('@')[1]);
+                setTranscriptionParticipant(event.data.split('@')[0]);
+            } else {
+                setTranscriptionResultGuest(event.data.split('@')[1]);
+                setTranscriptionParticipantGuest(event.data.split('@')[0]);
+            }
+        };
     
-        //     // if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
-        //     //     setTranscriptionResult(event.data.split('@')[1]);
-        //     //     setTranscriptionParticipant(event.data.split('@')[0]);
-        //     // } else {
-        //     //     setTranscriptionResultGuest(event.data.split('@')[1]);
-        //     //     setTranscriptionParticipantGuest(event.data.split('@')[0]);
-        //     // }
-        // };
-    
-        // socket.onclose = function (event) {
-        //     if (event.wasClean) {
-        //         console.log(
-        //             `Connection closed cleanly, code=${event.code}, reason=${event.reason}`,
-        //         );
-        //     } else {
-        //         console.error('Connection abruptly closed');
-        //     }
-        // };
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                console.log(
+                    `Connection closed cleanly, code=${event.code}, reason=${event.reason}`,
+                );
+            } else {
+                console.error('Connection abruptly closed');
+            }
+        };
         return room;
     } catch (error) {
         console.log('Error handling ConnectToSFU: ', error)
