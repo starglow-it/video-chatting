@@ -2,11 +2,11 @@ import { setRecordingUrlEvent, stopRecordMeetingByOthers, isRequestRecordingEndE
 import { addNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
 
-export const handleGetMeetingUrlReceive = ({ user, url }: { user: string, url: string }) => {
+export const handleGetMeetingUrlReceive = ({ user, video }: { user: string, video: { id: string, endTime: string } }) => {
     isRequestRecordingEndEvent();
     stopRecordMeetingByOthers();
     resetMeetingRecordingStoreExceptVideosEvent();
-    setRecordingUrlEvent(url);
+    setRecordingUrlEvent(video);
     addNotificationEvent({
         type: NotificationType.RequestRecordingMeeting,
         message: `${user} stopped recording`,
