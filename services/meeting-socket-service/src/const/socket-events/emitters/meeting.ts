@@ -25,6 +25,7 @@ export enum MeetingEmitEvents {
   ReceiveRequestRecordingAccepted = 'meeting:recording:request:accepted:receive',
   ReceiveStartRecordingPending = 'meeting:start:recording:pending:receive',
   ReceiveStopRecordingPending = 'meeting:stop:recording:pending:receive',
+  GetMeetingUrlReceive = 'meeting:get:recording:url:receive',
   GetMeetingUrlsReceive = 'meeting:get:recording:urls:receive',
   GetMeetingUrlsReceiveFail = 'meeting:get:recording:urls:receive:fail',
 }

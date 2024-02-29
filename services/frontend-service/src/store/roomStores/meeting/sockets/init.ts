@@ -570,6 +570,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+        ),
+    );
+    socketInstance?.on(
         MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnGetMeetingUrlsReceive,

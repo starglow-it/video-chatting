@@ -2102,15 +2102,14 @@ export class MeetingsGateway
         const meetingUser = await this.usersComponent.findById({ id: user._id });
 
         if (!!url) {
-          await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, url } });
-          const urlDocuments = await this.meetingRecordService.findMany({ query: { meetingId: meeting._id }, session });
-          const urls = urlDocuments.map(doc => doc.url);
-
-          this.emitToRoom(
-            `meeting:${meeting._id.toString()}`,
-            MeetingEmitEvents.GetMeetingUrlsReceive,
-            { user: meetingUser.username, urls }
-          );
+          const createdRecord = await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, url } });
+          if (createdRecord) {
+            this.emitToRoom(
+              `meeting:${meeting._id.toString()}`,
+              MeetingEmitEvents.GetMeetingUrlReceive,
+              { user: meetingUser.username, url: createdRecord.url }
+            );
+          }
         } else {
           this.emitToRoom(
             `meeting:${meeting._id.toString()}`,
@@ -2120,6 +2119,42 @@ export class MeetingsGateway
 
         return wsResult({
           message: 'successfully saved',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnGetRecordingUrls)
+  async getRecordingUrls(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const urlModels = await this.meetingRecordService.findMany({ query: { meetingId: meeting._id }, session });
+        const urls = urlModels.map(doc => doc.url);
+
+        this.emitToSocketId(
+          user.socketId,
+          MeetingEmitEvents.GetMeetingUrlsReceive,
+          { urls }
+        );
+
+        return wsResult({
+          message: 'success',
         });
       },
       {

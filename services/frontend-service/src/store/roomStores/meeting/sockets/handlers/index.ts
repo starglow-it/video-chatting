@@ -28,6 +28,7 @@ import { handleGetMeetingReactions } from './handleGetMeetingReactions';
 import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
 import { handleReceiveRequestRecordingRejected } from './handleReceiveRequestRecordingRejected';
 import { handleReceiveRequestRecordingAccepted } from './handleReceiveRequestRecordingAccepted';
+import { handleGetMeetingUrlReceive } from './handleGetMeetingUrlReceive';
 import { handleGetMeetingUrlsReceive } from './handleGetMeetingUrlsReceive';
 import { handleGetMeetingUrlsReceiveFail } from './handleGetMeetingUrlsReceiveFail';
 import { handleReceiveStartRecordingPending } from './handleReceiveStartRecordingPending';
@@ -182,6 +183,12 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
             {
                 handler: handleReceiveRequestRecordingRejected,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+            {
+                handler: handleGetMeetingUrlReceive,
             },
         ],
         [

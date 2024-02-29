@@ -78,6 +78,7 @@ import {
     $isScreenSharingStore,
     requestRecordingEvent,
     recordingStopPendingEvent,
+    getRecordingUrls
 } from '../../../store/roomStores';
 
 // styles
@@ -190,7 +191,7 @@ const Component = () => {
         }
 
         if (isRecording) {
-            stopRecordMeeting({ url: fullUrl, byRequest: meetingRecordingStore.byRequest, meetingId: meeting.id });
+            stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
         }
 
         await router.push(
@@ -241,6 +242,7 @@ const Component = () => {
     const handleToggleRecordingUrlsListPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleRecordingUrlsListPanel();
+        getRecordingUrls({ meetingId: meeting.id });
     };
 
     const handleRequestToBecomeParticipant = useCallback(() => {

@@ -161,6 +161,7 @@ export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isReq
 
 export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
 
+export const setRecordingUrlEvent = meetingDomain.createEvent<string>('setRecordingUrlEvent');
 export const setRecordingUrlsEvent = meetingDomain.createEvent<string[]>('setRecordingUrlsEvent');
 export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
 export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');

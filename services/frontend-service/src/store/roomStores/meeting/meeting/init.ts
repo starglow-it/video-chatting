@@ -24,7 +24,8 @@ import {
     setRecordingUrlsEvent,
     setStartRecordingPendingEvent,
     setStopRecordingPendingEvent,
-    resetMeetingRecordingStoreExceptVideosEvent
+    resetMeetingRecordingStoreExceptVideosEvent,
+    setRecordingUrlEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -69,6 +70,7 @@ $isToggleLinksDrawer
 $meetingRecordingStore
     .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isStopRecordingPending: true }))
     .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isStartRecordingPending: true }))
+    .on(setRecordingUrlEvent, (state, data) => ({ ...state, videos: [data, ...state.videos] }))
     .on(setRecordingUrlsEvent, (state, data) => ({ ...state, videos: data }))
     .on(isRequestRecordingStartEvent, (state, _) => ({ ...state, isRecordingStarted: true, byRequest: true }))
     .on(isRequestRecordingEndEvent, (state, _) => ({ ...state, byRequest: false }))

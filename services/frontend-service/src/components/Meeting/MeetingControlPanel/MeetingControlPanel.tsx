@@ -60,7 +60,8 @@ import {
     toggleRecordingUrlsListPanel,
     requestRecordingRejectEvent,
     startRecordMeeting,
-    recordingStartPendingEvent
+    recordingStartPendingEvent,
+    getRecordingUrls
 } from '../../../store/roomStores';
 import { addNotificationEvent } from '../../../store';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
@@ -117,6 +118,10 @@ const Component = () => {
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
+
+    useEffect(() => {
+        getRecordingUrls({ meetingId: meeting.id });
+    }, [meeting]);
 
     useEffect(() => {
         if (meetingRecordingStore.requestUsers.length > 0) {

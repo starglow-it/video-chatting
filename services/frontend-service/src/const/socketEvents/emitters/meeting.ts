@@ -32,6 +32,7 @@ export enum MeetingSocketEmitters {
     RequestRecordingReject = 'meeting:recording:request:rejected:send',
     RequestRecordingAccept = 'meeting:recording:request:accepted:send',
     SaveRecordingUrl = 'meeting:save:recording:url:send',
+    GetRecordingUrls = 'meeting:get:recording:urls:send',
     SetIsMeetingRecording = 'meeting:set:is:meeting:recording:send',
     recordingStartPending = 'meeting:start:recording:pending',
     recordingStopPending = 'meeting:stop:recording:pending',
