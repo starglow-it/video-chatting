@@ -296,7 +296,7 @@ export const handleConnectToSFU = async ({
         userName = participantName;
     
         socket = new WebSocket(
-            `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${participantName}`,
+            `${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
         );
         
         console.log('Socket created');
