@@ -178,7 +178,22 @@ services:
     networks:
       - traefikpublic
       - internal
-
+  
+  aws-transcribe-service:
+    container_name: aws-transcribe-service
+    build:
+      context: ../../
+      dockerfile: ./services/aws-transcribe-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
+    ports:
+      - "3010:3010"
+    env_file:
+      - env
+    networks:
+      - traefikpublic
+      - internal
+  
   core-service:
     env_file:
       - env
