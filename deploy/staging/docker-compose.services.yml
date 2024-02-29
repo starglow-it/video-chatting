@@ -191,11 +191,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.socket.rule=Host(`stg-my.chatruume.com`) && PathPrefix(`/aws-transcibe`)"
-      - "traefik.http.routers.socket.priority=1000"
-      - "traefik.http.routers.socket.entrypoints=websecure"
-      - "traefik.http.routers.socket.tls=true"
-      - "traefik.http.services.socket.loadbalancer.server.port=3010"
+      - "traefik.http.routers.aws_transcribe.rule=Host(`stg-my.chatruume.com`) && PathPrefix(`/aws-transcibe`)"
+      - "traefik.http.routers.aws_transcribe.priority=1000"
+      - "traefik.http.routers.aws_transcribe.entrypoints=websecure"
+      - "traefik.http.routers.aws_transcribe.tls=true"
+      - "traefik.http.services.aws_transcribe.loadbalancer.server.port=3010"
     env_file:
       - env
     networks:
