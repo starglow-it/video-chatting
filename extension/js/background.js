@@ -29,17 +29,17 @@ chrome.runtime.onMessage.addListener(async function (
 
             const roomList = await response.json();
 
-            // if (sender.tab) {
-            //   await chrome.tabs.sendMessage(sender.tab.id, {
-            //     action: "roomListResponse",
-            //     roomList: roomList.result.list,
-            //   });
-            // } else {
-            await chrome.runtime.sendMessage({
-              action: "roomListResponse",
-              roomList: roomList.result.list,
-            });
-            // }
+            if (sender.tab) {
+              await chrome.tabs.sendMessage(sender.tab.id, {
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+              });
+            } else {
+              await chrome.runtime.sendMessage({
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+              });
+            }
           } catch (error) {
             console.log(error);
           }
@@ -93,21 +93,23 @@ chrome.runtime.onMessage.addListener(async function (
             }
           );
 
+          const resData = await response.json();
+
+          const link = resData.result.customLink || templateId;
+
           if (sender.tab) {
             await chrome.tabs.sendMessage(sender.tab.id, {
               action: "completeCreatingMeeting",
               success: true,
-              roomId: templateId,
+              roomId: link,
             });
           } else {
             await chrome.runtime.sendMessage({
               action: "completeCreatingMeeting",
               success: true,
-              roomId: templateId,
+              roomId: link,
             });
           }
-
-          const res = await response.json();
         }
       );
     } catch (error) {

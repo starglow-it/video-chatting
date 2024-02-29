@@ -1,8 +1,248 @@
 var userName,
   roomList,
-  roomId = null,
+  roomId,
+  roomName,
   currentRoomId,
-  isRoomSelected = false;
+  isRoomSelected = false,
+  isPageCalendar = false;
+
+var iconURL = chrome.runtime.getURL("icons/logo_1000.svg");
+
+const observer = new MutationObserver(async (mutationsList, observer) => {
+  console.log(mutationsList);
+  if (document.body.innerHTML.includes("Add Google Meet video conferencing")) {
+    if (document.body.innerHTML.includes("Guest permissions")) {
+      /**
+       * Page Calendar Case
+       */
+      isPageCalendar = true;
+
+      if (!document.getElementById("chatruume-btn")) {
+        await injectButton();
+        if (roomList && roomList.length) {
+          await injectRoomSelect(roomList);
+        }
+        await fillTitleField();
+      }
+
+      async function injectButton() {
+        const googleMeetingButton = await waitForElement(
+          'div[jsname="WwTOGd"][jscontroller="rJx97b"]'
+        );
+        if (!document.querySelector(".chatruume-meeting")) {
+          // Create the container div for the ChatRuume button
+          const chatRuumeContainer = document.createElement("div");
+          chatRuumeContainer.className = "chatruume-meeting";
+
+          // Create the inner divs and elements
+          const iconWrapper = document.createElement("div");
+          iconWrapper.className = "chatruume-icon-wrapper";
+
+          const iconSpan = document.createElement("span");
+          iconSpan.className = "chatruume-icon";
+
+          const iconURL = await chrome.runtime.getURL("icons/logo_1000.svg");
+
+          iconSpan.style.background = `url('${iconURL}') 0px 0px no-repeat`;
+
+          iconWrapper.appendChild(iconSpan);
+          chatRuumeContainer.appendChild(iconWrapper);
+
+          const btnContainer = document.createElement("div");
+          btnContainer.className = "chatruume-btn-container";
+
+          const btnWrapper = document.createElement("div");
+          btnWrapper.className = "chatruume-btn-wrapper";
+
+          const chatRuumeButton = document.createElement("button");
+          chatRuumeButton.id = "chatruume-btn";
+          chatRuumeButton.textContent = "Make it a Ruume Meeting";
+
+          chatRuumeButton.addEventListener("click", function () {
+            let isFeatured = false;
+            let roomName = "";
+
+            let tempRoomId = document
+              .querySelector('span[class="custom-option selected"]')
+              ?.getAttribute("data-value");
+
+            if (!tempRoomId) {
+              tempRoomId = "64f25807bc78bed6bd7b84f5";
+              isFeatured = true;
+              roomName = "Central Perk";
+            } else {
+              roomName = document.querySelector(
+                'span[class="custom-option selected"]'
+              ).textContent;
+            }
+            const selectElem = document.querySelector(
+              'div[class="custom-select-wrapper"]'
+            );
+
+            if (this.textContent === "Make it a Ruume Meeting") {
+              chrome.runtime.sendMessage({
+                action: "createMeeting",
+                templateId: tempRoomId,
+                isFeatured: isFeatured,
+              });
+
+              if (selectElem) selectElem.style.display = "none";
+
+              chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
+
+              injectRoomReselectBtn();
+            } else {
+              chrome.runtime.sendMessage({
+                action: "enterRoom",
+                roomId: roomId,
+              });
+            }
+          });
+
+          btnWrapper.appendChild(chatRuumeButton);
+          btnContainer.appendChild(btnWrapper);
+          chatRuumeContainer.appendChild(btnContainer);
+
+          // Insert the new ChatRuume container next to the Google Meet button
+          googleMeetingButton.parentNode.insertBefore(
+            chatRuumeContainer,
+            googleMeetingButton.nextSibling
+          );
+        }
+
+        const closeBtn = await waitForElement('[jsname="gQ2Xie"]');
+        closeBtn.addEventListener("click", () => {
+          setTimeout(() => {
+            // location.reload();
+          }, 300);
+        });
+      }
+
+      async function injectRoomSelect(roomList) {
+        const customSelectWrapper = document.createElement("div");
+        customSelectWrapper.className = "custom-select-wrapper";
+
+        const customSelect = document.createElement("div");
+        customSelect.className = "custom-select";
+
+        const customOptions = document.createElement("div");
+        customOptions.className = "custom-options";
+
+        let selectedRoomName = "";
+
+        for (let i = 0; i < roomList.length; i++) {
+          const option = document.createElement("span");
+          option.className = "custom-option";
+          if ((roomId && roomId === roomList[i].id) || (!roomId && i === 0)) {
+            option.classList.add("selected");
+            selectedRoomName = roomList[i].name;
+          }
+          option.setAttribute("data-value", roomList[i].id);
+          option.textContent = roomList[i].name;
+          customOptions.appendChild(option);
+        }
+
+        const customSelectTrigger = document.createElement("div");
+        customSelectTrigger.className = "custom-select__trigger";
+        customSelectTrigger.innerHTML = `<span>${selectedRoomName}</span><div class="arrow"></div>`;
+
+        customSelect.appendChild(customSelectTrigger);
+        customSelect.appendChild(customOptions);
+
+        customSelectWrapper.appendChild(customSelect);
+
+        const chatruumeBtnWrapper = await waitForElement(
+          ".chatruume-btn-wrapper"
+        );
+
+        const parentElement = chatruumeBtnWrapper.parentElement;
+
+        parentElement.insertBefore(
+          customSelectWrapper,
+          chatruumeBtnWrapper.nextSibling
+        );
+
+        document.addEventListener("click", function (e) {
+          const isDropdownButton = e.target.matches("[data-dropdown-button]");
+          if (!isDropdownButton && e.target.closest("[data-dropdown]") != null)
+            return;
+
+          let currentDropdown;
+          if (isDropdownButton) {
+            currentDropdown = e.target.closest("[data-dropdown]");
+            currentDropdown.classList.toggle("active");
+          }
+
+          document
+            .querySelectorAll("[data-dropdown].active")
+            .forEach((dropdown) => {
+              if (dropdown === currentDropdown) return;
+              dropdown.classList.remove("active");
+            });
+        });
+
+        document
+          .querySelector(".custom-select-wrapper")
+          .addEventListener("click", function () {
+            this.querySelector(".custom-select").classList.toggle("open");
+          });
+
+        for (const option of document.querySelectorAll(".custom-option")) {
+          option.addEventListener("click", function () {
+            if (!this.classList.contains("selected")) {
+              this.parentNode
+                .querySelector(".custom-option.selected")
+                ?.classList.remove("selected");
+              this.classList.add("selected");
+              this.closest(".custom-select").querySelector(
+                ".custom-select__trigger span"
+              ).textContent = this.textContent;
+            }
+          });
+        }
+
+        window.addEventListener("click", function (e) {
+          const select = document.querySelector(".custom-select");
+          if (select && !select.contains(e.target)) {
+            select.classList.remove("open");
+          }
+        });
+      }
+
+      async function fillTitleField() {
+        const titleField = await waitForElement('[id="xTiIn"]');
+
+        await getUserName();
+
+        titleField.value = `${userName}'s Ruume Meeting`;
+      }
+    } else {
+      /**
+       * Modal Calendar Case
+       */
+      isPageCalendar = false;
+      const overflowElem = await waitForElement('[jsname="fxaXHe"]');
+
+      overflowElem.style.overflow = "none";
+      if (!document.getElementById("chatruume-btn")) {
+        await injectButton();
+
+        if (roomList && roomList.length) {
+          await injectRoomSelect(roomList);
+        }
+      }
+
+      await fillTitleField();
+    }
+  }
+});
+
+async function simulateKeyboardInput(element, value) {
+  element.value = value;
+
+  await element.dispatchEvent(new Event("input", { bubbles: true }));
+  await element.dispatchEvent(new Event("change", { bubbles: true }));
+}
 
 async function waitForElement(selector) {
   let element = document.querySelector(selector);
@@ -37,88 +277,82 @@ async function getUserName() {
 
 // This function injects the 'Make it a ChatRuume meeting' button
 async function injectButton() {
-  const googleMeetingButton = await waitForElement(
-    'div[jsname="WwTOGd"][jscontroller="rJx97b"]'
-  );
-  if (!document.querySelector(".chatruume-meeting")) {
-    // Create the container div for the ChatRuume button
-    const chatRuumeContainer = document.createElement("div");
-    chatRuumeContainer.className = "chatruume-meeting";
+  try {
+    const parentElement = await waitForElement('[aria-labelledby="tabEvent"]');
 
-    // Create the inner divs and elements
-    const iconWrapper = document.createElement("div");
-    iconWrapper.className = "chatruume-icon-wrapper";
+    if (parentElement) {
+      // Create the container div for the ChatRuume button
+      const chatRuumeContainer = document.createElement("div");
+      chatRuumeContainer.className = "chatruume-meeting";
 
-    const iconSpan = document.createElement("span");
-    iconSpan.className = "chatruume-icon";
+      // Create the inner divs and elements
+      const iconWrapper = document.createElement("div");
+      iconWrapper.className = "chatruume-icon-wrapper";
 
-    const iconURL = await chrome.runtime.getURL("icons/icon16.png");
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "chatruume-icon";
 
-    iconSpan.style.background = `url('${iconURL}') 0px 0px no-repeat`;
+      iconSpan.style.background = `url('${iconURL}') 0px 0px no-repeat`;
+      iconSpan.style.backgroundSize = `contain`;
 
-    iconWrapper.appendChild(iconSpan);
-    chatRuumeContainer.appendChild(iconWrapper);
+      iconWrapper.appendChild(iconSpan);
+      chatRuumeContainer.appendChild(iconWrapper);
 
-    const btnContainer = document.createElement("div");
-    btnContainer.className = "chatruume-btn-container";
+      const btnContainer = document.createElement("div");
+      btnContainer.className = "chatruume-btn-container";
 
-    const btnWrapper = document.createElement("div");
-    btnWrapper.className = "chatruume-btn-wrapper";
+      const btnWrapper = document.createElement("div");
+      btnWrapper.className = "chatruume-btn-wrapper";
 
-    const chatRuumeButton = document.createElement("button");
-    chatRuumeButton.id = "chatruume-btn";
-    chatRuumeButton.textContent = "Make it a Ruume Meeting";
+      const chatRuumeButton = document.createElement("button");
+      chatRuumeButton.id = "chatruume-btn";
+      chatRuumeButton.className = "chatruume-btn";
+      chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
-    chatRuumeButton.addEventListener("click", function () {
-      let isFeatured = false;
-      let roomName = "";
+      chatRuumeButton.addEventListener("click", function () {
+        roomId = document
+          .querySelector('span[class="custom-option selected"]')
+          ?.getAttribute("data-value");
+        roomName = "";
+        let isFeatured = false;
 
-      let tempRoomId = document
-        .querySelector('span[class="custom-option selected"]')
-        ?.getAttribute("data-value");
+        if (!roomId) {
+          roomId = "64f25807bc78bed6bd7b84f5";
+          roomName = "Central Perk";
+          isFeatured = true;
+        } else {
+          roomName = document.querySelector(
+            'span[class="custom-option selected"]'
+          ).textContent;
+        }
 
-      if (!tempRoomId) {
-        tempRoomId = "64f25807bc78bed6bd7b84f5";
-        isFeatured = true;
-        roomName = "Central Perk";
-      } else {
-        roomName = document.querySelector(
-          'span[class="custom-option selected"]'
-        ).textContent;
-      }
-      const selectElem = document.querySelector(
-        'div[class="custom-select-wrapper"]'
-      );
+        const selectElem = document.querySelector(
+          'div[class="custom-select-wrapper"]'
+        );
 
-      if (this.textContent === "Make it a Ruume Meeting") {
-        chrome.runtime.sendMessage({
-          action: "createMeeting",
-          templateId: tempRoomId,
-          isFeatured: isFeatured,
-        });
+        if (this.textContent === "Make it a Ruume Meeting") {
+          chrome.runtime.sendMessage({
+            action: "createMeeting",
+            templateId: roomId,
+            isFeatured: isFeatured,
+          });
+        } else {
+          chrome.runtime.sendMessage({
+            action: "enterRoom",
+            roomId: roomId,
+          });
+        }
+      });
 
-        if (selectElem) selectElem.style.display = "none";
+      btnWrapper.appendChild(chatRuumeButton);
+      btnContainer.appendChild(btnWrapper);
+      chatRuumeContainer.appendChild(btnContainer);
 
-        chatRuumeButton.textContent = `Join Ruume Meeting (${roomName})`;
-
-        injectRoomReselectBtn();
-      } else {
-        chrome.runtime.sendMessage({
-          action: "enterRoom",
-          roomId: roomId,
-        });
-      }
-    });
-
-    btnWrapper.appendChild(chatRuumeButton);
-    btnContainer.appendChild(btnWrapper);
-    chatRuumeContainer.appendChild(btnContainer);
-
-    // Insert the new ChatRuume container next to the Google Meet button
-    googleMeetingButton.parentNode.insertBefore(
-      chatRuumeContainer,
-      googleMeetingButton.nextSibling
-    );
+      // Insert the new ChatRuume container next to the Google Meet button
+      parentElement.appendChild(chatRuumeContainer);
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -129,26 +363,26 @@ async function injectRoomSelect(roomList) {
   const customSelect = document.createElement("div");
   customSelect.className = "custom-select";
 
+  const customSelectTrigger = document.createElement("div");
+  customSelectTrigger.className = "custom-select__trigger";
+  customSelectTrigger.innerHTML = `<span>${roomList[0].name}</span><div class="arrow"></div>`;
+
   const customOptions = document.createElement("div");
   customOptions.className = "custom-options";
 
-  let selectedRoomName = "";
+  const option1 = document.createElement("span");
+  option1.className = "custom-option selected";
+  option1.setAttribute("data-value", roomList[0].id);
+  option1.textContent = roomList[0].name;
+  customOptions.appendChild(option1);
 
-  for (let i = 0; i < roomList.length; i++) {
+  for (let i = 1; i < roomList.length; i++) {
     const option = document.createElement("span");
     option.className = "custom-option";
-    if ((roomId && roomId === roomList[i].id) || (!roomId && i === 0)) {
-      option.classList.add("selected");
-      selectedRoomName = roomList[i].name;
-    }
     option.setAttribute("data-value", roomList[i].id);
     option.textContent = roomList[i].name;
     customOptions.appendChild(option);
   }
-
-  const customSelectTrigger = document.createElement("div");
-  customSelectTrigger.className = "custom-select__trigger";
-  customSelectTrigger.innerHTML = `<span>${selectedRoomName}</span><div class="arrow"></div>`;
 
   customSelect.appendChild(customSelectTrigger);
   customSelect.appendChild(customOptions);
@@ -201,13 +435,18 @@ async function injectRoomSelect(roomList) {
   }
 
   window.addEventListener("click", function (e) {
-    const select = document.querySelector(".custom-select");
-    if (select && !select.contains(e.target)) {
-      select.classList.remove("open");
+    try {
+      const select = document.querySelector(".custom-select");
+      if (select && !select.contains(e.target)) {
+        select.classList.remove("open");
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 }
-async function injectRoomReselectBtn(roomList) {
+
+async function injectRoomReselectBtn() {
   const reselectContainer = document.createElement("div");
   reselectContainer.className = "chatruume-meeting";
 
@@ -218,8 +457,7 @@ async function injectRoomReselectBtn(roomList) {
   btnWrapper.className = "reselect-btn-wrapper";
 
   const reselectBtn = document.createElement("button");
-  reselectBtn.id = "chatruume-btn";
-  reselectBtn.className = "reselect";
+  reselectBtn.className = "chatruume-btn reselect";
   reselectBtn.textContent = "Reselect room";
 
   const chatruumeBtnWrapper = document.querySelector(".chatruume-btn-wrapper");
@@ -239,20 +477,22 @@ async function injectRoomReselectBtn(roomList) {
       'div[class="custom-select-wrapper"]'
     );
     const chatruumeBtn = document.getElementById("chatruume-btn");
-    const locationField = document.querySelector('[id="c52"]');
-    const descriptionField = document.querySelector('[id="T2Ybvb0"]');
+    const locationField = document.querySelector(
+      'input[jsname="YPqjbf"][placeholder="Add location"]'
+    );
+    const descriptionField = document.querySelector('[jsname="yrriRe"]');
 
-    if (selectElem) selectElem.style.display = "block";
+    selectElem.style.display = "block";
     reselectContainer.remove();
 
-    locationField.value = "";
+    simulateKeyboardInput(locationField, "");
     descriptionField.innerHTML = "";
     chatruumeBtn.textContent = "Make it a Ruume Meeting";
   });
 }
 
 async function fillTitleField() {
-  const titleField = await waitForElement('[id="xTiIn"]');
+  const titleField = await waitForElement('[aria-label="Add title"]');
 
   await getUserName();
 
@@ -261,38 +501,21 @@ async function fillTitleField() {
 
 // This function autofills the meeting details
 async function fillMeetingDetails() {
-  const locationField = await waitForElement('[id="c52"]');
-  const descriptionField = await waitForElement('[id="T2Ybvb0"]');
+  const locationField = await waitForElement(
+    'input[jsname="YPqjbf"][placeholder="Add location"]'
+  );
+  const descriptionField = await waitForElement('[jsname="yrriRe"]');
 
-  locationField.value = "https://my.chatruume.com/room/" + roomId;
+  await simulateKeyboardInput(
+    locationField,
+    "https://my.chatruume.com/room/" + roomId
+  );
+
   await descriptionField.dispatchEvent(new Event("input", { bubbles: true }));
   descriptionField.innerHTML = `${userName} is inviting you to a scheduled Ruume Meeting. <br><br> Join Ruume Meeting <br> https://my.chatruume.com/room/${roomId}`;
 }
 
-async function fetchRoomList(accessToken, refreshToken) {
-  if (accessToken) {
-    try {
-      const response = await fetch(
-        "https://my.chatruume.com/api/profile/templates",
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + accessToken,
-          },
-        }
-      );
-
-      const roomList = await response.json().result.list;
-
-      return roomList;
-    } catch (error) {
-      console.error("Error fetching room list: ", error);
-    }
-  }
-}
-
 window.addEventListener("load", async () => {
-  let roomList;
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
@@ -302,21 +525,17 @@ window.addEventListener("load", async () => {
 
     chrome.runtime.sendMessage({ action: "fetchRoomList" });
 
-    chrome.runtime.onMessage.addListener(
-      async (message, sender, sendResponse) => {
-        if (message.action === "roomListResponse") {
-          if (message.roomList) {
-            roomList = message.roomList;
-            await injectRoomSelect(roomList);
-          }
-        } else if (message.action === "completeCreatingMeeting") {
-          roomId = message.roomId;
-          fillMeetingDetails();
-        }
-      }
-    );
+    observer.observe(document.body, { attributes: true, childList: true });
+  }
+});
 
-    await injectButton();
-    await fillTitleField();
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action === "roomListResponse") {
+    if (message.roomList) {
+      roomList = message.roomList;
+    }
+  } else if (message.action === "completeCreatingMeeting") {
+    roomId = message.roomId;
+    fillMeetingDetails();
   }
 });

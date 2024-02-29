@@ -64,7 +64,8 @@
   color: var(--on-surface);
   position: relative;
 }
-#chatruume-btn {
+#chatruume-btn,
+.chatruume-btn {
   background-color: rgb(255, 136, 78);
   color: rgb(255, 255, 255);
   display: inline-block;
@@ -79,7 +80,8 @@
   border-radius: 4px;
   padding: 0px 16px;
 }
-#chatruume-btn:hover {
+#chatruume-btn:hover,
+.chatruume-btn:hover {
   background-color: rgb(238, 111, 50);
   cursor: pointer;
 }
@@ -174,13 +176,29 @@
 .custom-option.selected {
   background-color: rgb(232 239 253);
 }
-
-#chatruume-btn.reselect{
-  background-color: #9243B7;
-  border: 1px solid #9243B7;
+div[jsname="fxaXHe"] {
+  overflow: visible;
 }
-#chatruume-btn.reselect:hover{
+div[jsname="ssXDle"] {
+  overflow: visible;
+}
+div[jsname="ssXDle"] div {
+  overflow: visible;
+}
+.reselect {
+  background-color: #9243b7;
+  border: 1px solid #9243b7;
+}
+
+.reselect:hover {
   background-color: #7f38a1;
   border: 1px solid #7f38a1;
 }
-
+.chatruume-btn.reselect {
+  background-color: #9243b7;
+  border: 1px solid #9243b7;
+}
+.chatruume-btn.reselect:hover {
+  background-color: #7f38a1;
+  border: 1px solid #7f38a1;
+}

@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       errorMessageField.textContent = "wrong credential.";
       document.getElementById("signin-loading").style.display = "none";
     } else if (message.action === "reloadPage") {
-      location.reload();
+      // location.reload();
     }
   });
 
