@@ -114,6 +114,7 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
     const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const [ isCopyEnabled, setIsCopyEnabled ] = useState(false);
 
     const {
         avatar: { list },
@@ -126,14 +127,18 @@ const Component = () => {
             setIsRecordingRequestReceived(false);
         }
 
-        if (meetingRecordingStore.urlForCopy !== '') {
+        if (meetingRecordingStore.urlForCopy !== '' && isCopyEnabled) {
             navigator.clipboard.writeText(meetingRecordingStore.urlForCopy);
             addNotificationEvent({
                 type: NotificationType.LinkInfoCopied,
                 message: 'meeting.copy.link',
             });
+
+            if (isCopyEnabled) {
+                setIsCopyEnabled(false);
+            }
         }
-    }, [meetingRecordingStore]);
+    }, [meetingRecordingStore, isCopyEnabled]);
 
     useEffect(() => {
         if (recordingStartPending) {
@@ -210,6 +215,7 @@ const Component = () => {
 
     const handleLinkCopied = (videoId: string) => {
         getRecordingUrl({ meetingId: meeting.id, videoId });
+        setIsCopyEnabled(true);
     };
 
     const commonContent = useMemo(
@@ -316,7 +322,6 @@ const Component = () => {
                                 className={styles.recordingRequestHandleBtn}
                                 onClick={handleRequestRecordingReject}
                             />
-
                         </CustomGrid>
                     </CustomPaper>
                 </Fade>
