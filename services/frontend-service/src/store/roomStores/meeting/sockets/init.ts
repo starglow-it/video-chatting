@@ -558,6 +558,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
     socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
+          ),
+    );
+    socketInstance?.on(
         MeetingSubscribeEvents.OnReceiveRequestRecording,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnReceiveRequestRecording,

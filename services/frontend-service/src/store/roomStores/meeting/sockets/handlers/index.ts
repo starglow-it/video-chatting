@@ -25,6 +25,7 @@ import { handleReceiveQuestionUnReaction } from './handleReceiveQuestionUnReacti
 import { handleSendMeetingReaction } from './handleSendMeetingReaction';
 import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
 import { handleGetMeetingReactions } from './handleGetMeetingReactions';
+import { handleReceiveTranscriptionMessage } from './handleReceiveTranscriptionMessage';
 import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
 import { handleReceiveRequestRecordingRejected } from './handleReceiveRequestRecordingRejected';
 import { handleReceiveRequestRecordingAccepted } from './handleReceiveRequestRecordingAccepted';
@@ -164,6 +165,12 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
             {
                 handler: handleReceiveQuestionUnReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
+            {
+                handler: handleReceiveTranscriptionMessage,
             },
         ],
         [

@@ -36,6 +36,7 @@
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
     "cron": "2.4.3",
+    "microphone-stream": "^6.0.1",
     "mongoose": "6.6.1",
     "npm-check-updates": "16.3.4",
     "reflect-metadata": "0.1.13",

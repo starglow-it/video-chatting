@@ -3,7 +3,9 @@ import {
   MessageBody,
   OnGatewayDisconnect,
   WebSocketGateway,
+  SubscribeMessage
 } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
@@ -95,6 +97,8 @@ import { AudienceRequestRecordingAccept } from 'src/dtos/requests/audience-reque
 export class MeetingsGateway
   extends BaseGateway
   implements OnGatewayDisconnect {
+
+  private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private meetingsService: MeetingsService,
@@ -1527,6 +1531,32 @@ export class MeetingsGateway
       },
       {
         onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  
+  @SubscribeMessage(MeetingSubscribeEvents.OnStartTranscription)
+  async receiveTranscriptionResults(
+    @MessageBody() message: any,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const user = this.getUserFromSocket(socket);
+    const eventName = 'Broadcast Transcription Message';
+    this.logger.log({
+      message: eventName,
+      ctx: message,
+    });
+
+    this.emitToRoom(
+      `meeting:${user.meeting.toString()}`,
+      MeetingEmitEvents.SendTranscriptionMessage,
+      {
+        message: {
+          participant: `${user.username}`,
+          transcription: `${message.note}`,
+          meetingID: `${user.meeting.toString()}`,
+        },
       },
     );
   }

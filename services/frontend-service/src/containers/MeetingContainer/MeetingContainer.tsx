@@ -234,7 +234,10 @@ const MeetingContainer = memo(() => {
         ) {
             initiateMeetingSocketConnectionEvent();
         }
-    }, [meetingTemplate?.meetingInstance, isMeetingSocketConnecting]);
+    }, [
+        meetingTemplate?.meetingInstance,
+        isMeetingSocketConnecting,
+    ]);
 
     useEffect(() => {
         (async () => {

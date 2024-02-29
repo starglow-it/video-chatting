@@ -1,0 +1,33 @@
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+
+RUN chmod +x /wait
+
+WORKDIR /app
+
+RUN mkdir -p services/aws-transcribe-service
+
+# RUN mkdir -p aws-transcribe-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
+# COPY ./shared ./shared
+
+RUN pnpm add nx -D -w
+
+COPY ./services/aws-transcribe-service/package.json ./services/aws-transcribe-service
+
+COPY ./services/aws-transcribe-service ./services/aws-transcribe-service
+
+WORKDIR /app/services/aws-transcribe-service
+
+RUN pnpm install
+
+# RUN npx nx run-many --target=build --projects=shared-types,shared-utils,shared-const
+
+# CMD /wait && pnpm --filter aws-transcribe-service start
+
+CMD pnpm --filter aws-transcribe-service start

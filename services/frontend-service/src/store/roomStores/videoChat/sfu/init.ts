@@ -61,6 +61,7 @@ sample({
         templateId: template.id,
         userId: localUser.id,
         serverIp: template.meetingInstance.serverIp,
+        participantName: localUser.username
     }),
     target: connectToSFUFx,
 });

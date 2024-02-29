@@ -11,3 +11,22 @@
     font-size: 13px;
     color: #b6b6b6;
 }
+.transcribeScroll {
+    max-height: 340px;
+    height: 340px;
+    padding-right: 12px;
+}
+
+
+.newMessageToast{
+    position: absolute;
+    bottom: 50px;
+    left: 30%;
+    padding: 5px 10px;
+    background-color: #ddd;
+    z-index:2;
+    cursor: pointer;
+    
+
+
+}
