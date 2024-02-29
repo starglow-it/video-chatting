@@ -410,7 +410,7 @@ const Component = () => {
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
                     </ConditionalRender>
-                    <MeetingTranscription />
+                    {/* <MeetingTranscription /> */}
                     <ConditionalRender condition={!isMobile}>
                         {/* <MeetingManageAudio /> */}
                     </ConditionalRender>
