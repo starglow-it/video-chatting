@@ -155,7 +155,7 @@ const handleLocalTrackPublished = async (
             frontendConfig.livekitSecret,
         ).startTrackEgress(
             myRoomName.toString(),
-            `${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${userName}`,
+            `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${userName}`,
             localTrackPublication.trackSid.toString(),
         );
         console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
@@ -296,7 +296,7 @@ export const handleConnectToSFU = async ({
         userName = participantName;
     
         socket = new WebSocket(
-            `${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
+            `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
         );
         
         console.log('Socket created');
