@@ -2138,7 +2138,7 @@ export class MeetingsGateway
             this.emitToRoom(
               `meeting:${meeting._id.toString()}`,
               MeetingEmitEvents.GetMeetingUrlReceive,
-              { user: meetingUser.username, video: { id: createdRecord._id, endTime: createdRecord.updatedAt } }
+              { user: meetingUser.username, video: { id: createdRecord._id, endTime: createdRecord.updatedAt.toString() } }
             );
           }
         } else {
