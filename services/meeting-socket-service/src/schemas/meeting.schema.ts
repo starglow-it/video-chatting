@@ -107,6 +107,24 @@ export class Meeting {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],
   })
   users: MeetingUserDocument[];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false
+  })
+  isMeetingRecordingByRequest: boolean
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false
+  })
+  isMeetingRecording: boolean
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  recordingUrl: string
 }
 
 export type MeetingDocument = Meeting & Document;

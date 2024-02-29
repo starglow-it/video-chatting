@@ -163,3 +163,41 @@ export type SendReactionQuestionReponse = {
 export type SendUnReactionQuestionResponse = {
     question: MeetingQuestionAnswer;
 };
+
+
+export type RequestRecordingEventPayload = {
+    meetingId: string;
+    recordingUrl: string;
+};
+
+export type SaveRecordingEventPayload = {
+    meetingId: string;
+    url: string;
+};
+
+export type ErrorWhileStopRecordingPayload = {
+    meetingId: string;
+};
+
+export type SetIsMeetingRecordingPayload = {
+    meetingId: string;
+    isMeetingRecording: boolean;
+    recordingUrl: string;
+};
+
+export type RequestRecordingResponse = {
+    userId: string;
+    username: string;
+};
+
+export type ReceiveRecordingUrls = {
+    urls: string[]
+};
+
+export type AnswerRequestRecordingResponse = {
+    message: string
+};
+
+export type RecodingAnswerResponse = {
+    isRecordingStart: Boolean
+};

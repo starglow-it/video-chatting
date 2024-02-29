@@ -126,9 +126,6 @@ const Component = () => {
         }
     ];
 
-    // console.log('isExpand: ', isExpand);
-    console.log('isEmojiListVisible: ', isEmojiListVisible);
-
     return (
         // <ClickAwayListener onClickAway={() => setIsExpand(false)}>
         <ClickAwayListener onClickAway={() => setEmojiListVisibilityEvent({ isEmojiListVisible: false })}>

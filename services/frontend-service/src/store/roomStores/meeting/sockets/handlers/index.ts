@@ -26,6 +26,13 @@ import { handleSendMeetingReaction } from './handleSendMeetingReaction';
 import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
 import { handleGetMeetingReactions } from './handleGetMeetingReactions';
 import { handleReceiveTranscriptionMessage } from './handleReceiveTranscriptionMessage';
+import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
+import { handleReceiveRequestRecordingRejected } from './handleReceiveRequestRecordingRejected';
+import { handleReceiveRequestRecordingAccepted } from './handleReceiveRequestRecordingAccepted';
+import { handleGetMeetingUrlsReceive } from './handleGetMeetingUrlsReceive';
+import { handleGetMeetingUrlsReceiveFail } from './handleGetMeetingUrlsReceiveFail';
+import { handleReceiveStartRecordingPending } from './handleReceiveStartRecordingPending';
+import { handleReceiveStopRecordingPending } from './handleReceiveStopRecordingPending';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -164,6 +171,48 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
             {
                 handler: handleReceiveTranscriptionMessage,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecording,
+            {
+                handler: handleReceiveRequestRecording,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+            {
+                handler: handleReceiveRequestRecordingAccepted,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+            {
+                handler: handleReceiveRequestRecordingRejected,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
+            {
+                handler: handleGetMeetingUrlsReceive,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceiveFail,
+            {
+                handler: handleGetMeetingUrlsReceiveFail,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveStartRecordingPending,
+            {
+                handler: handleReceiveStartRecordingPending,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveStopRecordingPending,
+            {
+                handler: handleReceiveStopRecordingPending,
             },
         ],
     ]);

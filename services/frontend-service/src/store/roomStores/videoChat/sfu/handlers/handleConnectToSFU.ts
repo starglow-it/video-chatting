@@ -248,7 +248,7 @@ export const handleConnectToSFU = async ({
             templateId,
             userId,
         });
-    
+        serverIp = frontendConfig.defaultServerIp;
         const room = new Room({
             dynacast: true,
             videoCaptureDefaults: {

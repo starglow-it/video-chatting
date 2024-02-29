@@ -48,7 +48,7 @@ services:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
       args:
-        - LIVEKIT_IP=18.190.108.231
+        - LIVEKIT_IP=3.129.50.243
         - LIVEKIT_API_KEY=APIGZAoRvLhzuaE
         - LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
     restart: unless-stopped

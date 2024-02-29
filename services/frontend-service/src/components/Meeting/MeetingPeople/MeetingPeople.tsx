@@ -52,33 +52,8 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 export const MeetingPeople = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isMeetingHost = useStore($isMeetingHostStore);
-
     const isAudience = useStore($isAudience);
-
-    const participants = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Audience,
-            ),
-    });
-
-    const audiences = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole === MeetingRole.Audience,
-            ),
-    });
-
     const value = useStore($activeTabPanel);
-
     const isThereNewMessage = useStore($isHaveNewMessage);
     const isThereNewQuestion = useStore($isHaveNewQuestion);
 
