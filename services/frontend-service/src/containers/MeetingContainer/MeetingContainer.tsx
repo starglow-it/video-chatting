@@ -73,8 +73,6 @@ import {
     setIsAuraActive,
     setIsCameraActiveEvent,
     setRoleQueryUrlEvent,
-    setTranscriptionParticipant,
-    setTranscriptionResult,
     updateLocalUserEvent,
     updateMeetingEvent,
     updateMeetingSocketEvent,
@@ -237,7 +235,6 @@ const MeetingContainer = memo(() => {
     }, [
         meetingTemplate?.meetingInstance,
         isMeetingSocketConnecting,
-        localUser.username,
     ]);
 
     useEffect(() => {

@@ -253,7 +253,6 @@ const Component = () => {
                 !isMeetingConnected &&
                 !isJoinMeetingPending
             ) {
-                console.log('------------------serverType---------------', serverType)
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
                 if (isOwner) {

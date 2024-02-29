@@ -156,14 +156,6 @@ export const MeetingPeople = () => {
                     <MeetingQuestionAnswer />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    {/* <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        {isMeetingHost && <MeetingAccessRequests />}
-                        <MeetingUsersList />
-                    </CustomGrid> */}
                     <MeetingTranscribe />
                 </CustomTabPanel>
             </ConditionalRender>
