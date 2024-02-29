@@ -25,7 +25,8 @@ import {
     setStartRecordingPendingEvent,
     setStopRecordingPendingEvent,
     resetMeetingRecordingStoreExceptVideosEvent,
-    setRecordingUrlEvent
+    setRecordingUrlEvent,
+    setUrlForCopyEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -82,6 +83,7 @@ $meetingRecordingStore
             }
         }
     })
+    .on(setUrlForCopyEvent, (state, data) => ({ ...state, urlForCopy: data }))
     .on(resetMeetingRecordingStoreExceptVideosEvent, (state, _) =>
     ({
         ...state,

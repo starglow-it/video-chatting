@@ -28,4 +28,8 @@ export enum MeetingSubscribeEvents {
     OnGetMeetingUrlReceive = 'meeting:get:recording:url:receive',
     OnGetMeetingUrlsReceive = 'meeting:get:recording:urls:receive',
     OnGetMeetingUrlsReceiveFail = 'meeting:get:recording:urls:receive:fail',
+    OnGetUrlByAttendee = 'meeting:get:recording:url:by:attendee',
+    OnGetUrlFailDueToPermission = 'meeting:get:recording:url:fail:duoto:permission',
+    OnGetUrlFailDueToHostPermission = 'meeting:get:recording:url:fail:duoto:host:permission',
+    OnGetUrlByAttendeeFailDueToHostPermission = 'meeting:get:recording:url:by:attendee:fail:duoto:host:permission',
 }

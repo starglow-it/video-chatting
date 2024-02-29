@@ -28,4 +28,8 @@ export enum MeetingEmitEvents {
   GetMeetingUrlReceive = 'meeting:get:recording:url:receive',
   GetMeetingUrlsReceive = 'meeting:get:recording:urls:receive',
   GetMeetingUrlsReceiveFail = 'meeting:get:recording:urls:receive:fail',
+  GetUrlByAttendee = 'meeting:get:recording:url:by:attendee',
+  GetUrlFailDueToPermission = 'meeting:get:recording:url:fail:duoto:permission',
+  GetUrlFailDueToHostPermission = 'meeting:get:recording:url:fail:duoto:host:permission',
+  GetUrlByAttendeeFailDueToHostPermission = 'meeting:get:recording:url:by:attendee:fail:duoto:host:permission',
 }

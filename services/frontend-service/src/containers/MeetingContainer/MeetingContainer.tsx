@@ -45,6 +45,7 @@ import {
     removeLandscapeListener,
     removeWindowListeners,
     resetRoomStores,
+    resetMeetingRecordingStore
 } from '../../store';
 import {
     $backgroundAudioVolume,
@@ -205,6 +206,7 @@ const MeetingContainer = memo(() => {
             (async () => {
                 await sendLeaveMeetingSocketEvent();
                 resetRoomStores();
+                resetMeetingRecordingStore();
                 BackgroundManager.destroy();
             })();
         };

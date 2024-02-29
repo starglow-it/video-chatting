@@ -605,4 +605,28 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnReceiveStopRecordingPending,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlByAttendee,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlByAttendee,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+        ),
+    );
 });

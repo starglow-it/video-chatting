@@ -61,7 +61,7 @@ import {
     requestRecordingRejectEvent,
     startRecordMeeting,
     recordingStartPendingEvent,
-    getRecordingUrls
+    getRecordingUrl
 } from '../../../store/roomStores';
 import { addNotificationEvent } from '../../../store';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
@@ -81,10 +81,10 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 
 function formatText(text: string): string {
-    if (text.length <= 20) {
+    if (text.length <= 24) {
         return text;
     } else {
-        return '...' + text.substring(text.length - 21);
+        return '...' + text.substring(text.length - 25);
     }
 }
 
@@ -120,14 +120,18 @@ const Component = () => {
     } = useStore($avatarsMeetingStore);
 
     useEffect(() => {
-        getRecordingUrls({ meetingId: meeting.id });
-    }, [meeting]);
-
-    useEffect(() => {
         if (meetingRecordingStore.requestUsers.length > 0) {
             setIsRecordingRequestReceived(true);
         } else {
             setIsRecordingRequestReceived(false);
+        }
+
+        if (meetingRecordingStore.urlForCopy !== '') {
+            navigator.clipboard.writeText(meetingRecordingStore.urlForCopy);
+            addNotificationEvent({
+                type: NotificationType.LinkInfoCopied,
+                message: 'meeting.copy.link',
+            });
         }
     }, [meetingRecordingStore]);
 
@@ -204,12 +208,9 @@ const Component = () => {
         requestRecordingRejectEvent({ meetingId: meeting.id });
     };
 
-    const handleLinkCopied = useCallback(() => {
-        addNotificationEvent({
-            type: NotificationType.LinkInfoCopied,
-            message: 'meeting.copy.link',
-        });
-    }, []);
+    const handleLinkCopied = (videoId: string) => {
+        getRecordingUrl({ meetingId: meeting.id, videoId });
+    };
 
     const commonContent = useMemo(
         () => (
@@ -345,16 +346,17 @@ const Component = () => {
                                 >
                                     {
                                         meetingRecordingStore.videos.length > 0
-                                            ? meetingRecordingStore.videos.map((url, index) => (
+                                            ? meetingRecordingStore.videos.map((video: { id: string, endTime: string }) => (
                                                 <CustomGrid
+                                                    key={video.id}
                                                     item
                                                     container
                                                     justifyContent="space-between"
                                                 >
-                                                    <CustomTypography key={index} className={styles.urlTypography}>{formatText(url)}</CustomTypography>
+                                                    <CustomTypography className={styles.urlTypography}>{formatText(video.endTime)}</CustomTypography>
                                                     <CopyToClipboard
-                                                        text={url}
-                                                        onCopy={handleLinkCopied}
+                                                        text={meetingRecordingStore.urlForCopy}
+                                                        onCopy={() => handleLinkCopied(video.id)}
                                                     >
                                                         <CustomTooltip
                                                             title="copy"

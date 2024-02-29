@@ -33,6 +33,10 @@ import { handleGetMeetingUrlsReceive } from './handleGetMeetingUrlsReceive';
 import { handleGetMeetingUrlsReceiveFail } from './handleGetMeetingUrlsReceiveFail';
 import { handleReceiveStartRecordingPending } from './handleReceiveStartRecordingPending';
 import { handleReceiveStopRecordingPending } from './handleReceiveStopRecordingPending';
+import { handleGetUrlByAttendee } from './handleGetUrlByAttendee';
+import { handleGetUrlFailDueToPermission } from './handleGetUrlFailDueToPermission';
+import { handleGetUrlFailDueToHostPermission } from './handleGetUrlFailDueToHostPermission';
+import { handleGetUrlByAttendeeFailDueToHostPermission } from './handleGetUrlByAttendeeFailDueToHostPermission';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -214,7 +218,31 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             {
                 handler: handleReceiveStopRecordingPending,
             },
-        ]
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlByAttendee,
+            {
+                handler: handleGetUrlByAttendee,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+            {
+                handler: handleGetUrlFailDueToPermission,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+            {
+                handler: handleGetUrlFailDueToHostPermission,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+            {
+                handler: handleGetUrlByAttendeeFailDueToHostPermission,
+            },
+        ],
     ]);
 
 const MEETING_TEMPLATE_SUBSCRIBE_HANDLERS_REGISTRY: Map<

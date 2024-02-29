@@ -174,6 +174,11 @@ export type GetRecordingUrlsPayload = {
     meetingId: string;
 };
 
+export type GetRecordingUrlPayload = {
+    meetingId: string;
+    videoId: string;
+};
+
 export type SaveRecordingEventPayload = {
     meetingId: string;
     url: string;

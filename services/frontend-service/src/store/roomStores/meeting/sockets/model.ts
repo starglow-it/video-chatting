@@ -39,6 +39,7 @@ import {
     SendReactionQuestionReponse,
     RequestRecordingEventPayload,
     GetRecordingUrlsPayload,
+    GetRecordingUrlPayload,
     RequestRecordingResponse,
     AnswerRequestRecordingResponse,
     SaveRecordingEventPayload,
@@ -191,3 +192,8 @@ export const getRecordingUrls = createMeetingSocketEvent<
     GetRecordingUrlsPayload,
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.GetRecordingUrls);
+
+export const getRecordingUrl = createMeetingSocketEvent<
+    GetRecordingUrlPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.GetRecordingUrl);

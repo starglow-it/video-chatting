@@ -83,6 +83,7 @@ import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 import { AudienceRequestRecording } from 'src/dtos/requests/audience-request-recording.dto';
+import { GetRecordingUrlById } from 'src/dtos/requests/get-recording-url-by-id.dto';
 import { SaveRecordingUrlRequest } from 'src/dtos/requests/save-recordingurl.dto';
 import { AudienceRequestRecordingAccept } from 'src/dtos/requests/audience-request-recording-accept.dto';
 
@@ -2107,7 +2108,7 @@ export class MeetingsGateway
             this.emitToRoom(
               `meeting:${meeting._id.toString()}`,
               MeetingEmitEvents.GetMeetingUrlReceive,
-              { user: meetingUser.username, url: createdRecord.url }
+              { user: meetingUser.username, video: { id: createdRecord._id, endTime: createdRecord.updatedAt } }
             );
           }
         } else {
@@ -2145,13 +2146,81 @@ export class MeetingsGateway
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
         const urlModels = await this.meetingRecordService.findMany({ query: { meetingId: meeting._id }, session });
-        const urls = urlModels.map(doc => doc.url);
+        const videos = urlModels.map(model => ({
+          id: model._id,
+          endTime: model.updatedAt
+        }));
 
-        this.emitToSocketId(
-          user.socketId,
-          MeetingEmitEvents.GetMeetingUrlsReceive,
-          { urls }
-        );
+        if (!!videos) {
+          this.emitToSocketId(
+            user.socketId,
+            MeetingEmitEvents.GetMeetingUrlsReceive,
+            { videos }
+          );
+        }
+
+        return wsResult({
+          message: 'success',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnGetRecordingUrlById)
+  async getRecordingUrlById(
+    @MessageBody() msg: GetRecordingUrlById,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, videoId } = msg;
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const hostProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
+        const meetingHost = await this.usersComponent.findById({ id: meeting.owner.toString(), session });
+        
+        if (hostProfile) {
+          if (hostProfile.subscriptionPlanKey === PlanKeys.House) {
+            if (user._id.toString() === meetingHost._id.toString()) {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlFailDueToPermission,
+              );
+            } else {
+              this.emitToSocketId(
+                meetingHost.socketId,
+                MeetingEmitEvents.GetUrlFailDueToHostPermission,
+              );
+
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlByAttendeeFailDueToHostPermission,
+              );
+            }
+          } else {
+            const recordModel = await this.meetingRecordService.findById({ id: videoId, session });
+            if (recordModel) {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlByAttendee,
+                { url: recordModel.url }
+              );
+            }
+          }
+        }
+
+
 
         return wsResult({
           message: 'success',
