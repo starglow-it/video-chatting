@@ -38,7 +38,8 @@ import {
     SendQuestionResponse,
     SendReactionQuestionReponse,
     RequestRecordingEventPayload,
-    ErrorWhileStopRecordingPayload,
+    GetRecordingUrlsPayload,
+    GetRecordingUrlPayload,
     RequestRecordingResponse,
     AnswerRequestRecordingResponse,
     SaveRecordingEventPayload,
@@ -187,7 +188,12 @@ export const recordingStopPendingEvent = createMeetingSocketEvent<
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.recordingStopPending);
 
-export const errorWhileStopRecordingEvent = createMeetingSocketEvent<
-    ErrorWhileStopRecordingPayload,
+export const getRecordingUrls = createMeetingSocketEvent<
+    GetRecordingUrlsPayload,
     AnswerRequestRecordingResponse
->(MeetingSocketEmitters.errorWhileStopRecording);
+>(MeetingSocketEmitters.GetRecordingUrls);
+
+export const getRecordingUrl = createMeetingSocketEvent<
+    GetRecordingUrlPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.GetRecordingUrl);

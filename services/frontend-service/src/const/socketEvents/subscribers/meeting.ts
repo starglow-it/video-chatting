@@ -26,7 +26,11 @@ export enum MeetingSubscribeEvents {
     OnReceiveRequestRecordingAccepted = 'meeting:recording:request:accepted:receive',
     OnReceiveStartRecordingPending = 'meeting:start:recording:pending:receive',
     OnReceiveStopRecordingPending = 'meeting:stop:recording:pending:receive',
+    OnGetMeetingUrlReceive = 'meeting:get:recording:url:receive',
     OnGetMeetingUrlsReceive = 'meeting:get:recording:urls:receive',
     OnGetMeetingUrlsReceiveFail = 'meeting:get:recording:urls:receive:fail',
-    onGetErrorWhileStopRecording = 'meeting:error:while:stop:recording:receive',
+    OnGetUrlByAttendee = 'meeting:get:recording:url:by:attendee',
+    OnGetUrlFailDueToPermission = 'meeting:get:recording:url:fail:duoto:permission',
+    OnGetUrlFailDueToHostPermission = 'meeting:get:recording:url:fail:duoto:host:permission',
+    OnGetUrlByAttendeeFailDueToHostPermission = 'meeting:get:recording:url:by:attendee:fail:duoto:host:permission',
 }

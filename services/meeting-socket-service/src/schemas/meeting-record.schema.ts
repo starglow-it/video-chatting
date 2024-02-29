@@ -4,7 +4,10 @@ import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
 
 @Schema({
-  timestamps: true
+  timestamps: {
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  }
 })
 export class MeetingRecord {
   @Prop({
@@ -18,6 +21,9 @@ export class MeetingRecord {
     default: ''
   })
   url: string;
+
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export type MeetingRecordDocument = MeetingRecord & Document;

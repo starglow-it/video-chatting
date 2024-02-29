@@ -170,13 +170,18 @@ export type RequestRecordingEventPayload = {
     recordingUrl: string;
 };
 
+export type GetRecordingUrlsPayload = {
+    meetingId: string;
+};
+
+export type GetRecordingUrlPayload = {
+    meetingId: string;
+    videoId: string;
+};
+
 export type SaveRecordingEventPayload = {
     meetingId: string;
     url: string;
-};
-
-export type ErrorWhileStopRecordingPayload = {
-    meetingId: string;
 };
 
 export type SetIsMeetingRecordingPayload = {

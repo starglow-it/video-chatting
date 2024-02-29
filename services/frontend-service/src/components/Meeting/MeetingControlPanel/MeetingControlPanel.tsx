@@ -52,17 +52,16 @@ import {
     $meetingStore,
     $isAudience,
     startRecordStreamFx,
-    stopRecordStreamFx,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     toggleRecordingUrlsListPanel,
-    requestRecordingAcceptEvent,
     requestRecordingRejectEvent,
     startRecordMeeting,
-    recordingStartPendingEvent
+    recordingStartPendingEvent,
+    getRecordingUrl
 } from '../../../store/roomStores';
 import { addNotificationEvent } from '../../../store';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
@@ -82,10 +81,10 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 
 function formatText(text: string): string {
-    if (text.length <= 20) {
+    if (text.length <= 24) {
         return text;
     } else {
-        return '...' + text.substring(text.length - 21);
+        return '...' + text.substring(text.length - 25);
     }
 }
 
@@ -126,7 +125,14 @@ const Component = () => {
         } else {
             setIsRecordingRequestReceived(false);
         }
-        console.log(meetingRecordingStore);
+
+        if (meetingRecordingStore.urlForCopy !== '') {
+            navigator.clipboard.writeText(meetingRecordingStore.urlForCopy);
+            addNotificationEvent({
+                type: NotificationType.LinkInfoCopied,
+                message: 'meeting.copy.link',
+            });
+        }
     }, [meetingRecordingStore]);
 
     useEffect(() => {
@@ -202,12 +208,9 @@ const Component = () => {
         requestRecordingRejectEvent({ meetingId: meeting.id });
     };
 
-    const handleLinkCopied = useCallback(() => {
-        addNotificationEvent({
-            type: NotificationType.LinkInfoCopied,
-            message: 'meeting.copy.link',
-        });
-    }, []);
+    const handleLinkCopied = (videoId: string) => {
+        getRecordingUrl({ meetingId: meeting.id, videoId });
+    };
 
     const commonContent = useMemo(
         () => (
@@ -278,27 +281,29 @@ const Component = () => {
                             container
                             justifyContent="space-between"
                         >
-                            {recordingStartPending || meetingRecordingStore.isRecordingStartPending
-                                ? <CustomButton
-                                    label={
-                                        <CustomLoader />
-                                    }
-                                    size="small"
-                                    className={styles.recordingRequestHandleBtn}
-                                    disabled
-                                    onClick={handleRequestRecordingAccept}
-                                />
-                                : <CustomButton
-                                    label={
-                                        <Translation
-                                            nameSpace="meeting"
-                                            translation="buttons.startRecording"
-                                        />
-                                    }
-                                    size="small"
-                                    className={styles.recordingRequestHandleBtn}
-                                    onClick={handleRequestRecordingAccept}
-                                />}
+                            {
+                                recordingStartPending || meetingRecordingStore.isStartRecordingPending
+                                    ? <CustomButton
+                                        label={
+                                            <CustomLoader />
+                                        }
+                                        size="small"
+                                        className={styles.recordingRequestHandleBtn}
+                                        disabled
+                                        onClick={handleRequestRecordingAccept}
+                                    />
+                                    : <CustomButton
+                                        label={
+                                            <Translation
+                                                nameSpace="meeting"
+                                                translation="buttons.startRecording"
+                                            />
+                                        }
+                                        size="small"
+                                        className={styles.recordingRequestHandleBtn}
+                                        onClick={handleRequestRecordingAccept}
+                                    />
+                            }
 
                             <CustomButton
                                 variant="custom-cancel"
@@ -341,16 +346,17 @@ const Component = () => {
                                 >
                                     {
                                         meetingRecordingStore.videos.length > 0
-                                            ? meetingRecordingStore.videos.map((url, index) => (
+                                            ? meetingRecordingStore.videos.map((video: { id: string, endTime: string }) => (
                                                 <CustomGrid
+                                                    key={video.id}
                                                     item
                                                     container
                                                     justifyContent="space-between"
                                                 >
-                                                    <CustomTypography key={index} className={styles.urlTypography}>{formatText(url)}</CustomTypography>
+                                                    <CustomTypography className={styles.urlTypography}>{formatText(video.endTime)}</CustomTypography>
                                                     <CopyToClipboard
-                                                        text={url}
-                                                        onCopy={handleLinkCopied}
+                                                        text={meetingRecordingStore.urlForCopy}
+                                                        onCopy={() => handleLinkCopied(video.id)}
                                                     >
                                                         <CustomTooltip
                                                             title="copy"

@@ -36,7 +36,7 @@ export enum MeetingSubscribeEvents {
   OnStartRecordingPending = 'meeting:start:recording:pending',
   OnStopRecordingPending = 'meeting:stop:recording:pending',
   OnSaveRecordingUrl = 'meeting:save:recording:url:send',
-  OnErrorWhileStopRecording = 'meeting:error:while:stop:recording:send',
-  OnGetRecordingUrl = 'meeting:get:recording:urls:send',
+  OnGetRecordingUrlById = 'meeting:get:recording:url:by:id:send',
+  OnGetRecordingUrls = 'meeting:get:recording:urls:send',
   OnIsMeetingRecording = 'meeting:set:is:meeting:recording:send',
 }

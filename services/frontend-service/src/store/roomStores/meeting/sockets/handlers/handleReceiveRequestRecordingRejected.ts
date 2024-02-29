@@ -1,6 +1,6 @@
 import { addNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
-import { resetMeetingRecordingStore } from 'src/store/root';
+import { resetMeetingRecordingStoreExceptVideosEvent } from '../../../../../store/roomStores';
 
 export const handleReceiveRequestRecordingRejected = () => {
     addNotificationEvent({
@@ -8,5 +8,5 @@ export const handleReceiveRequestRecordingRejected = () => {
         message: "recording.recordingRequestReject",
         withErrorIcon: true
     });
-    resetMeetingRecordingStore();
+    resetMeetingRecordingStoreExceptVideosEvent();
 };
