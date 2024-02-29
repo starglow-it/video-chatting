@@ -9,6 +9,6 @@ export const runBootTasks = async () => {
     await startBroker();
     await startBrokerConsumers();
     await startLiveKitServer();
-    // await recordRoomMeeting();
+    await recordRoomMeeting();
     logger.info('BootTasks:running:complete');
 };
