@@ -26,7 +26,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "3010:3010"
       - "127.0.0.1:9090:9090"
       # close or move dashboard port to the save place
       - "8080:8080"
