@@ -37,6 +37,7 @@ import {
     setTranscriptionResult,
     setTranscriptionResultGuest,
 } from '../../../transcription/model';
+import { awsTranscribeServiceUrl } from 'src/const/urls/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mic = require('microphone-stream').default;
 
@@ -147,14 +148,14 @@ const handleLocalTrackPublished = async (
                     'There was an error streaming your audio to Amazon Transcribe. Please try again.',
                 );
             });
-
+            
         const info = await new EgressClient(
             frontendConfig.livekitHost,
             frontendConfig.livekitApi,
             frontendConfig.livekitSecret,
         ).startTrackEgress(
             myRoomName.toString(),
-            `${frontendConfig.egressWss.toString()}?roomId=${myRoomName}&participantName=${userName}`,
+            `${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${userName}`,
             localTrackPublication.trackSid.toString(),
         );
         console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
