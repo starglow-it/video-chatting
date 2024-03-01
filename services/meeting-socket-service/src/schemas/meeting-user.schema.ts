@@ -125,6 +125,12 @@ export class MeetingUser {
   })
   isDonated: boolean;
 
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isPaywallPaid: boolean;
+
   @Prop({ default: Date.now })
   createdAt: number;
 

@@ -46,6 +46,9 @@ import {
     $meetingUsersStore,
     $videoDevicesStore,
     $videoErrorStore,
+    $isPaywallPaid,
+    $isPaywallPaymentEnabled,
+    setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
@@ -80,6 +83,8 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const isPaywallPaid = useStore($isPaywallPaid);
+    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -230,9 +235,10 @@ const Component = () => {
         }
     }, []);
 
-    const handlePaymentSuccess = () => {
+    const handlePaymentSuccess = async () => {
         setWaitingPaywall(false);
         handleJoinMeeting();
+        setIsPaywallPaymentEnabled(true);
     };
 
     const isAudioError = Boolean(audioError);
@@ -258,8 +264,8 @@ const Component = () => {
         isAccessStatusWaiting;
 
     const isPayWallBeforeJoin =
-        enabledPaymentPaywallParticipant && waitingPaywall;
-    const functionPaywall = enabledPaymentPaywallParticipant
+        enabledPaymentPaywallParticipant && waitingPaywall && !isPaywallPaid;
+    const functionPaywall = enabledPaymentPaywallParticipant && !isPaywallPaid
         ? handlePaywallPayment
         : handleJoinMeeting;
     const joinHandler = isOwner ? onSubmit : functionPaywall;

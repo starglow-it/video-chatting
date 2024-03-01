@@ -360,6 +360,21 @@ export class MeetingsGateway
           return wsResult();
         }
 
+        if (!!meeting.users) {
+          const usersInMeeting = meeting.users.findIndex(_user =>
+            _user.accessStatus === MeetingAccessStatusEnum.InMeeting && user._id.toString() !== _user._id.toString()
+          )
+
+          if (usersInMeeting === -1) {
+            await this.usersComponent.updateManyUsers({
+              query: { meeting: meeting._id },
+              data: { isPaywallPaid: false },
+              isNew: false,
+              session
+            });
+          }
+        }
+
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
@@ -527,7 +542,12 @@ export class MeetingsGateway
             query: {
               _id: previousMeetingUserId
             },
-            data: { accessStatus: MeetingAccessStatusEnum.Settings, socketId: socket.id },
+            data: {
+              accessStatus: userData.meetingRole === MeetingRole.Participant
+                ? MeetingAccessStatusEnum.Settings
+                : MeetingAccessStatusEnum.InMeeting,
+              socketId: socket.id
+            },
             isNew: false,
             session
           });

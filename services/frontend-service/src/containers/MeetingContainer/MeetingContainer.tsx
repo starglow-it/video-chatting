@@ -58,6 +58,7 @@ import {
     $localUserStore,
     $meetingConnectedStore,
     $meetingTemplateStore,
+    $isPaywallPaymentEnabled,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
@@ -79,6 +80,8 @@ import {
     updateMeetingEvent,
     updateMeetingSocketEvent,
     isRoomPaywalledFx,
+    setIsPaywallPaymentEnabled,
+    updateUserSocketEvent
 } from '../../store/roomStores';
 
 // types
@@ -145,6 +148,7 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const { width, height } = useStore($windowSizeStore);
     const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
     const isLoadingJoinWaitingRoom = useStore(
@@ -343,6 +347,13 @@ const MeetingContainer = memo(() => {
             localStorage.setItem('meetingUserId', localUser.id);
         }
     }, [localUser]);
+
+    useEffect(() => {
+        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            updateUserSocketEvent({ isPaywallPaid: true });
+            setIsPaywallPaymentEnabled(false);
+        }
+    }, [isPaywallPaymentEnabled, localUser]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (

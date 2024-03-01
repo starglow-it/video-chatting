@@ -42,10 +42,12 @@ import {
     $meetingUsersStore,
     $isOwnerDoNotDisturb,
     $meetingStore,
+    $isPaywallPaid,
     getMeetingTemplateFx,
     joinAudienceMeetingSocketEvent,
     joinRecorderMeetingSocketEvent,
     updateLocalUserEvent,
+    setIsPaywallPaymentEnabled
 } from '../../store/roomStores';
 
 // types
@@ -72,6 +74,7 @@ const Component = () => {
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
+    const isPaywallPaid = useStore($isPaywallPaid);
     const meetingStore = useStore($meetingStore);
     const isHasMeeting = useStoreMap({
         store: $meetingUsersStore,
@@ -123,7 +126,7 @@ const Component = () => {
                     updateLocalUserEvent({
                         username: data.fullName,
                     });
-                    if (enabledPaymentPaywallAudience) {
+                    if (enabledPaymentPaywallAudience && !isPaywallPaid) {
                         setIsJoinPaywall(true);
                     } else {
                         joinAudienceMeetingSocketEvent();
@@ -145,6 +148,7 @@ const Component = () => {
     );
 
     const handlePaymentSuccess = useCallback(() => {
+        setIsPaywallPaymentEnabled(true);
         joinAudienceMeetingSocketEvent();
     }, []);
 

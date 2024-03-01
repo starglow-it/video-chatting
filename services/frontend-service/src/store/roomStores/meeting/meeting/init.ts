@@ -36,6 +36,8 @@ import {
     $isCameraActiveStore,
     $isMicActiveStore,
 } from '../../videoChat/localMedia/model';
+import { $isPaywallPaid } from '../../users/localUser/model';
+import { updateUserSocketEvent } from '../../users/init';
 import {
     $isMeetingInstanceExists,
     $isOwnerDoNotDisturb,
@@ -122,6 +124,13 @@ sample({
         ...params,
     }),
     target: joinMeetingFx,
+});
+
+joinMeetingFx.doneData.watch(() => {
+    const isPaywallPaid = $isPaywallPaid.getState();
+    if (isPaywallPaid) {
+        updateUserSocketEvent({ isPaywallPaid: true });
+    }
 });
 
 sample({

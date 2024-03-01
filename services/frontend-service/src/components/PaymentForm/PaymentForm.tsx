@@ -42,7 +42,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
     );
 
     const handleSubmit = useCallback(async () => {
-        onClose?.();
+        await onClose?.();
         addNotificationEvent({
             type: NotificationType.PaymentSuccess,
             message: 'payments.paymentSuccess',
