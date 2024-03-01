@@ -264,7 +264,9 @@ const MeetingContainer = memo(() => {
                 if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
-                await sendJoinWaitingRoomSocketEvent();
+
+                await sendJoinWaitingRoomSocketEvent(localStorage.getItem("meetingUserId") || '');
+
                 if (isOwner) {
                     if (isHasSettings) {
                         joinMeetingEvent({
@@ -335,6 +337,12 @@ const MeetingContainer = memo(() => {
 
         fetch();
     }, [router, meetingTemplate.id]);
+
+    useEffect(() => {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            localStorage.setItem('meetingUserId', localUser.id);
+        }
+    }, [localUser]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (
@@ -445,7 +453,7 @@ const MeetingContainer = memo(() => {
                                 <>
                                     <MeetingPreview isShow={isMeetingPreviewShow} />
                                     <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
-                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder}/>
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder} />
                                 </>
                             </ConditionalRender>
                         </CustomBox>

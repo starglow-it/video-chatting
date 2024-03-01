@@ -163,16 +163,19 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             meetingRole: MeetingRole;
         },
     ) => ({
-        profileId: source.profile?.id,
-        profileUserName: source?.profile?.fullName,
-        profileAvatar: source?.profile?.profileAvatar?.url,
-        templateId: source.template?.id,
-        meetingRole: source.meetingRole,
-        accessStatus: source.localUser.accessStatus,
-        isAuraActive: source.localUser.isAuraActive,
-        cameraStatus: source.localUser.cameraStatus,
-        micStatus: source.localUser.micStatus,
-        maxParticipants: source.template.maxParticipants,
+        userData: {
+            profileId: source.profile?.id,
+            profileUserName: source?.profile?.fullName,
+            profileAvatar: source?.profile?.profileAvatar?.url,
+            templateId: source.template?.id,
+            meetingRole: source.meetingRole,
+            accessStatus: source.localUser.accessStatus,
+            isAuraActive: source.localUser.isAuraActive,
+            cameraStatus: source.localUser.cameraStatus,
+            micStatus: source.localUser.micStatus,
+            maxParticipants: source.template.maxParticipants,
+        },
+        previousMeetingUserId: data
     }),
 });
 
@@ -561,7 +564,7 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
-          ),
+        ),
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnReceiveRequestRecording,

@@ -5,10 +5,11 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { IJoinMeeting } from '../../interfaces/join-meeting.interface';
-import { MeetingAvatarRole } from 'shared-types';
+import { MeetingAvatarRole, MeetingRole } from 'shared-types';
 
-export class JoinMeetingRequestDTO implements IJoinMeeting {
+class UserData {
   @IsOptional()
   @IsString({
     message: 'user.invalid',
@@ -37,7 +38,7 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   @IsString({
     message: 'meeting.invalid',
   })
-  readonly meetingRole: IJoinMeeting['meetingRole'];
+  readonly meetingRole: MeetingRole;
 
   @IsNotEmpty()
   @IsString({
@@ -72,4 +73,14 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
     message: 'meeting.invalid',
   })
   readonly avatarRole: MeetingAvatarRole;
+}
+
+export class JoinMeetingRequestDTO implements IJoinMeeting {
+  @Type(() => UserData)
+  @IsNotEmpty()
+  readonly userData: UserData;
+
+  @IsOptional()
+  @IsString()
+  readonly previousMeetingUserId: string
 }

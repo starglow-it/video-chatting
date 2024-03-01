@@ -1,7 +1,10 @@
 import { MeetingAvatarRole, MeetingRole } from 'shared-types';
 
 export interface IJoinMeeting {
-  profileId?: string;
-  meetingRole: MeetingRole;
-  avatarRole: MeetingAvatarRole;
+  userData: {
+    profileId?: string;
+    meetingRole: MeetingRole;
+    avatarRole: MeetingAvatarRole;
+  },
+  previousMeetingUserId: string
 }

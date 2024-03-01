@@ -460,20 +460,21 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         subscribeWsError(socket);
-        const waitingRoom = `waitingRoom:${message.templateId}`;
-        const rejoinRoom = `rejoin:${message.templateId}`;
+        const { userData, previousMeetingUserId } = message;
+        const waitingRoom = `waitingRoom:${userData.templateId}`;
+        const rejoinRoom = `rejoin:${userData.templateId}`;
         this.joinRoom(socket, waitingRoom);
         this.leaveRoom(socket, rejoinRoom);
 
         const template = await this.coreService.findMeetingTemplateById({
-          id: message.templateId,
+          id: userData.templateId,
         });
 
         throwWsError(!template, 'No template found');
 
         let meeting = await this.meetingsService.findOne({
           query: {
-            templateId: message.templateId,
+            templateId: userData.templateId,
           },
           session,
         });
@@ -485,14 +486,14 @@ export class MeetingsGateway
           }))
           : null;
 
-        if (message.meetingRole == MeetingRole.Host && !meeting) {
+        if (userData.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting({
             data: {
               isMonetizationEnabled: false,
               mode: 'together',
-              ownerProfileId: message.profileId,
-              maxParticipants: message.maxParticipants,
-              templateId: message.templateId,
+              ownerProfileId: userData.profileId,
+              maxParticipants: userData.maxParticipants,
+              templateId: userData.templateId,
               links
             },
             session,
@@ -519,25 +520,40 @@ export class MeetingsGateway
           );
         }
 
-        const user = await this.usersService.createUser(
-          {
-            profileId: message.profileId,
-            socketId: socket.id,
-            username: message?.profileUserName,
-            profileAvatar: message?.profileAvatar,
-            isGenerated: !Boolean(message.profileId),
-            accessStatus: message.accessStatus,
-            isAuraActive: message.isAuraActive,
-            micStatus: message.micStatus,
-            cameraStatus: message.cameraStatus,
-            avatarRole: message.avatarRole,
-            meetingRole: message.meetingRole,
-          },
-          session,
-        );
+        let user: any = {};
+
+        if (!!previousMeetingUserId) {
+          user = await this.usersService.findOneAndUpdate({
+            query: {
+              _id: previousMeetingUserId
+            },
+            data: { accessStatus: MeetingAccessStatusEnum.Settings, socketId: socket.id },
+            isNew: false,
+            session
+          });
+        }
+
+        if (!user || !previousMeetingUserId) {
+          user = await this.usersService.createUser(
+            {
+              profileId: userData.profileId,
+              socketId: socket.id,
+              username: userData?.profileUserName,
+              profileAvatar: userData?.profileAvatar,
+              isGenerated: !Boolean(userData.profileId),
+              accessStatus: userData.accessStatus,
+              isAuraActive: userData.isAuraActive,
+              micStatus: userData.micStatus,
+              cameraStatus: userData.cameraStatus,
+              avatarRole: userData.avatarRole,
+              meetingRole: userData.meetingRole,
+            },
+            session,
+          )
+        }
 
         if (
-          message.meetingRole == MeetingRole.Host &&
+          userData.meetingRole == MeetingRole.Host &&
           !(await this.meetingsCommonService.isMaxMembers(
             meeting,
             MeetingRole.Host,
@@ -559,7 +575,7 @@ export class MeetingsGateway
 
         const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
 
-        const plainMeeting = meetingSerialization(meeting);
+        const plainMeeting: any = meetingSerialization(meeting);
         const plainUser = userSerialization(user);
         const plainUsers = userSerialization(meetingUsers);
 
@@ -1536,7 +1552,7 @@ export class MeetingsGateway
     );
   }
 
-  
+
   @SubscribeMessage(MeetingSubscribeEvents.OnStartTranscription)
   async receiveTranscriptionResults(
     @MessageBody() message: any,
@@ -2219,7 +2235,7 @@ export class MeetingsGateway
 
         const hostProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
         const meetingHost = await this.usersComponent.findById({ id: meeting.owner.toString(), session });
-        
+
         if (hostProfile) {
           if (hostProfile.subscriptionPlanKey === PlanKeys.House) {
             if (user._id.toString() === meetingHost._id.toString()) {
