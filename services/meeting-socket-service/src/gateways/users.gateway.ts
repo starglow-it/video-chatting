@@ -30,6 +30,7 @@ import { userSerialization } from '../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
 import { GetStatisticsDTO } from '../dtos/requests/users/get-statistics-dto';
+import { SendRequestToHostWhenDnd } from '../dtos/requests/send-request-to-host-when-dnd';
 
 // helpers
 import {
@@ -155,7 +156,7 @@ export class UsersGateway extends BaseGateway {
           session,
         });
 
-        if (user.meetingRole !== MeetingRole.Audience) {
+        if (user.meetingRole !== MeetingRole.Audience && user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           await this.updateVideoContainer({
             userTemplateId: meeting.templateId,
             user,
@@ -534,6 +535,51 @@ export class UsersGateway extends BaseGateway {
 
         this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
         return wsResult();
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(UsersSubscribeEvents.OnSendRequestToHostWhenDnd)
+  async sendRequestToHostWhenDnd(
+    @MessageBody() msg: SendRequestToHostWhenDnd,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        await this.usersComponent.findByIdAndUpdate(
+          {
+            id: user._id,
+            data: { accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd },
+            session
+          });
+
+        await meeting.populate('users');
+
+        let plainUsers = userSerialization(meeting.users);
+        plainUsers = Array.from(new Set(plainUsers.map(item => item.id)))
+          .map(id => plainUsers.find(item => item.id === id));
+
+        this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
+          users: plainUsers
+        });
+
+        return wsResult({
+          message: 'success'
+        });
       },
       {
         onFinaly: (err) => wsError(socket, err),

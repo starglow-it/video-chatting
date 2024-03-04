@@ -114,6 +114,7 @@ const Component = () => {
             state.some(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd ||
                     user.accessStatus ===
                     MeetingAccessStatusEnum.SwitchRoleSent,
             ),

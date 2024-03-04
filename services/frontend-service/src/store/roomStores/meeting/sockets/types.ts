@@ -210,6 +210,10 @@ export type AnswerRequestRecordingResponse = {
     message: string
 };
 
+export type SendRequestToHostWhenDndResponse = {
+    message: string,
+};
+
 export type RecodingAnswerResponse = {
     isRecordingStart: Boolean
 };

@@ -47,6 +47,7 @@ import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
+import { updateUserSocketEvent } from '../../../roomStores';
 
 import {
     AppDialogsEnum,
@@ -55,7 +56,7 @@ import {
     Profile,
     JoinMeetingResult,
 } from '../../../types';
-import { SendAnswerMeetingRequestParams, AnswerRequestRecordingResponse } from './types';
+import { SendAnswerMeetingRequestParams, AnswerRequestRecordingResponse, SendRequestToHostWhenDndPayload, SendRequestToHostWhenDndResponse } from './types';
 
 import {
     MeetingSubscribeEvents,
@@ -335,13 +336,15 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
     if (data?.users) updateMeetingUsersEvent({ users: data?.users });
 };
 
-const handleRequestToHostWHenDnd = ({ message }: AnswerRequestRecordingResponse) => {
+const handleRequestToHostWHenDnd = ({ message, user }: SendRequestToHostWhenDndResponse) => {
     if (message === 'success') {
         addNotificationEvent({
             type: NotificationType.RequestRecordingMeeting,
             message: "meeting.isHostNotified",
             withSuccessIcon: true
         });
+
+        updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd });
     }
 };
 

@@ -47,8 +47,6 @@ import {
     $videoDevicesStore,
     $videoErrorStore,
     $isPaywallPaid,
-    $isPaywallPaymentEnabled,
-    $meetingStore,
     setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
@@ -61,7 +59,6 @@ import {
     updateLocalUserEvent,
     updateUserSocketEvent,
     rejoinMeetingEvent,
-    sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 
 // types
@@ -86,7 +83,6 @@ const Component = () => {
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
     const isPaywallPaid = useStore($isPaywallPaid);
-    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -121,7 +117,6 @@ const Component = () => {
 
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
-    const meeting = useStore($meetingStore);
     const isUserSentEnterRequest =
         localUser.accessStatus === MeetingAccessStatusEnum.RequestSent;
 
@@ -223,7 +218,9 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        await rejoinMeetingEvent();
+        const meetingUserId = localStorage.getItem('meetingUserId');
+
+        await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
@@ -257,17 +254,6 @@ const Component = () => {
             setIsCameraActiveEvent(false); // This assumes setIsCameraActiveEvent will set isCameraActive to false
         }
     }, [isVideoError]);
-
-    useEffect(() => {
-        if (
-            localUser.accessStatus === MeetingAccessStatusEnum.Waiting &&
-            isHasMeeting &&
-            isOwnerInMeeting &&
-            isOwnerDoNotDisturb
-        ) {
-            sentRequestToHostWhenDnd({ meetingId: meeting.id});
-        }
-    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb]);
 
     const isAccessStatusWaiting =
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
@@ -508,6 +494,7 @@ const Component = () => {
                     </>
                 );
 
+            case MeetingAccessStatusEnum.RequestSentWhenDnd:
             case MeetingAccessStatusEnum.Waiting:
                 return (
                     <>

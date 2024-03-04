@@ -12,4 +12,5 @@ export enum UsersSubscribeEvents {
   OnAnswerRequestFromParticipantToAudienceByHost = 'users:switchRole:fromParticipant:toAudience:host:answer:send',
   OnRequestRoleFromParticipantToAudienceByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:request:send',
   OnAnswerRequestFromParticipantToAudienceByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:answer:send',
+  OnSendRequestToHostWhenDnd = 'meeting:send:request:to:host:when:dnd',
 }
