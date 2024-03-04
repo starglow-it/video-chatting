@@ -58,6 +58,7 @@ import {
     $localUserStore,
     $meetingConnectedStore,
     $meetingTemplateStore,
+    $isPaywallPaymentEnabled,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
@@ -79,6 +80,8 @@ import {
     updateMeetingEvent,
     updateMeetingSocketEvent,
     isRoomPaywalledFx,
+    setIsPaywallPaymentEnabled,
+    updateUserSocketEvent
 } from '../../store/roomStores';
 
 // types
@@ -145,6 +148,7 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const { width, height } = useStore($windowSizeStore);
     const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
     const isLoadingJoinWaitingRoom = useStore(
@@ -264,7 +268,9 @@ const MeetingContainer = memo(() => {
                 if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
-                await sendJoinWaitingRoomSocketEvent();
+
+                await sendJoinWaitingRoomSocketEvent(localStorage.getItem("meetingUserId") || '');
+
                 if (isOwner) {
                     if (isHasSettings) {
                         joinMeetingEvent({
@@ -335,6 +341,19 @@ const MeetingContainer = memo(() => {
 
         fetch();
     }, [router, meetingTemplate.id]);
+
+    useEffect(() => {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            localStorage.setItem('meetingUserId', localUser.id);
+        }
+    }, [localUser]);
+
+    useEffect(() => {
+        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            updateUserSocketEvent({ isPaywallPaid: true });
+            setIsPaywallPaymentEnabled(false);
+        }
+    }, [isPaywallPaymentEnabled, localUser]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (
@@ -445,7 +464,7 @@ const MeetingContainer = memo(() => {
                                 <>
                                     <MeetingPreview isShow={isMeetingPreviewShow} />
                                     <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
-                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder}/>
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder} />
                                 </>
                             </ConditionalRender>
                         </CustomBox>

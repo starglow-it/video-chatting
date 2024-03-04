@@ -59,6 +59,7 @@ export type UpdateModelMultipleQuery<Entity> = {
   data: UpdateQuery<Entity> | UpdateWithAggregationPipeline;
   session?: ITransactionSession;
   options?: QueryParams;
+  isNew?: boolean;
   populatePaths?: QueryOptions['populate'];
 };
 

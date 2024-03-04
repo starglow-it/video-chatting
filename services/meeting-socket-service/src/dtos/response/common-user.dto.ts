@@ -66,6 +66,9 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
 
   @Expose()
   isDonated: ICommonMeetingUserDTO['isDonated'];
+
+  @Expose()
+  isPaywallPaid: ICommonMeetingUserDTO['isPaywallPaid'];
 }
 
 export const userSerialization = <

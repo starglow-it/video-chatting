@@ -51,9 +51,10 @@ export class UsersService {
   async updateMany(
     query,
     data,
+    isNew,
     { session }: ITransactionSession,
   ): Promise<UpdateWriteOpResult> {
-    return this.meetingUser.updateMany(query, data, { new: true, session });
+    return this.meetingUser.updateMany(query, data, { new: isNew, session });
   }
 
   async findOne({
@@ -89,10 +90,11 @@ export class UsersService {
     query,
     data,
     populatePaths,
+    isNew = true,
     session = null,
   }: UpdateModelSingleQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
     return this.meetingUser.findOneAndUpdate(query, data, {
-      new: true,
+      new: isNew,
       session: session?.session,
       populate: populatePaths,
     });

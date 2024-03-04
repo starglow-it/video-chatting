@@ -11,7 +11,6 @@ export const handleConnectSocket = async ({
     serverIp: IUserTemplate['meetingInstance']['serverIp'];
     isStatistics?: boolean
 }) => {
-    console.log(serverIp)
     const socketUrl =
         !['localhost', frontendConfig.defaultServerIp].includes(serverIp) &&
             serverIp

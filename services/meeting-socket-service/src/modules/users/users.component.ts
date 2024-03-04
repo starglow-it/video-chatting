@@ -5,6 +5,7 @@ import {
   GetModelSingleQuery,
   UpdateModelByIdQuery,
   UpdateModelSingleQuery,
+  UpdateModelMultipleQuery
 } from '../../types/mongoose';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { throwWsError } from '../../utils/ws/wsError';
@@ -38,7 +39,6 @@ export class UsersComponent {
 
   async findById({ id, session }: GetModelByIdQuery<MeetingUserDocument>) {
     const user = await this.usersService.findById({ id, session });
-    throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
     return user;
   }
 
@@ -66,6 +66,21 @@ export class UsersComponent {
       session,
       populatePaths,
     });
+    throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
+    return user;
+  }
+  async updateManyUsers({
+    query,
+    data,
+    isNew = false,
+    session
+  }: UpdateModelMultipleQuery<MeetingUserDocument>): Promise<any> {
+    const user = await this.usersService.updateMany(
+      query,
+      data,
+      isNew,
+      session,
+    );
     throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
     return user;
   }

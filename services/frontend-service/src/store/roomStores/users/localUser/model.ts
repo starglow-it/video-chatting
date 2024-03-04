@@ -1,3 +1,4 @@
+import { combine } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { meetingUsersDomain } from '../domain/model';
 
@@ -15,13 +16,29 @@ const initialMeetingUserState: MeetingUser = {
     meeting: '',
     isGenerated: false,
     isAuraActive: false,
-    doNotDisturb: false
+    doNotDisturb: false,
+    isPaywallPaid: false
 };
 
 export const $localUserStore = meetingUsersDomain.createStore<MeetingUser>(
     initialMeetingUserState,
 );
 
+export const $isPaywallPaid = combine<{
+    localUser: MeetingUser;
+}>({
+    localUser: $localUserStore,
+}).map(({ localUser }: { localUser: MeetingUser }) =>
+    localUser.isPaywallPaid
+);
+
+export const $isPaywallPaymentEnabled = meetingUsersDomain.createStore<boolean>(
+    false,
+);
+
+export const setIsPaywallPaymentEnabled = meetingUsersDomain.event<
+    boolean
+>('setIsPaywallPaymentEnabled');
 export const updateLocalUserEvent = meetingUsersDomain.event<
     Partial<MeetingUser>
 >('updateLocalUserEvent');

@@ -155,21 +155,25 @@ export class UsersGateway extends BaseGateway {
           session,
         });
 
-        await this.updateVideoContainer({
-          userTemplateId: meeting.templateId,
-          user,
-          data: {
-            userPosition: message?.userPosition,
-            userSize: message?.userSize,
-          },
-          session,
-        });
+        if (user.meetingRole !== MeetingRole.Audience) {
+          await this.updateVideoContainer({
+            userTemplateId: meeting.templateId,
+            user,
+            data: {
+              userPosition: message?.userPosition,
+              userSize: message?.userSize,
+            },
+            session,
+          });
+        }
 
         await meeting.populate('users');
 
         const plainUser = userSerialization(user);
 
-        const plainUsers = userSerialization(meeting.users);
+        let plainUsers = userSerialization(meeting.users);
+        plainUsers = Array.from(new Set(plainUsers.map(item => item.id)))
+          .map(id => plainUsers.find(item => item.id === id));
 
         this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
           users: plainUsers.map((user) => ({
