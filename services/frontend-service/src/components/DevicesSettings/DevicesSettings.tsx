@@ -48,6 +48,7 @@ import {
     $videoErrorStore,
     $isPaywallPaid,
     $isPaywallPaymentEnabled,
+    $meetingStore,
     setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
@@ -59,7 +60,8 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    rejoinMeetingEvent
+    rejoinMeetingEvent,
+    sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 
 // types
@@ -119,6 +121,7 @@ const Component = () => {
 
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
+    const meeting = useStore($meetingStore);
     const isUserSentEnterRequest =
         localUser.accessStatus === MeetingAccessStatusEnum.RequestSent;
 
@@ -254,6 +257,17 @@ const Component = () => {
             setIsCameraActiveEvent(false); // This assumes setIsCameraActiveEvent will set isCameraActive to false
         }
     }, [isVideoError]);
+
+    useEffect(() => {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.Waiting &&
+            isHasMeeting &&
+            isOwnerInMeeting &&
+            isOwnerDoNotDisturb
+        ) {
+            sentRequestToHostWhenDnd({ meetingId: meeting.id});
+        }
+    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb]);
 
     const isAccessStatusWaiting =
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;

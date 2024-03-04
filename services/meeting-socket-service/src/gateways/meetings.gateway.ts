@@ -44,6 +44,7 @@ import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-me
 import { EndMeetingRequestDTO } from '../dtos/requests/end-meeting.dto';
 import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 import { SetIsMeetingRecordingRequest } from '../dtos/requests/set-is-meeting-recording.dto';
+import { SendRequestToHostWhenDnd } from '../dtos/requests/send-request-to-host-when-dnd';
 
 import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
 import {
@@ -535,7 +536,7 @@ export class MeetingsGateway
           );
         }
 
-        let user: any = {};
+        let user: any;
 
         if (!!previousMeetingUserId) {
           const userModel = await this.usersComponent.findById({ id: previousMeetingUserId, session });
@@ -558,7 +559,7 @@ export class MeetingsGateway
                 session
               });
             } else {
-              
+
             }
           }
         }
@@ -2343,6 +2344,41 @@ export class MeetingsGateway
 
         return wsResult({
           message: 'successfully updated',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnSendRequestToHostWhenDnd)
+  async sendRequestToHostWhenDnd(
+    @MessageBody() msg: SendRequestToHostWhenDnd,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meetingHost = await this.usersComponent.findById({ id: meeting.hostUserId.toString() });
+
+        this.emitToSocketId(
+          meetingHost.socketId,
+          UserEmitEvents.AttendeeRequestWhenDndReceive,
+          { user },
+        );
+
+        return wsResult({
+          message: 'success',
         });
       },
       {
