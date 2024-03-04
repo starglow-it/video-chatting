@@ -336,7 +336,7 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
     if (data?.users) updateMeetingUsersEvent({ users: data?.users });
 };
 
-const handleRequestToHostWHenDnd = ({ message, user }: SendRequestToHostWhenDndResponse) => {
+const handleRequestToHostWHenDnd = ({ message }: SendRequestToHostWhenDndResponse) => {
     if (message === 'success') {
         addNotificationEvent({
             type: NotificationType.RequestRecordingMeeting,
