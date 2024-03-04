@@ -182,6 +182,10 @@ export type GetRecordingUrlPayload = {
     videoId: string;
 };
 
+export type SendRequestToHostWhenDndPayload = {
+    meetingId: string;
+};
+
 export type SaveRecordingEventPayload = {
     meetingId: string;
     url: string;
@@ -204,6 +208,10 @@ export type ReceiveRecordingUrls = {
 
 export type AnswerRequestRecordingResponse = {
     message: string
+};
+
+export type SendRequestToHostWhenDndResponse = {
+    message: string,
 };
 
 export type RecodingAnswerResponse = {

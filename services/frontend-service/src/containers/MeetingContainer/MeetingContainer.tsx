@@ -1,5 +1,5 @@
 import { memo, useState, useEffect, useMemo, useRef } from 'react';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Head from 'next/head';
@@ -59,6 +59,10 @@ import {
     $meetingConnectedStore,
     $meetingTemplateStore,
     $isPaywallPaymentEnabled,
+    $meetingUsersStore,
+    $isOwnerInMeeting,
+    $isOwnerDoNotDisturb,
+    $meetingStore,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
@@ -81,7 +85,8 @@ import {
     updateMeetingSocketEvent,
     isRoomPaywalledFx,
     setIsPaywallPaymentEnabled,
-    updateUserSocketEvent
+    updateUserSocketEvent,
+    sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 
 // types
@@ -163,6 +168,17 @@ const MeetingContainer = memo(() => {
     const isRecorder = roleUrl === MeetingRole.Recorder;
     const isFirstime = useRef(true);
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
+    const isHasMeeting = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+            ),
+    });
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
+    const meeting = useStore($meetingStore);
 
     useEffect(() => {
         if (roleUrl) {
@@ -371,6 +387,17 @@ const MeetingContainer = memo(() => {
             </CustomGrid>
         );
     }, []);
+
+    useEffect(() => {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.Waiting &&
+            isHasMeeting &&
+            isOwnerInMeeting &&
+            isOwnerDoNotDisturb
+        ) {
+            sentRequestToHostWhenDnd({ meetingId: meeting.id});
+        }
+    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb, localUser]);
 
     const previewImage = getPreviewImage(meetingTemplate);
 

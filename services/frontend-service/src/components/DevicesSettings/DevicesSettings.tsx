@@ -47,7 +47,6 @@ import {
     $videoDevicesStore,
     $videoErrorStore,
     $isPaywallPaid,
-    $isPaywallPaymentEnabled,
     setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
@@ -59,7 +58,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    rejoinMeetingEvent
+    rejoinMeetingEvent,
 } from '../../store/roomStores';
 
 // types
@@ -84,7 +83,6 @@ const Component = () => {
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
     const isPaywallPaid = useStore($isPaywallPaid);
-    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -220,7 +218,9 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        await rejoinMeetingEvent();
+        const meetingUserId = localStorage.getItem('meetingUserId');
+
+        await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
@@ -494,6 +494,7 @@ const Component = () => {
                     </>
                 );
 
+            case MeetingAccessStatusEnum.RequestSentWhenDnd:
             case MeetingAccessStatusEnum.Waiting:
                 return (
                     <>

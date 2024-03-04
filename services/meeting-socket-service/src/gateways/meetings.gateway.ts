@@ -152,6 +152,7 @@ export class MeetingsGateway
         accessStatus: {
           $in: [
             MeetingAccessStatusEnum.RequestSent,
+            MeetingAccessStatusEnum.RequestSentWhenDnd,
             MeetingAccessStatusEnum.InMeeting,
             MeetingAccessStatusEnum.SwitchRoleSent,
             MeetingAccessStatusEnum.EnterName,
@@ -542,23 +543,40 @@ export class MeetingsGateway
 
           if (!!userModel) {
             if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
+
+              const { templatePayments } = await this.coreService.findTemplatePayment({
+                userTemplateId: meeting.templateId,
+                userId: template.user.id
+              });
+
+              const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enalbed) !== -1;
+              const isParticipantPaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enalbed) !== -1;
+
+              let accessStatus = userData.accessStatus;
+              if (userModel.isPaywallPaid) {
+                if (userData.meetingRole === MeetingRole.Participant && isParticipantPaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
+                }
+
+                if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.InMeeting;
+                }
+              }
+
               user = await this.usersService.findOneAndUpdate({
                 query: {
                   _id: previousMeetingUserId
                 },
                 data: {
                   ...userData,
-                  accessStatus: userData.meetingRole === MeetingRole.Participant ? MeetingAccessStatusEnum.Settings :
-                    (userData.meetingRole === MeetingRole.Audience && userModel.isPaywallPaid)
-                      ? MeetingAccessStatusEnum.InMeeting
-                      : userData.accessStatus,
+                  accessStatus,
                   socketId: socket.id
                 },
                 isNew: false,
                 session
               });
             } else {
-              
+
             }
           }
         }

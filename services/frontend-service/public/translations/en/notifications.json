@@ -31,7 +31,8 @@
     "connectionError": "Meeting is not connected.",
     "monetization": {
       "saved": "Your payment settings saved"
-    }
+    },
+    "isHostNotified": "The host has been notified"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
