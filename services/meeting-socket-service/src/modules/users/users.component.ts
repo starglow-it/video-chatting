@@ -39,7 +39,6 @@ export class UsersComponent {
 
   async findById({ id, session }: GetModelByIdQuery<MeetingUserDocument>) {
     const user = await this.usersService.findById({ id, session });
-    throwWsError(!user, MeetingNativeErrorEnum.USER_NOT_FOUND);
     return user;
   }
 

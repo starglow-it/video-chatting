@@ -57,6 +57,12 @@ class UserData {
   readonly isAuraActive: boolean;
 
   @IsNotEmpty()
+  @IsBoolean({
+    message: 'meeting.invalid',
+  })
+  readonly isPaywallPaid: boolean;
+
+  @IsNotEmpty()
   @IsString({
     message: 'meeting.invalid',
   })

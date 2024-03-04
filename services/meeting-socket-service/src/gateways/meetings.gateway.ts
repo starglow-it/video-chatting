@@ -538,22 +538,36 @@ export class MeetingsGateway
         let user: any = {};
 
         if (!!previousMeetingUserId) {
-          user = await this.usersService.findOneAndUpdate({
-            query: {
-              _id: previousMeetingUserId
-            },
-            data: {
-              accessStatus: userData.meetingRole === MeetingRole.Participant
-                ? MeetingAccessStatusEnum.Settings
-                : MeetingAccessStatusEnum.InMeeting,
-              socketId: socket.id
-            },
-            isNew: false,
-            session
-          });
+          const userModel = await this.usersComponent.findById({ id: previousMeetingUserId, session });
+
+          if (!!userModel) {
+            if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
+              user = await this.usersService.findOneAndUpdate({
+                query: {
+                  _id: previousMeetingUserId
+                },
+                data: {
+                  ...userData,
+                  accessStatus: userData.meetingRole === MeetingRole.Participant ? MeetingAccessStatusEnum.Settings :
+                    (userData.meetingRole === MeetingRole.Audience && userModel.isPaywallPaid)
+                      ? MeetingAccessStatusEnum.InMeeting
+                      : userData.accessStatus,
+                  socketId: socket.id
+                },
+                isNew: false,
+                session
+              });
+            } else {
+              
+            }
+          }
         }
 
+        let isNewUser = false;
+
         if (!user || !previousMeetingUserId) {
+          isNewUser = true
+
           user = await this.usersService.createUser(
             {
               profileId: userData.profileId,
@@ -590,7 +604,10 @@ export class MeetingsGateway
 
         await user.save({ session: session.session });
 
-        meeting.users.push(user.id);
+        if (isNewUser) {
+          meeting.users.push(user.id);
+        }
+
         meeting.save();
 
         const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
