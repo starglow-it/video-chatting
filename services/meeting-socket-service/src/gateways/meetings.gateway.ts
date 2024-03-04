@@ -535,7 +535,7 @@ export class MeetingsGateway
           );
         }
 
-        let user: any = {};
+        let user: MeetingUserDocument;
 
         if (!!previousMeetingUserId) {
           const userModel = await this.usersComponent.findById({ id: previousMeetingUserId, session });

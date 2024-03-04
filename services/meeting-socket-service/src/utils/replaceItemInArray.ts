@@ -14,7 +14,7 @@ export const replaceItemInArray = <T = any>(
 
   const isReplaceItemExist = arr.indexOf(replaceItem);
 
-  if (index !== -1 && !isReplaceItemExist) {
+  if (index !== -1 && ( replaceItem === null || isReplaceItemExist === -1 )) {
     arr[index] = replaceItem;
   }
 
