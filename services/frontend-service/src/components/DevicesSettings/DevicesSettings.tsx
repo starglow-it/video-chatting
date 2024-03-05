@@ -46,6 +46,8 @@ import {
     $meetingUsersStore,
     $videoDevicesStore,
     $videoErrorStore,
+    $isPaywallPaid,
+    setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
@@ -56,7 +58,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    rejoinMeetingEvent
+    rejoinMeetingEvent,
 } from '../../store/roomStores';
 
 // types
@@ -80,6 +82,7 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const isPaywallPaid = useStore($isPaywallPaid);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -215,7 +218,9 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        await rejoinMeetingEvent();
+        const meetingUserId = localStorage.getItem('meetingUserId');
+
+        await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
@@ -230,9 +235,10 @@ const Component = () => {
         }
     }, []);
 
-    const handlePaymentSuccess = () => {
+    const handlePaymentSuccess = async () => {
         setWaitingPaywall(false);
         handleJoinMeeting();
+        setIsPaywallPaymentEnabled(true);
     };
 
     const isAudioError = Boolean(audioError);
@@ -258,8 +264,8 @@ const Component = () => {
         isAccessStatusWaiting;
 
     const isPayWallBeforeJoin =
-        enabledPaymentPaywallParticipant && waitingPaywall;
-    const functionPaywall = enabledPaymentPaywallParticipant
+        enabledPaymentPaywallParticipant && waitingPaywall && !isPaywallPaid;
+    const functionPaywall = enabledPaymentPaywallParticipant && !isPaywallPaid
         ? handlePaywallPayment
         : handleJoinMeeting;
     const joinHandler = isOwner ? onSubmit : functionPaywall;
@@ -488,6 +494,7 @@ const Component = () => {
                     </>
                 );
 
+            case MeetingAccessStatusEnum.RequestSentWhenDnd:
             case MeetingAccessStatusEnum.Waiting:
                 return (
                     <>

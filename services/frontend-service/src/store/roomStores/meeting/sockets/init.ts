@@ -23,6 +23,8 @@ import {
     updateLocalUserEvent,
 } from '../../users/localUser/model';
 import { $profileStore } from '../../../profile/profile/model';
+import { addNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
 import {
     emitEnterMeetingEvent,
     endMeetingSocketEvent,
@@ -38,12 +40,14 @@ import {
     enterWaitingRoomSocketEvent,
     sendReconnectMeetingEvent,
     joinMeetingAudienceEvent,
-    joinMeetingRecorderEvent
+    joinMeetingRecorderEvent,
+    sentRequestToHostWhenDnd
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
+import { updateUserSocketEvent } from '../../../roomStores';
 
 import {
     AppDialogsEnum,
@@ -52,7 +56,7 @@ import {
     Profile,
     JoinMeetingResult,
 } from '../../../types';
-import { SendAnswerMeetingRequestParams } from './types';
+import { SendAnswerMeetingRequestParams, AnswerRequestRecordingResponse, SendRequestToHostWhenDndPayload, SendRequestToHostWhenDndResponse } from './types';
 
 import {
     MeetingSubscribeEvents,
@@ -163,16 +167,19 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             meetingRole: MeetingRole;
         },
     ) => ({
-        profileId: source.profile?.id,
-        profileUserName: source?.profile?.fullName,
-        profileAvatar: source?.profile?.profileAvatar?.url,
-        templateId: source.template?.id,
-        meetingRole: source.meetingRole,
-        accessStatus: source.localUser.accessStatus,
-        isAuraActive: source.localUser.isAuraActive,
-        cameraStatus: source.localUser.cameraStatus,
-        micStatus: source.localUser.micStatus,
-        maxParticipants: source.template.maxParticipants,
+        userData: {
+            profileId: source.profile?.id,
+            profileUserName: source?.profile?.fullName,
+            profileAvatar: source?.profile?.profileAvatar?.url,
+            templateId: source.template?.id,
+            meetingRole: source.meetingRole,
+            accessStatus: source.localUser.accessStatus,
+            isAuraActive: source.localUser.isAuraActive,
+            cameraStatus: source.localUser.cameraStatus,
+            micStatus: source.localUser.micStatus,
+            maxParticipants: source.template.maxParticipants,
+        },
+        previousMeetingUserId: data
     }),
 });
 
@@ -329,6 +336,18 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
     if (data?.users) updateMeetingUsersEvent({ users: data?.users });
 };
 
+const handleRequestToHostWHenDnd = ({ message }: SendRequestToHostWhenDndResponse) => {
+    if (message === 'success') {
+        addNotificationEvent({
+            type: NotificationType.RequestRecordingMeeting,
+            message: "meeting.isHostNotified",
+            withSuccessIcon: true
+        });
+
+        updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd });
+    }
+};
+
 const handleMeetingEventsError = (data: string, isUpdateWaiting = true) => {
     if (data) {
         setMeetingErrorEvent(data);
@@ -391,6 +410,7 @@ joinMeetingRecorderEvent.doneData.watch(handleUpdateMeetingEntities);
 joinMeetingRecorderEvent.failData.watch((error: any) => {
     console.log('audience join fail', error);
 });
+sentRequestToHostWhenDnd.doneData.watch(handleRequestToHostWHenDnd);
 
 sample({
     clock: sendReconnectMeetingEvent.doneData,
@@ -561,7 +581,7 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
-          ),
+        ),
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnReceiveRequestRecording,
@@ -633,6 +653,12 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
         getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnAttendeeRequestWhenDnd,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnAttendeeRequestWhenDnd,
         ),
     );
 });

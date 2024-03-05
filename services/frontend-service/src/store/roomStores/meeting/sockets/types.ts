@@ -16,14 +16,17 @@ import {
 import { MeetingPayment } from '../meetingPayment/type';
 
 export type JoinWaitingRoomPayload = {
-    profileId: Profile['id'];
-    profileUserName: Profile['fullName'];
-    profileAvatar: Profile['profileAvatar']['url'];
-    templateId: IUserTemplate['id'];
-    meetingRole: MeetingRole;
-    accessStatus: MeetingAccessStatusEnum;
-    isAuraActive: boolean;
-    maxParticipants: number;
+    userData: {
+        profileId: Profile['id'];
+        profileUserName: Profile['fullName'];
+        profileAvatar: Profile['profileAvatar']['url'];
+        templateId: IUserTemplate['id'];
+        meetingRole: MeetingRole;
+        accessStatus: MeetingAccessStatusEnum;
+        isAuraActive: boolean;
+        maxParticipants: number;
+    },
+    previousMeetingUserId: string;
 };
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
@@ -179,6 +182,10 @@ export type GetRecordingUrlPayload = {
     videoId: string;
 };
 
+export type SendRequestToHostWhenDndPayload = {
+    meetingId: string;
+};
+
 export type SaveRecordingEventPayload = {
     meetingId: string;
     url: string;
@@ -201,6 +208,10 @@ export type ReceiveRecordingUrls = {
 
 export type AnswerRequestRecordingResponse = {
     message: string
+};
+
+export type SendRequestToHostWhenDndResponse = {
+    message: string,
 };
 
 export type RecodingAnswerResponse = {

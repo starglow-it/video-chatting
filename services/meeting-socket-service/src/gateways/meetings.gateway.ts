@@ -152,6 +152,7 @@ export class MeetingsGateway
         accessStatus: {
           $in: [
             MeetingAccessStatusEnum.RequestSent,
+            MeetingAccessStatusEnum.RequestSentWhenDnd,
             MeetingAccessStatusEnum.InMeeting,
             MeetingAccessStatusEnum.SwitchRoleSent,
             MeetingAccessStatusEnum.EnterName,
@@ -360,6 +361,21 @@ export class MeetingsGateway
           return wsResult();
         }
 
+        if (!!meeting.users) {
+          const usersInMeeting = meeting.users.findIndex(_user =>
+            _user.accessStatus === MeetingAccessStatusEnum.InMeeting && user._id.toString() !== _user._id.toString()
+          )
+
+          if (usersInMeeting === -1) {
+            await this.usersComponent.updateManyUsers({
+              query: { meeting: meeting._id },
+              data: { isPaywallPaid: false },
+              isNew: false,
+              session
+            });
+          }
+        }
+
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
@@ -460,20 +476,21 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         subscribeWsError(socket);
-        const waitingRoom = `waitingRoom:${message.templateId}`;
-        const rejoinRoom = `rejoin:${message.templateId}`;
+        const { userData, previousMeetingUserId } = message;
+        const waitingRoom = `waitingRoom:${userData.templateId}`;
+        const rejoinRoom = `rejoin:${userData.templateId}`;
         this.joinRoom(socket, waitingRoom);
         this.leaveRoom(socket, rejoinRoom);
 
         const template = await this.coreService.findMeetingTemplateById({
-          id: message.templateId,
+          id: userData.templateId,
         });
 
         throwWsError(!template, 'No template found');
 
         let meeting = await this.meetingsService.findOne({
           query: {
-            templateId: message.templateId,
+            templateId: userData.templateId,
           },
           session,
         });
@@ -485,14 +502,14 @@ export class MeetingsGateway
           }))
           : null;
 
-        if (message.meetingRole == MeetingRole.Host && !meeting) {
+        if (userData.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting({
             data: {
               isMonetizationEnabled: false,
               mode: 'together',
-              ownerProfileId: message.profileId,
-              maxParticipants: message.maxParticipants,
-              templateId: message.templateId,
+              ownerProfileId: userData.profileId,
+              maxParticipants: userData.maxParticipants,
+              templateId: userData.templateId,
               links
             },
             session,
@@ -519,25 +536,76 @@ export class MeetingsGateway
           );
         }
 
-        const user = await this.usersService.createUser(
-          {
-            profileId: message.profileId,
-            socketId: socket.id,
-            username: message?.profileUserName,
-            profileAvatar: message?.profileAvatar,
-            isGenerated: !Boolean(message.profileId),
-            accessStatus: message.accessStatus,
-            isAuraActive: message.isAuraActive,
-            micStatus: message.micStatus,
-            cameraStatus: message.cameraStatus,
-            avatarRole: message.avatarRole,
-            meetingRole: message.meetingRole,
-          },
-          session,
-        );
+        let user: MeetingUserDocument;
+
+        if (!!previousMeetingUserId) {
+          const userModel = await this.usersComponent.findById({ id: previousMeetingUserId, session });
+
+          if (!!userModel) {
+            if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
+
+              const { templatePayments } = await this.coreService.findTemplatePayment({
+                userTemplateId: meeting.templateId,
+                userId: template.user.id
+              });
+
+              const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enalbed) !== -1;
+              const isParticipantPaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enalbed) !== -1;
+
+              let accessStatus = userData.accessStatus;
+              if (userModel.isPaywallPaid) {
+                if (userData.meetingRole === MeetingRole.Participant && isParticipantPaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
+                }
+
+                if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.InMeeting;
+                }
+              }
+
+              user = await this.usersService.findOneAndUpdate({
+                query: {
+                  _id: previousMeetingUserId
+                },
+                data: {
+                  ...userData,
+                  accessStatus,
+                  socketId: socket.id
+                },
+                isNew: false,
+                session
+              });
+            } else {
+
+            }
+          }
+        }
+
+        let isNewUser = false;
+
+        if (!user || !previousMeetingUserId) {
+          isNewUser = true
+
+          user = await this.usersService.createUser(
+            {
+              profileId: userData.profileId,
+              socketId: socket.id,
+              username: userData?.profileUserName,
+              profileAvatar: userData?.profileAvatar,
+              isGenerated: !Boolean(userData.profileId),
+              accessStatus: userData.accessStatus,
+              isAuraActive: userData.isAuraActive,
+              micStatus: userData.micStatus,
+              cameraStatus: userData.cameraStatus,
+              avatarRole: userData.avatarRole,
+              meetingRole: userData.meetingRole,
+            },
+            session,
+          )
+        }
 
         if (
-          message.meetingRole == MeetingRole.Host &&
+          userData.meetingRole == MeetingRole.Host &&
           !(await this.meetingsCommonService.isMaxMembers(
             meeting,
             MeetingRole.Host,
@@ -554,12 +622,15 @@ export class MeetingsGateway
 
         await user.save({ session: session.session });
 
-        meeting.users.push(user.id);
+        if (isNewUser) {
+          meeting.users.push(user.id);
+        }
+
         meeting.save();
 
         const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
 
-        const plainMeeting = meetingSerialization(meeting);
+        const plainMeeting: any = meetingSerialization(meeting);
         const plainUser = userSerialization(user);
         const plainUsers = userSerialization(meetingUsers);
 
@@ -1536,7 +1607,7 @@ export class MeetingsGateway
     );
   }
 
-  
+
   @SubscribeMessage(MeetingSubscribeEvents.OnStartTranscription)
   async receiveTranscriptionResults(
     @MessageBody() message: any,
@@ -2219,7 +2290,7 @@ export class MeetingsGateway
 
         const hostProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
         const meetingHost = await this.usersComponent.findById({ id: meeting.owner.toString(), session });
-        
+
         if (hostProfile) {
           if (hostProfile.subscriptionPlanKey === PlanKeys.House) {
             if (user._id.toString() === meetingHost._id.toString()) {

@@ -31,4 +31,8 @@ export class UpdateUserRequestDTO implements Partial<ICommonMeetingUserDTO> {
   @IsOptional()
   @IsBoolean()
   isDonated: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isPaywallPaid: boolean;
 }

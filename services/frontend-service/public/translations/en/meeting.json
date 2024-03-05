@@ -264,5 +264,6 @@
     "recordingRequestReject": "recording request rejected",
     "recordingRequestAcccept": "recording started",
     "recordingUrlsListTitle": "urls list",
-    "noVideos": "no videos..."
+    "noVideos": "no videos...",
+    "waitingRoom": "waiting ruume"
 }

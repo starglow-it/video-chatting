@@ -38,6 +38,7 @@ export type MeetingUser = {
     meetingRole: MeetingRole;
     doNotDisturb: boolean;
     isDonated: boolean;
+    isPaywallPaid: boolean;
 };
 
 export type joyride = {

@@ -4,5 +4,5 @@ import { rejoinMeetingEvent } from '../../meeting/model';
 
 export const handleRejoinMeeting = async () => {
     updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.EnterName });
-    await rejoinMeetingEvent();
+    await rejoinMeetingEvent(localStorage.getItem('meetingUserId') || '');
 };
