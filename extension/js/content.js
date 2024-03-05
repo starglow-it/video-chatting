@@ -9,16 +9,23 @@ var userName,
 var iconURL = chrome.runtime.getURL("icons/logo_1000.svg");
 
 const observer = new MutationObserver(async (mutationsList, observer) => {
-  console.log(mutationsList);
   if (document.body.innerHTML.includes("Add Google Meet video conferencing")) {
     if (document.body.innerHTML.includes("Guest permissions")) {
       /**
        * Page Calendar Case
        */
       isPageCalendar = true;
-
-      if (!document.getElementById("chatruume-btn")) {
+      if (
+        !document.querySelector("#chatruume-btn.page-calendar-chatruume-btn")
+      ) {
         await injectButton();
+        let n = 0;
+
+        while (!roomList && n < 5) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          n++;
+        }
+
         if (roomList && roomList.length) {
           await injectRoomSelect(roomList);
         }
@@ -41,8 +48,6 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
           const iconSpan = document.createElement("span");
           iconSpan.className = "chatruume-icon";
 
-          const iconURL = await chrome.runtime.getURL("icons/logo_1000.svg");
-
           iconSpan.style.background = `url('${iconURL}') 0px 0px no-repeat`;
 
           iconWrapper.appendChild(iconSpan);
@@ -56,6 +61,7 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
 
           const chatRuumeButton = document.createElement("button");
           chatRuumeButton.id = "chatruume-btn";
+          chatRuumeButton.className = "page-calendar-chatruume-btn";
           chatRuumeButton.textContent = "Make it a Ruume Meeting";
 
           chatRuumeButton.addEventListener("click", function () {
@@ -482,7 +488,7 @@ async function injectRoomReselectBtn() {
     );
     const descriptionField = document.querySelector('[jsname="yrriRe"]');
 
-    selectElem.style.display = "block";
+    if (selectElem) selectElem.style.display = "block";
     reselectContainer.remove();
 
     simulateKeyboardInput(locationField, "");
@@ -492,7 +498,9 @@ async function injectRoomReselectBtn() {
 }
 
 async function fillTitleField() {
-  const titleField = await waitForElement('[aria-label="Add title"]');
+  const titleField = await waitForElement(
+    '[jsname="YPqjbf"][data-dragsource-ignore="true"]'
+  );
 
   await getUserName();
 
@@ -515,20 +523,6 @@ async function fillMeetingDetails() {
   descriptionField.innerHTML = `${userName} is inviting you to a scheduled Ruume Meeting. <br><br> Join Ruume Meeting <br> https://my.chatruume.com/room/${roomId}`;
 }
 
-window.addEventListener("load", async () => {
-  if (!window.hasLoadedContentScript) {
-    window.hasLoadedContentScript = true;
-
-    chrome.storage.local.get(["roomId"], function (result) {
-      roomId = result.roomId;
-    });
-
-    chrome.runtime.sendMessage({ action: "fetchRoomList" });
-
-    observer.observe(document.body, { attributes: true, childList: true });
-  }
-});
-
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === "roomListResponse") {
     if (message.roomList) {
@@ -537,5 +531,29 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   } else if (message.action === "completeCreatingMeeting") {
     roomId = message.roomId;
     fillMeetingDetails();
+
+    if (!isPageCalendar) {
+      setTimeout(() => {
+        document
+          .querySelectorAll('[jsname="c6xFrd"] [class="VfPpkd-Jh9lGc"]')[3]
+          .click();
+      }, 1000);
+    }
+  }
+});
+
+window.addEventListener("load", async () => {
+  if (!window.hasLoadedContentScript) {
+    window.hasLoadedContentScript = true;
+
+    observer.observe(document.body, { attributes: true, childList: true });
+
+    chrome.storage.local.get(["roomId"], function (result) {
+      roomId = result.roomId;
+    });
+
+    chrome.runtime.sendMessage({ action: "fetchRoomList" });
+
+    document.body.setAttribute("test-label", "");
   }
 });

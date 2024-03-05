@@ -26,18 +26,30 @@ chrome.runtime.onMessage.addListener(async function (
                 },
               }
             );
+            const nextResponse = await fetch(
+              "https://my.chatruume.com/api/templates?skip=0&limit=2&roomType=featured&draft=false",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: "Bearer " + accessToken,
+                },
+              }
+            );
 
             const roomList = await response.json();
+            const nextResponseData = await nextResponse.json();
 
             if (sender.tab) {
               await chrome.tabs.sendMessage(sender.tab.id, {
                 action: "roomListResponse",
                 roomList: roomList.result.list,
+                latestFeaturedRoom: nextResponseData.result.list[0].id,
               });
             } else {
               await chrome.runtime.sendMessage({
                 action: "roomListResponse",
                 roomList: roomList.result.list,
+                latestFeaturedRoom: nextResponseData.result.list[0].id,
               });
             }
           } catch (error) {
