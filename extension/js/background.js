@@ -26,20 +26,32 @@ chrome.runtime.onMessage.addListener(async function (
                 },
               }
             );
+            const nextResponse = await fetch(
+              "https://my.chatruume.com/api/templates?skip=0&limit=2&roomType=featured&draft=false",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: "Bearer " + accessToken,
+                },
+              }
+            );
 
             const roomList = await response.json();
+            const nextResponseData = await nextResponse.json();
 
-            // if (sender.tab) {
-            //   await chrome.tabs.sendMessage(sender.tab.id, {
-            //     action: "roomListResponse",
-            //     roomList: roomList.result.list,
-            //   });
-            // } else {
-            await chrome.runtime.sendMessage({
-              action: "roomListResponse",
-              roomList: roomList.result.list,
-            });
-            // }
+            if (sender.tab) {
+              await chrome.tabs.sendMessage(sender.tab.id, {
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+                latestFeaturedRoom: nextResponseData.result.list[0].id,
+              });
+            } else {
+              await chrome.runtime.sendMessage({
+                action: "roomListResponse",
+                roomList: roomList.result.list,
+                latestFeaturedRoom: nextResponseData.result.list[0].id,
+              });
+            }
           } catch (error) {
             console.log(error);
           }
@@ -93,21 +105,23 @@ chrome.runtime.onMessage.addListener(async function (
             }
           );
 
+          const resData = await response.json();
+
+          const link = resData.result.customLink || templateId;
+
           if (sender.tab) {
             await chrome.tabs.sendMessage(sender.tab.id, {
               action: "completeCreatingMeeting",
               success: true,
-              roomId: templateId,
+              roomId: link,
             });
           } else {
             await chrome.runtime.sendMessage({
               action: "completeCreatingMeeting",
               success: true,
-              roomId: templateId,
+              roomId: link,
             });
           }
-
-          const res = await response.json();
         }
       );
     } catch (error) {
