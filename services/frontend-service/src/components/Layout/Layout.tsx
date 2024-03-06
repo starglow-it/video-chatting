@@ -104,7 +104,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     NotFoundRoute,
 ];
 
-const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute];
+const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute, profileRoute];
 const DASHBOARD_ROOM_HEADER: string[] = [createRoomRoute, editRoomRoute];
 
 const ScrollParent = ({

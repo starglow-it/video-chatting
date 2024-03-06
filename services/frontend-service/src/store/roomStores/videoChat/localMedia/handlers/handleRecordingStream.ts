@@ -56,11 +56,8 @@ export const handleStopRecordingStream = async ({ url, byRequest = false, meetin
             const result = await axios.post(stopRecordingUrl, { roomUrl: `${url}?role=recorder` });
 
             if (result && result.data) {
-                if (byRequest && meetingId) {
-                    saveRecordingUrl({ meetingId, url: result.data.url });
-                } else {
-                    setIsMeetingRecording({ meetingId, isMeetingRecording: false });
-                }
+                saveRecordingUrl({ meetingId, url: result.data.url });
+                // setIsMeetingRecording({ meetingId, isMeetingRecording: false });
                 return result.data;
             }
         }

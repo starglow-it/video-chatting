@@ -154,7 +154,14 @@
         "stop": "Stop Recording",
         "recordingRequest": "Recording Request",
         "noAccess": "no access to stop recording",
-        "recordingUrlsList": "recorded urls list"
+        "recordingUrlsList": "recorded urls list",
+        "buttons": {
+            "monetization": "set up monetization",
+            "copy": "copy & post link",
+            "delete": "delete recording"
+        },
+        "monetizationTitle": "monetization",
+        "monetizationButtonText": "Save"
     },
     "features": {
         "blurBackground": "Background blur",

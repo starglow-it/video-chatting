@@ -20,6 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
+import { OrangeNotification } from '@components/OrangeNotifications/OrangeNotification';
 import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
 
 import {
@@ -134,6 +135,7 @@ const CustomApp = ({
                                     <Component {...pageProps} />
                                 </Layout>
                                 <ToastsNotifications />
+                                <OrangeNotification />
                                 <MeetingFinishedDialog />
                             </ThemeProvider>
                         </ThemeProvider>

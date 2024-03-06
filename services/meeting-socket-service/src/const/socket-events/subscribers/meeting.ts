@@ -39,4 +39,6 @@ export enum MeetingSubscribeEvents {
   OnGetRecordingUrlById = 'meeting:get:recording:url:by:id:send',
   OnGetRecordingUrls = 'meeting:get:recording:urls:send',
   OnIsMeetingRecording = 'meeting:set:is:meeting:recording:send',
+  OnDeleteRecordingVideo = 'meeting:delete:recording:video',
+  OnUpdateRecordingVideoPrice = 'meeting:update:recording:video:price',
 }

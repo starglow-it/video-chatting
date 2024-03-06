@@ -26,8 +26,10 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
+import { MeetingRecordVideo } from '../../../types';
+
 const initialMeetingRecordingState: MeetingRecording = {
-    videos: [],
+    videos: [{ id: "sdfsdf", meeting: "meeting-1", user: "aaa", url: "urlrurlrurlr", price: 5, createdAt: new Date().toString(), updatedAt: new Date().toString() }],
     requestUsers: [],
     isRecordingStarted: false,
     byRequest: false,
@@ -162,12 +164,12 @@ export const sendUpdateMeetingTemplateEvent = attach<
 
 export const isRequestRecordingStartEvent = meetingDomain.createEvent<void>('isRequestRecordingStartEvent');
 export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isRequestRecordingEndEvent');
-
 export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
-
 export const setRecordingUrlEvent = meetingDomain.createEvent<{ id: string, endTime: string }>('setRecordingUrlEvent');
 export const setRecordingUrlsEvent = meetingDomain.createEvent<{ id: string, endTime: string }[]>('setRecordingUrlsEvent');
 export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
 export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');
 export const resetMeetingRecordingStoreExceptVideosEvent = meetingDomain.createEvent<void>('resetMeetingRecordingStoreExceptVideosEvent');
 export const setUrlForCopyEvent = meetingDomain.createEvent<string>('setUrlForCopyEvent');
+export const deleteRecordingUrlEvent = meetingDomain.createEvent<string>('deleteRecordingUrlEvent');
+export const updateRecordingVideoPriceEvent = meetingDomain.createEvent<MeetingRecordVideo>('updateRecordingVideoPriceEvent');

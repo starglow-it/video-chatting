@@ -14,6 +14,7 @@ import {
     Profile,
 } from '../../../types';
 import { MeetingPayment } from '../meetingPayment/type';
+import { MeetingRecordVideo } from '../../../types'; }
 
 export type JoinWaitingRoomPayload = {
     userData: {
@@ -174,7 +175,7 @@ export type RequestRecordingEventPayload = {
 };
 
 export type GetRecordingUrlsPayload = {
-    meetingId: string;
+    profileId: string;
 };
 
 export type GetRecordingUrlPayload = {
@@ -216,4 +217,18 @@ export type SendRequestToHostWhenDndResponse = {
 
 export type RecodingAnswerResponse = {
     isRecordingStart: Boolean
+};
+
+export type DeleteRecordingVideoPayload = {
+    id: string;
+};
+
+export type UpdateRecordingVideoPricePayload = {
+    id: string;
+    price: number;
+};
+
+export type UpdateRecordingVideoPriceResponse = {
+    message: string;
+    video: MeetingRecordVideo;
 };

@@ -27,7 +27,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CircularProgress from '@mui/material/CircularProgress';
-import DvrIcon from '@mui/icons-material/Dvr';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -65,10 +64,8 @@ import {
     stopRecordMeeting,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    toggleRecordingUrlsListPanel,
     updateLocalUserEvent,
     $isToggleSchedulePanel,
-    $isRecordingUrlsListPanel,
     $isHaveNewQuestion,
     updateUserSocketEvent,
     startScreenSharing,
@@ -76,9 +73,6 @@ import {
     startRecordStreamFx,
     stopRecordStreamFx,
     $isScreenSharingStore,
-    requestRecordingEvent,
-    recordingStopPendingEvent,
-    getRecordingUrls
 } from '../../../store/roomStores';
 
 // styles
@@ -99,7 +93,6 @@ const Component = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
-    const isRecordingUrlsListPanel = useStore($isRecordingUrlsListPanel);
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
@@ -157,12 +150,6 @@ const Component = () => {
             }
         }
     }, [users]);
-
-    useEffect(() => {
-        if (recordingStopPending && meetingRecordingStore.byRequest) {
-            recordingStopPendingEvent({ meetingId: meeting.id });
-        }
-    }, [recordingStopPending, meetingRecordingStore]);
 
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
@@ -240,32 +227,22 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
-    const handleToggleRecordingUrlsListPanel = (e: SyntheticEvent) => {
-        e.stopPropagation();
-        toggleRecordingUrlsListPanel();
-        getRecordingUrls({ meetingId: meeting.id });
-    };
-
     const handleRequestToBecomeParticipant = useCallback(() => {
         requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
     }, []);
 
     const handleRecordMeeting = async () => {
-        if (isAudience) {
-            requestRecordingEvent({
-                meetingId: meeting.id
-            })
+        if (!isRecording) {
+            startRecordMeeting({ url: fullUrl, meetingId: meeting.id });
         } else {
-            if (!isRecording) {
-                startRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
-            } else {
-                stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
-            }
+            stopRecordMeeting({ url: fullUrl, meetingId: meeting.id });
         }
     };
+
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
+
     const handleEmojiListToggle = () => {
         setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
     }
@@ -566,68 +543,48 @@ const Component = () => {
                         </CustomPaper>
                     </CustomTooltip>
                 </ConditionalRender>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation={
-                                isAudience
-                                    ? isRecording
-                                        ? "recordMeeting.noAccess"
-                                        : "recordMeeting.recordingRequest"
-                                    : isRecording
-                                        ? "recordMeeting.stop"
-                                        : "recordMeeting.start"
-                            }
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
+                <ConditionalRender condition={isOwner}>
+                    <CustomTooltip
+                        title={
+                            <Translation
+                                nameSpace="meeting"
+                                translation={
+                                    isAudience
+                                        ? isRecording
+                                            ? "recordMeeting.noAccess"
+                                            : "recordMeeting.recordingRequest"
+                                        : isRecording
+                                            ? "recordMeeting.stop"
+                                            : "recordMeeting.start"
+                                }
+                            />
+                        }
+                        placement="top"
                     >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleRecordMeeting}
+                        <CustomPaper
+                            variant="black-glass"
+                            borderRadius={8}
                             className={styles.deviceButton}
-                            disabled={isAudience && isRecording}
-                            Icon={
-                                (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
-                                    ? <CircularProgress
-                                        size={15}
-                                        sx={{ color: 'white' }}
-                                    />
-                                    : isRecording
-                                        ? <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
-                                        : <FiberManualRecordIcon />
-                            }
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation={"recordMeeting.recordingUrlsList"}
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleRecordingUrlsListPanel}
-                            className={clsx(styles.actionButton, { [styles.active]: isRecordingUrlsListPanel })}
-                            Icon={<DvrIcon sx={{ width: "20px", height: "20px" }} />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
+                        >
+                            <ActionButton
+                                variant="transparentBlack"
+                                onAction={handleRecordMeeting}
+                                className={styles.deviceButton}
+                                disabled={isAudience && isRecording}
+                                Icon={
+                                    (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
+                                        ? <CircularProgress
+                                            size={15}
+                                            sx={{ color: 'white' }}
+                                        />
+                                        : isRecording
+                                            ? <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
+                                            : <FiberManualRecordIcon />
+                                }
+                            />
+                        </CustomPaper>
+                    </CustomTooltip>
+                </ConditionalRender>
             </CustomGrid>
         </CustomGrid>
     );

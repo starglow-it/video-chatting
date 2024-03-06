@@ -1,6 +1,5 @@
-import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsString, IsBoolean, IsOptional } from 'class-validator';
 import { ISetIsMeetingRecordingRequest } from 'src/interfaces/set-is-meeting-recording.interface';
-import { isBoolean } from 'util';
 export class SetIsMeetingRecordingRequest implements ISetIsMeetingRecordingRequest {
   @IsNotEmpty()
   @IsString()
@@ -10,7 +9,7 @@ export class SetIsMeetingRecordingRequest implements ISetIsMeetingRecordingReque
   @IsBoolean()
   isMeetingRecording: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   recordingUrl: string;
 }

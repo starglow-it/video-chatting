@@ -26,7 +26,9 @@ import {
     setStopRecordingPendingEvent,
     resetMeetingRecordingStoreExceptVideosEvent,
     setRecordingUrlEvent,
-    setUrlForCopyEvent
+    setUrlForCopyEvent,
+    deleteRecordingUrlEvent,
+    updateRecordingVideoPriceEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -96,6 +98,27 @@ $meetingRecordingStore
         isStopRecordingPending: false
     })
     )
+    .on(updateRecordingVideoPriceEvent, (state, data) => {
+        const videos = state.videos;
+        const updateIndex = videos.findIndex(video => video.id === data.id);
+
+        if (updateIndex !== -1) {
+            videos[updateIndex] = data;
+        }
+
+        return {
+            ...state,
+            videos
+        };
+    })
+    .on(deleteRecordingUrlEvent, (state, data) => {
+        const removeIndex = state.videos.findIndex(video => video.id === data);
+
+        return {
+            ...state,
+            videos: removeIndex !== -1 ? [...state.videos.filter((item, index) => index !== removeIndex)] : state.videos
+        };
+    })
     .reset(resetMeetingRecordingStore);
 
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
