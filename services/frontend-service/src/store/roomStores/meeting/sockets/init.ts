@@ -41,7 +41,8 @@ import {
     sendReconnectMeetingEvent,
     joinMeetingAudienceEvent,
     joinMeetingRecorderEvent,
-    sentRequestToHostWhenDnd
+    sentRequestToHostWhenDnd,
+    updateRecordingVideoPrice
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -56,7 +57,12 @@ import {
     Profile,
     JoinMeetingResult,
 } from '../../../types';
-import { SendAnswerMeetingRequestParams, AnswerRequestRecordingResponse, SendRequestToHostWhenDndPayload, SendRequestToHostWhenDndResponse } from './types';
+import { 
+    SendAnswerMeetingRequestParams, 
+    AnswerRequestRecordingResponse, 
+    SendRequestToHostWhenDndPayload, 
+    SendRequestToHostWhenDndResponse 
+} from './types';
 
 import {
     MeetingSubscribeEvents,
@@ -71,6 +77,7 @@ import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
 import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
 import { answerRequestByHostEvent } from '../../users/init';
+import { handleUpdateRecordingVideoPrice } from './handlers/handleUpdateRecordingVideoPrice';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -368,6 +375,7 @@ answerAccessMeetingRequestSocketEvent.failData.watch(data =>
     handleMeetingEventsError(data, false),
 );
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+updateRecordingVideoPrice.doneData.watch(handleUpdateRecordingVideoPrice);
 startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
     const savedSettings = WebStorage.get<SavedSettings>({
         key: StorageKeysEnum.meetingSettings,

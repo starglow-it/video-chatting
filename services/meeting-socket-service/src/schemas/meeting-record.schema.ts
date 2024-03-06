@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
+import { MeetingUserDocument } from './meeting-user.schema';
 
 @Schema({
   timestamps: {
@@ -18,9 +19,20 @@ export class MeetingRecord {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+  })
+  user: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
     default: ''
   })
   url: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 0
+  })
+  price: number;
 
   createdAt?: Date
   updatedAt?: Date

@@ -127,8 +127,8 @@ export type RegisterUserParams = {
 };
 
 export type LoginUserResponse = { user: Profile } & TokenPair & {
-        isFirstLogin: boolean;
-    };
+    isFirstLogin: boolean;
+};
 export type LoginUserPayload = { email: string; password: string };
 
 export type JoinMeetingResult = {
@@ -321,7 +321,7 @@ export enum NotificationType {
     DeleteMedia = 'DeleteMedia',
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
     RequestBecomeAudienceSuccess = 'request_become_audience_success',
-    RequestRecordingMeeting= 'request_recording_meeting',
+    RequestRecordingMeeting = 'request_recording_meeting',
 }
 
 export type Notification = {
@@ -398,13 +398,16 @@ export type GetRoomRatingStatisticParams = {
 
 export type MeetingRecordVideo = {
     id: string;
-    meetingId: string;
+    meeting: string;
+    user: string;
     url: string;
-    // add more;
+    price: number;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type MeetingRecording = {
-    videos: { id: string, endTime: string }[],
+    videos: MeetingRecordVideo[],
     requestUsers?: MeetingUser[],
     isRecordingStarted?: boolean;
     byRequest?: boolean;
