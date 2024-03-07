@@ -177,6 +177,29 @@ services:
       - traefikpublic
       - internal
 
+  aws-transcribe-service:
+    container_name: aws-transcribe-service
+    build:
+      context: ../../
+      dockerfile: ./services/aws-transcribe-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
+    ports:
+      - "3010:3010"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.aws_transcribe.rule=Host(`my.chatruume.com`) && PathPrefix(`/aws-transcribe`)"
+      - "traefik.http.routers.aws_transcribe.priority=1000"
+      - "traefik.http.routers.aws_transcribe.entrypoints=websecure"
+      - "traefik.http.routers.aws_transcribe.tls=true"
+      - "traefik.http.services.aws_transcribe.loadbalancer.server.port=3010"
+    env_file:
+      - env
+    networks:
+      - traefikpublic
+      - internal
+  
   meeting-socket-service:
     env_file:
       - env
