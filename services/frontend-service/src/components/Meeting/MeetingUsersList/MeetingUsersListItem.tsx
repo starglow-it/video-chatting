@@ -10,6 +10,10 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { Translation } from '@library/common/Translation/Translation';
+
+//@mui
+import Chip from '@mui/material/Chip';
 
 // icons
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
@@ -27,6 +31,7 @@ import { $meetingTemplateStore } from 'src/store/roomStores';
 
 // types
 import { MeetingUsersListItemProps } from './types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './MeetingUsersList.module.scss';
@@ -94,75 +99,88 @@ const Component = ({
                 container
                 wrap="nowrap"
             >
-                <ConditionalRender condition={isAcceptRequest}>
-                    <ActionButton
-                        variant="accept"
-                        onAction={handleAcceptRequest}
-                        className={styles.acceptUser}
-                        Icon={<AcceptIcon width="23px" height="23px" />}
+                <ConditionalRender condition={user.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd}>
+                    <Chip
+                        label={
+                            <Translation
+                                nameSpace="meeting"
+                                translation="waitingRoom"
+                            />
+                        }
+                        size="small"
+                        className={styles.waitingRoomText}
                     />
                 </ConditionalRender>
-                <ConditionalRender condition={isAudienceRequest}>
-                    <CustomTooltip
-                        title="Invite as Participant (join the scene)"
-                        placement="bottom"
-                    >
+                <ConditionalRender condition={user.accessStatus !== MeetingAccessStatusEnum.RequestSentWhenDnd}>
+                    <ConditionalRender condition={isAcceptRequest}>
                         <ActionButton
                             variant="accept"
-                            onAction={handleRequestAudience}
+                            onAction={handleAcceptRequest}
                             className={styles.acceptUser}
-                            Icon={<ArrowUp width="15px" height="15px" />}
+                            Icon={<AcceptIcon width="23px" height="23px" />}
                         />
-                    </CustomTooltip>
-                </ConditionalRender>
-
-                <ConditionalRender
-                    condition={
-                        !isLocalItem &&
-                        !isAcceptRequest &&
-                        isMeetingHost &&
-                        !user.isGenerated
-                    }
-                >
-                    <ActionButton
-                        variant="decline"
-                        onAction={handleChangeHost}
-                        className={styles.deleteUser}
-                        Icon={<HostIcon width="23px" height="23px" />}
-                    />
-                </ConditionalRender>
-                <ConditionalRender condition={Boolean(
-                    !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest
-                )}>
-                    <CustomTooltip
-                        title="Move user to audience"
-                        placement="bottom"
+                    </ConditionalRender>
+                    <ConditionalRender condition={isAudienceRequest}>
+                        <CustomTooltip
+                            title="Invite as Participant (join the scene)"
+                            placement="bottom"
+                        >
+                            <ActionButton
+                                variant="accept"
+                                onAction={handleRequestAudience}
+                                className={styles.acceptUser}
+                                Icon={<ArrowUp width="15px" height="15px" />}
+                            />
+                        </CustomTooltip>
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={
+                            !isLocalItem &&
+                            !isAcceptRequest &&
+                            isMeetingHost &&
+                            !user.isGenerated
+                        }
                     >
                         <ActionButton
                             variant="decline"
-                            onAction={handleChangeRoleToAudienceRequest}
-                            className={clsx(styles.toAudienceBtn)}
-                            Icon={<ArrowDownIcon width="23px" height="23px" />}
+                            onAction={handleChangeHost}
+                            className={styles.deleteUser}
+                            Icon={<HostIcon width="23px" height="23px" />}
                         />
-                    </CustomTooltip>
-                </ConditionalRender>
-                <ConditionalRender
-                    condition={Boolean(
-                        !isLocalItem && onDeleteUser && !isOwnerItem,
-                    )}
-                >
-
-                    <CustomTooltip
-                        title="Kick user"
-                        placement="bottom"
+                    </ConditionalRender>
+                    <ConditionalRender condition={Boolean(
+                        !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest
+                    )}>
+                        <CustomTooltip
+                            title="Move user to audience"
+                            placement="bottom"
+                        >
+                            <ActionButton
+                                variant="decline"
+                                onAction={handleChangeRoleToAudienceRequest}
+                                className={clsx(styles.toAudienceBtn)}
+                                Icon={<ArrowDownIcon width="23px" height="23px" />}
+                            />
+                        </CustomTooltip>
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={Boolean(
+                            !isLocalItem && onDeleteUser && !isOwnerItem,
+                        )}
                     >
-                        <ActionButton
-                            variant="decline"
-                            onAction={handleDeleteRequest}
-                            className={clsx(styles.deleteUser)}
-                            Icon={<CloseIcon width="23px" height="23px" />}
-                        />
-                    </CustomTooltip>
+
+                        <CustomTooltip
+                            title="Kick user"
+                            placement="bottom"
+                        >
+                            <ActionButton
+                                variant="decline"
+                                onAction={handleDeleteRequest}
+                                className={clsx(styles.deleteUser)}
+                                Icon={<CloseIcon width="23px" height="23px" />}
+                            />
+                        </CustomTooltip>
+                    </ConditionalRender>
                 </ConditionalRender>
             </CustomGrid>
         </CustomGrid>

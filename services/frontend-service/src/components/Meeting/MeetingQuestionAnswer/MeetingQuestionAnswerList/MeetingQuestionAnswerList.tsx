@@ -92,10 +92,10 @@ export const MeetingQuestionAnswerList = () => {
                     </ConditionalRender>
                     <ConditionalRender condition={!isOwner}>
                         <span className={styles.textEmpty}>
-                            please type a question and send.
+                            submit your questions here.
                         </span>
                         <span className={styles.textEmpty}>
-                            only one question can be asked at a time.
+                            you can ask up to three questions at a time.
                         </span>
                     </ConditionalRender>
                 </CustomGrid>

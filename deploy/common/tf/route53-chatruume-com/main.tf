@@ -91,7 +91,7 @@ resource "aws_route53_record" "stg" {
   name    = "stg.chatruume.com"
   type    = "A"
   ttl     = 86400
-  records = ["18.190.108.231"]
+  records = ["3.129.50.243"]
 }
 
 resource "aws_route53_record" "stg-my" {

@@ -25,6 +25,20 @@ import { handleReceiveQuestionUnReaction } from './handleReceiveQuestionUnReacti
 import { handleSendMeetingReaction } from './handleSendMeetingReaction';
 import { handleRemoveMeetingReaction } from './handleRemoveMeetingReaction';
 import { handleGetMeetingReactions } from './handleGetMeetingReactions';
+import { handleReceiveTranscriptionMessage } from './handleReceiveTranscriptionMessage';
+import { handleReceiveRequestRecording } from './handleReceiveRequestRecording';
+import { handleReceiveRequestRecordingRejected } from './handleReceiveRequestRecordingRejected';
+import { handleReceiveRequestRecordingAccepted } from './handleReceiveRequestRecordingAccepted';
+import { handleGetMeetingUrlReceive } from './handleGetMeetingUrlReceive';
+import { handleGetMeetingUrlsReceive } from './handleGetMeetingUrlsReceive';
+import { handleGetMeetingUrlsReceiveFail } from './handleGetMeetingUrlsReceiveFail';
+import { handleReceiveStartRecordingPending } from './handleReceiveStartRecordingPending';
+import { handleReceiveStopRecordingPending } from './handleReceiveStopRecordingPending';
+import { handleGetUrlByAttendee } from './handleGetUrlByAttendee';
+import { handleGetUrlFailDueToPermission } from './handleGetUrlFailDueToPermission';
+import { handleGetUrlFailDueToHostPermission } from './handleGetUrlFailDueToHostPermission';
+import { handleGetUrlByAttendeeFailDueToHostPermission } from './handleGetUrlByAttendeeFailDueToHostPermission';
+import { handleAttendeeRequestWhenDnd } from './handleAttendeeRequestWhenDnd';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -157,6 +171,90 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnReceiceQuestionUnReaction,
             {
                 handler: handleReceiveQuestionUnReaction,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveTranscriptionMessage,
+            {
+                handler: handleReceiveTranscriptionMessage,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecording,
+            {
+                handler: handleReceiveRequestRecording,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingAccepted,
+            {
+                handler: handleReceiveRequestRecordingAccepted,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveRequestRecordingRejected,
+            {
+                handler: handleReceiveRequestRecordingRejected,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlReceive,
+            {
+                handler: handleGetMeetingUrlReceive,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceive,
+            {
+                handler: handleGetMeetingUrlsReceive,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingUrlsReceiveFail,
+            {
+                handler: handleGetMeetingUrlsReceiveFail,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveStartRecordingPending,
+            {
+                handler: handleReceiveStartRecordingPending,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnReceiveStopRecordingPending,
+            {
+                handler: handleReceiveStopRecordingPending,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlByAttendee,
+            {
+                handler: handleGetUrlByAttendee,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlFailDueToPermission,
+            {
+                handler: handleGetUrlFailDueToPermission,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlFailDueToHostPermission,
+            {
+                handler: handleGetUrlFailDueToHostPermission,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetUrlByAttendeeFailDueToHostPermission,
+            {
+                handler: handleGetUrlByAttendeeFailDueToHostPermission,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnAttendeeRequestWhenDnd,
+            {
+                handler: handleAttendeeRequestWhenDnd,
             },
         ],
     ]);

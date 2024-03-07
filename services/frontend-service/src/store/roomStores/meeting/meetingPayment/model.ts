@@ -207,7 +207,7 @@ export const $paymentMeetingAudience = $meetingPaymentStore.map(
                 item.meetingRole === MeetingRole.Audience,
         ) ??
         ({
-            enabled: false,
+            enabled: true,
             price: DEFAULT_PRICE.audience,
             type: PaymentType.Meeting,
             meetingRole: MeetingRole.Audience,
@@ -223,7 +223,7 @@ export const $paymentPaywallParticipant = $meetingPaymentStore.map(
                 item.meetingRole === MeetingRole.Participant,
         ) ??
         ({
-            enabled: false,
+            enabled: true,
             price: DEFAULT_PRICE.participant,
             type: PaymentType.Paywall,
             meetingRole: MeetingRole.Participant,

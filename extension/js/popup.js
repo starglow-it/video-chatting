@@ -1,5 +1,6 @@
 var roomList = [],
   roomId = null,
+  latestFeaturedRoom = null,
   isFeatured = false,
   selectedYear = new Date().getFullYear(),
   selectedMonth = new Date().getMonth() + 1,
@@ -28,9 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const timezoneOffset = -new Date().getTimezoneOffset() / 60;
 
-  $(`#timezone [data-value=${convertUTCOffset(timezoneOffset)}]`).addClass(
+  console.log('test');
+  $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
     "selected"
   );
+
+
   $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
 
   renderCal();
@@ -47,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (message.action === "roomListResponse") {
       const roomListDiv = document.querySelector(".room-list");
       roomList = message.roomList;
+      latestFeaturedRoom = message.latestFeaturedRoom;
 
       if (roomList.length === 0) {
         const spanElement = document.createElement("span");
@@ -56,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
           "🏠your immersive ruumes will appear here<br>🚀 click “start instant meeting” to begin";
         roomListDiv.appendChild(spanElement);
 
-        roomId = "64f25807bc78bed6bd7b84f5";
+        // roomId = "64f25807bc78bed6bd7b84f5";
+        roomId = latestFeaturedRoom;
         isFeatured = true;
       }
       for (const room of roomList) {
@@ -190,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
       errorMessageField.textContent = "wrong credential.";
       document.getElementById("signin-loading").style.display = "none";
     } else if (message.action === "reloadPage") {
-      location.reload();
+      // location.reload();
     }
   });
 

@@ -21,7 +21,8 @@
     "copy": {
       "info": "Meeting info copied",
       "link": "Meeting link copied",
-      "notification": "Text copied"
+      "notification": "Text copied",
+      "url": "url copied"
     },
     "inviteSent": "The invitation has been sent",
     "uploadSuccess": "Upload background success",
@@ -31,7 +32,8 @@
     "connectionError": "Meeting is not connected.",
     "monetization": {
       "saved": "Your payment settings saved"
-    }
+    },
+    "isHostNotified": "The host has been notified"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
@@ -45,7 +47,15 @@
     "connectAccountFail": "An error occurred during the connection. Please try again"
   },
   "recording": {
-    "startRecordingFail": "An error occurred while trying to start the recording. Please try again."
+    "startRecordingFail": "An error occurred while trying to start the recording. Please try again.",
+    "stopRecordingFail": "An error occurred while trying to stop the recording.",
+    "recordingRequestReject": "recording request rejected",
+    "recordingRequestAcccept": "recording started",
+    "getUrlFailDueToPermission": "You don't have access. Please upgrade your plan",
+    "getUrlFailDueToHostPermission": "Attendee wants to get recorded url. Please upgrade your plan",
+    "getUrlByAttendeeFailDueToHostPermission": "Host doesn't pay yet. Notified to the host",
+    "saveSuccess": "Your recording will soon be accessible in your profile",
+    "priceUpdate": "Successfully updated."
   },
   "subscriptions": {
     "noTimeLeft": "You've run out of meeting minutes",

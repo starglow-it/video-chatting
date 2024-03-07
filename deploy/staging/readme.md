@@ -1,11 +1,11 @@
 
 ```shell
 # down
-docker-compose -f docker-compose.proxy.yml down --remove-orphans
+sudo docker-compose -f docker-compose.proxy.yml down --remove-orphans
 
 docker-compose -f docker-compose.services.yml down --remove-orphans
 
-
+sudo docker-compose -f docker-compose.proxy.yml up -d
 ```
 
 - temp
@@ -72,7 +72,7 @@ sudo ./svc.sh uninstall
 # backup
 docker exec services-mongo-1 rm -rf /data/db/tlo-backup
 docker exec services-mongo-1 mongodump -d theliveoffice -o /data/db/tlo-backup
-scp -r /data/liveoffice/mongo/tlo-backup root@18.190.108.231:/data/liveoffice/mongo/tlo-backup
+scp -r /data/liveoffice/mongo/tlo-backup root@3.129.50.243:/data/liveoffice/mongo/tlo-backup
 
 
 new mongodb
@@ -84,5 +84,12 @@ docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice
 docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
 
 
+sudo docker-compose -f docker-compose.proxy.yml down
+sudo docker network rm traefikpublic
+docker network inspect traefikpublic
+sudo docker network inspect traefikpublic
+docker network disconnect traefikpublic
+sudo docker network disconnect traefikpublic 4e01df01698a651449ea0cb9f3fe94bd2da59e68611dff1d47f86fa6dea73733
+sudo docker-compose -f docker-compose.proxy.yml up -d
 
 ```

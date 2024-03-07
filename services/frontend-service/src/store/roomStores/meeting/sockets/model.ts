@@ -37,6 +37,17 @@ import {
     SendUnReactionQuestionResponse,
     SendQuestionResponse,
     SendReactionQuestionReponse,
+    RequestRecordingEventPayload,
+    GetRecordingUrlsPayload,
+    GetRecordingUrlPayload,
+    RequestRecordingResponse,
+    AnswerRequestRecordingResponse,
+    SaveRecordingEventPayload,
+    SetIsMeetingRecordingPayload,
+    SendRequestToHostWhenDndPayload,
+    DeleteRecordingVideoPayload,
+    UpdateRecordingVideoPricePayload,
+    SendRequestToHostWhenDndResponse
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -71,7 +82,7 @@ export const startMeetingSocketEvent = createMeetingSocketEvent<
     StartMeetingResponse
 >(MeetingSocketEmitters.StartMeeting);
 export const clickMeetingLinkSocketEvent = createMeetingSocketEvent<
-ClickMeetingLinkPayload,
+    ClickMeetingLinkPayload,
     void
 >(MeetingSocketEmitters.ClickMeetingLink);
 export const updateMeetingSocketEvent = createMeetingSocketEvent<
@@ -145,3 +156,63 @@ export const sendMeetingQuestionUnReactionEvent = createMeetingSocketEvent<
     SendUnReactionQuestionPayload,
     SendUnReactionQuestionResponse
 >(MeetingSocketEmitters.SendUnReactionQuestion);
+
+export const requestRecordingEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    RequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecording);
+
+export const requestRecordingRejectEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecordingReject);
+
+export const requestRecordingAcceptEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.RequestRecordingAccept);
+
+export const saveRecordingUrl = createMeetingSocketEvent<
+    SaveRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.SaveRecordingUrl);
+
+export const setIsMeetingRecording = createMeetingSocketEvent<
+    SetIsMeetingRecordingPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.SetIsMeetingRecording);
+
+export const recordingStartPendingEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.recordingStartPending);
+
+export const recordingStopPendingEvent = createMeetingSocketEvent<
+    RequestRecordingEventPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.recordingStopPending);
+
+export const getRecordingUrls = createMeetingSocketEvent<
+    GetRecordingUrlsPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.GetRecordingUrls);
+
+export const getRecordingUrl = createMeetingSocketEvent<
+    GetRecordingUrlPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.GetRecordingUrl);
+
+export const sentRequestToHostWhenDnd = createMeetingSocketEvent<
+    SendRequestToHostWhenDndPayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.SentRequestToHostWhenDnd);
+
+export const deleteRecordingVideoSocketEvent = createMeetingSocketEvent<
+    DeleteRecordingVideoPayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.DeleteRecordingVideo);
+
+export const updateRecordingVideoPrice = createMeetingSocketEvent<
+    UpdateRecordingVideoPricePayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.UpdateRecordingVideoPrice);

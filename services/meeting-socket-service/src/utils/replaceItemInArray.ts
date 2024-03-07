@@ -12,7 +12,9 @@ export const replaceItemInArray = <T = any>(
     );
   }
 
-  if (index !== -1) {
+  const isReplaceItemExist = arr.indexOf(replaceItem);
+
+  if (index !== -1 && ( replaceItem === null || isReplaceItemExist === -1 )) {
     arr[index] = replaceItem;
   }
 

@@ -3,6 +3,8 @@ import Router from 'next/router';
 
 import {
     $localUserStore,
+    $isPaywallPaymentEnabled,
+    setIsPaywallPaymentEnabled,
     leaveDeletedUserMeetingEvent,
     leaveExpiredMeetingEvent,
     leaveMeetingAsGuest,
@@ -78,3 +80,5 @@ split({
         user: leaveMeetingAsGuest,
     },
 });
+
+$isPaywallPaymentEnabled.on(setIsPaywallPaymentEnabled, (state, data) => data);

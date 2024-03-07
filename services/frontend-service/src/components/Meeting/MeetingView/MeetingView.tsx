@@ -96,6 +96,7 @@ import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
 import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
 import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
+import { MeetingTranscription } from '../MeetingChangeBackground/MeetingTranscription';
 // helpers
 
 
@@ -409,6 +410,7 @@ const Component = () => {
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
                     </ConditionalRender>
+                    {/* <MeetingTranscription /> */}
                     <ConditionalRender condition={!isMobile}>
                         {/* <MeetingManageAudio /> */}
                     </ConditionalRender>

@@ -25,4 +25,5 @@ export interface ICommonMeetingUserDTO {
   userSize: number;
   doNotDisturb: boolean;
   isDonated: boolean;
+  isPaywallPaid: boolean;
 }

@@ -3,7 +3,7 @@ import { Store, attach, combine } from 'effector-next';
 import { $profileStore } from 'src/store/profile/profile/model';
 import { ICommonUser, IUserTemplate, MeetingRole } from 'shared-types';
 import { $scheduleTemplateStore } from 'src/store/templates/model';
-import { Meeting, MeetingUser, Profile } from '../../../types';
+import { Meeting, MeetingRecording, MeetingUser, Profile } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
 import {
@@ -26,9 +26,23 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
+import { MeetingRecordVideo } from '../../../types';
+
+const initialMeetingRecordingState: MeetingRecording = {
+    videos: [{ id: "sdfsdf", meeting: "meeting-1", user: "aaa", url: "urlrurlrurlr", price: 5, createdAt: new Date().toString(), updatedAt: new Date().toString() }],
+    requestUsers: [],
+    isRecordingStarted: false,
+    byRequest: false,
+    isStartRecordingPending: false,
+    isStopRecordingPending: false,
+    urlForCopy: ''
+}
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
 export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
+
+export const $meetingRecordingStore =
+    meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -111,16 +125,19 @@ export const rejoinMeetingEvent = attach<
             meetingRole: MeetingRole;
         },
     ) => ({
-        profileId: source.profile?.id,
-        profileUserName: source?.profile?.fullName,
-        profileAvatar: source?.profile?.profileAvatar?.url,
-        templateId: source.template?.id,
-        meetingRole: source.meetingRole,
-        accessStatus: source.localUser.accessStatus,
-        isAuraActive: source.localUser.isAuraActive,
-        cameraStatus: source.localUser.cameraStatus,
-        micStatus: source.localUser.micStatus,
-        maxParticipants: source.template.maxParticipants,
+        userData: {
+            profileId: source.profile?.id,
+            profileUserName: source?.profile?.fullName,
+            profileAvatar: source?.profile?.profileAvatar?.url,
+            templateId: source.template?.id,
+            meetingRole: source.meetingRole,
+            accessStatus: source.localUser.accessStatus,
+            isAuraActive: source.localUser.isAuraActive,
+            cameraStatus: source.localUser.cameraStatus,
+            micStatus: source.localUser.micStatus,
+            maxParticipants: source.template.maxParticipants,
+        },
+        previousMeetingUserId: data
     }),
 });
 
@@ -144,3 +161,15 @@ export const sendUpdateMeetingTemplateEvent = attach<
         data: params,
     }),
 });
+
+export const isRequestRecordingStartEvent = meetingDomain.createEvent<void>('isRequestRecordingStartEvent');
+export const isRequestRecordingEndEvent = meetingDomain.createEvent<void>('isRequestRecordingEndEvent');
+export const receiveRequestRecordingEvent = meetingDomain.createEvent<MeetingUser>('receiveRequestRecordingEvent');
+export const setRecordingUrlEvent = meetingDomain.createEvent<{ id: string, endTime: string }>('setRecordingUrlEvent');
+export const setRecordingUrlsEvent = meetingDomain.createEvent<{ id: string, endTime: string }[]>('setRecordingUrlsEvent');
+export const setStartRecordingPendingEvent = meetingDomain.createEvent<void>('setStartRecordingPendingEvent');
+export const setStopRecordingPendingEvent = meetingDomain.createEvent<void>('setStopRecordingPendingEvent');
+export const resetMeetingRecordingStoreExceptVideosEvent = meetingDomain.createEvent<void>('resetMeetingRecordingStoreExceptVideosEvent');
+export const setUrlForCopyEvent = meetingDomain.createEvent<string>('setUrlForCopyEvent');
+export const deleteRecordingUrlEvent = meetingDomain.createEvent<string>('deleteRecordingUrlEvent');
+export const updateRecordingVideoPriceEvent = meetingDomain.createEvent<MeetingRecordVideo>('updateRecordingVideoPriceEvent');

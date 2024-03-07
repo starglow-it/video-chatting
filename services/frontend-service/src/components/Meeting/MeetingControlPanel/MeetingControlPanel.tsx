@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -70,7 +70,6 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
-
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();

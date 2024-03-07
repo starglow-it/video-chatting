@@ -221,6 +221,7 @@ export type ConnectToSFUPayload = {
     templateId: IUserTemplate['id'];
     userId: MeetingUser['id'];
     serverIp: IUserTemplate['meetingInstance']['serverIp'];
+    participantName: MeetingUser['username']
 };
 
 export type PublishTracksPayload = {

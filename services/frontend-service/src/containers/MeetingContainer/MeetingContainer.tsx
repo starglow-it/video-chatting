@@ -1,7 +1,8 @@
 import { memo, useState, useEffect, useMemo, useRef } from 'react';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
+import Head from 'next/head';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
@@ -45,6 +46,7 @@ import {
     removeLandscapeListener,
     removeWindowListeners,
     resetRoomStores,
+    resetMeetingRecordingStore
 } from '../../store';
 import {
     $backgroundAudioVolume,
@@ -56,6 +58,11 @@ import {
     $localUserStore,
     $meetingConnectedStore,
     $meetingTemplateStore,
+    $isPaywallPaymentEnabled,
+    $meetingUsersStore,
+    $isOwnerInMeeting,
+    $isOwnerDoNotDisturb,
+    $meetingStore,
     getMeetingTemplateFx,
     getPaymentMeetingEvent,
     initDevicesEventFxWithStore,
@@ -77,6 +84,9 @@ import {
     updateMeetingEvent,
     updateMeetingSocketEvent,
     isRoomPaywalledFx,
+    setIsPaywallPaymentEnabled,
+    updateUserSocketEvent,
+    sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 
 // types
@@ -94,7 +104,7 @@ import {
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
 
-const NotMeetingComponent = memo(({ isShow = false }) => {
+const NotMeetingComponent = memo(({ isShow = false, isRecorder }: { isShow: boolean, isRecorder: boolean }) => {
     const localUser = useStore($localUserStore);
     const { isMobile } = useBrowserDetect();
 
@@ -117,6 +127,7 @@ const NotMeetingComponent = memo(({ isShow = false }) => {
                         isMobile &&
                         localUser.accessStatus ===
                         MeetingAccessStatusEnum.EnterName,
+                    [styles.isRecorder]: isRecorder
                 })}
                 id="anchor-unlock"
             >
@@ -142,6 +153,7 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const isPaywallPaymentEnabled = useStore($isPaywallPaymentEnabled);
     const { width, height } = useStore($windowSizeStore);
     const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
     const isLoadingJoinWaitingRoom = useStore(
@@ -156,6 +168,17 @@ const MeetingContainer = memo(() => {
     const isRecorder = roleUrl === MeetingRole.Recorder;
     const isFirstime = useRef(true);
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
+    const isHasMeeting = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+            ),
+    });
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
+    const meeting = useStore($meetingStore);
 
     useEffect(() => {
         if (roleUrl) {
@@ -204,6 +227,7 @@ const MeetingContainer = memo(() => {
             (async () => {
                 await sendLeaveMeetingSocketEvent();
                 resetRoomStores();
+                resetMeetingRecordingStore();
                 BackgroundManager.destroy();
             })();
         };
@@ -232,7 +256,10 @@ const MeetingContainer = memo(() => {
         ) {
             initiateMeetingSocketConnectionEvent();
         }
-    }, [meetingTemplate?.meetingInstance, isMeetingSocketConnecting]);
+    }, [
+        meetingTemplate?.meetingInstance,
+        isMeetingSocketConnecting,
+    ]);
 
     useEffect(() => {
         (async () => {
@@ -257,7 +284,9 @@ const MeetingContainer = memo(() => {
                 if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
-                await sendJoinWaitingRoomSocketEvent();
+
+                await sendJoinWaitingRoomSocketEvent(localStorage.getItem("meetingUserId") || '');
+
                 if (isOwner) {
                     if (isHasSettings) {
                         joinMeetingEvent({
@@ -329,6 +358,19 @@ const MeetingContainer = memo(() => {
         fetch();
     }, [router, meetingTemplate.id]);
 
+    useEffect(() => {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            localStorage.setItem('meetingUserId', localUser.id);
+        }
+    }, [localUser]);
+
+    useEffect(() => {
+        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+            updateUserSocketEvent({ isPaywallPaid: true });
+            setIsPaywallPaymentEnabled(false);
+        }
+    }, [isPaywallPaymentEnabled, localUser]);
+
     const LoadingWaitingRoom = useMemo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
@@ -346,12 +388,26 @@ const MeetingContainer = memo(() => {
         );
     }, []);
 
+    useEffect(() => {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.Waiting &&
+            isHasMeeting &&
+            isOwnerInMeeting &&
+            isOwnerDoNotDisturb
+        ) {
+            sentRequestToHostWhenDnd({ meetingId: meeting.id});
+        }
+    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb, localUser]);
+
     const previewImage = getPreviewImage(meetingTemplate);
 
     const handleSetMeetingPreviewShow = () => setIsMeetingPreviewShow(true);
 
     return (
         <>
+            <Head>
+                <title>Ruume {meetingTemplate.name}</title>
+            </Head>
             <ConditionalRender
                 condition={!meetingTemplate?.id && !isLoadingFetchMeeting}
             >
@@ -435,7 +491,7 @@ const MeetingContainer = memo(() => {
                                 <>
                                     <MeetingPreview isShow={isMeetingPreviewShow} />
                                     <MeetingPreEvent isShow={!isMeetingPreviewShow} handleSetMeetingPreviewShow={handleSetMeetingPreviewShow} />
-                                    <NotMeetingComponent isShow={isMeetingPreviewShow} />
+                                    <NotMeetingComponent isShow={isMeetingPreviewShow} isRecorder={isRecorder} />
                                 </>
                             </ConditionalRender>
                         </CustomBox>

@@ -15,3 +15,4 @@ export const profileDomain = rootDomain.createDomain('profileDomain');
 export const statisticsDomain = rootDomain.createDomain('statisticsDomain');
 export const videoChatDomain = rootDomain.createDomain('videoChatDomain');
 export const supportDomain = rootDomain.createDomain('support');
+export const transcriptionDomain = rootDomain.createDomain('transcription');

@@ -3,10 +3,13 @@ import {
   MessageBody,
   OnGatewayDisconnect,
   WebSocketGateway,
+  SubscribeMessage
 } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
+import axios from 'axios';
 
 import { BaseGateway } from './base.gateway';
 
@@ -15,6 +18,8 @@ import { MeetingsService } from '../modules/meetings/meetings.service';
 import { UsersService } from '../modules/users/users.service';
 import { TasksService } from '../modules/tasks/tasks.service';
 import { CoreService } from '../services/core/core.service';
+import { MeetingRecordService } from '../modules/meeting-record/meeting-record.service';
+import { MeetingRecordCommonService } from '../modules/meeting-record/meeting-record.common';
 
 import {
   FinishMeetingReason,
@@ -29,16 +34,17 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
-import { GetMeetingStatisticsRequestDTO } from '../dtos/requests/get-meeting-statistics.dto';
 import { StartMeetingRequestDTO } from '../dtos/requests/start-meeting.dto';
 import { UpdateMeetingLinkRequestDTO } from '../dtos/requests/update-meetinglink.dto';
 import { JoinMeetingRequestDTO } from '../dtos/requests/join-meeting.dto';
 import { userSerialization } from '../dtos/response/common-user.dto';
+import { recordSerialization } from '../dtos/response/common-meetingRecord.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
 import { EnterMeetingRequestDTO } from '../dtos/requests/enter-meeting.dto';
 import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-meeting.dto';
 import { EndMeetingRequestDTO } from '../dtos/requests/end-meeting.dto';
 import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
+import { SetIsMeetingRecordingRequest } from '../dtos/requests/set-is-meeting-recording.dto';
 
 import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
 import {
@@ -79,6 +85,13 @@ import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from '../exceptions/ws.exception';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
+import { AudienceRequestRecording } from 'src/dtos/requests/audience-request-recording.dto';
+import { GetRecordingUrlById } from 'src/dtos/requests/get-recording-url-by-id.dto';
+import { SaveRecordingUrlRequest } from 'src/dtos/requests/save-recordingurl.dto';
+import { GetRecordingUrlsDto } from 'src/dtos/requests/get-recording-urls.dto';
+import { AudienceRequestRecordingAccept } from 'src/dtos/requests/audience-request-recording-accept.dto';
+import { DeleteRecordingVideoDto } from 'src/dtos/requests/delete-recording-video.dto';
+import { UpdateRecordingVideo } from 'src/dtos/requests/update-recording-video.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -89,9 +102,12 @@ import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 export class MeetingsGateway
   extends BaseGateway
   implements OnGatewayDisconnect {
+
+  private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private meetingsService: MeetingsService,
+    private meetingRecordService: MeetingRecordService,
     private meetingChatsService: MeetingChatsService,
     private usersService: UsersService,
     private coreService: CoreService,
@@ -99,6 +115,7 @@ export class MeetingsGateway
     private meetingHostTimeService: MeetingTimeService,
     private meetingsCommonService: MeetingsCommonService,
     private usersComponent: UsersComponent,
+    private meetingRecordCommonService: MeetingRecordCommonService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -139,6 +156,7 @@ export class MeetingsGateway
         accessStatus: {
           $in: [
             MeetingAccessStatusEnum.RequestSent,
+            MeetingAccessStatusEnum.RequestSentWhenDnd,
             MeetingAccessStatusEnum.InMeeting,
             MeetingAccessStatusEnum.SwitchRoleSent,
             MeetingAccessStatusEnum.EnterName,
@@ -232,13 +250,13 @@ export class MeetingsGateway
     });
 
     if (!activeParticipants) {
-    //   await this.meetingsCommonService.handleClearMeetingData({
-    //     userId: meeting.owner._id,
-    //     templateId: userTemplate.id,
-    //     instanceId: userTemplate.meetingInstance.instanceId,
-    //     meetingId,
-    //     session,
-    //   });
+      //   await this.meetingsCommonService.handleClearMeetingData({
+      //     userId: meeting.owner._id,
+      //     templateId: userTemplate.id,
+      //     instanceId: userTemplate.meetingInstance.instanceId,
+      //     meetingId,
+      //     session,
+      //   });
       this.emitToRoom(
         `waitingRoom:${meeting.templateId}`,
         MeetingEmitEvents.FinishMeeting,
@@ -328,8 +346,11 @@ export class MeetingsGateway
         let meeting = await this.usersComponent.findMeetingFromPopulateUser(
           user,
         );
-        await meeting.populate(['owner']);
+        await meeting.populate(['owner', 'users']);
         const isOwner = meeting.owner._id.toString() === userId;
+
+        const userProfileId = user.profileId.toString();
+        const isHost = meeting.ownerProfileId.toString() === userProfileId;
 
         const userTemplate = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
@@ -342,6 +363,21 @@ export class MeetingsGateway
           });
 
           return wsResult();
+        }
+
+        if (!!meeting.users) {
+          const usersInMeeting = meeting.users.findIndex(_user =>
+            _user.accessStatus === MeetingAccessStatusEnum.InMeeting && user._id.toString() !== _user._id.toString()
+          )
+
+          if (usersInMeeting === -1) {
+            await this.usersComponent.updateManyUsers({
+              query: { meeting: meeting._id },
+              data: { isPaywallPaid: false },
+              isNew: false,
+              session
+            });
+          }
         }
 
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
@@ -376,7 +412,29 @@ export class MeetingsGateway
           data: updateData,
           session,
         });
-        if (isOwner) {
+
+        if (
+          isHost &&
+          (meeting.isMeetingRecording || meeting.isMeetingRecordingByRequest) &&
+          meeting.recordingUrl
+        ) {
+          const result = await this.meetingRecordCommonService.stopRecording({ roomUrl: `${meeting.recordingUrl}?role=recorder` });
+
+          if (result && result.data) {
+            if (meeting.isMeetingRecordingByRequest) {
+              await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, url: result.data.url } });
+            }
+
+            await this.meetingsService.findByIdAndUpdate({
+              id: meeting._id,
+              data: {
+                isMeetingRecordingByRequest: false,
+                isMeetingRecording: false,
+                recordingUrl: ''
+              },
+              session
+            });
+          }
         }
 
         if (
@@ -422,20 +480,21 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         subscribeWsError(socket);
-        const waitingRoom = `waitingRoom:${message.templateId}`;
-        const rejoinRoom = `rejoin:${message.templateId}`;
+        const { userData, previousMeetingUserId } = message;
+        const waitingRoom = `waitingRoom:${userData.templateId}`;
+        const rejoinRoom = `rejoin:${userData.templateId}`;
         this.joinRoom(socket, waitingRoom);
         this.leaveRoom(socket, rejoinRoom);
 
         const template = await this.coreService.findMeetingTemplateById({
-          id: message.templateId,
+          id: userData.templateId,
         });
 
         throwWsError(!template, 'No template found');
 
         let meeting = await this.meetingsService.findOne({
           query: {
-            templateId: message.templateId,
+            templateId: userData.templateId,
           },
           session,
         });
@@ -447,14 +506,14 @@ export class MeetingsGateway
           }))
           : null;
 
-        if (message.meetingRole == MeetingRole.Host && !meeting) {
+        if (userData.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting({
             data: {
               isMonetizationEnabled: false,
               mode: 'together',
-              ownerProfileId: message.profileId,
-              maxParticipants: message.maxParticipants,
-              templateId: message.templateId,
+              ownerProfileId: userData.profileId,
+              maxParticipants: userData.maxParticipants,
+              templateId: userData.templateId,
               links
             },
             session,
@@ -481,25 +540,76 @@ export class MeetingsGateway
           );
         }
 
-        const user = await this.usersService.createUser(
-          {
-            profileId: message.profileId,
-            socketId: socket.id,
-            username: message?.profileUserName,
-            profileAvatar: message?.profileAvatar,
-            isGenerated: !Boolean(message.profileId),
-            accessStatus: message.accessStatus,
-            isAuraActive: message.isAuraActive,
-            micStatus: message.micStatus,
-            cameraStatus: message.cameraStatus,
-            avatarRole: message.avatarRole,
-            meetingRole: message.meetingRole,
-          },
-          session,
-        );
+        let user: MeetingUserDocument;
+
+        if (!!previousMeetingUserId) {
+          const userModel = await this.usersComponent.findById({ id: previousMeetingUserId, session });
+
+          if (!!userModel) {
+            if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
+
+              const { templatePayments } = await this.coreService.findTemplatePayment({
+                userTemplateId: meeting.templateId,
+                userId: template.user.id
+              });
+
+              const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enabled) !== -1;
+              const isParticipantPaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enabled) !== -1;
+
+              let accessStatus = userData.accessStatus;
+              if (userModel.isPaywallPaid) {
+                if (userData.meetingRole === MeetingRole.Participant && isParticipantPaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
+                }
+
+                if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.InMeeting;
+                }
+              }
+
+              user = await this.usersService.findOneAndUpdate({
+                query: {
+                  _id: previousMeetingUserId
+                },
+                data: {
+                  ...userData,
+                  accessStatus,
+                  socketId: socket.id
+                },
+                isNew: false,
+                session
+              });
+            } else {
+
+            }
+          }
+        }
+
+        let isNewUser = false;
+
+        if (!user || !previousMeetingUserId) {
+          isNewUser = true
+
+          user = await this.usersService.createUser(
+            {
+              profileId: userData.profileId,
+              socketId: socket.id,
+              username: userData?.profileUserName,
+              profileAvatar: userData?.profileAvatar,
+              isGenerated: !Boolean(userData.profileId),
+              accessStatus: userData.accessStatus,
+              isAuraActive: userData.isAuraActive,
+              micStatus: userData.micStatus,
+              cameraStatus: userData.cameraStatus,
+              avatarRole: userData.avatarRole,
+              meetingRole: userData.meetingRole,
+            },
+            session,
+          );
+        }
 
         if (
-          message.meetingRole == MeetingRole.Host &&
+          userData.meetingRole == MeetingRole.Host &&
           !(await this.meetingsCommonService.isMaxMembers(
             meeting,
             MeetingRole.Host,
@@ -516,12 +626,15 @@ export class MeetingsGateway
 
         await user.save({ session: session.session });
 
-        meeting.users.push(user.id);
+        if (isNewUser) {
+          meeting.users.push(user.id);
+        }
+
         meeting.save();
 
         const meetingUsers = await this.getMeetingUsersInRoom(meeting, session);
 
-        const plainMeeting = meetingSerialization(meeting);
+        const plainMeeting: any = meetingSerialization(meeting);
         const plainUser = userSerialization(user);
         const plainUsers = userSerialization(meetingUsers);
 
@@ -735,21 +848,21 @@ export class MeetingsGateway
 
         const meetingLinks = meeting.links.map(link => {
           if (link.url === url && !link.users.includes(userId)) {
-              link.users.push(userId);
+            link.users.push(userId);
           }
-      
+
           return link;
-      });
-      
+        });
 
-          await this.meetingsService.findByIdAndUpdate({
-            id: meetingId,
-            data: {
-              links: [...meetingLinks]
 
-            },
-            session,
-          });
+        await this.meetingsService.findByIdAndUpdate({
+          id: meetingId,
+          data: {
+            links: [...meetingLinks]
+
+          },
+          session,
+        });
 
         return wsResult();
       },
@@ -1498,6 +1611,32 @@ export class MeetingsGateway
     );
   }
 
+
+  @SubscribeMessage(MeetingSubscribeEvents.OnStartTranscription)
+  async receiveTranscriptionResults(
+    @MessageBody() message: any,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const user = this.getUserFromSocket(socket);
+    const eventName = 'Broadcast Transcription Message';
+    this.logger.log({
+      message: eventName,
+      ctx: message,
+    });
+
+    this.emitToRoom(
+      `meeting:${user.meeting.toString()}`,
+      MeetingEmitEvents.SendTranscriptionMessage,
+      {
+        message: {
+          participant: `${user.username}`,
+          transcription: `${message.note}`,
+          meetingID: `${user.meeting.toString()}`,
+        },
+      },
+    );
+  }
+
   @Roles([MeetingRole.Host])
   @WsEvent(UsersSubscribeEvents.OnChangeHost)
   async changeHost(
@@ -1848,6 +1987,448 @@ export class MeetingsGateway
             user: plainUser,
           },
         );
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecording)
+  async requestRecording(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meetingUser = await this.usersComponent.findById({ id: user._id });
+        const plainUser = userSerialization(meetingUser);
+
+        this.emitToSocketId(
+          user.socketId,
+          MeetingEmitEvents.ReceiveRequestRecording,
+          {
+            user: plainUser
+          },
+        );
+
+        return wsResult({
+          message: 'received request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecordingRejected)
+  async requestRecordingRejected(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.emitToRoom(
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveRequestRecordingRejected
+        );
+
+        return wsResult({
+          message: 'rejected request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnRequestRecordingAccepted)
+  async requestRecordingAccepted(
+    @MessageBody() msg: AudienceRequestRecordingAccept,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { meetingId, recordingUrl } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        await this.meetingsService.findByIdAndUpdate({
+          id: meeting._id,
+          data: {
+            isMeetingRecordingByRequest: true,
+            recordingUrl: recordingUrl
+          },
+          session
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meetingUser = await this.usersComponent.findById({ id: user._id });
+
+        this.broadcastToRoom(
+          socket,
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveRequestRecordingAccepted,
+          {
+            username: meetingUser.username
+          }
+        );
+
+        return wsResult({
+          message: 'accepted request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnStartRecordingPending)
+  async startRecordingPending(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const meetingUser = await this.usersComponent.findById({ id: user._id });
+
+        this.broadcastToRoom(
+          socket,
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveStartRecordingPending,
+        );
+
+        return wsResult({
+          message: 'accepted request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnStopRecordingPending)
+  async stopRecordingPending(
+    @MessageBody() msg: AudienceRequestRecording,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { meetingId } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.broadcastToRoom(
+          socket,
+          `meeting:${meeting._id.toString()}`,
+          MeetingEmitEvents.ReceiveStopRecordingPending,
+        );
+
+        return wsResult({
+          message: 'accepted request for recording',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnSaveRecordingUrl)
+  async saveRecordingUrl(
+    @MessageBody() msg: SaveRecordingUrlRequest,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, url } = msg;
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        await this.meetingsService.findByIdAndUpdate({
+          id: meeting._id,
+          data: {
+            isMeetingRecordingByRequest: false,
+            isMeetingRecording: false
+          },
+          session
+        });
+
+        const meetingUser = await this.usersComponent.findById({ id: user._id });
+
+        if (!!url) {
+          const createdRecord = await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, user: meetingUser.profileId, url } });
+          if (createdRecord) {
+            this.emitToSocketId(
+              user.socketId,
+              MeetingEmitEvents.GetMeetingUrlReceive
+            );
+          }
+        } else {
+          this.emitToSocketId(
+            user.socketId,
+            MeetingEmitEvents.GetMeetingUrlsReceiveFail,
+          );
+        }
+
+        return wsResult({
+          message: 'successfully saved',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnGetRecordingUrls)
+  async getRecordingUrls(
+    @MessageBody() msg: GetRecordingUrlsDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { profileId } = msg;
+
+        const urlModels = await this.meetingRecordService.findMany({ query: { user: profileId }, populatePaths: 'meetingId', session });
+        const videos = [];
+
+        if (!!urlModels) {
+          for (let urlModel of urlModels) {
+            const template = await this.coreService.findMeetingTemplateById({ id: urlModel['meetingId']['templateId'] });
+            if (template) {
+              videos.push({
+                id: urlModel._id.toString(),
+                user: urlModel.user,
+                meeting: template.name || 'Anonymous',
+                url: urlModel.url,
+                price: urlModel.price,
+                createdAt: urlModel.createdAt.toString(),
+                updatedAt: urlModel.updatedAt.toString()
+              });
+            }
+          }
+
+          this.emitToSocketId(
+            socket.id,
+            MeetingEmitEvents.GetMeetingUrlsReceive,
+            { videos }
+          );
+        }
+
+        return wsResult({
+          message: 'success',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnGetRecordingUrlById)
+  async getRecordingUrlById(
+    @MessageBody() msg: GetRecordingUrlById,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, videoId } = msg;
+        const user = this.getUserFromSocket(socket);
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const hostProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
+        const meetingHost = await this.usersComponent.findById({ id: meeting.owner.toString(), session });
+
+        if (hostProfile) {
+          if (hostProfile.subscriptionPlanKey === PlanKeys.House) {
+            if (user._id.toString() === meetingHost._id.toString()) {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlFailDueToPermission,
+              );
+            } else {
+              this.emitToSocketId(
+                meetingHost.socketId,
+                MeetingEmitEvents.GetUrlFailDueToHostPermission,
+              );
+
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlByAttendeeFailDueToHostPermission,
+              );
+            }
+          } else {
+            const recordModel = await this.meetingRecordService.findById({ id: videoId, session });
+            if (recordModel) {
+              this.emitToSocketId(
+                user.socketId,
+                MeetingEmitEvents.GetUrlByAttendee,
+                { url: recordModel.url }
+              );
+            }
+          }
+        }
+
+        return wsResult({
+          message: 'success',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnIsMeetingRecording)
+  async setIsMeetingRecording(
+    @MessageBody() msg: SetIsMeetingRecordingRequest,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, isMeetingRecording, recordingUrl } = msg;
+        const meeting = await this.meetingsService.findById({
+          id: meetingId,
+          session,
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        await this.meetingsService.findByIdAndUpdate({
+          id: meeting._id,
+          data: {
+            isMeetingRecording,
+            recordingUrl: recordingUrl || ''
+          },
+          session
+        });
+
+        return wsResult({
+          message: 'successfully updated',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+  @WsEvent(MeetingSubscribeEvents.OnDeleteRecordingVideo)
+  async deleteRecordingVideo(
+    @MessageBody() msg: DeleteRecordingVideoDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { id } = msg;
+        await this.meetingRecordService.deleteById({ id }, session);
+
+        return wsResult({
+          message: 'successfully deleted',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnUpdateRecordingVideoPrice)
+  async updateRecordingVideo(
+    @MessageBody() msg: UpdateRecordingVideo,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { id, price } = msg;
+        const updatedVideo = await this.meetingRecordService.findByIdAndUpdate({ id, data: { price }, session });
+
+        await updatedVideo.populate('meetingId');
+        
+        if (!!updatedVideo) {
+          const template = await this.coreService.findMeetingTemplateById({ id: updatedVideo['meetingId']['templateId'] });
+          if (template) {
+            const plainVideo = {
+              id: updatedVideo._id.toString(),
+              user: updatedVideo.user,
+              meeting: template.name || 'Anonymous',
+              url: updatedVideo.url,
+              price: updatedVideo.price,
+              createdAt: updatedVideo.createdAt.toString(),
+              updatedAt: updatedVideo.updatedAt.toString()
+            };
+
+            return wsResult({
+              message: 'success',
+              video: plainVideo
+            });
+          }
+        }
       },
       {
         onFinaly: (err) => wsError(socket, err),

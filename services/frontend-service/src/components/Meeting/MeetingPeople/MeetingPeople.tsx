@@ -16,6 +16,7 @@ import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessReq
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
 import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
+import { MeetingTranscribe } from '../MeetingChat/MeetingTranscribe';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -51,37 +52,12 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 export const MeetingPeople = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isMeetingHost = useStore($isMeetingHostStore);
-
     const isAudience = useStore($isAudience);
-
-    const participants = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Audience,
-            ),
-    });
-
-    const audiences = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state =>
-            state.filter(
-                user =>
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole === MeetingRole.Audience,
-            ),
-    });
-
     const value = useStore($activeTabPanel);
-
     const isThereNewMessage = useStore($isHaveNewMessage);
     const isThereNewQuestion = useStore($isHaveNewQuestion);
 
-    useEffect(()=> {
+    useEffect(() => {
         if (isThereNewMessage) {
             setActiveTabPanelEvent(0);
         }
@@ -155,14 +131,7 @@ export const MeetingPeople = () => {
                     <MeetingQuestionAnswer />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    <CustomGrid
-                        display="flex"
-                        flexDirection="column"
-                        paddingTop={1}
-                    >
-                        {isMeetingHost && <MeetingAccessRequests />}
-                        <MeetingUsersList />
-                    </CustomGrid>
+                    <MeetingTranscribe />
                 </CustomTabPanel>
             </ConditionalRender>
             <ConditionalRender condition={isAudience}>
@@ -171,6 +140,9 @@ export const MeetingPeople = () => {
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                     <MeetingQuestionAnswer />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <MeetingTranscribe />
                 </CustomTabPanel>
             </ConditionalRender>
         </CustomGrid>

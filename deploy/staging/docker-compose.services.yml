@@ -48,7 +48,7 @@ services:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
       args:
-        - LIVEKIT_IP=18.190.108.231
+        - LIVEKIT_IP=3.129.50.243
         - LIVEKIT_API_KEY=APIGZAoRvLhzuaE
         - LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
     restart: unless-stopped
@@ -178,7 +178,30 @@ services:
     networks:
       - traefikpublic
       - internal
-
+  
+  aws-transcribe-service:
+    container_name: aws-transcribe-service
+    build:
+      context: ../../
+      dockerfile: ./services/aws-transcribe-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
+    ports:
+      - "3010:3010"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.aws_transcribe.rule=Host(`stg-my.chatruume.com`) && PathPrefix(`/aws-transcribe`)"
+      - "traefik.http.routers.aws_transcribe.priority=1000"
+      - "traefik.http.routers.aws_transcribe.entrypoints=websecure"
+      - "traefik.http.routers.aws_transcribe.tls=true"
+      - "traefik.http.services.aws_transcribe.loadbalancer.server.port=3010"
+    env_file:
+      - env
+    networks:
+      - traefikpublic
+      - internal
+  
   core-service:
     env_file:
       - env

@@ -6,10 +6,12 @@ import { DatabaseModule } from './database/database.module';
 import { CoreModule } from './services/core/core.module';
 import { MeetingChatsModule } from './modules/meeting-chats/meeting-chats.module';
 import { MeetingsModule } from './modules/meetings/meetings.module';
+import { MeetingRecordModule } from './modules/meeting-record/meeting-record.module';
 import { UsersModule } from './modules/users/users.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import { MeetingQuestionAnswersModule } from './modules/meeting-question-answer/meeting-question-answer.module';
+import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
 import {
   AudiencesGateway,
   ParticipantsGateway,
@@ -21,7 +23,7 @@ import {
   UsersGateway,
   MeetingQuestionAnswersGateway
 } from './gateways';
-import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
+
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reac
     ConfigModule,
     MeetingChatsModule,
     MeetingsModule,
+    MeetingRecordModule,
     UsersModule,
     MeetingNotesModule,
     MeetingReactionsModule,

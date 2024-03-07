@@ -15,7 +15,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
@@ -53,6 +53,7 @@ import {
     setMeetingNotesVisibilityEvent,
     setEmojiListVisibilityEvent,
     $meetingStore,
+    $meetingRecordingStore,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -71,7 +72,7 @@ import {
     stopScreenSharing,
     startRecordStreamFx,
     stopRecordStreamFx,
-    $isScreenSharingStore
+    $isScreenSharingStore,
 } from '../../../store/roomStores';
 
 // styles
@@ -95,6 +96,7 @@ const Component = () => {
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const meetingRecordingStore = useStore($meetingRecordingStore);
     const recordingStartPending = useStore(startRecordStreamFx.pending);
     const recordingStopPending = useStore(stopRecordStreamFx.pending);
 
@@ -105,6 +107,7 @@ const Component = () => {
             state.some(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd ||
                     user.accessStatus ===
                     MeetingAccessStatusEnum.SwitchRoleSent,
             ),
@@ -128,13 +131,25 @@ const Component = () => {
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
+    const users = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Audience &&
+                    user.meetingRole !== MeetingRole.Recorder,
+            ),
+    });
+
     useEffect(() => {
         return () => {
-            if (isRecording) {
-                stopRecordMeeting(fullUrl);
+            if (isRecording && users.length === 0) {
+                stopRecordMeeting({ url: fullUrl, byRequest: meetingRecordingStore.byRequest, meetingId: meeting.id });
             }
         }
-    }, []);
+    }, [users]);
 
     useEffect(() => {
         if (isMeetingHost && isThereNewRequests) toggleSchedulePanelEvent(true);
@@ -164,7 +179,7 @@ const Component = () => {
         }
 
         if (isRecording) {
-            stopRecordMeeting(fullUrl);
+            stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
         }
 
         await router.push(
@@ -218,18 +233,16 @@ const Component = () => {
 
     const handleRecordMeeting = async () => {
         if (!isRecording) {
-            startRecordMeeting(fullUrl);
+            startRecordMeeting({ url: fullUrl, meetingId: meeting.id });
         } else {
-            stopRecordMeeting(fullUrl);
-
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.recordVideoDownloadDialog,
-            });
+            stopRecordMeeting({ url: fullUrl, meetingId: meeting.id });
         }
     };
+
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
+
     const handleEmojiListToggle = () => {
         setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
     }
@@ -530,37 +543,48 @@ const Component = () => {
                         </CustomPaper>
                     </CustomTooltip>
                 </ConditionalRender>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation={isRecording ? "recordMeeting.stop" : "recordMeeting.start"}
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
+                <ConditionalRender condition={isOwner}>
+                    <CustomTooltip
+                        title={
+                            <Translation
+                                nameSpace="meeting"
+                                translation={
+                                    isAudience
+                                        ? isRecording
+                                            ? "recordMeeting.noAccess"
+                                            : "recordMeeting.recordingRequest"
+                                        : isRecording
+                                            ? "recordMeeting.stop"
+                                            : "recordMeeting.start"
+                                }
+                            />
+                        }
+                        placement="top"
                     >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleRecordMeeting}
-                            className={clsx(styles.deviceButton)}
-                            Icon={
-                                (recordingStartPending || recordingStopPending)
-                                    ? <CircularProgress
-                                        size={15}
-                                        sx={{ color: 'white' }}
-                                    />
-                                    : !isRecording
-                                        ? <FiberManualRecordIcon />
-                                        : <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
-                            }
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
+                        <CustomPaper
+                            variant="black-glass"
+                            borderRadius={8}
+                            className={styles.deviceButton}
+                        >
+                            <ActionButton
+                                variant="transparentBlack"
+                                onAction={handleRecordMeeting}
+                                className={styles.deviceButton}
+                                disabled={isAudience && isRecording}
+                                Icon={
+                                    (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
+                                        ? <CircularProgress
+                                            size={15}
+                                            sx={{ color: 'white' }}
+                                        />
+                                        : isRecording
+                                            ? <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
+                                            : <FiberManualRecordIcon />
+                                }
+                            />
+                        </CustomPaper>
+                    </CustomTooltip>
+                </ConditionalRender>
             </CustomGrid>
         </CustomGrid>
     );

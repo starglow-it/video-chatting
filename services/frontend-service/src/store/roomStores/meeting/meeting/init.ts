@@ -1,8 +1,9 @@
 import { combine, sample } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { resetRoomStores } from '../../../root';
+import { resetRoomStores, resetMeetingRecordingStore } from '../../../root';
 import {
     $meetingStore,
+    $meetingRecordingStore,
     updateMeetingEvent,
     $meetingConnectedStore,
     setMeetingConnectedEvent,
@@ -17,6 +18,17 @@ import {
     $isToggleLinksDrawer,
     toggleLinksDrawerEvent,
     updateMeetingTemplateDashFx,
+    receiveRequestRecordingEvent,
+    isRequestRecordingStartEvent,
+    isRequestRecordingEndEvent,
+    setRecordingUrlsEvent,
+    setStartRecordingPendingEvent,
+    setStopRecordingPendingEvent,
+    resetMeetingRecordingStoreExceptVideosEvent,
+    setRecordingUrlEvent,
+    setUrlForCopyEvent,
+    deleteRecordingUrlEvent,
+    updateRecordingVideoPriceEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -26,6 +38,8 @@ import {
     $isCameraActiveStore,
     $isMicActiveStore,
 } from '../../videoChat/localMedia/model';
+import { $isPaywallPaid } from '../../users/localUser/model';
+import { updateUserSocketEvent } from '../../users/init';
 import {
     $isMeetingInstanceExists,
     $isOwnerDoNotDisturb,
@@ -58,6 +72,55 @@ $isToggleLinksDrawer
     )
     .reset(resetRoomStores);
 
+$meetingRecordingStore
+    .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isStopRecordingPending: true }))
+    .on(setStartRecordingPendingEvent, (state, _) => ({ ...state, isStartRecordingPending: true }))
+    .on(setRecordingUrlEvent, (state, data) => ({ ...state, videos: [data, ...state.videos] }))
+    .on(setRecordingUrlsEvent, (state, data) => ({ ...state, videos: data }))
+    .on(isRequestRecordingStartEvent, (state, _) => ({ ...state, isRecordingStarted: true, byRequest: true }))
+    .on(isRequestRecordingEndEvent, (state, _) => ({ ...state, byRequest: false }))
+    .on(receiveRequestRecordingEvent, (state, data) => {
+        if (state.requestUsers.findIndex(user => user.id === data.id) == -1) {
+            return {
+                ...state,
+                requestUsers: [...state.requestUsers, data]
+            }
+        }
+    })
+    .on(setUrlForCopyEvent, (state, data) => ({ ...state, urlForCopy: data }))
+    .on(resetMeetingRecordingStoreExceptVideosEvent, (state, _) =>
+    ({
+        ...state,
+        requestUsers: [],
+        isRecordingStarted: false,
+        byRequest: false,
+        isStartRecordingPending: false,
+        isStopRecordingPending: false
+    })
+    )
+    .on(updateRecordingVideoPriceEvent, (state, data) => {
+        const videos = state.videos;
+        const updateIndex = videos.findIndex(video => video.id === data.id);
+
+        if (updateIndex !== -1) {
+            videos[updateIndex] = data;
+        }
+
+        return {
+            ...state,
+            videos
+        };
+    })
+    .on(deleteRecordingUrlEvent, (state, data) => {
+        const removeIndex = state.videos.findIndex(video => video.id === data);
+
+        return {
+            ...state,
+            videos: removeIndex !== -1 ? [...state.videos.filter((item, index) => index !== removeIndex)] : state.videos
+        };
+    })
+    .reset(resetMeetingRecordingStore);
+
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
@@ -84,6 +147,13 @@ sample({
         ...params,
     }),
     target: joinMeetingFx,
+});
+
+joinMeetingFx.doneData.watch(() => {
+    const isPaywallPaid = $isPaywallPaid.getState();
+    if (isPaywallPaid) {
+        updateUserSocketEvent({ isPaywallPaid: true });
+    }
 });
 
 sample({

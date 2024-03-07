@@ -59,11 +59,11 @@ const MonetizationAnalytics = memo(
                         <CustomTypography variant="body1">
                             <Translation
                                 nameSpace="common"
-                                translation="statistics.users.monetizationAnalytics.attendeeEntryFee"
-                            /> - ${statistic.data.audienceEntryFee} USD/person
+                                translation="statistics.users.monetizationAnalytics.participantEntryFee"
+                            /> - ${statistic.data.participantEntryFee} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.audienceFees}
+                            ${statistic.data.participantFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -75,11 +75,11 @@ const MonetizationAnalytics = memo(
                         <CustomTypography variant="body1">
                             <Translation
                                 nameSpace="common"
-                                translation="statistics.users.monetizationAnalytics.participantEntryFee"
-                            /> - ${statistic.data.participantEntryFee} USD/person
+                                translation="statistics.users.monetizationAnalytics.audienceEntryFee"
+                            /> - ${statistic.data.audienceEntryFee} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.participantFees}
+                            ${statistic.data.audienceFees}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid

@@ -41,6 +41,11 @@ const proxy = {
         changeOrigin: true,
         ws: true,
     },
+    '/aws-transcribe': {
+        target: `http://aws-transcribe-service:3010`,
+        changeOrigin: true,
+        ws: true,
+    },
 };
 
 const app = next({

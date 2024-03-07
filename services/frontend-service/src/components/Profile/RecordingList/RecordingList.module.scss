@@ -1,0 +1,107 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+%base-wrapper-icon-button {
+  width: rem(25px);
+  height: rem(25px);
+}
+
+.personalInfoWrapper {
+  max-width: 100%;
+  width: 100%;
+  margin: rem(16px) 0;
+  padding: rem(34px 40px);
+}
+
+.recordingListInnerWrapper {
+  width: 80%;
+}
+
+.favoriteIcon {
+  color: $primary-black;
+  margin: rem(0 6px 0 0);
+}
+
+.deviceButton {
+  @extend %base-wrapper-icon-button;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.linkIcon {
+  transform: rotate(-45deg);
+  width: rem(20px);
+  height: rem(20px);
+}
+
+.recordingTitle {
+  color: #BDC8D3;
+  font-size: rem(15px);
+}
+
+.videoListItem {
+  margin-left: 10px;
+}
+
+.meetingName {
+  color: #BDC8D3;
+  font-weight: bold;
+}
+
+.monetizationFormPaper {
+  width: rem(300px);
+  background-color: rgba($color: #000000, $alpha: 0.8);
+  padding: 20px;
+  border: none;
+  box-shadow: none;
+}
+
+.monetizationIcon {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: white;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+}
+
+.monetizationTitle {
+  color: white;
+}
+
+.inputWrapper {
+  padding: rem(8px);
+  margin-top: 20px;
+  color: $primary-white;
+  font-size: 15px;
+  border: 1px solid white;
+  border-radius: 10px;
+
+  &.errorField {
+    border: 1px solid red;
+  }
+
+  .input::-webkit-outer-spin-button,
+  .input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  .input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+.submitBtn {
+  margin-top: rem(20px);
+  padding: 10px;
+}
+
+.error {
+  position: relative;
+}

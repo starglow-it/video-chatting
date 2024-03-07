@@ -86,7 +86,7 @@ export const MeetingQuestionAnswerItem = memo(
                             <CustomGrid className={styles.right}>
                                 <ConditionalRender condition={!isLocal}>
                                     <span className={styles.userName}>
-                                        {sender.username} - 
+                                        {sender.username}&nbsp; - &nbsp;
                                         <span className={styles.userRole}>{sender.meetingRole}</span>
                                     </span>
                                 </ConditionalRender>
@@ -98,9 +98,7 @@ export const MeetingQuestionAnswerItem = memo(
                                         __html: body,
                                     }}
                                 />
-                                <ConditionalRender condition={isLocal}>
                                     {renderEmotions()}
-                                </ConditionalRender>
                             </CustomGrid>
                         </CustomGrid>
                     );
@@ -118,9 +116,7 @@ export const MeetingQuestionAnswerItem = memo(
                                         __html: body,
                                     }}
                                 />
-                                <ConditionalRender condition={isLocal}>
                                     {renderEmotions()}
-                                </ConditionalRender>
                             </CustomGrid>
                         </CustomGrid>
                     );

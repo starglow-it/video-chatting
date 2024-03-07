@@ -62,6 +62,7 @@ export enum MeetingAccessStatusEnum {
   Settings = 'settings',
   Waiting = 'waiting',
   RequestSent = 'requestSent',
+  RequestSentWhenDnd = 'requestSentWhenDnd',
   InMeeting = 'inMeeting',
   Rejected = 'rejected',
   SwitchRoleSent = 'switchRoleSend',

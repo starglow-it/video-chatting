@@ -61,3 +61,16 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+.waitingRoomText {
+  background-color: #FFA552;
+  color: white;
+  font-size: 12px;
+  height: 14px;
+  width: 127px;
+
+  &:hover {
+    background-color: #FFA552;
+    color: white;
+  }
+}
