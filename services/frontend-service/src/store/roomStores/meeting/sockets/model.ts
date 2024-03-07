@@ -43,7 +43,11 @@ import {
     RequestRecordingResponse,
     AnswerRequestRecordingResponse,
     SaveRecordingEventPayload,
-    SetIsMeetingRecordingPayload
+    SetIsMeetingRecordingPayload,
+    SendRequestToHostWhenDndPayload,
+    DeleteRecordingVideoPayload,
+    UpdateRecordingVideoPricePayload,
+    SendRequestToHostWhenDndResponse
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -197,3 +201,18 @@ export const getRecordingUrl = createMeetingSocketEvent<
     GetRecordingUrlPayload,
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.GetRecordingUrl);
+
+export const sentRequestToHostWhenDnd = createMeetingSocketEvent<
+    SendRequestToHostWhenDndPayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.SentRequestToHostWhenDnd);
+
+export const deleteRecordingVideoSocketEvent = createMeetingSocketEvent<
+    DeleteRecordingVideoPayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.DeleteRecordingVideo);
+
+export const updateRecordingVideoPrice = createMeetingSocketEvent<
+    UpdateRecordingVideoPricePayload,
+    SendRequestToHostWhenDndResponse
+>(MeetingSocketEmitters.UpdateRecordingVideoPrice);

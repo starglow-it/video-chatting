@@ -1,15 +1,10 @@
-import { setRecordingUrlEvent, stopRecordMeetingByOthers, isRequestRecordingEndEvent, resetMeetingRecordingStoreExceptVideosEvent } from '../../../../../store/roomStores';
-import { addNotificationEvent } from 'src/store/notifications/model';
+import { addOrangeNotificationEvent } from 'src/store/notifications/model';
 import { NotificationType } from 'src/store/types';
 
-export const handleGetMeetingUrlReceive = ({ user, video }: { user: string, video: { id: string, endTime: string } }) => {
-    isRequestRecordingEndEvent();
-    stopRecordMeetingByOthers();
-    resetMeetingRecordingStoreExceptVideosEvent();
-    setRecordingUrlEvent(video);
-    addNotificationEvent({
+export const handleGetMeetingUrlReceive = () => {
+    addOrangeNotificationEvent({
         type: NotificationType.RequestRecordingMeeting,
-        message: `${user} stopped recording`,
+        message: 'recording.saveSuccess',
         withSuccessIcon: true
     });
 };

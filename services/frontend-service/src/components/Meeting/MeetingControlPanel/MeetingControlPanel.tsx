@@ -3,7 +3,6 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
-import CopyToClipboard from 'react-copy-to-clipboard';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -12,14 +11,6 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
-import { Translation } from '@library/common/Translation/Translation';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { CopyIcon } from 'shared-frontend/icons/OtherIcons/CopyIcon';
-import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
-
-//@mui
-import Divider from '@mui/material/Divider';
 
 // icons
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
@@ -42,30 +33,17 @@ import {
     $isToggleBackgroundPanel,
     $isTogglePayment,
     $isToggleSchedulePanel,
-    $isRecordingUrlsListPanel,
     $isToggleUsersPanel,
     $meetingUsersStore,
     $paymentIntent,
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
-    $meetingRecordingStore,
-    $meetingStore,
-    $isAudience,
-    startRecordStreamFx,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    toggleRecordingUrlsListPanel,
-    requestRecordingRejectEvent,
-    startRecordMeeting,
-    recordingStartPendingEvent,
-    getRecordingUrl
 } from '../../../store/roomStores';
-import { addNotificationEvent } from '../../../store';
-import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
-import { NotificationType } from '../../../store/types';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
@@ -75,18 +53,6 @@ import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-
-import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
-
-function formatText(text: string): string {
-    if (text.length <= 24) {
-        return text;
-    } else {
-        return '...' + text.substring(text.length - 25);
-    }
-}
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -97,7 +63,6 @@ const Component = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
-    const isRecordingUrlsListPanel = useStore($isRecordingUrlsListPanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
@@ -105,46 +70,9 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
-    const meetingRecordingStore = useStore($meetingRecordingStore);
-    const meeting = useStore($meetingStore);
-    const isAudience = useStore($isAudience);
-    const recordingStartPending = useStore(startRecordStreamFx.pending);
-    const [isRecordingRequestReceived, setIsRecordingRequestReceived] = useState(false);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();
-    const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const [ isCopyEnabled, setIsCopyEnabled ] = useState(false);
-
-    const {
-        avatar: { list },
-    } = useStore($avatarsMeetingStore);
-
-    useEffect(() => {
-        if (meetingRecordingStore.requestUsers.length > 0) {
-            setIsRecordingRequestReceived(true);
-        } else {
-            setIsRecordingRequestReceived(false);
-        }
-
-        if (meetingRecordingStore.urlForCopy !== '' && isCopyEnabled) {
-            navigator.clipboard.writeText(meetingRecordingStore.urlForCopy);
-            addNotificationEvent({
-                type: NotificationType.LinkInfoCopied,
-                message: 'meeting.copy.link',
-            });
-
-            if (isCopyEnabled) {
-                setIsCopyEnabled(false);
-            }
-        }
-    }, [meetingRecordingStore, isCopyEnabled]);
-
-    useEffect(() => {
-        if (recordingStartPending) {
-            recordingStartPendingEvent({ meetingId: meeting.id });
-        }
-    }, [recordingStartPending]);
 
     const handleClosePayment = useCallback(async () => {
         if (paymentIntent?.id) {
@@ -190,33 +118,12 @@ const Component = () => {
         [],
     );
 
-    const toggleRecordingUrlsList = useCallback(
-        (e: MouseEvent | TouchEvent) => {
-            e.stopPropagation();
-            toggleRecordingUrlsListPanel(false);
-        },
-        [],
-    );
-
     const handleCloseForm = useCallback(() => {
         togglePaymentFormEvent(false);
         if (!isOwner) {
             cancelPaymentIntentWithData();
         }
     }, [isOwner]);
-
-    const handleRequestRecordingAccept = () => {
-        startRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
-    };
-
-    const handleRequestRecordingReject = () => {
-        requestRecordingRejectEvent({ meetingId: meeting.id });
-    };
-
-    const handleLinkCopied = (videoId: string) => {
-        getRecordingUrl({ meetingId: meeting.id, videoId });
-        setIsCopyEnabled(true);
-    };
 
     const commonContent = useMemo(
         () => (
@@ -232,159 +139,6 @@ const Component = () => {
                             })}
                         >
                             <MeetingPeople />
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener>
-                <Fade in={isRecordingRequestReceived && !isAudience && !meetingRecordingStore.isRecordingStarted}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.recordingRequestList, {
-                            [styles.mobile]: isMobile && isPortraitLayout,
-                        })}
-                    >
-                        <CustomTypography variant="h4">
-                            <Translation
-                                nameSpace="meeting"
-                                translation="recordingRequestTitle"
-                            />
-                        </CustomTypography>
-                        <Divider light sx={{ margin: "24px 0px" }} />
-                        <CustomScroll>
-                            <CustomGrid
-                                container
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="center"
-                                gap={1}
-                                marginBottom={3}
-                            >
-                                {
-                                    meetingRecordingStore.requestUsers.map(user => (
-                                        <CustomGrid
-                                            key={user.id}
-                                            item
-                                            container
-                                            justifyContent="flex-start"
-                                            gap={1}
-                                        >
-                                            <ProfileAvatar
-                                                className={styles.profileAvatar}
-                                                src={
-                                                    getAvatarUrlMeeting(user?.meetingAvatarId ?? '', list) ??
-                                                    user?.profileAvatar
-                                                }
-                                                width="32px"
-                                                height="32px"
-                                                userName={user.username}
-                                            />
-                                            <CustomTypography key={user.id}>{user.username}</CustomTypography>
-                                        </CustomGrid>
-                                    ))
-                                }
-                            </CustomGrid>
-                        </CustomScroll>
-                        <CustomGrid
-                            container
-                            justifyContent="space-between"
-                        >
-                            {
-                                recordingStartPending || meetingRecordingStore.isStartRecordingPending
-                                    ? <CustomButton
-                                        label={
-                                            <CustomLoader />
-                                        }
-                                        size="small"
-                                        className={styles.recordingRequestHandleBtn}
-                                        disabled
-                                        onClick={handleRequestRecordingAccept}
-                                    />
-                                    : <CustomButton
-                                        label={
-                                            <Translation
-                                                nameSpace="meeting"
-                                                translation="buttons.startRecording"
-                                            />
-                                        }
-                                        size="small"
-                                        className={styles.recordingRequestHandleBtn}
-                                        onClick={handleRequestRecordingAccept}
-                                    />
-                            }
-
-                            <CustomButton
-                                variant="custom-cancel"
-                                label={
-                                    <Translation
-                                        nameSpace="meeting"
-                                        translation="buttons.reject"
-                                    />
-                                }
-                                className={styles.recordingRequestHandleBtn}
-                                onClick={handleRequestRecordingReject}
-                            />
-                        </CustomGrid>
-                    </CustomPaper>
-                </Fade>
-                <ClickAwayListener onClickAway={toggleRecordingUrlsList}>
-                    <Fade in={isRecordingUrlsListPanel}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.recordingRequestList, {
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                            })}
-                        >
-                            <CustomTypography variant="h4">
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation="recordingUrlsListTitle"
-                                />
-                            </CustomTypography>
-                            <Divider light sx={{ margin: "24px 0px" }} />
-                            <CustomScroll className={styles.videosScroll}>
-                                <CustomGrid
-                                    container
-                                    flexDirection="column"
-                                    alignItems="flex-start"
-                                    justifyContent="center"
-                                    gap={1.5}
-                                    marginBottom={3}
-                                >
-                                    {
-                                        meetingRecordingStore.videos.length > 0
-                                            ? meetingRecordingStore.videos.map((video: { id: string, endTime: string }) => (
-                                                <CustomGrid
-                                                    key={video.id}
-                                                    item
-                                                    container
-                                                    justifyContent="space-between"
-                                                >
-                                                    <CustomTypography className={styles.urlTypography}>{formatText(video.endTime)}</CustomTypography>
-                                                    <CopyToClipboard
-                                                        text={meetingRecordingStore.urlForCopy}
-                                                        onCopy={() => handleLinkCopied(video.id)}
-                                                    >
-                                                        <CustomTooltip
-                                                            title="copy"
-                                                            placement="right"
-                                                        >
-                                                            <ActionButton
-                                                                variant="decline"
-                                                                className={styles.copyBtn}
-                                                                Icon={<CopyIcon width="15px" height="15px" />}
-                                                            />
-                                                        </CustomTooltip>
-                                                    </CopyToClipboard>
-                                                </CustomGrid>
-                                            ))
-                                            : <CustomTypography variant="body1">
-                                                <Translation
-                                                    nameSpace="meeting"
-                                                    translation="noVideos"
-                                                />
-                                            </CustomTypography>
-                                    }
-                                </CustomGrid>
-                            </CustomScroll>
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>

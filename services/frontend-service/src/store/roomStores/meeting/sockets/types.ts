@@ -14,16 +14,20 @@ import {
     Profile,
 } from '../../../types';
 import { MeetingPayment } from '../meetingPayment/type';
+import { MeetingRecordVideo } from '../../../types'; }
 
 export type JoinWaitingRoomPayload = {
-    profileId: Profile['id'];
-    profileUserName: Profile['fullName'];
-    profileAvatar: Profile['profileAvatar']['url'];
-    templateId: IUserTemplate['id'];
-    meetingRole: MeetingRole;
-    accessStatus: MeetingAccessStatusEnum;
-    isAuraActive: boolean;
-    maxParticipants: number;
+    userData: {
+        profileId: Profile['id'];
+        profileUserName: Profile['fullName'];
+        profileAvatar: Profile['profileAvatar']['url'];
+        templateId: IUserTemplate['id'];
+        meetingRole: MeetingRole;
+        accessStatus: MeetingAccessStatusEnum;
+        isAuraActive: boolean;
+        maxParticipants: number;
+    },
+    previousMeetingUserId: string;
 };
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
@@ -171,12 +175,16 @@ export type RequestRecordingEventPayload = {
 };
 
 export type GetRecordingUrlsPayload = {
-    meetingId: string;
+    profileId: string;
 };
 
 export type GetRecordingUrlPayload = {
     meetingId: string;
     videoId: string;
+};
+
+export type SendRequestToHostWhenDndPayload = {
+    meetingId: string;
 };
 
 export type SaveRecordingEventPayload = {
@@ -203,6 +211,24 @@ export type AnswerRequestRecordingResponse = {
     message: string
 };
 
+export type SendRequestToHostWhenDndResponse = {
+    message: string,
+};
+
 export type RecodingAnswerResponse = {
     isRecordingStart: Boolean
+};
+
+export type DeleteRecordingVideoPayload = {
+    id: string;
+};
+
+export type UpdateRecordingVideoPricePayload = {
+    id: string;
+    price: number;
+};
+
+export type UpdateRecordingVideoPriceResponse = {
+    message: string;
+    video: MeetingRecordVideo;
 };

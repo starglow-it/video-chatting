@@ -12,4 +12,5 @@ export enum UserEmitEvents {
   RequestSwitchFromParticipantToAudienceRoleByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:request:receive',
   AnswerSwitchFromParticipantToAudienceRoleByHost = 'users:switchRole:fromParticipant:toAudience:host:answer:receive',
   AnswerSwitchFromParticipantToAudienceRoleByParticipant = 'users:switchRole:fromParticipant:toAudience:participant:answer:receive',
+  AttendeeRequestWhenDndReceive = 'users:attendee:request:when:dnd:receive',
 }

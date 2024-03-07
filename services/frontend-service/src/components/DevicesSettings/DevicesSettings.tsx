@@ -46,6 +46,8 @@ import {
     $meetingUsersStore,
     $videoDevicesStore,
     $videoErrorStore,
+    $isPaywallPaid,
+    setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
@@ -56,7 +58,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    rejoinMeetingEvent
+    rejoinMeetingEvent,
 } from '../../store/roomStores';
 
 // types
@@ -80,6 +82,7 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const isPaywallPaid = useStore($isPaywallPaid);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -114,7 +117,6 @@ const Component = () => {
 
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
-
     const isUserSentEnterRequest =
         localUser.accessStatus === MeetingAccessStatusEnum.RequestSent;
 
@@ -216,16 +218,27 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        await rejoinMeetingEvent();
+        const meetingUserId = localStorage.getItem('meetingUserId');
+
+        await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
-        setWaitingPaywall(true);
+        if (isHasMeeting && isOwnerInMeeting && isOwnerDoNotDisturb) {
+            updateLocalUserEvent({
+                accessStatus: MeetingAccessStatusEnum.Waiting
+            });
+
+            handleJoinMeeting();
+        } else {
+            setWaitingPaywall(true);
+        }
     }, []);
 
-    const handlePaymentSuccess = () => {
+    const handlePaymentSuccess = async () => {
         setWaitingPaywall(false);
         handleJoinMeeting();
+        setIsPaywallPaymentEnabled(true);
     };
 
     const isAudioError = Boolean(audioError);
@@ -251,8 +264,8 @@ const Component = () => {
         isAccessStatusWaiting;
 
     const isPayWallBeforeJoin =
-        enabledPaymentPaywallParticipant && waitingPaywall;
-    const functionPaywall = enabledPaymentPaywallParticipant
+        enabledPaymentPaywallParticipant && waitingPaywall && !isPaywallPaid;
+    const functionPaywall = enabledPaymentPaywallParticipant && !isPaywallPaid
         ? handlePaywallPayment
         : handleJoinMeeting;
     const joinHandler = isOwner ? onSubmit : functionPaywall;
@@ -294,20 +307,6 @@ const Component = () => {
                         />
                     </CustomGrid>
                 </ConditionalRender>
-                {/* <CustomGrid container direction="column">
-                    <CustomTypography
-                        className={styles.title}
-                        variant="h4bold"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.title"
-                    />
-                    <CustomTypography
-                        variant="body1"
-                        color="text.secondary"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.text"
-                    />
-                </CustomGrid> */}
                 <CustomGrid className={styles.titleLeaveMessage}>
                     <span>Leave a Message</span>
                 </CustomGrid>
@@ -495,6 +494,7 @@ const Component = () => {
                     </>
                 );
 
+            case MeetingAccessStatusEnum.RequestSentWhenDnd:
             case MeetingAccessStatusEnum.Waiting:
                 return (
                     <>

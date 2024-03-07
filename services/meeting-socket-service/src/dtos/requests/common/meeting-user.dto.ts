@@ -113,4 +113,10 @@ export class MeetingUserDto implements ICommonMeetingUserDTO {
     message: 'Invalid isDonated',
   })
   isDonated: boolean;
+
+  @IsOptional()
+  @IsBoolean({
+    message: 'Invalid isPaywallPaid',
+  })
+  isPaywallPaid: boolean;
 }

@@ -7,6 +7,14 @@
     "your": "Your",
     "logo": "Logo"
   },
+  "recordingList": {
+    "title": "Recordings",
+    "name": "Name",
+    "position": "Position",
+    "languages": "Languages",
+    "your": "Your",
+    "logo": "Logo"
+  },
   "monetization": {
     "title": "Monetization",
     "description": "Set donation amount for payment by other participants",
@@ -70,5 +78,8 @@
     "helpSupport": "help & support"
   },
   "delete": "Delete Profile",
-  "deleteProfileConfirm": "Delete Profile?"
+  "deleteProfileConfirm": "Delete Profile?",
+  "recordingVideos": {
+    "upgradeNeeded": "You need to upgrade subscription plan to see recording urls."
+  }
 }
