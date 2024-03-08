@@ -15,6 +15,15 @@
     "your": "Your",
     "logo": "Logo"
   },
+  "sharedRecordingVideo": {
+    "title": "Recording",
+    "meetingName": "meeting name:",
+    "duration": "duration:",
+    "date": "date:",
+    "url": "url:",
+    "isNotPaid": "you didn't pay yet.",
+    "payButtonText": "pay"
+  },
   "monetization": {
     "title": "Monetization",
     "description": "Set donation amount for payment by other participants",

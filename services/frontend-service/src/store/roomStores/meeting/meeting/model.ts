@@ -26,7 +26,7 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
-import { MeetingRecordVideo } from '../../../types';
+import { MeetingRecordVideo, RecordingVideo } from '../../../types';
 
 const initialMeetingRecordingState: MeetingRecording = {
     videos: [{ id: "sdfsdf", meeting: "meeting-1", user: "aaa", url: "urlrurlrurlr", price: 5, createdAt: new Date().toString(), updatedAt: new Date().toString() }],
@@ -37,12 +37,31 @@ const initialMeetingRecordingState: MeetingRecording = {
     isStopRecordingPending: false,
     urlForCopy: ''
 }
+
+const initialSharedRecordingVideo = {
+    id: '',
+    meetingName: '',
+    host: {
+        fullName: '',
+        email: ''
+    },
+    url: '',
+    price: -1,
+    endAt: '',
+    createdAt: '',
+    updatedAt: '',
+};
+
 export const $meetingStore =
     meetingDomain.createStore<Meeting>(initialMeetingState);
 export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
 
 export const $meetingRecordingStore =
     meetingDomain.createStore<MeetingRecording>(initialMeetingRecordingState);
+
+export const $meetingRecordingIdStore = meetingDomain.createStore<string>('');
+
+export const $sharedRecordingVideoStore = meetingDomain.createStore<RecordingVideo>(initialSharedRecordingVideo);
 
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
@@ -173,3 +192,5 @@ export const resetMeetingRecordingStoreExceptVideosEvent = meetingDomain.createE
 export const setUrlForCopyEvent = meetingDomain.createEvent<string>('setUrlForCopyEvent');
 export const deleteRecordingUrlEvent = meetingDomain.createEvent<string>('deleteRecordingUrlEvent');
 export const updateRecordingVideoPriceEvent = meetingDomain.createEvent<MeetingRecordVideo>('updateRecordingVideoPriceEvent');
+export const setRecordingVideoEvent = meetingDomain.createEvent<RecordingVideo>('setRecordingVideoEvent');
+export const setMeetingRecordingIdEvent = meetingDomain.createEvent<RecordingVideo>('setMeetingRecordingIdEvent');

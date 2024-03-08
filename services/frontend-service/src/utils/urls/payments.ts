@@ -26,6 +26,11 @@ export const createIntentUrl = {
     method: HttpMethods.Post,
 };
 
+export const createIntentUrlForRecordingVideo = {
+    url: `${serverUrl}/${paymentsScope}/createPaymentForRecordingVideo`,
+    method: HttpMethods.Post,
+};
+
 export const isRoomPaywalledUrl = {
     url: `${serverUrl}/${paymentsScope}/isRoomPaywalled`,
     method: HttpMethods.Post,

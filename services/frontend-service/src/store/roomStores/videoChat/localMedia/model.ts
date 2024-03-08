@@ -2,6 +2,7 @@ import { combine } from 'effector-next';
 
 import { videoChatDomain } from '../../../domains';
 import { recordMeetingResponse, CustomMediaStream, VideoBlob } from '../../../../types';
+import { StopRecordingPayload } from '../types';
 import {
     ChangeStreamPayload,
     InitDevicesPayload,
@@ -139,7 +140,7 @@ export const startRecordStreamFx = videoChatDomain.createEffect<
     recordMeetingResponse
 >('startRecordStreamFx');
 export const stopRecordStreamFx = videoChatDomain.createEffect<
-    void,
+    StopRecordingPayload,
     recordMeetingResponse
 >('stopRecordStreamFx');
 export const uploadToS3Fx = videoChatDomain.createEffect<

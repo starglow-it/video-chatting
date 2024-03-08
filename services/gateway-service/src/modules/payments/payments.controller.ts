@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { PAYMENTS_SCOPE } from 'shared-const';
-import { ResponseSumType, UserRoles } from 'shared-types';
+import { ResponseSumType, UserRoles, MeetingRole } from 'shared-types';
 
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';
@@ -30,6 +30,7 @@ import {
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { CreatePaymentRequest } from '../../dtos/requests/create-payment.request';
 import { PaymentIntentRestDto } from '../../dtos/response/payment-intent.dto';
+import { CreatePaymentRequestForRecordingVideo } from 'src/dtos/requests/create-payment.request-for-recording-video';
 
 @ApiTags('Payments')
 @Controller(PAYMENTS_SCOPE)
@@ -249,6 +250,60 @@ export class PaymentsController {
         stripeSubscriptionId: user.stripeSubscriptionId,
         templateId: userTemplate.id,
         meetingRole: body.meetingRole,
+      });
+
+      return {
+        success: true,
+        result: {
+          paymentIntent,
+        },
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while create payment intent`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+  @Post('/createPaymentForRecordingVideo')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Payment Intent For Recording Video' })
+  @ApiOkResponse({
+    type: PaymentIntentRestDto,
+    description: 'Create Payment Intent',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async createPaymentIntentForRecordingVideo(
+    @Body() body: CreatePaymentRequestForRecordingVideo,
+  ): Promise<
+    ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
+  > {
+    try {
+
+      const { userId, price } = body;
+      const user = await this.coreService.findUserById({ userId });
+
+      if (!user) {
+        return {
+          success: false,
+        };
+      }
+
+      const currency = "USD";
+
+      const paymentIntent = await this.paymentsService.createPaymentIntent({
+        templatePrice: price,
+        templateCurrency: currency?.toLowerCase(),
+        stripeAccountId: user.stripeAccountId,
+        stripeSubscriptionId: user.stripeSubscriptionId,
+        templateId: user.id,
+        meetingRole: MeetingRole.Audience,
       });
 
       return {

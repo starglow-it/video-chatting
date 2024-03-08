@@ -1,0 +1,19 @@
+@import "../../styles/rem";
+
+.wrapper {
+    width: 100%;
+    max-width: rem(840px);
+    margin: auto;
+    margin-top: 120px;
+    margin-bottom: 30px;
+}
+
+.paper {
+    width: 100%;
+    padding: 30px;
+}
+
+.hostDescription {
+    width: fit-content;
+    margin-left: 30px;
+}

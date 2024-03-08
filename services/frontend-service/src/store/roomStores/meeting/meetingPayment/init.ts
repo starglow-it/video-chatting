@@ -21,9 +21,11 @@ import {
     toggleCreateRoomPaymentFormEvent,
     updatePaymentMeetingFx,
     isRoomPaywalledFx,
-    createMeetingPaymentEvent
+    createPaymentIntentFxForRecordingVideo,
+    createMeetingPaymentEvent,
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
+import { handleCreatePaymentIntentForRecordingVideo } from './handlers/handleCreatePaymentIntentForRecordingVideo';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
 import { handleUpdatePaymentMeeting } from './handlers/handleUpdatePaymentMeeting';
 import { handleGetPaymentMeeting } from './handlers/handleGetPaymentMeeting';
@@ -35,6 +37,7 @@ createPaymentIntentFx.use(handleCreatePaymentIntent);
 cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 getPaymentMeetingFx.use(handleGetPaymentMeeting);
 updatePaymentMeetingFx.use(handleUpdatePaymentMeeting);
+createPaymentIntentFxForRecordingVideo.use(handleCreatePaymentIntentForRecordingVideo);
 
 $createRoomPaymentStore.on(setCreateRoomPaymentDataEvent, (state, data) => ({ ...data }));
 
@@ -44,6 +47,10 @@ $paymentIntent
         clientSecret: data.clientSecret,
     }))
     .on(createPaymentIntentFx.doneData, (state, data) => ({
+        id: data.id,
+        clientSecret: data.clientSecret,
+    }))
+    .on(createPaymentIntentFxForRecordingVideo.doneData, (state, data) => ({
         id: data.id,
         clientSecret: data.clientSecret,
     }))

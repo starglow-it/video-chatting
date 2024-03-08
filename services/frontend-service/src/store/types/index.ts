@@ -400,10 +400,21 @@ export type MeetingRecordVideo = {
     id: string;
     meeting: string;
     user: string;
+    endAt: string;
     url: string;
     price: number;
     createdAt: string;
     updatedAt: string;
+};
+
+export type RecordingVideo = {
+    id?: string;
+    meetingName?: string;
+    url?: string;
+    host?: Profile;
+    price?: number;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type MeetingRecording = {
