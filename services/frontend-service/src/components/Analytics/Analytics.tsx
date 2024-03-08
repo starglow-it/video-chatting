@@ -223,7 +223,7 @@ const Component = () => {
                 justifyContent="center"
                 className={styles.tabs}
             >
-                <CustomBox item container className={clsx(styles.dropdownMenu, { [styles.mobile]: isMobile })}>
+                <CustomBox className={clsx(styles.dropdownMenu, { [styles.mobile]: isMobile })}>
                     <CustomDropdown
                         nameSpace="common"
                         translation="statistics.rooms.rating.dropdownTitle"

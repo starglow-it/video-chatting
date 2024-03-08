@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -403,30 +404,32 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         flex={1}
                                     >
                                         <CustomGrid flex={1}>
-                                            <CustomLink
+                                            <Link
                                                 href={
                                                     isAuthenticated
                                                         ? dashboardRoute
                                                         : ''
                                                 }
                                             >
-                                                <CustomImage
-                                                    src="/images/Ruume.svg"
-                                                    width={
-                                                        isMobile
-                                                            ? '120px'
-                                                            : '210px'
-                                                    }
-                                                    height="44px"
-                                                    className={clsx(
-                                                        isAuthenticated,
-                                                        {
-                                                            [styles.link]:
-                                                                isAuthenticated,
-                                                        },
-                                                    )}
-                                                />
-                                            </CustomLink>
+                                                <a>
+                                                    <CustomImage
+                                                        src="/images/Ruume.svg"
+                                                        width={
+                                                            isMobile
+                                                                ? '120px'
+                                                                : '210px'
+                                                        }
+                                                        height="44px"
+                                                        className={clsx(
+                                                            isAuthenticated,
+                                                            {
+                                                                [styles.link]:
+                                                                    isAuthenticated,
+                                                            },
+                                                        )}
+                                                    />
+                                                </a>
+                                            </Link>
                                         </CustomGrid>
                                         <ConditionalRender
                                             condition={!isAuthenticated}
