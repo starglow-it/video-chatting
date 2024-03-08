@@ -413,6 +413,7 @@ export type RecordingVideo = {
     url?: string;
     host?: Profile;
     price?: number;
+    endAt?: string;
     createdAt?: string;
     updatedAt?: string;
 };

@@ -2337,9 +2337,9 @@ export class MeetingsGateway
             meetingName: meetingName || '',
             price: video.price,
             host: host || {},
-            endAt: video.endAt,
-            createdAt: video.createdAt,
-            updatedAt: video.updatedAt
+            endAt: video.endAt.toString(),
+            createdAt: video.createdAt.toString(),
+            updatedAt: video.updatedAt.toString()
           },
         });
       },
@@ -2360,8 +2360,7 @@ export class MeetingsGateway
         const { id } = msg;
         const video = await this.meetingRecordService.findById({ id, session });
 
-        // throwWsError(!video, MeetingNativeErrorEnum.MEETING_RECORDING_VIDEO_NOT_FOUND);
-        throwWsError(!video, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+        throwWsError(!video, MeetingNativeErrorEnum.MEETING_RECORDING_VIDEO_NOT_FOUND);
 
         return wsResult({
           message: video.url,
@@ -2451,6 +2450,7 @@ export class MeetingsGateway
               user: updatedVideo.user,
               meeting: template.name || 'Anonymous',
               url: updatedVideo.url,
+              endAt: updatedVideo.endAt.toString(),
               price: updatedVideo.price,
               createdAt: updatedVideo.createdAt.toString(),
               updatedAt: updatedVideo.updatedAt.toString()
