@@ -29,7 +29,7 @@ const initialMeetingState: Meeting = {
 import { MeetingRecordVideo, RecordingVideo } from '../../../types';
 
 const initialMeetingRecordingState: MeetingRecording = {
-    videos: [{ id: "sdfsdf", meeting: "meeting-1", user: "aaa", url: "urlrurlrurlr", price: 5, createdAt: new Date().toString(), updatedAt: new Date().toString() }],
+    videos: [],
     requestUsers: [],
     isRecordingStarted: false,
     byRequest: false,
