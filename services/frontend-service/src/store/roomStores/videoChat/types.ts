@@ -257,3 +257,10 @@ export type ChangeActiveStreamPayload = {
     isCameraActive: boolean;
     isMicActive: boolean;
 };
+
+export type StopRecordingPayload = { 
+    id: string, 
+    url: string, 
+    byRequest?: boolean, 
+    meetingId?: string 
+};

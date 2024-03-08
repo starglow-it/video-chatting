@@ -54,6 +54,7 @@ import {
     setEmojiListVisibilityEvent,
     $meetingStore,
     $meetingRecordingStore,
+    $meetingRecordingIdStore,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -96,6 +97,7 @@ const Component = () => {
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
+    const meetingRecordingId = useStore($meetingRecordingIdStore);
     const meetingRecordingStore = useStore($meetingRecordingStore);
     const recordingStartPending = useStore(startRecordStreamFx.pending);
     const recordingStopPending = useStore(stopRecordStreamFx.pending);
@@ -145,8 +147,8 @@ const Component = () => {
 
     useEffect(() => {
         return () => {
-            if (isRecording && users.length === 0) {
-                stopRecordMeeting({ url: fullUrl, byRequest: meetingRecordingStore.byRequest, meetingId: meeting.id });
+            if (isRecording && users.length === 0 && meetingRecordingId) {
+                stopRecordMeeting({ id: meetingRecordingId, url: fullUrl, byRequest: true, meetingId: meeting.id });
             }
         }
     }, [users]);
@@ -178,8 +180,8 @@ const Component = () => {
             return;
         }
 
-        if (isRecording) {
-            stopRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
+        if (isRecording && meetingRecordingId) {
+            stopRecordMeeting({ id: meetingRecordingId, url: fullUrl, byRequest: true, meetingId: meeting.id });
         }
 
         await router.push(
@@ -233,9 +235,12 @@ const Component = () => {
 
     const handleRecordMeeting = async () => {
         if (!isRecording) {
-            startRecordMeeting({ url: fullUrl, meetingId: meeting.id });
+            startRecordMeeting({ url: fullUrl, byRequest: true, meetingId: meeting.id });
         } else {
-            stopRecordMeeting({ url: fullUrl, meetingId: meeting.id });
+            if (meetingRecordingId) {
+                stopRecordMeeting({ id: meetingRecordingId, url: fullUrl, byRequest: true, meetingId: meeting.id });
+            }
+
         }
     };
 

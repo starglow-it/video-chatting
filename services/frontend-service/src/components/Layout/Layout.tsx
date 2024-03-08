@@ -79,6 +79,7 @@ import {
     registerEndCallRoute,
     registerRoute,
     roomRoute,
+    recordingRoute,
     welcomeRoute,
     analyticsRoute,
     supportRoute
@@ -104,7 +105,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     NotFoundRoute,
 ];
 
-const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute, profileRoute];
+const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute, analyticsRoute, profileRoute, recordingRoute];
 const DASHBOARD_ROOM_HEADER: string[] = [createRoomRoute, editRoomRoute];
 
 const ScrollParent = ({

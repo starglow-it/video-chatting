@@ -2,20 +2,13 @@ import { memo, useEffect, useState, useRef } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import {
-    Controller,
     FieldValues,
-    FormProvider,
     useForm,
-    useWatch,
 } from 'react-hook-form';
 import * as yup from 'yup';
 
 //hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-
-import {
-    templatePriceSchema,
-} from 'shared-frontend/validation';
 
 //types
 import { FormDataPayment } from './types';
@@ -52,6 +45,7 @@ import { MeetingRecordVideo } from '../../../store/types';
 
 //const
 import { PlanKeys } from 'shared-types';
+import frontendConfig from '../../../const/config';
 
 // @mui
 import StarIcon from '@mui/icons-material/Star';
@@ -59,37 +53,12 @@ import LinkIcon from '@mui/icons-material/Link';
 import { InputBase } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 
+//helpers
+import formatDate from '../../../helpers/formatDate';
+import formatRecordingUrls from '../../../helpers/formatRecordingUrl';
+
 //styles
 import styles from './RecordingList.module.scss';
-
-const formatRecordingUrls = (videos: MeetingRecordVideo[]): { [key: string]: MeetingRecordVideo[] } => {
-    videos.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    const groupedItems: { [key: string]: MeetingRecordVideo[] } = videos.reduce((acc, item) => {
-        if (!acc[item.meeting]) {
-            acc[item.meeting] = [item];
-        } else {
-            acc[item.meeting].push(item);
-        }
-        return acc;
-    }, {});
-
-    return groupedItems;
-};
-
-const formatDate = (text: string) => {
-    const monthAbbreviations = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const date = new Date(text);
-
-    const month = date.getMonth();
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-
-    return `${monthAbbreviations[month]} ${day} ${year} ${hours}:${minutes}:${seconds}`;
-};
 
 const Component = () => {
     const meetingRecordingStore = useStore($meetingRecordingStore);
@@ -158,8 +127,9 @@ const Component = () => {
         }
     }, [errors]);
 
-    const copyToClipboard = async (text: string) => {
-        await navigator.clipboard.writeText(text);
+    const copyToClipboard = async (id: string) => {
+        const recordingLink = `${frontendConfig.frontendUrl}/recording/${id}`;
+        await navigator.clipboard.writeText(recordingLink);
         addNotificationEvent({
             type: NotificationType.copyNotification,
             message: "meeting.copy.url",
@@ -276,7 +246,7 @@ const Component = () => {
                         item
                         xs={6}
                     >
-                        <CustomTypography className={styles.recordingTitle}>{formatDate(video.updatedAt)}</CustomTypography>
+                        <CustomTypography className={styles.recordingTitle}>{formatDate(video.endAt)}</CustomTypography>
                     </CustomGrid>
                     <CustomGrid
                         item
@@ -334,7 +304,7 @@ const Component = () => {
                                 >
                                     <ActionButton
                                         variant="black"
-                                        onAction={() => copyToClipboard(video.url)}
+                                        onAction={() => copyToClipboard(video.id)}
                                         className={styles.deviceButton}
                                         Icon={<LinkIcon className={styles.linkIcon} />}
                                     />

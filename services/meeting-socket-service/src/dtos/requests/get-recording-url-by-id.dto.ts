@@ -3,9 +3,5 @@ import { IGetRecordingUrlById } from 'src/interfaces/get-recording-url-by-id.int
 export class GetRecordingUrlById implements IGetRecordingUrlById {
   @IsNotEmpty()
   @IsString()
-  meetingId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  videoId: string;
+  id: string;
 }

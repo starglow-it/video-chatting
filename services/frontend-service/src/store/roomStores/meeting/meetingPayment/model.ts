@@ -6,6 +6,7 @@ import { meetingDomain, paymentsDomain } from '../../../domains';
 import {
     CancelPaymentIntentPayload,
     CreatePaymentIntentPayload,
+    CreatePaymentIntentForRecordingVideoPayload
 } from '../../../payments/types';
 import {
     MeetingUser,
@@ -33,7 +34,7 @@ const initialCreateRoomPaymentStore = {
             currency: DEFAULT_PAYMENT_CURRENCY,
         },
         audience: {
-            enabled:false,
+            enabled: false,
             price: 0,
             currency: DEFAULT_PAYMENT_CURRENCY,
         },
@@ -74,6 +75,12 @@ export const toggleCreateRoomPaymentFormEvent = paymentsDomain.event<boolean | u
 
 export const createPaymentIntentFx = paymentsDomain.effect<
     CreatePaymentIntentPayload,
+    PaymentIntentStore,
+    ErrorState
+>('createPaymentIntentFx');
+
+export const createPaymentIntentFxForRecordingVideo = paymentsDomain.effect<
+    CreatePaymentIntentForRecordingVideoPayload,
     PaymentIntentStore,
     ErrorState
 >('createPaymentIntentFx');
@@ -281,8 +288,8 @@ export const updatePaymentMeetingEvent = attach<
 });
 
 export const setCreateRoomPaymentDataEvent = meetingDomain.createEffect<
-UpdatePaymentMeetingParams,
-Store<IUserTemplate>
+    UpdatePaymentMeetingParams,
+    Store<IUserTemplate>
 >('setCreateRoomPaymentDataEvent');
 
 export const receivePaymentMeetingEvent =
