@@ -2,7 +2,7 @@ import { combine } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { meetingUsersDomain } from '../domain/model';
 
-import { MeetingUser } from '../../../types';
+import { MeetingUser, userLocation } from '../../../types';
 
 const initialMeetingUserState: MeetingUser = {
     id: '',
@@ -22,6 +22,10 @@ const initialMeetingUserState: MeetingUser = {
 
 export const $localUserStore = meetingUsersDomain.createStore<MeetingUser>(
     initialMeetingUserState,
+);
+
+export const $userLocationStore = meetingUsersDomain.createStore<userLocation>(
+    { country: '', state: '' },
 );
 
 export const $isPaywallPaid = combine<{
@@ -54,4 +58,7 @@ export const leaveMeetingAsHost =
     meetingUsersDomain.event('leaveMeetingAsHost');
 export const leaveMeetingAsGuest = meetingUsersDomain.event(
     'leaveMeetingAsGuest',
+);
+export const setUserLocation = meetingUsersDomain.event(
+    'setUserLocation',
 );

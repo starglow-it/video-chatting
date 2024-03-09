@@ -54,6 +54,7 @@ export interface IConfig {
   isSyncData: boolean;
   isSeed: boolean;
   mediaServicePort: string;
+  geolocationApiKey: string;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -113,7 +114,8 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'appVersion',
   'isSyncData',
   'isSeed',
-  'mediaServicePort'
+  'mediaServicePort',
+  'geolocationApiKey',
 ];
 
 export const DefaultConfigValues: Record<
@@ -172,4 +174,5 @@ export const DefaultConfigValues: Record<
   isSyncData: false,
   isSeed: false,
   mediaServicePort: '9091',
+  geolocationApiKey: '',
 };

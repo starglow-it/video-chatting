@@ -20,6 +20,7 @@ import { TasksService } from '../modules/tasks/tasks.service';
 import { CoreService } from '../services/core/core.service';
 import { MeetingRecordService } from '../modules/meeting-record/meeting-record.service';
 import { MeetingRecordCommonService } from '../modules/meeting-record/meeting-record.common';
+import { ConfigClientService } from '../services/config/config.service';
 
 import {
   FinishMeetingReason,
@@ -116,6 +117,7 @@ export class MeetingsGateway
     private meetingsCommonService: MeetingsCommonService,
     private usersComponent: UsersComponent,
     private meetingRecordCommonService: MeetingRecordCommonService,
+    private configService: ConfigClientService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -906,6 +908,8 @@ export class MeetingsGateway
           micStatus: message.user.micStatus,
           cameraStatus: message.user.cameraStatus,
           meetingAvatarId: meetingAvatarId === '' ? '' : undefined,
+          country: message.userLocation.country || '',
+          state: message.userLocation.state || '',
         };
 
         if (meetingAvatarId) {
@@ -1069,6 +1073,8 @@ export class MeetingsGateway
           ...(!!lastOldMessage && {
             lastOldMessage,
           }),
+          country: msg.userLocation.country,
+          state: msg.userLocation.state
         };
 
         if (msg.meetingAvatarId) {
