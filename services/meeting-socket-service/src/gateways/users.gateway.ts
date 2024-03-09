@@ -186,6 +186,18 @@ export class UsersGateway extends BaseGateway {
           })),
         });
 
+        if (!user.doNotDisturb) {
+          this.emitToRoom(`waitingRoom:${meeting.templateId}`, UserEmitEvents.UpdateUsers, {
+            users: plainUsers.map((user) => ({
+              ...user,
+              ...(message.userSize &&
+                message.id == user.id && { userSize: message.userSize }),
+              ...(message.userPosition &&
+                message.id == user.id && { userPosition: message.userPosition }),
+            })),
+          });
+        }
+
         return wsResult({
           user: {
             ...plainUser,
@@ -552,7 +564,7 @@ export class UsersGateway extends BaseGateway {
       async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
-        const { meetingId } = msg;
+        const { meetingId, username } = msg;
         const meeting = await this.meetingsService.findById({
           id: meetingId,
           session,
@@ -563,7 +575,10 @@ export class UsersGateway extends BaseGateway {
         await this.usersComponent.findByIdAndUpdate(
           {
             id: user._id,
-            data: { accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd },
+            data: {
+              username: username,
+              accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd
+            },
             session
           });
 

@@ -192,6 +192,7 @@ export type GetRecordingUrlResponse = {
 
 export type SendRequestToHostWhenDndPayload = {
     meetingId: string;
+    username: string;
 };
 
 export type StartRecordingPayload = {

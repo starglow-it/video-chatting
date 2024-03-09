@@ -395,8 +395,9 @@ const MeetingContainer = memo(() => {
             isOwnerInMeeting &&
             isOwnerDoNotDisturb
         ) {
-            sentRequestToHostWhenDnd({ meetingId: meeting.id});
+            sentRequestToHostWhenDnd({ meetingId: meeting.id, username: localUser.username});
         }
+        console.log(isOwnerDoNotDisturb);
     }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb, localUser]);
 
     const previewImage = getPreviewImage(meetingTemplate);
