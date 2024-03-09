@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const timezoneOffset = -new Date().getTimezoneOffset() / 60;
 
-  console.log('test');
   $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
     "selected"
   );

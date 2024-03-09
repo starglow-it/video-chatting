@@ -124,7 +124,6 @@ export const recordRoomMeeting = async () => {
     });
 
     const port = await getConfigVar("mediaServicePort");
-    console.log(port);
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });
