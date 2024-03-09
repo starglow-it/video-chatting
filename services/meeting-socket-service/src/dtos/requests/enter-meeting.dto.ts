@@ -25,4 +25,10 @@ export class EnterMeetingRequestDTO implements IEnterMeeting {
   })
   @Type(() => MeetingUserDto)
   readonly user: ICommonMeetingUserDTO;
+
+  @IsOptional()
+  readonly userLocation: {
+    country: string;
+    state: string;
+  }
 }

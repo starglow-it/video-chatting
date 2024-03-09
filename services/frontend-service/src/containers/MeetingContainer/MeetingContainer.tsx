@@ -88,6 +88,7 @@ import {
     updateUserSocketEvent,
     sentRequestToHostWhenDnd
 } from '../../store/roomStores';
+import getLocationInfo from '../../helpers/getLocationInfo';
 
 // types
 import { SavedSettings } from '../../types';
@@ -221,6 +222,8 @@ const MeetingContainer = memo(() => {
             updateLocalUserEvent({
                 accessStatus: MeetingAccessStatusEnum.EnterName,
             });
+
+            await getLocationInfo();
         })();
 
         return () => {

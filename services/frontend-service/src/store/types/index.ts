@@ -41,6 +41,11 @@ export type MeetingUser = {
     isPaywallPaid: boolean;
 };
 
+export type userLocation = {
+    country: string;
+    state: string;
+};
+
 export type joyride = {
     runDashboardJoyride: boolean,
     runMeetingJoyride: boolean

@@ -20,6 +20,7 @@ import { $meetingStore, setMeetingRecordingIdEvent, updateMeetingEvent } from '.
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
     $localUserStore,
+    $userLocationStore,
     updateLocalUserEvent,
 } from '../../users/localUser/model';
 import { $profileStore } from '../../../profile/profile/model';
@@ -122,11 +123,13 @@ export const joinAudienceMeetingSocketEvent = attach<
     source: combine({
         meeting: $meetingStore,
         localUser: $localUserStore,
+        userLocation: $userLocationStore
     }),
-    mapParams: (_, { meeting, localUser }) => {
+    mapParams: (_, { meeting, localUser, userLocation }) => {
         return {
             meetingId: meeting.id,
             username: localUser.username,
+            userLocation: userLocation
         };
     },
 });
@@ -235,10 +238,12 @@ export const sendEnterMeetingRequestSocketEvent = attach<
     source: combine({
         meeting: $meetingStore,
         user: $localUserStore,
+        userLocation: $userLocationStore
     }),
-    mapParams: (params, { meeting, user }) => ({
+    mapParams: (params, { meeting, user, userLocation }) => ({
         meetingId: meeting?.id,
         user,
+        userLocation
     }),
 });
 

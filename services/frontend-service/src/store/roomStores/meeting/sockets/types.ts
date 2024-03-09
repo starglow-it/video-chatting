@@ -12,6 +12,7 @@ import {
     MeetingQuestionAnswerReaction,
     MeetingUser,
     Profile,
+    userLocation,
 } from '../../../types';
 import { MeetingPayment } from '../meetingPayment/type';
 import { MeetingRecordVideo, RecordingVideo } from '../../../types';
@@ -48,6 +49,7 @@ export type ClickMeetingLinkPayload = {
 export type EnterMeetingRequestPayload = {
     meetingId: Meeting['id'];
     user: MeetingUser;
+    userLocation: userLocation;
 };
 export type AnswerAccessMeetingRequestPayload = {
     meetingId: Meeting['id'];
@@ -111,6 +113,7 @@ export type JoinAudienceMeetingPayload = {
     meetingId: string;
     username: string;
     meetingAvatarId?: string;
+    userLocation: userLocation
 };
 
 export type SendMessageChatPayload = {

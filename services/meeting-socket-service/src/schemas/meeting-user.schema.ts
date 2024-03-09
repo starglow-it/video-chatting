@@ -97,6 +97,18 @@ export class MeetingUser {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  country: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  state: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
   })
   meetingRole: MeetingRole;
 

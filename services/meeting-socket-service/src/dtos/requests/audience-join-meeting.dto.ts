@@ -12,4 +12,10 @@ export class AudienceJoinMeetingDto implements IAudienceJoinMeeting {
   @IsOptional()
   @IsString()
   meetingAvatarId: string;
+
+  @IsOptional()
+  userLocation: {
+    country: string;
+    state: string;
+  };
 }
