@@ -733,8 +733,6 @@ export class PaymentsController {
       ['active', 'trialing'].includes(subscription.status) &&
       currentPlanName.features.emailSlug
     ) {
-      console.log('send email');
-
       this.notificationsService.sendEmail({
         template: {
           key: emailTemplates[currentPlanName.features.emailSlug],

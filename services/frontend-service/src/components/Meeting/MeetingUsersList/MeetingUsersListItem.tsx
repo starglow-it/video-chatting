@@ -14,16 +14,17 @@ import { Translation } from '@library/common/Translation/Translation';
 
 //@mui
 import Chip from '@mui/material/Chip';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 // icons
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
 import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 
+
 // stores
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
-import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { $isMeetingHostStore } from '../../../store/roomStores';
@@ -129,7 +130,7 @@ const Component = ({
                                 variant="accept"
                                 onAction={handleRequestAudience}
                                 className={styles.acceptUser}
-                                Icon={<ArrowUp width="15px" height="15px" />}
+                                Icon={<KeyboardArrowUpIcon width="15px" height="15px" />}
                             />
                         </CustomTooltip>
                     </ConditionalRender>

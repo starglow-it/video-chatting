@@ -169,6 +169,17 @@ const Component = () => {
         }
     }, [isMicActive]);
 
+    useEffect(() => {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd &&
+            isHasMeeting &&
+            isOwnerInMeeting &&
+            !isOwnerDoNotDisturb
+        ) {
+            handleJoinMeeting();
+        }
+    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb, localUser.accessStatus]);
+
     const handleToggleCamera = useCallback(() => {
         if (isVideoError) {
             addNotificationEvent({
