@@ -21,6 +21,7 @@ import { CoreService } from '../services/core/core.service';
 import { MeetingRecordService } from '../modules/meeting-record/meeting-record.service';
 import { MeetingRecordCommonService } from '../modules/meeting-record/meeting-record.common';
 import { ConfigClientService } from '../services/config/config.service';
+import { MeetingDonationsService } from '../modules/meeting-donations/meeting-donations.service';
 
 import {
   FinishMeetingReason,
@@ -93,6 +94,7 @@ import { GetRecordingUrlsDto } from 'src/dtos/requests/get-recording-urls.dto';
 import { AudienceRequestRecordingAccept } from 'src/dtos/requests/audience-request-recording-accept.dto';
 import { DeleteRecordingVideoDto } from 'src/dtos/requests/delete-recording-video.dto';
 import { UpdateRecordingVideo } from 'src/dtos/requests/update-recording-video.dto';
+import { SetMeetingDonations } from 'src/dtos/requests/set-meeting-donations.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -118,6 +120,7 @@ export class MeetingsGateway
     private usersComponent: UsersComponent,
     private meetingRecordCommonService: MeetingRecordCommonService,
     private configService: ConfigClientService,
+    private meetingDonationsService: MeetingDonationsService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -2249,7 +2252,7 @@ export class MeetingsGateway
         });
 
         if (!!url) {
-          const udpatedRecord = await this.meetingRecordService.findByIdAndUpdate({ id, data: { url, endAt: new Date() }, session  });
+          const udpatedRecord = await this.meetingRecordService.findByIdAndUpdate({ id, data: { url, endAt: new Date() }, session });
           if (udpatedRecord) {
             this.emitToSocketId(
               user.socketId,
@@ -2412,6 +2415,7 @@ export class MeetingsGateway
       },
     );
   }
+
   @WsEvent(MeetingSubscribeEvents.OnDeleteRecordingVideo)
   async deleteRecordingVideo(
     @MessageBody() msg: DeleteRecordingVideoDto,
@@ -2468,6 +2472,54 @@ export class MeetingsGateway
             });
           }
         }
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnSetDonations)
+  async setDonations(
+    @MessageBody() msg: SetMeetingDonations,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const { meetingId, meetingRole, price } = msg;
+        const meetingDonations = await this.meetingDonationsService.findOne({
+          query: { meeting: meetingId },
+          session
+        });
+        if (meetingDonations) {
+          const updateData = meetingRole === MeetingRole.Participant
+            ? { participantDonations: meetingDonations.participantDonations + price }
+            : meetingRole === MeetingRole.Audience
+              ? { audienceDonations: meetingDonations.audienceDonations + price }
+              : {};
+
+          await this.meetingDonationsService.findOneAndUpdate({
+            query: {
+              meeting: new ObjectId(meetingId)
+            },
+            data: updateData,
+            session
+          });
+        } else {
+          const updateData = meetingRole === MeetingRole.Participant
+            ? { participantDonations: price }
+            : meetingRole === MeetingRole.Audience
+              ? { audienceDonations: price }
+              : {};
+
+          await this.meetingDonationsService.create(updateData, session);
+        }
+
+        return wsResult({
+          message: 'success'
+        });
       },
       {
         onFinaly: (err) => wsError(socket, err),

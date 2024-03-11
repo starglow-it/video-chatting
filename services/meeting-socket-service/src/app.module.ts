@@ -9,6 +9,7 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
 import { MeetingRecordModule } from './modules/meeting-record/meeting-record.module';
 import { UsersModule } from './modules/users/users.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
+import { MeetingDonationsModule } from './modules/meeting-donations/meeting-donations.module';
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import { MeetingQuestionAnswersModule } from './modules/meeting-question-answer/meeting-question-answer.module';
 import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
@@ -37,6 +38,7 @@ import {
     MeetingRecordModule,
     UsersModule,
     MeetingNotesModule,
+    MeetingDonationsModule,
     MeetingReactionsModule,
     MeetingTimeModule,
     MeetingQuestionAnswersModule,

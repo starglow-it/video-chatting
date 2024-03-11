@@ -385,8 +385,12 @@ export class UsersGateway extends BaseGateway {
               audienceEntryFee: 0,
               participantFees: 0,
               audienceFees: 0,
-              donations: 0
+              participantDonationPrice: 0,
+              audienceDonationPrice: 0,
+              participantDonationsTotal: 0,
+              audienceDonationsTotal: 0,
             };
+            
             const donatedParticipants = participants.filter(participant => participant.isDonated).length;
             const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
 
@@ -406,11 +410,13 @@ export class UsersGateway extends BaseGateway {
 
                 if (templatePayment.type === 'meeting') {
                   if (templatePayment.meetingRole === MeetingRole.Participant) {
-                    monetization.donations += templatePayment.price * donatedParticipants;
+                    monetization.participantDonationPrice = templatePayment.price;
+                    monetization.participantDonationsTotal = templatePayment.price * donatedParticipants;
                   }
 
                   if (templatePayment.meetingRole === MeetingRole.Audience) {
-                    monetization.donations += templatePayment.price * donatedAudiences;
+                    monetization.audienceDonationPrice = templatePayment.price;
+                    monetization.audienceDonationsTotal = templatePayment.price * donatedAudiences;
                   }
                 }
               });
@@ -484,13 +490,15 @@ export class UsersGateway extends BaseGateway {
           id: meeting.templateId,
         });
 
-        const u = await this.usersService.updateVideoContainer({
-          userTemplate,
-          userId: user._id.toString(),
-          event: UserActionInMeeting.Leave,
-        });
+        if (user.meetingRole === MeetingRole.Participant) {
+          const u = await this.usersService.updateVideoContainer({
+            userTemplate,
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Leave,
+          });
 
-        throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
+          throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
+        }
 
         await this.usersComponent.findOneAndUpdate({
           query: {

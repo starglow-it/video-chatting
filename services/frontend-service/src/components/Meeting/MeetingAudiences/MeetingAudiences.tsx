@@ -3,8 +3,10 @@ import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import {
+    $isMeetingHostStore,
     $meetingStore,
     $meetingUsersStore,
+    setUserToKickEvent,
     requestSwitchRoleByHostEvent,
 } from 'src/store/roomStores';
 
@@ -14,6 +16,9 @@ import { useCallback, useMemo } from 'react';
 import styles from './MeetingAudience.module.scss';
 import { MeetingUsersListItem } from '../MeetingUsersList/MeetingUsersListItem';
 import Typography from '@mui/material/Typography';
+
+import { appDialogsApi } from '../../../store';
+import { AppDialogsEnum } from '../../../store/types';
 
 export const MeetingAudiences = () => {
     const users = useStoreMap({
@@ -27,6 +32,7 @@ export const MeetingAudiences = () => {
             ),
     });
     const meeting = useStore($meetingStore);
+    const isMeetingHost = useStore($isMeetingHostStore);
     const refScroll = useRef<any>(null);
 
     useEffect(() => {
@@ -46,6 +52,13 @@ export const MeetingAudiences = () => {
         [],
     );
 
+    const handleKickUser = useCallback(({ userId }: { userId: string }) => {
+        setUserToKickEvent(userId);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.userToKickDialog,
+        });
+    }, []);
+
     const renderUsersList = useMemo(
         () =>
             {
@@ -56,6 +69,8 @@ export const MeetingAudiences = () => {
                             user={user}
                             isLocalItem={false}
                             isOwnerItem={false}
+                            isAudience={user.meetingRole === MeetingRole.Audience}
+                            onDeleteUser={isMeetingHost ? handleKickUser : undefined}
                             isAudienceRequest
                             onRequestAudience={handleRequestAudience}
                         />

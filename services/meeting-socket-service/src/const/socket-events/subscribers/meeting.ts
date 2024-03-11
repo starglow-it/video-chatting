@@ -43,4 +43,5 @@ export enum MeetingSubscribeEvents {
   OnIsMeetingRecording = 'meeting:set:is:meeting:recording:send',
   OnDeleteRecordingVideo = 'meeting:delete:recording:video',
   OnUpdateRecordingVideoPrice = 'meeting:update:recording:video:price',
+  OnSetDonations = 'meeting:set:meeting:donations',
 }

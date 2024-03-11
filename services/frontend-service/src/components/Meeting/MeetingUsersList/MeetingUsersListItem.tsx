@@ -48,6 +48,7 @@ const Component = ({
     isLocalItem,
     isOwnerItem,
     isAudienceRequest = false,
+    isAudience = false
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const { isPublishAudience } = useStore($meetingTemplateStore);
@@ -150,7 +151,7 @@ const Component = ({
                         />
                     </ConditionalRender>
                     <ConditionalRender condition={Boolean(
-                        !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest
+                        !isLocalItem && onDeleteUser && !isOwnerItem && !isAcceptRequest && !isAudience
                     )}>
                         <CustomTooltip
                             title="Move user to audience"

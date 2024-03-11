@@ -8,6 +8,9 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 import { Translation } from '@library/common/Translation/Translation';
 
+//types
+import { MeetingStatisticsState } from 'src/store/types';
+
 // styles
 import styles from './MonetizationAnalytics.module.scss';
 
@@ -16,13 +19,7 @@ const MonetizationAnalytics = memo(
         className,
         statistic,
     }: PropsWithClassName<{
-        statistic: {
-            participantEntryFee: number,
-            audienceEntryFee: number,
-            participantFees: number,
-            audienceFees: number,
-            donations: number
-        };
+        statistic: MeetingStatisticsState
     }>) => {
 
         return (
@@ -47,7 +44,12 @@ const MonetizationAnalytics = memo(
                             />
                         </CustomTypography>
                         <CustomTypography variant="h2">
-                            ${statistic.data.audienceFees + statistic.data.participantFees}
+                            ${
+                                statistic.data.audienceFees + 
+                                statistic.data.participantFees + 
+                                statistic.data.participantDonationsTotal +
+                                statistic.data.audienceDonationsTotal
+                            }
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -56,7 +58,7 @@ const MonetizationAnalytics = memo(
                         alignItems="center"
                         justifyContent="space-between"
                     >
-                        <CustomTypography variant="body1">
+                        <CustomTypography variant="body1" >
                             <Translation
                                 nameSpace="common"
                                 translation="statistics.users.monetizationAnalytics.participantEntryFee"
@@ -64,6 +66,23 @@ const MonetizationAnalytics = memo(
                         </CustomTypography>
                         <CustomTypography variant="body1">
                             ${statistic.data.participantFees}
+                        </CustomTypography>
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        container
+                        alignItems="center"
+                        justifyContent="space-between"
+                        className={styles.donation}
+                    >
+                        <CustomTypography variant="body1" >
+                            <Translation
+                                nameSpace="common"
+                                translation="statistics.users.monetizationAnalytics.participantDonation"
+                            /> - ${statistic.data.participantDonationPrice} USD/person
+                        </CustomTypography>
+                        <CustomTypography variant="body1">
+                            ${statistic.data.participantDonationsTotal}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -87,15 +106,16 @@ const MonetizationAnalytics = memo(
                         container
                         alignItems="center"
                         justifyContent="space-between"
+                        className={styles.donation}
                     >
                         <CustomTypography variant="body1">
                             <Translation
                                 nameSpace="common"
-                                translation="statistics.users.monetizationAnalytics.donations"
-                            />
+                                translation="statistics.users.monetizationAnalytics.audienceDonation"
+                            /> - ${statistic.data.audienceDonationPrice} USD/person
                         </CustomTypography>
                         <CustomTypography variant="body1">
-                            ${statistic.data.donations}
+                            ${statistic.data.audienceDonationsTotal}
                         </CustomTypography>
                     </CustomGrid>
                 </CustomGrid>
