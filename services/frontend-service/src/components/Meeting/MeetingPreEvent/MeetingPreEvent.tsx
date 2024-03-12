@@ -248,7 +248,7 @@ const Component = ({
                 </ConditionalRender>
                 <ConditionalRender condition={!isPreviewShow && (enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience)}>
                     <ConditionalRender condition={enabledPaymentPaywallParticipant && meetingRole === MeetingRole.Participant}>
-                        <CustomPaper className={styles.payPaper}>
+                        <CustomPaper>
                             <PaymentForm
                                 isPreEvent={true}
                                 onClose={() => { }}
@@ -258,20 +258,14 @@ const Component = ({
                         </CustomPaper>
                     </ConditionalRender>
                     <ConditionalRender condition={enabledPaymentPaywallAudience && meetingRole === MeetingRole.Audience}>
-                        <CustomGrid
-                            item
-                            container
-                            className={styles.outterPayPaper}
-                        >
-                            <CustomPaper className={styles.innerPayPaper}>
-                                <PaymentForm
-                                    isPreEvent={true}
-                                    onClose={() => { }}
-                                    payment={paymentPaywallAudience}
-                                    setMeetingPreviewShow={handlePaywallPrepayment}
-                                />
-                            </CustomPaper>
-                        </CustomGrid>
+                        <CustomPaper>
+                            <PaymentForm
+                                isPreEvent={true}
+                                onClose={() => { }}
+                                payment={paymentPaywallAudience}
+                                setMeetingPreviewShow={handlePaywallPrepayment}
+                            />
+                        </CustomPaper>
                     </ConditionalRender>
                 </ConditionalRender>
             </ConditionalRender>
