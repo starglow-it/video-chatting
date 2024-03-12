@@ -28,7 +28,7 @@ export type JoinWaitingRoomPayload = {
         isAuraActive: boolean;
         maxParticipants: number;
     },
-    previousMeetingUserId: string;
+    previousMeetingUserIds: string[];
 };
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
@@ -253,4 +253,8 @@ export type UpdateRecordingVideoPricePayload = {
 export type UpdateRecordingVideoPriceResponse = {
     message: string;
     video: MeetingRecordVideo;
+};
+
+export type PaywalPrePayment = {
+    isCodeNeeded: boolean
 };

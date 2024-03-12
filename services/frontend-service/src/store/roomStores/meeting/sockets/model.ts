@@ -51,7 +51,8 @@ import {
     UpdateRecordingVideoPricePayload,
     SendRequestToHostWhenDndResponse,
     StartRecordingPayload,
-    StartRecordingResponse
+    StartRecordingResponse,
+    PaywalPrePayment
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -230,3 +231,8 @@ export const updateRecordingVideoPrice = createMeetingSocketEvent<
     UpdateRecordingVideoPricePayload,
     SendRequestToHostWhenDndResponse
 >(MeetingSocketEmitters.UpdateRecordingVideoPrice);
+
+export const paywallPrePaymentEvent = createMeetingSocketEvent<
+    void,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.paywallPrePayment);

@@ -189,7 +189,7 @@
     },
     "payments": {
         "perSession": "per session",
-        "yourCard": "Your card",
+        "yourCard": "Enter Your Card:",
         "stripe": "Stripe",
         "payWith": "Secure Pay with",
         "title": "Payments"

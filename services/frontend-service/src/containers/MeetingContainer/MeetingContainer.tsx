@@ -89,6 +89,8 @@ import {
     sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 import getLocationInfo from '../../helpers/getLocationInfo';
+import { addOrangeNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
 
 // types
 import { SavedSettings } from '../../types';
@@ -288,7 +290,9 @@ const MeetingContainer = memo(() => {
                     await initDevicesEventFxWithStore();
                 }
 
-                await sendJoinWaitingRoomSocketEvent(localStorage.getItem("meetingUserId") || '');
+                let meetingUserIds = localStorage.getItem('meetingUserIds');
+                let parsedMeetingUserIds = meetingUserIds ? JSON.parse(meetingUserIds) : [];
+                await sendJoinWaitingRoomSocketEvent(parsedMeetingUserIds);
 
                 if (isOwner) {
                     if (isHasSettings) {
@@ -362,17 +366,38 @@ const MeetingContainer = memo(() => {
     }, [router, meetingTemplate.id]);
 
     useEffect(() => {
-        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
-            localStorage.setItem('meetingUserId', localUser.id);
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting || localUser.isPaywallPaid) {
+            let meetingUserIds = localStorage.getItem('meetingUserIds');
+            let parsedMeetingUserIds = meetingUserIds ? [...JSON.parse(meetingUserIds)] : [];
+
+            if (!parsedMeetingUserIds.includes(localUser.id)) {
+                parsedMeetingUserIds.push(localUser.id);
+                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+            }
         }
     }, [localUser]);
 
     useEffect(() => {
-        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+        if (isPaywallPaymentEnabled && localUser.meetingRole === MeetingRole.Audience && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
             updateUserSocketEvent({ isPaywallPaid: true });
             setIsPaywallPaymentEnabled(false);
         }
     }, [isPaywallPaymentEnabled, localUser]);
+
+    useEffect(() => {
+        if (
+            localUser.meetingRole === MeetingRole.Audience &&
+            !isOwnerInMeeting &&
+            localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+            localUser.isPaywallPaid
+        ) {
+            addOrangeNotificationEvent({
+                type: NotificationType.HostIsAwayForAudiencePaywallPayment,
+                message: 'hostIsAway',
+                isIconHand: true
+            });
+        }
+    }, [localUser, isOwnerInMeeting]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (

@@ -26,6 +26,7 @@ import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
+import clsx from 'clsx';
 
 const currencySigns: { [key: string]: string } = {
     USD: '$',
@@ -68,88 +69,114 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
     const colorMain = payment.type === PaymentType.Paywall ? 'black' : 'white';
 
     return (
-        <CustomGrid container direction="column">
+        <CustomGrid container direction="column" className={clsx({ [styles.wrapper]: isPreEvent })}>
             <CustomGrid
+                item
                 container
-                alignItems="center"
-                sx={{
-                    marginBottom: {
-                        xs: '20px',
-                        sm: '10px',
-                        md: '20px',
-                        xl: '20px',
-                    },
-                }}
-                className={styles.title}
+                direction="column"
+                className={clsx({ [styles.innerWrapper]: isPreEvent })}
             >
-                {subLabel ? <>{subLabel} </> : null}
-                &nbsp;
-                <CustomTypography
-                    sx={{
-                        color: `${colorMain}`,
-                    }}
-                >
-                    {currencySigns[payment.currency]}
-                    {payment.price}
-                </CustomTypography>
-                &nbsp;
-            </CustomGrid>
-            <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+                {
+                    isPreEvent &&
+                    <CustomTypography
+                        variant="h4bold"
+                        nameSpace="createRoom"
+                        translation="editDescription.form.prePaymentTitle"
+                        className={styles.paymentTitle}
+                    />
+                }
                 <CustomGrid
+                    item
                     container
-                    direction="column"
-                    className={styles.paymentForm}
+                    alignItems="center"
                     sx={{
-                        marginTop: {
-                            xs: '20px',
-                            sm: '10px',
-                            md: '20px',
-                            xl: '20px',
+                        marginBottom: {
+                            xs: isPreEvent ? '0px' : '20px',
+                            sm: isPreEvent ? '0px' : '10px',
+                            md: isPreEvent ? '0px' : '20px',
+                            xl: isPreEvent ? '0px' : '20px',
                         },
                     }}
+                    className={styles.title}
                 >
-                    <CustomTypography
-                        variant={isPreEvent ? "body3bold" : "body1bold"}
-                        color={isPreEvent ? 'black' : colorMain}
-                        nameSpace="meeting"
-                        translation="payments.yourCard"
-                        className={styles.titleCard}
+                    {subLabel ? <>{subLabel} </> : null}
+                    &nbsp;
+                    {
+                        isPreEvent
+                            ?
+                            <CustomTypography variant="body1bold" className={styles.prePaymentSubTitile}>
+                                Please pay the entry fee: &nbsp;
+                                {currencySigns[payment.currency]}
+                                {payment.price}
+                            </CustomTypography>
+                            : <CustomTypography
+                                sx={{
+                                    color: `${colorMain}`,
+                                }}
+                            >
+                                {currencySigns[payment.currency]}
+                                {payment.price}
+                            </CustomTypography>
+                    }
+                    &nbsp;
+                </CustomGrid>
+                {!isPreEvent && <CustomDivider light flexItem />}
+                {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+                    <CustomGrid
+                        container
+                        direction="column"
+                        className={styles.paymentForm}
                         sx={{
-                            marginBottom: {
-                                xs: '20px',
-                                sm: '10px',
-                                md: '20px',
-                                xl: '20px',
+                            marginTop: {
+                                xs: isPreEvent ? '0px' : '20px',
+                                sm: isPreEvent ? '0px' : '10px',
+                                md: isPreEvent ? '0px' : '20px',
+                                xl: isPreEvent ? '0px' : '20px',
                             },
                         }}
-                    />
-                    <StripeElement secret={paymentIntent.clientSecret}>
-                        <CardDataForm
-                            isPreEvent={isPreEvent}
-                            onSubmit={handleSubmit}
-                            onError={handleSubmitError}
-                            setMeetingPreviewShow={setMeetingPreviewShow}
-                            paymentIntentSecret={paymentIntent.clientSecret}
-                            colorForm={
-                                payment.type === PaymentType.Paywall
-                                    ? 'black'
-                                    : 'white'
-                            }
-                            paymentType={payment.type}
+                    >
+                        <CustomTypography
+                            variant="body1bold"
+                            color={isPreEvent ? 'black' : colorMain}
+                            nameSpace="meeting"
+                            translation="payments.yourCard"
+                            className={styles.titleCard}
+                            sx={{
+                                marginBottom: {
+                                    xs: '20px',
+                                    sm: '10px',
+                                    md: '20px',
+                                    xl: '20px',
+                                },
+                            }}
                         />
-                    </StripeElement>
-                </CustomGrid>
-            ) : (
-                <CustomGrid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    className={styles.loader}
-                >
-                    <CustomLoader />
-                </CustomGrid>
-            )}
+                        <StripeElement secret={paymentIntent.clientSecret}>
+                            <CardDataForm
+                                isPreEvent={isPreEvent}
+                                onSubmit={handleSubmit}
+                                onError={handleSubmitError}
+                                setMeetingPreviewShow={setMeetingPreviewShow}
+                                paymentIntentSecret={paymentIntent.clientSecret}
+                                colorForm={
+                                    payment.type === PaymentType.Paywall
+                                        ? 'black'
+                                        : 'white'
+                                }
+                                paymentType={payment.type}
+                            />
+                        </StripeElement>
+                    </CustomGrid>
+                ) : (
+                    <CustomGrid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        className={styles.loader}
+                    >
+                        <CustomLoader />
+                    </CustomGrid>
+                )}
+            </CustomGrid>
         </CustomGrid>
     );
 };

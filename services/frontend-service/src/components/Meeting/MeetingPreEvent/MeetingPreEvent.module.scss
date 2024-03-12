@@ -4,7 +4,7 @@
 
 .meetingPreviewWrapper {
   position: relative;
-  padding: rem(20px);
+  padding: rem(40px);
   margin: rem(0 0 20px 0);
 
   &.mobile {
@@ -14,7 +14,7 @@
 
 .profileAvatar {
   position: absolute;
-  top: 20px;
+  top: 40px;
   border: 1px solid white;
   margin: rem(0 16px 0 0);
   flex: 0 0 rem(90px);
@@ -92,10 +92,14 @@
   justify-content: flex-end;
 }
 
-.companyName {
+.titleText {
   @include multiline-clip(1);
   word-break: break-word;
-  margin-bottom: 8px
+  margin-bottom: 8px;
+
+  &.roomName {
+    margin-top: 13px;
+  }
 }
 
 .description {
@@ -120,7 +124,7 @@
   margin-bottom: 8px;
 }
 
-.descriptionLabel {
+.formLabel {
   font-size: 16px;
   display: block;
   text-align: left;
@@ -130,23 +134,34 @@
   &.mobile {
     width: 100%;
   }
+
+  &.descriptionLabel {
+    margin-top: 25px;
+  }
 }
 
 .buttonsGroup {
-  margin-top: 16px;
+  margin: rem(70px 0px 20px 0px);
 }
 
 .actionButton {
-  width: 9.875rem;
-  height: rem(46px);
+  width: rem(200px);
+  height: rem(45px);
   border-radius: rem(12px);
   padding: rem(6px);
 }
 
-.payPaper {
-  width: rem(350px);
-  padding: 20px 16px;
-  border-radius: 5px;
+.innerPayPaper {
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #FF8500;
+}
+
+.outterPayPaper {
+  width: rem(624px);
+  height: rem(406px);
+  padding: 20px;
+  border-radius: 20px;
 }
 
 .cardDetail {
@@ -157,12 +172,6 @@
   display: block;
   width: 100%;
   text-align: center;
-}
-
-.paymentTitle {
-  display: block;
-  text-align: center;
-  margin-bottom: 8px;
 }
 
 .paymentDescription {

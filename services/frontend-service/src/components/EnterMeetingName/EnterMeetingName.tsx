@@ -85,6 +85,7 @@ const Component = () => {
             ),
     });
     const isLoadingFetchMeeting = useStore(getMeetingTemplateFx.pending);
+    const isMuteYb = router.query.videoMute as string;
 
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{

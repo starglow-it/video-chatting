@@ -229,9 +229,9 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        const meetingUserId = localStorage.getItem('meetingUserId');
+        // const meetingUserId = localStorage.getItem('meetingUserId');
 
-        await rejoinMeetingEvent(meetingUserId || '');
+        // await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {

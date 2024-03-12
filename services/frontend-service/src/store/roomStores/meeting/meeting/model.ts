@@ -156,7 +156,7 @@ export const rejoinMeetingEvent = attach<
             micStatus: source.localUser.micStatus,
             maxParticipants: source.template.maxParticipants,
         },
-        previousMeetingUserId: data
+        previousMeetingUserIds: data
     }),
 });
 
