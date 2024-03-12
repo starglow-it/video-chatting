@@ -24,7 +24,6 @@ import { MeetingTranscribeItem } from '../MeetingChatItem/MeetingTranscribeItem'
 
 export const MeetingTranscribeList = () => {
     const transcriptionQueue = useStore($transcriptionQueue);
-    console.log('transcriptionQueue: ', transcriptionQueue)
     const [showNewMessageToast, setShowNewMessageToast] = useState(false);
 
     const transcriptionList = transcriptionQueue.map(element => ({

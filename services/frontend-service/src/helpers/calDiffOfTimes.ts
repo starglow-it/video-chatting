@@ -1,5 +1,4 @@
 const calDiffOfTimes = (prevTime: string, nextTime: string) => {
-    console.log(prevTime, nextTime);
     if (prevTime && nextTime) {
         const date1 = new Date(prevTime);
         const date2 = new Date(nextTime);
