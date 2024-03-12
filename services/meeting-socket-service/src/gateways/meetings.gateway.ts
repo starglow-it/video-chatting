@@ -566,7 +566,7 @@ export class MeetingsGateway
                 });
 
                 const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enabled) !== -1;
-                const isParticipantPaywallEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.participant && tp.enabled) !== -1;
+                const isParticipantPaywallEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enabled) !== -1;
 
                 let accessStatus = userData.accessStatus;
                 if (userModel.isPaywallPaid) {

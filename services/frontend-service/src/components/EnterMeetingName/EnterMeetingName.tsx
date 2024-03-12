@@ -259,7 +259,7 @@ const Component = () => {
             return <CustomLoader className={styles.loader} />;
         }
         if (isAudience) {
-            if (!isHasMeeting) {
+            if ((!enabledPaymentPaywallAudience && !isHasMeeting && !isMuteYb)) {
                 return (
                     <CustomTypography
                         variant="h3bold"
@@ -279,7 +279,7 @@ const Component = () => {
                     />
                 );
             }
-            if (!isOwnerInMeeting) {
+            if (!enabledPaymentPaywallAudience && !isOwnerInMeeting && !isMuteYb) {
                 return (
                     <CustomTypography
                         variant="h3bold"

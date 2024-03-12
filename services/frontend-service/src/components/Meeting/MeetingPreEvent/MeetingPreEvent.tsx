@@ -21,13 +21,6 @@ import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { PaymentType } from 'shared-const';
 import { MeetingRole } from 'shared-types';
 
-//helper
-import { parseCustomDateString } from '../../../helpers/parseCustomDateString';
-
-import {
-    downloadIcsFileFx
-} from '../../../store';
-
 import {
     $isOwner,
     $meetingTemplateStore,
@@ -35,13 +28,7 @@ import {
     $enabledPaymentPaywallAudience,
     $paymentPaywallParticipant,
     $paymentPaywallAudience,
-    $isRoomPaywalledStore,
-    $isParticipant,
-    $isAudience,
     $localUserStore,
-    $meetingPaymentStore,
-    $isOwnerInMeeting,
-    $isOwnerDoNotDisturb,
     createPaymentIntentFx,
     paywallPrePaymentEvent,
     updateLocalUserEvent,
@@ -68,8 +55,6 @@ const Component = ({
     const enabledPaymentPaywallAudience = useStore($enabledPaymentPaywallAudience);
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
     const paymentPaywallAudience = useStore($paymentPaywallAudience);
-    const isOwnerInMeeting = useStore($isOwnerInMeeting);
-    const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
     const localUserStore = useStore($localUserStore);
     const [isPreviewShow, setIsPreviewShow] = useState(true);
     const aboutTheHost = meetingTemplate !== null &&
@@ -113,12 +98,6 @@ const Component = ({
     //         });
     //     }
     // };
-
-    useEffect(() => {
-        console.log(localUserStore);
-        console.log(isOwnerDoNotDisturb);
-        console.log(isOwnerInMeeting);
-    }, [localUserStore, isOwnerDoNotDisturb, isOwnerInMeeting]);
 
     const handleEnterMeeting = () => {
         if ((enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience) && !localUserStore.isPaywallPaid) {

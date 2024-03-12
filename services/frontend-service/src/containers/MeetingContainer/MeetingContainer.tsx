@@ -291,8 +291,20 @@ const MeetingContainer = memo(() => {
                 }
 
                 let meetingUserIds = localStorage.getItem('meetingUserIds');
-                let parsedMeetingUserIds = meetingUserIds ? JSON.parse(meetingUserIds) : [];
-                await sendJoinWaitingRoomSocketEvent(parsedMeetingUserIds);
+                let parsedMeetingUserIds: { id: string, date: string }[] =
+                    meetingUserIds &&
+                        Array.isArray(JSON.parse(meetingUserIds))
+                        ? JSON.parse(meetingUserIds)
+                        : [];
+                parsedMeetingUserIds = parsedMeetingUserIds
+                    .filter((item: { id: string, date: string }) => {
+                        const diffInMs: number = new Date().getTime() - new Date(item.date).getTime();
+                        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+                        return diffInDays <= 7;
+                    });
+                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+                const userIds = parsedMeetingUserIds.map(item => item.id);
+                await sendJoinWaitingRoomSocketEvent(userIds);
 
                 if (isOwner) {
                     if (isHasSettings) {
@@ -368,10 +380,10 @@ const MeetingContainer = memo(() => {
     useEffect(() => {
         if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting || localUser.isPaywallPaid) {
             let meetingUserIds = localStorage.getItem('meetingUserIds');
-            let parsedMeetingUserIds = meetingUserIds ? [...JSON.parse(meetingUserIds)] : [];
+            let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
 
-            if (!parsedMeetingUserIds.includes(localUser.id)) {
-                parsedMeetingUserIds.push(localUser.id);
+            if (parsedMeetingUserIds.findIndex(item => item.id === localUser.id) === -1) {
+                parsedMeetingUserIds.push({ id: localUser.id, date: new Date() });
                 localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
             }
         }
