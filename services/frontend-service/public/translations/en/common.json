@@ -166,7 +166,9 @@
         "audienceEntryFee": "audience entry fee",
         "participantEntryFee": "participant entry fee",
         "unit": "USD/person",
-        "donations": "donations"
+        "donations": "donations",
+        "participantDonation": "participant donation",
+        "audienceDonation": "audience donation"
       }
     }
   }

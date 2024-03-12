@@ -90,5 +90,6 @@
   },
   "user": {
     "exits": "This email is already used"
-  }
+  },
+  "hostIsAway": "The Host is away but gave you permission to enter"
 }

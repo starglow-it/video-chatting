@@ -327,6 +327,7 @@ export enum NotificationType {
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
     RequestBecomeAudienceSuccess = 'request_become_audience_success',
     RequestRecordingMeeting = 'request_recording_meeting',
+    HostIsAwayForAudiencePaywallPayment = 'host_is_away_for_audience_paywall_payment',
 }
 
 export type Notification = {
@@ -336,6 +337,16 @@ export type Notification = {
     withSuccessIcon?: boolean;
     withErrorIcon?: boolean;
     withManualClose?: boolean;
+};
+
+export type orangeNotification = {
+    type: NotificationType;
+    message: string;
+    messageOptions?: { [key: string]: any };
+    withSuccessIcon?: boolean;
+    withErrorIcon?: boolean;
+    withManualClose?: boolean;
+    isIconHand?: boolean;
 };
 
 export type PaymentIntentStore = { clientSecret: string; id: string };

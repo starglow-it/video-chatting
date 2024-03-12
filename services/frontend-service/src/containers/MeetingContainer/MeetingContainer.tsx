@@ -89,6 +89,8 @@ import {
     sentRequestToHostWhenDnd
 } from '../../store/roomStores';
 import getLocationInfo from '../../helpers/getLocationInfo';
+import { addOrangeNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
 
 // types
 import { SavedSettings } from '../../types';
@@ -288,7 +290,21 @@ const MeetingContainer = memo(() => {
                     await initDevicesEventFxWithStore();
                 }
 
-                await sendJoinWaitingRoomSocketEvent(localStorage.getItem("meetingUserId") || '');
+                let meetingUserIds = localStorage.getItem('meetingUserIds');
+                let parsedMeetingUserIds: { id: string, date: string }[] =
+                    meetingUserIds &&
+                        Array.isArray(JSON.parse(meetingUserIds))
+                        ? JSON.parse(meetingUserIds)
+                        : [];
+                parsedMeetingUserIds = parsedMeetingUserIds
+                    .filter((item: { id: string, date: string }) => {
+                        const diffInMs: number = new Date().getTime() - new Date(item.date).getTime();
+                        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+                        return diffInDays <= 7;
+                    });
+                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+                const userIds = parsedMeetingUserIds.map(item => item.id);
+                await sendJoinWaitingRoomSocketEvent(userIds);
 
                 if (isOwner) {
                     if (isHasSettings) {
@@ -362,17 +378,38 @@ const MeetingContainer = memo(() => {
     }, [router, meetingTemplate.id]);
 
     useEffect(() => {
-        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
-            localStorage.setItem('meetingUserId', localUser.id);
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting || localUser.isPaywallPaid) {
+            let meetingUserIds = localStorage.getItem('meetingUserIds');
+            let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
+
+            if (parsedMeetingUserIds.findIndex(item => item.id === localUser.id) === -1) {
+                parsedMeetingUserIds.push({ id: localUser.id, date: new Date() });
+                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+            }
         }
     }, [localUser]);
 
     useEffect(() => {
-        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+        if (isPaywallPaymentEnabled && localUser.meetingRole === MeetingRole.Audience && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
             updateUserSocketEvent({ isPaywallPaid: true });
             setIsPaywallPaymentEnabled(false);
         }
     }, [isPaywallPaymentEnabled, localUser]);
+
+    useEffect(() => {
+        if (
+            localUser.meetingRole === MeetingRole.Audience &&
+            !isOwnerInMeeting &&
+            localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+            localUser.isPaywallPaid
+        ) {
+            addOrangeNotificationEvent({
+                type: NotificationType.HostIsAwayForAudiencePaywallPayment,
+                message: 'hostIsAway',
+                isIconHand: true
+            });
+        }
+    }, [localUser, isOwnerInMeeting]);
 
     const LoadingWaitingRoom = useMemo(() => {
         return (

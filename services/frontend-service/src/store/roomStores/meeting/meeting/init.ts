@@ -157,13 +157,6 @@ sample({
     target: joinMeetingFx,
 });
 
-joinMeetingFx.doneData.watch(() => {
-    const isPaywallPaid = $isPaywallPaid.getState();
-    if (isPaywallPaid) {
-        updateUserSocketEvent({ isPaywallPaid: true });
-    }
-});
-
 sample({
     clock: joinMeetingWithAudienceEvent,
     source: combine({

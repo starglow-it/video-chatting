@@ -23,7 +23,7 @@ import { ONE_SECOND } from '../../const/time/common';
 import { $orangeNotificationsStore, removeOrangeNotification } from '../../store';
 
 // types
-import { Notification } from '../../store/types';
+import { orangeNotification } from '../../store/types';
 
 // styles
 import styles from './OrangeNotification.module.scss';
@@ -37,7 +37,7 @@ const Component = () => {
     const { translation } = useLocalization('notifications');
 
     const [open, setOpen] = useState(false);
-    const [messageInfo, setMessageInfo] = useState<Notification>();
+    const [messageInfo, setMessageInfo] = useState<orangeNotification>();
 
     const { isMobile } = useBrowserDetect();
 
@@ -81,7 +81,7 @@ const Component = () => {
                 message={
                     <CustomGrid container alignItems="center" gap={1}>
                         <CustomImage
-                            src="/images/star.png"
+                            src={ messageInfo?.isIconHand ? "/images/handForNotificatioin.png" : "/images/star.png" }
                             width="35px"
                             height="35px"
                             alt="star"

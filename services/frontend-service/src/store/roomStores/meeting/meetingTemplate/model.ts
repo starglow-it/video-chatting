@@ -83,8 +83,7 @@ export const $isOwnerInMeeting = combine<{
         users.find(
             user =>
                 user.profileId === template?.meetingInstance?.owner &&
-                user.accessStatus !== MeetingAccessStatusEnum.Left &&
-                user.accessStatus !== MeetingAccessStatusEnum.Disconnected,
+                user.accessStatus === MeetingAccessStatusEnum.InMeeting
         ),
     ),
 );

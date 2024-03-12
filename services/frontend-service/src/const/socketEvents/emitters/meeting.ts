@@ -42,5 +42,6 @@ export enum MeetingSocketEmitters {
     recordingStopPending = 'meeting:stop:recording:pending',
     SentRequestToHostWhenDnd = 'meeting:send:request:to:host:when:dnd',
     UpdateRecordingVideoPrice = 'meeting:update:recording:video:price',
-    DeleteRecordingVideo = 'meeting:delete:recording:video'
+    DeleteRecordingVideo = 'meeting:delete:recording:video',
+    paywallPrePayment = 'meeting:paywall:pre:paid',
 }

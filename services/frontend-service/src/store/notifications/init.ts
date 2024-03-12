@@ -6,7 +6,7 @@ import {
     addOrangeNotificationEvent,
     removeOrangeNotification
 } from './model';
-import { Notification } from '../types';
+import { Notification, orangeNotification } from '../types';
 
 $notificationsStore
     .on(addNotificationEvent, (state, payload: Notification) => [
@@ -16,7 +16,7 @@ $notificationsStore
     .on(removeNotification, state => state.slice(1));
 
 $orangeNotificationsStore
-    .on(addOrangeNotificationEvent, (state, payload: Notification) => [
+    .on(addOrangeNotificationEvent, (state, payload: orangeNotification) => [
         state[state.length - 1],
         payload,
     ])

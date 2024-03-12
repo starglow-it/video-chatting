@@ -10,7 +10,7 @@ import {
     MeetingStatisticsState
 } from '../types';
 
-const initialMeetingStatisticsState:MeetingStatisticsState = {
+const initialMeetingStatisticsState: MeetingStatisticsState = {
     meetingNames: {
         id: '',
         name: '',
@@ -36,7 +36,11 @@ const initialMeetingStatisticsState:MeetingStatisticsState = {
         audienceEntryFee: 0,
         participantFees: 0,
         audienceFees: 0,
-        donations: 0,
+        participantDonationPrice: 0,
+        audienceDonationPrice: 0,
+        participantDonationsTotal: 0,
+        audienceDonationsTotal: 0,
+
     }
 }
 
