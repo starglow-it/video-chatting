@@ -302,7 +302,6 @@ const MeetingContainer = memo(() => {
                         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
                         return diffInDays <= 7;
                     });
-                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
                 const userIds = parsedMeetingUserIds.map(item => item.id);
                 await sendJoinWaitingRoomSocketEvent(userIds);
 
@@ -378,11 +377,14 @@ const MeetingContainer = memo(() => {
     }, [router, meetingTemplate.id]);
 
     useEffect(() => {
-        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting || localUser.isPaywallPaid) {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.InMeeting ||
+            localUser.isPaywallPaid
+        ) {
             let meetingUserIds = localStorage.getItem('meetingUserIds');
             let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
 
-            if (parsedMeetingUserIds.findIndex(item => item.id === localUser.id) === -1) {
+            if (!!localUser.id && parsedMeetingUserIds.findIndex(item => item.id === localUser.id) === -1) {
                 parsedMeetingUserIds.push({ id: localUser.id, date: new Date() });
                 localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
             }
