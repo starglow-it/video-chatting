@@ -29,6 +29,7 @@ import {
     $paymentPaywallParticipant,
     $paymentPaywallAudience,
     $localUserStore,
+    $isLoadingJoinWaitingRoom,
     createPaymentIntentFx,
     paywallPrePaymentEvent,
     updateLocalUserEvent,
@@ -56,6 +57,7 @@ const Component = ({
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
     const paymentPaywallAudience = useStore($paymentPaywallAudience);
     const localUserStore = useStore($localUserStore);
+    const isJoinWaitingRoomPending = useStore($isLoadingJoinWaitingRoom);
     const [isPreviewShow, setIsPreviewShow] = useState(true);
     const aboutTheHost = meetingTemplate !== null &&
         meetingTemplate.meetingInstance !== null &&
@@ -238,6 +240,7 @@ const Component = ({
                                     <ActionButton
                                         variant="accept"
                                         label="Enter"
+                                        disabled={isJoinWaitingRoomPending}
                                         className={styles.actionButton}
                                         onAction={handleEnterMeeting}
                                     />
