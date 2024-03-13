@@ -76,7 +76,8 @@
         "upload": "upload & share",
         "close": "Close",
         "startRecording": "start recording",
-        "reject": "reject"
+        "reject": "reject",
+        "more": "more"
     },
     "devices": {
         "turnOn": "Turn on",
@@ -127,6 +128,14 @@
         "links": "Links",
         "signBoard": "Signboards",
         "languages": "Languages",
+        "monetization": "monetization",
+        "videoAudioSettings": "video & audio settings",
+        "updateAvatar": "update avatar",
+        "doNotDisturb": {
+            "title": "do not disturb - ",
+            "on": "on",
+            "off": "off"
+        },
         "businessCategories": "Business Categories",
         "buttons": {
             "saveChanges": "Save Changes",
@@ -260,6 +269,24 @@
     "hostWaitingNotify": {
         "title": "The host has another ruume in progress.",
         "text": "Please wait or leave a message"
+    },
+    "controlButtonsLabel": {
+        "reactions": "reactions",
+        "chat": "chat/Q&A",
+        "screenSharing": "screenshare",
+        "audio": "audio",
+        "record": "record",
+        "attendees": "attendees",
+        "end": "end",
+        "more": "more"
+    },
+    "profileSettingPanel": {
+        "title": "profile",
+        "saveBtn": "save"
+    },
+    "editRuumePanel": {
+        "title": "edit ruume",
+        "saveBtn": "save"
     },
     "meetingPrivate": "The Meeting is private",
     "disablePublicMeeting": "Register to invite up to 1000 callers in the Audience.",

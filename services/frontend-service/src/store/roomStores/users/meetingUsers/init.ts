@@ -5,12 +5,16 @@ import {
     $isToggleUsersPanel,
     $meetingUsersStore,
     $isRecordingUrlsListPanel,
+    $isTogglProfilePanel,
+    $isToggleEditRuumePanel,
     removeMeetingUsersEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
-    toggleRecordingUrlsListPanel
+    toggleRecordingUrlsListPanel,
+    toggleProfilePanelEvent,
+    toggleEditRuumeSettingEvent
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
@@ -51,6 +55,14 @@ $meetingUsersStore
         !users ? state : state.filter(_user => !users?.includes(_user.id)),
     )
     .reset(resetRoomStores);
+
+$isTogglProfilePanel.on(toggleProfilePanelEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isToggleEditRuumePanel.on(toggleEditRuumeSettingEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
 
 $isToggleUsersPanel.on(toggleUsersPanelEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,

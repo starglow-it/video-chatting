@@ -5,10 +5,10 @@
 .linkWrapper {
   width: 100%;
   position: relative;
-  background: rgba($primary-white, 0.25);
+  background: $primary-white;
   border-radius: rem(10px);
-  padding: rem(13px 10px);
-  color: $primary-white;
+  padding: rem(7px 10px);
+  color: #a7a7a7;
 
   &.error {
     &:after {
@@ -40,16 +40,16 @@
 }
 
 .linkStart {
-  color: rgba($primary-white, 0.6);
+  color: #a7a7a7;
   flex: 0 0 auto;
 }
 
 .inputWrapper {
   flex: 1 0 auto;
-  color: rgba($primary-white, 0.6);
+  color: #a7a7a7;
 
   .input::placeholder {
-    color: rgba($primary-white, 0.6);
+    color: #a7a7a7;
   }
 }
 

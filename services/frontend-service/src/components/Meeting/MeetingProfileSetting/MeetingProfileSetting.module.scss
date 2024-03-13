@@ -1,0 +1,11 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.wrapper {
+    padding: 10px 0px;
+}
+
+.saveBtn {
+    width: rem(130px);
+    height: rem(40px);
+}

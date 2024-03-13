@@ -1,0 +1,21 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.wrapper {
+    padding: 10px 0px;
+}
+
+.doNotDisturbBtn {
+    background: white;
+    color: black;
+    height: rem(50px);
+
+    &:hover {
+        background: rgba($color: #ffffff, $alpha: 0.8);
+    }
+}
+
+.saveBtn {
+    width: rem(130px);
+    height: rem(40px);
+}

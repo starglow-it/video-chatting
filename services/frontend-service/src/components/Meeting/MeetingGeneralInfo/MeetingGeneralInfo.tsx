@@ -30,6 +30,7 @@ import {
     toggleEditTemplateOpen,
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
+    toggleProfilePanelEvent
 } from '../../../store/roomStores';
 
 const Component = () => {
@@ -57,7 +58,8 @@ const Component = () => {
 
     const handleMeetingAction = useCallback(() => {
         if (isOwner) {
-            toggleEditTemplateOpen();
+            toggleProfilePanelEvent();
+            // toggleEditTemplateOpen();
         } else {
             toggleMeetingInfoOpen();
         }
@@ -65,14 +67,14 @@ const Component = () => {
 
     return (
         <CustomGrid
+            item
             container
             ref={wrapperRef}
             className={clsx(styles.profileInfo)}
         >
             <CustomGrid
-                gap={1}
+                item
                 container
-                className={styles.info}
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="center"
@@ -84,7 +86,7 @@ const Component = () => {
                             translation="meetingInfo.tooltip"
                         />
                     }
-                    placement="right"
+                    placement="top"
                 >
                     <CustomBox
                         onMouseEnter={handleToggleAvatarAction}
@@ -93,8 +95,8 @@ const Component = () => {
                     >
                         <ProfileAvatar
                             src={meetingTemplate?.user?.profileAvatar?.url}
-                            width="60px"
-                            height="60px"
+                            width="45px"
+                            height="45px"
                             userName={
                                 isOwner ? fullName : meetingTemplate.fullName
                             }
@@ -119,7 +121,7 @@ const Component = () => {
                     </CustomBox>
                 </CustomTooltip>
 
-                <CustomGrid
+                {/* <CustomGrid
                     container
                     direction="column"
                     alignItems="flex-start"
@@ -134,7 +136,7 @@ const Component = () => {
                     >
                         {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
-                </CustomGrid>
+                </CustomGrid> */}
             </CustomGrid>
         </CustomGrid>
     );

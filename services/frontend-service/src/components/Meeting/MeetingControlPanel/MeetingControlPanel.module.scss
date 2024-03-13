@@ -3,8 +3,8 @@
 
 .panelWrapper {
   position: absolute;
-  bottom: rem(27px);
-  right: 0;
+  bottom: rem(160px);
+  left: 50%;
   z-index: 1000;
   width: auto;
 
@@ -83,6 +83,52 @@
   opacity: 0;
   right: 70px;
   bottom: 30px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
+.profilePanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  opacity: 0;
+  right: rem(260px);
+  bottom: rem(0px);
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
+.editRuumePanel {
+  position: absolute;
+  max-width: rem(405px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  opacity: 0;
+  left: rem(260px);
+  bottom: rem(0px);
 
   &.mobile {
     left: 0%;

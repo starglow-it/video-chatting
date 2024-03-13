@@ -1,7 +1,7 @@
 import { meetingDomain } from '../../../domains';
 
 export const $isEditTemplateOpenStore =
-    meetingDomain.createStore<boolean>(false);
+    meetingDomain.createStore<boolean>(true);
 export const $isMeetingInfoOpenStore =
     meetingDomain.createStore<boolean>(false);
 

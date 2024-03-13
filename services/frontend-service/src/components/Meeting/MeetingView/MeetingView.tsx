@@ -404,7 +404,7 @@ const Component = () => {
                     </ConditionalRender>
                     <MeetingControlPanel />
                     <MeetingControlButtons />
-                    <MeetingGeneralInfo />
+                    {/* <MeetingGeneralInfo /> */}
                     <MeetingNotes />
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>

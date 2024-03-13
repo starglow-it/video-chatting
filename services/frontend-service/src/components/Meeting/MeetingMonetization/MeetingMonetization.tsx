@@ -129,7 +129,7 @@ const tabs: ValuesSwitcherAlias[] = [
     },
 ];
 
-const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, onUpdate: () => void }) => {
+const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate: boolean, onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
         null,
