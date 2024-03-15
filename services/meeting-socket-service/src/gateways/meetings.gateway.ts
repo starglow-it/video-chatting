@@ -56,6 +56,7 @@ import {
   ITransactionSession,
   withTransaction,
 } from '../helpers/mongo/withTransaction';
+import { isValidObjectId } from '../helpers/mongo/isValidObjectId';
 import { MeetingTimeService } from '../modules/meeting-time/meeting-time.service';
 import {
   MeetingEmitEvents,
@@ -2584,10 +2585,22 @@ export class MeetingsGateway
         const { email, templateId } = msg;
         const user = this.getUserFromSocket(socket);
 
-        const meeting = await this.meetingsService.findOne({
-          query: { templateId },
-          session
-        });
+        let meeting: MeetingDocument;
+
+        if (isValidObjectId(templateId)) {
+          meeting = await this.meetingsService.findOne({
+            query: { templateId },
+            session
+          });
+        } else {
+          const template = await this.coreService.findMeetingTemplate({ id: templateId });
+          meeting = await this.meetingsService.findOne({
+            query: {
+              templateId: template.id.toString()
+            },
+            session
+          });
+        }
 
         throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
 
