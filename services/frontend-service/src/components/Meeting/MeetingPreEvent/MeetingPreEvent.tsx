@@ -11,6 +11,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -36,6 +37,7 @@ import {
     $preEventPaymentCodeCheckStore,
     createPaymentIntentFx,
     updateLocalUserEvent,
+    sendJoinWaitingRoomSocketEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -269,14 +271,14 @@ const Component = ({
                                     {
                                         !isOwnerInMeeting || doNotDisturb
                                             ? <ActionButton
-                                                label="Pre-pay"
+                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Pre-pay" }
                                                 disabled={isJoinWaitingRoomPending}
                                                 className={clsx(styles.actionButton, styles.prePayBtn)}
                                                 onAction={handleEnterMeeting}
                                             />
                                             : <ActionButton
                                                 variant="accept"
-                                                label="Enter"
+                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Enter" }
                                                 disabled={isJoinWaitingRoomPending}
                                                 className={clsx(styles.actionButton)}
                                                 onAction={handleEnterMeeting}

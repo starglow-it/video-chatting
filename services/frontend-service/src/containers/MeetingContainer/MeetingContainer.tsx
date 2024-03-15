@@ -392,7 +392,7 @@ const MeetingContainer = memo(() => {
     }, [localUser]);
 
     useEffect(() => {
-        if (isPaywallPaymentEnabled) {
+        if (isPaywallPaymentEnabled && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting && !Boolean(isMuteYb)) {
             updateUserSocketEvent({ isPaywallPaid: true });
             setIsPaywallPaymentEnabled(false);
         }

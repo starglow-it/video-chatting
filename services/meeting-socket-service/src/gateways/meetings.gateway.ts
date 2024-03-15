@@ -2623,6 +2623,19 @@ export class MeetingsGateway
             : '?videoMute=1'
           }`;
 
+        const date = new Date();
+
+        const formattedDate = date.toLocaleString('en-US', {
+          weekday: 'short',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+          timeZone: 'UTC'
+        });
+
         if (email) {
           this.notificationService.sendEmail({
             template: {
@@ -2632,6 +2645,7 @@ export class MeetingsGateway
                 { name: 'RUUMENAME', content: template.name },
                 { name: 'CODE', content: code },
                 { name: 'MEETINGURL', content: meetingUrl },
+                { name: 'DATE', content: formattedDate },
                 { name: 'UPDATE_PROFILE', content: frontendUrl },
                 { name: 'UNSUB', content: frontendUrl },
               ],
