@@ -443,6 +443,12 @@ export type MeetingRecording = {
     isStopRecordingPending?: boolean;
     urlForCopy?: string;
 };
+
+export type preEvetnPaymentData = {
+    code: string;
+    email: string;
+};
+
 export * from './state';
 export * from './response';
 export * from './requestParams';

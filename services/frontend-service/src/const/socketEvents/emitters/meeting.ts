@@ -44,4 +44,6 @@ export enum MeetingSocketEmitters {
     UpdateRecordingVideoPrice = 'meeting:update:recording:video:price',
     DeleteRecordingVideo = 'meeting:delete:recording:video',
     paywallPrePayment = 'meeting:paywall:pre:paid',
+    GeneratePrePaymentCode = 'meeting:generate:pre:payment:code:request',
+    CheckPrePaymentCode = 'meeting:check:pre:payment:code:request',
 }

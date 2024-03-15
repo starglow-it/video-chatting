@@ -141,14 +141,27 @@
 }
 
 .buttonsGroup {
-  margin: rem(70px 0px 20px 0px);
+  margin-top: rem(15px);
+}
+.enterBtn {
+  margin-top: rem(70px);
 }
 
 .actionButton {
-  width: rem(200px);
+  width: rem(160px);
   height: rem(45px);
   border-radius: rem(12px);
   padding: rem(6px);
+}
+
+.prePayBtn {
+  background-color: #9315CD;
+  transition: background-color .2s;
+  color: white;
+
+  &:hover {
+    background-color: #af28ed;
+  }
 }
 
 .innerPayPaper {
@@ -222,4 +235,9 @@
 
 .cvcField {
   flex: 0 1 168px;
+}
+
+.preEventText {
+  margin: 20px 0px;
+  color: white;
 }

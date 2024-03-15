@@ -45,4 +45,6 @@ export enum MeetingSubscribeEvents {
   OnUpdateRecordingVideoPrice = 'meeting:update:recording:video:price',
   OnSetDonations = 'meeting:set:meeting:donations',
   OnPaymentPrePayment = 'meeting:paywall:pre:paid',
+  OnGeneratePrePaymentCodeRequest = 'meeting:generate:pre:payment:code:request',
+  OnCheckPrePaymentCodeRequest = 'meeting:check:pre:payment:code:request',
 }

@@ -303,7 +303,7 @@ const MeetingContainer = memo(() => {
                         return diffInDays <= 7;
                     });
                 const userIds = parsedMeetingUserIds.map(item => item.id);
-                await sendJoinWaitingRoomSocketEvent(userIds);
+                await sendJoinWaitingRoomSocketEvent({userIds, isScheduled: Boolean(isMuteYb)});
 
                 if (isOwner) {
                     if (isHasSettings) {
@@ -392,7 +392,7 @@ const MeetingContainer = memo(() => {
     }, [localUser]);
 
     useEffect(() => {
-        if (isPaywallPaymentEnabled && localUser.meetingRole === MeetingRole.Audience && localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+        if (isPaywallPaymentEnabled) {
             updateUserSocketEvent({ isPaywallPaid: true });
             setIsPaywallPaymentEnabled(false);
         }

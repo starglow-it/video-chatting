@@ -13,6 +13,8 @@ import { MeetingDonationsModule } from './modules/meeting-donations/meeting-dona
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import { MeetingQuestionAnswersModule } from './modules/meeting-question-answer/meeting-question-answer.module';
 import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
+import { MeetingPreEventPaymentModule } from './modules/meeting-pre-event-payment/meeting-pre-event-payment.module';
+import { NotificationsModule } from './services/notifications/notifications.module';
 import {
   AudiencesGateway,
   ParticipantsGateway,
@@ -42,6 +44,8 @@ import {
     MeetingReactionsModule,
     MeetingTimeModule,
     MeetingQuestionAnswersModule,
+    MeetingPreEventPaymentModule,
+    NotificationsModule
   ],
   controllers: [],
   providers: [

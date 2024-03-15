@@ -29,6 +29,7 @@ export type JoinWaitingRoomPayload = {
         maxParticipants: number;
     },
     previousMeetingUserIds: string[];
+    isScheduled: boolean;
 };
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
@@ -257,4 +258,18 @@ export type UpdateRecordingVideoPriceResponse = {
 
 export type PaywalPrePayment = {
     isCodeNeeded: boolean
+};
+
+export type GeneratePrePaymentCodePayload = {
+    email?: string;
+    templateId: string;
+};
+
+export type GeneratePrePaymentCodeResponse = {
+    code: string;
+    email: string;
+};
+
+export type CheckPrePaymentCodePayload = {
+    code: string;
 };
