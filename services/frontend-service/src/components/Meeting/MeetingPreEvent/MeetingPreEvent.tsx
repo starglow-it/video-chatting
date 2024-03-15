@@ -78,8 +78,6 @@ const Component = ({
         Router.back();
     }, [router]);
 
-    useEffect(() => { console.log(isOwnerInMeeting, doNotDisturb); }, [isOwnerInMeeting, doNotDisturb]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
