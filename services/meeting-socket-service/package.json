@@ -30,6 +30,7 @@
     "@nestjs/platform-socket.io": "9.0.11",
     "@nestjs/schedule": "2.1.0",
     "@nestjs/websockets": "9.0.11",
+    "@nestjs/swagger": "6.1.2",
     "amqp-connection-manager": "^4.1.6",
     "amqplib": "0.10.3",
     "axios": "^0.27.2",
@@ -46,7 +47,9 @@
     "shared-types": "workspace:*",
     "shared-utils": "workspace:*",
     "socket.io": "4.5.2",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "uuid": "9.0.0",
+    "moment": "2.29.4"
   },
   "devDependencies": {
     "@nestjs/cli": "9.1.3",

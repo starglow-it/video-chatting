@@ -87,5 +87,8 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   readonly userData: UserData;
 
   @IsOptional()
-  readonly previousMeetingUserIds: string[]
+  readonly previousMeetingUserIds: string[];
+
+  @IsOptional()
+  readonly isScheduled: boolean;
 }

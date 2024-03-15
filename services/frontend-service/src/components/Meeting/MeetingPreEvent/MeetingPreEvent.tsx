@@ -15,7 +15,7 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
+import { PreEventPaymentForm } from '@components/PreEventPaymentForm/PreEventPaymentForm';
 
 //const
 import { PaymentType } from 'shared-const';
@@ -29,9 +29,12 @@ import {
     $paymentPaywallParticipant,
     $paymentPaywallAudience,
     $localUserStore,
+    $isOwnerInMeeting,
+    $doNotDisturbStore,
     $isLoadingJoinWaitingRoom,
+    $meetingRoleStore,
+    $preEventPaymentCodeCheckStore,
     createPaymentIntentFx,
-    paywallPrePaymentEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
 
@@ -62,6 +65,10 @@ const Component = ({
     const aboutTheHost = meetingTemplate !== null &&
         meetingTemplate.meetingInstance !== null &&
         meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? meetingTemplate.meetingInstance.aboutTheHost : '';
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const doNotDisturb = useStore($doNotDisturbStore);
+    const meetingRole = useStore($meetingRoleStore);
+    const preEventPaymentCodeCheck = useStore($preEventPaymentCodeCheckStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -71,8 +78,7 @@ const Component = ({
         Router.back();
     }, [router]);
 
-    const roleQuery = router.query.role as string;
-    const meetingRole = !!roleQuery ? MeetingRole.Audience : MeetingRole.Participant;
+    useEffect(() => { console.log(isOwnerInMeeting, doNotDisturb); }, [isOwnerInMeeting, doNotDisturb]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -92,17 +98,12 @@ const Component = ({
         fetchData();
     }, [meetingTemplate.id, enabledPaymentPaywallParticipant, enabledPaymentPaywallAudience, meetingRole]);
 
-    // const handleDownloadInviteICSFile = async () => {
-    //     if (!!meetingTemplate.id && !!meetingTemplate.meetingInstance.content) {
-    //         await downloadIcsFileFx({
-    //             templateId: meetingTemplate.id,
-    //             content: meetingTemplate.meetingInstance.content
-    //         });
-    //     }
-    // };
-
     const handleEnterMeeting = () => {
-        if ((enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience) && !localUserStore.isPaywallPaid) {
+        if ((
+            (meetingRole === MeetingRole.Participant && enabledPaymentPaywallParticipant) ||
+            (meetingRole === MeetingRole.Audience && enabledPaymentPaywallAudience)
+        ) && (!isOwnerInMeeting || doNotDisturb || localUserStore.isPaywallPaid)
+        ) {
             setIsPreviewShow(false);
         } else {
             handleSetMeetingPreviewShow();
@@ -110,9 +111,20 @@ const Component = ({
     };
 
     const handlePaywallPrepayment = () => {
-        paywallPrePaymentEvent();
-        updateLocalUserEvent({ ...localUserStore, isPaywallPaid: true });
-        handleSetMeetingPreviewShow();
+        if (!localUserStore.isPaywallPaid) {
+            updateLocalUserEvent({ ...localUserStore, isPaywallPaid: true });
+        }
+        if (preEventPaymentCodeCheck === 'success') {
+            handleSetMeetingPreviewShow();
+        } 
+
+        let meetingUserIds = localStorage.getItem('meetingUserIds');
+        let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
+
+        if (!!localUserStore.id && parsedMeetingUserIds.findIndex(item => item.id === localUserStore.id) === -1) {
+            parsedMeetingUserIds.push({ id: localUserStore.id, date: new Date() });
+            localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+        }
     };
 
     return (
@@ -132,8 +144,8 @@ const Component = ({
                             className={clsx(styles.profileAvatar, {
                                 [styles.mobile]: isMobile,
                             })}
-                            width={isMobile ? '50px' : '120px'}
-                            height={isMobile ? '50px' : '120px'}
+                            width={isMobile ? '50px' : '100px'}
+                            height={isMobile ? '50px' : '100px'}
                             src={meetingTemplate?.user?.profileAvatar?.url || ''}
                             userName={meetingTemplate.fullName}
                         />
@@ -216,12 +228,31 @@ const Component = ({
                             >
                                 {aboutTheHost}
                             </CustomTypography>
+                            <ConditionalRender condition={!isOwnerInMeeting || doNotDisturb}>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    gap={0.5}
+                                    className={styles.preEventText}
+                                >
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="preview.preEventText1"
+                                    />
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="preview.preEventText2"
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
                             <CustomGrid
                                 container
                                 gap={4}
                                 flexWrap="nowrap"
                                 justifyContent="center"
-                                className={styles.buttonsGroup}
+                                className={clsx(styles.buttonsGroup, { [styles.enterBtn]:  isOwnerInMeeting && !doNotDisturb})}
                             >
                                 <CustomGrid
                                     item
@@ -237,34 +268,41 @@ const Component = ({
                                     />
                                 </CustomGrid>
                                 <CustomGrid item xs>
-                                    <ActionButton
-                                        variant="accept"
-                                        label="Enter"
-                                        disabled={isJoinWaitingRoomPending}
-                                        className={styles.actionButton}
-                                        onAction={handleEnterMeeting}
-                                    />
+                                    {
+                                        !isOwnerInMeeting || doNotDisturb
+                                            ? <ActionButton
+                                                label="Pre-pay"
+                                                disabled={isJoinWaitingRoomPending}
+                                                className={clsx(styles.actionButton, styles.prePayBtn)}
+                                                onAction={handleEnterMeeting}
+                                            />
+                                            : <ActionButton
+                                                variant="accept"
+                                                label="Enter"
+                                                disabled={isJoinWaitingRoomPending}
+                                                className={clsx(styles.actionButton)}
+                                                onAction={handleEnterMeeting}
+                                            />
+                                    }
                                 </CustomGrid>
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
                 </ConditionalRender>
-                <ConditionalRender condition={!isPreviewShow && (enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience)}>
-                    <ConditionalRender condition={enabledPaymentPaywallParticipant && meetingRole === MeetingRole.Participant}>
+                <ConditionalRender condition={!isPreviewShow}>
+                    <ConditionalRender condition={meetingRole === MeetingRole.Participant}>
                         <CustomPaper>
-                            <PaymentForm
-                                isPreEvent={true}
-                                onClose={() => { }}
+                            <PreEventPaymentForm
+                                isPaywallPaid={localUserStore.isPaywallPaid}
                                 payment={paymentPaywallParticipant}
                                 setMeetingPreviewShow={handlePaywallPrepayment}
                             />
                         </CustomPaper>
                     </ConditionalRender>
-                    <ConditionalRender condition={enabledPaymentPaywallAudience && meetingRole === MeetingRole.Audience}>
+                    <ConditionalRender condition={meetingRole === MeetingRole.Audience}>
                         <CustomPaper>
-                            <PaymentForm
-                                isPreEvent={true}
-                                onClose={() => { }}
+                            <PreEventPaymentForm
+                                isPaywallPaid={localUserStore.isPaywallPaid}
                                 payment={paymentPaywallAudience}
                                 setMeetingPreviewShow={handlePaywallPrepayment}
                             />

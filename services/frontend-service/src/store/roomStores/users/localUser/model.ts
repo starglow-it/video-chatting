@@ -2,7 +2,7 @@ import { combine } from 'effector-next';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { meetingUsersDomain } from '../domain/model';
 
-import { MeetingUser, userLocation } from '../../../types';
+import { MeetingUser, userLocation, preEvetnPaymentData } from '../../../types';
 
 const initialMeetingUserState: MeetingUser = {
     id: '',
@@ -27,6 +27,12 @@ export const $localUserStore = meetingUsersDomain.createStore<MeetingUser>(
 export const $userLocationStore = meetingUsersDomain.createStore<userLocation>(
     { country: '', state: '' },
 );
+
+export const $preEventPaymentCodeStore = meetingUsersDomain.createStore<preEvetnPaymentData>({
+    code: '',
+    email: ''
+});
+export const $preEventPaymentCodeCheckStore = meetingUsersDomain.createStore<string>('');
 
 export const $isPaywallPaid = combine<{
     localUser: MeetingUser;
@@ -61,4 +67,11 @@ export const leaveMeetingAsGuest = meetingUsersDomain.event(
 );
 export const setUserLocation = meetingUsersDomain.event(
     'setUserLocation',
+);
+export const setPreEvenyPaymentCodeEvent = meetingUsersDomain.event(
+    'setPreEvenyPaymentCodeEvent',
+);
+
+export const setPreEvenyPaymentCodeCheckEvent = meetingUsersDomain.event(
+    'setPreEvenyPaymentCodeCheckEvent',
 );

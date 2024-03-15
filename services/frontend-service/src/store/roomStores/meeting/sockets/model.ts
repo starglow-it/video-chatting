@@ -52,6 +52,9 @@ import {
     SendRequestToHostWhenDndResponse,
     StartRecordingPayload,
     StartRecordingResponse,
+    GeneratePrePaymentCodePayload,
+    CheckPrePaymentCodePayload,
+    GeneratePrePaymentCodeResponse,
     PaywalPrePayment
 } from './types';
 import { Meeting } from '../../../types';
@@ -236,3 +239,13 @@ export const paywallPrePaymentEvent = createMeetingSocketEvent<
     void,
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.paywallPrePayment);
+
+export const generatePrePaymentCodeEvent = createMeetingSocketEvent<
+    GeneratePrePaymentCodePayload,
+    GeneratePrePaymentCodeResponse
+>(MeetingSocketEmitters.GeneratePrePaymentCode);
+
+export const checkPrePaymentCodeEvent = createMeetingSocketEvent<
+    CheckPrePaymentCodePayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.CheckPrePaymentCode);

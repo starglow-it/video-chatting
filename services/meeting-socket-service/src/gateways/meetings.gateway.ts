@@ -10,6 +10,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 import { BaseGateway } from './base.gateway';
 
@@ -22,6 +23,8 @@ import { MeetingRecordService } from '../modules/meeting-record/meeting-record.s
 import { MeetingRecordCommonService } from '../modules/meeting-record/meeting-record.common';
 import { ConfigClientService } from '../services/config/config.service';
 import { MeetingDonationsService } from '../modules/meeting-donations/meeting-donations.service';
+import { MeetingPreEventPaymentService } from '../modules/meeting-pre-event-payment/meeting-pre-event-payment.service';
+import { NotificationsService } from '../services/notifications/notifications.service';
 
 import {
   FinishMeetingReason,
@@ -82,7 +85,7 @@ import { UserActionInMeeting } from '../types';
 import { PassAuth } from '../utils/decorators/passAuth.decorator';
 import { Roles } from '../utils/decorators/role.decorator';
 import { UsersComponent } from '../modules/users/users.component';
-import { MeetingI18nErrorEnum, MeetingNativeErrorEnum } from 'shared-const';
+import { MeetingI18nErrorEnum, MeetingNativeErrorEnum, emailTemplates } from 'shared-const';
 import { WsEvent } from '../utils/decorators/wsEvent.decorator';
 import { TEventEmitter } from 'src/types/socket-events';
 import { WsBadRequestException } from '../exceptions/ws.exception';
@@ -95,6 +98,8 @@ import { AudienceRequestRecordingAccept } from 'src/dtos/requests/audience-reque
 import { DeleteRecordingVideoDto } from 'src/dtos/requests/delete-recording-video.dto';
 import { UpdateRecordingVideo } from 'src/dtos/requests/update-recording-video.dto';
 import { SetMeetingDonations } from 'src/dtos/requests/set-meeting-donations.dto';
+import { GeneratePreEventPaymentCode } from 'src/dtos/requests/generate-pre-event-payment-code.dto';
+import { CheckPreEventPaymentCode } from 'src/dtos/requests/check-pre-event-payment-code.dto copy';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -121,6 +126,8 @@ export class MeetingsGateway
     private meetingRecordCommonService: MeetingRecordCommonService,
     private configService: ConfigClientService,
     private meetingDonationsService: MeetingDonationsService,
+    private meetingPreEventPaymentService: MeetingPreEventPaymentService,
+    private notificationService: NotificationsService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -485,7 +492,7 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         subscribeWsError(socket);
-        const { userData, previousMeetingUserIds } = message;
+        const { userData, previousMeetingUserIds, isScheduled } = message;
         const waitingRoom = `waitingRoom:${userData.templateId}`;
         const rejoinRoom = `rejoin:${userData.templateId}`;
         this.joinRoom(socket, waitingRoom);
@@ -574,7 +581,7 @@ export class MeetingsGateway
                     accessStatus = MeetingAccessStatusEnum.Settings;
                   }
 
-                  if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled) {
+                  if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled && !isScheduled) {
                     accessStatus = MeetingAccessStatusEnum.InMeeting;
                   }
                 } else {
@@ -2556,6 +2563,102 @@ export class MeetingsGateway
 
         return wsResult({
           message: 'success',
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnGeneratePrePaymentCodeRequest)
+  async generatePrePaymentCode(
+    @MessageBody() msg: GeneratePreEventPaymentCode,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+
+        const { email, templateId } = msg;
+        const user = this.getUserFromSocket(socket);
+
+        const meeting = await this.meetingsService.findOne({
+          query: { templateId },
+          session
+        });
+
+        throwWsError(!meeting, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        const uuid = uuidv4();
+        const code = uuid.replace(/-/g, '').substring(0, 6).toUpperCase();
+
+        await this.meetingPreEventPaymentService.create({
+          meeting: meeting._id,
+          email: email || '',
+          code
+        }, session);
+        await this.usersComponent.findByIdAndUpdate({ id: user._id, data: { isPaywallPaid: true }, session });
+        const meetingHost = await this.usersComponent.findById({ id: meeting.hostUserId.toString(), session });
+        const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
+        const frontendUrl = await this.configService.get('frontendUrl');
+
+        const meetingUrl = `${frontendUrl}/room/${template.customLink || template.id
+          }${user.meetingRole === MeetingRole.Audience
+            ? `?role=audience&videoMute=1`
+            : '?videoMute=1'
+          }`;
+
+        if (email) {
+          this.notificationService.sendEmail({
+            template: {
+              key: emailTemplates.prePaymentCode,
+              data: [
+                { name: 'HOSTNAME', content: meetingHost.username },
+                { name: 'RUUMENAME', content: template.name },
+                { name: 'CODE', content: code },
+                { name: 'MEETINGURL', content: meetingUrl },
+                { name: 'UPDATE_PROFILE', content: frontendUrl },
+                { name: 'UNSUB', content: frontendUrl },
+              ],
+            },
+            to: [{ email: email }],
+          });
+        }
+
+        return wsResult({
+          message: {
+            code,
+            email
+          },
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnCheckPrePaymentCodeRequest)
+  async checkPrePaymentCode(
+    @MessageBody() msg: CheckPreEventPaymentCode,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+
+        const { code } = msg;
+
+        const codeModel = await this.meetingPreEventPaymentService.findOne({
+          query: { code },
+          session
+        });
+
+        return wsResult({
+          message: !!codeModel ? 'success' : 'fail',
         });
       },
       {

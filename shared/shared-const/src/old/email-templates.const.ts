@@ -17,4 +17,5 @@ export const emailTemplates = {
   blockedAccount: 'account-was-blocked',
   deletedAccountByAdmin: 'account-was-deleted',
   unblockedAccount: 'unblocked-account',
+  prePaymentCode: 'pre-payment-code',
 };

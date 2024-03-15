@@ -46,13 +46,15 @@ import {
     updateRecordingVideoPrice,
     getRecordingVideo,
     getRecordingUrl,
-    startRecording
+    startRecording,
+    generatePrePaymentCodeEvent,
+    checkPrePaymentCodeEvent
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
-import { updateUserSocketEvent, setRecordingVideoEvent } from '../../../roomStores';
+import { setRecordingVideoEvent, setPreEvenyPaymentCodeEvent, setPreEvenyPaymentCodeCheckEvent } from '../../../roomStores';
 import { GetRecordingUrlResponse, GetRecordingVideoResponse, StartRecordingResponse } from './types';
 
 import {
@@ -66,7 +68,8 @@ import {
     SendAnswerMeetingRequestParams,
     AnswerRequestRecordingResponse,
     SendRequestToHostWhenDndPayload,
-    SendRequestToHostWhenDndResponse
+    SendRequestToHostWhenDndResponse,
+    GeneratePrePaymentCodeResponse
 } from './types';
 
 import {
@@ -193,7 +196,8 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             micStatus: source.localUser.micStatus,
             maxParticipants: source.template.maxParticipants,
         },
-        previousMeetingUserIds: data
+        previousMeetingUserIds: data.userIds,
+        isScheduled: data.isScheduled
     }),
 });
 
@@ -385,6 +389,10 @@ answerAccessMeetingRequestSocketEvent.failData.watch(data =>
 );
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 updateRecordingVideoPrice.doneData.watch(handleUpdateRecordingVideoPrice);
+generatePrePaymentCodeEvent.doneData.watch(({ message }: GeneratePrePaymentCodeResponse) => setPreEvenyPaymentCodeEvent(message));
+checkPrePaymentCodeEvent.doneData.watch(({ message }: AnswerRequestRecordingResponse) => {
+    setPreEvenyPaymentCodeCheckEvent(message);
+});
 startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
     const savedSettings = WebStorage.get<SavedSettings>({
         key: StorageKeysEnum.meetingSettings,
@@ -437,7 +445,7 @@ getRecordingVideo.doneData.watch(({ message }: GetRecordingVideoResponse) => {
 getRecordingUrl.doneData.watch(({ message }: GetRecordingUrlResponse) => {
     setRecordingVideoEvent({ url: message });
 });
-startRecording.doneData.watch(( { message }: StartRecordingResponse ) => {
+startRecording.doneData.watch(({ message }: StartRecordingResponse) => {
     setMeetingRecordingIdEvent(message);
 });
 
