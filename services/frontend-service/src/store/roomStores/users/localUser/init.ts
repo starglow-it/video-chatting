@@ -3,7 +3,10 @@ import Router from 'next/router';
 
 import {
     $localUserStore,
+    $userLocationStore,
     $isPaywallPaymentEnabled,
+    $preEventPaymentCodeStore,
+    $preEventPaymentCodeCheckStore,
     setIsPaywallPaymentEnabled,
     leaveDeletedUserMeetingEvent,
     leaveExpiredMeetingEvent,
@@ -11,6 +14,9 @@ import {
     leaveMeetingAsHost,
     leaveMeetingEvent,
     updateLocalUserEvent,
+    setUserLocation,
+    setPreEvenyPaymentCodeEvent,
+    setPreEvenyPaymentCodeCheckEvent
 } from './model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { AppDialogsEnum } from '../../../types';
@@ -18,6 +24,11 @@ import { clientRoutes } from '../../../../const/client-routes';
 import { updateMeetingUserEvent } from '../meetingUsers/model';
 import { resetRoomStores } from '../../../root';
 import { $isMeetingHostStore } from '../../meeting/meeting/model';
+
+$userLocationStore.on(setUserLocation, (state, data) => ({ ...state, ...data }));
+
+$preEventPaymentCodeStore.on(setPreEvenyPaymentCodeEvent, (state, data) => data);
+$preEventPaymentCodeCheckStore.on(setPreEvenyPaymentCodeCheckEvent, (state, data) => data);
 
 $localUserStore
     .on(updateMeetingUserEvent, (state, data) =>

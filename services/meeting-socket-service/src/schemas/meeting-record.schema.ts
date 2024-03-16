@@ -34,8 +34,13 @@ export class MeetingRecord {
   })
   price: number;
 
-  createdAt?: Date
-  updatedAt?: Date
+  @Prop({
+    type: mongoose.Schema.Types.Date
+  })
+  endAt: Date;
+  
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type MeetingRecordDocument = MeetingRecord & Document;

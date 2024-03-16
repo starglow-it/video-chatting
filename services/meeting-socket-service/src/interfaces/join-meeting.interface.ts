@@ -6,5 +6,6 @@ export interface IJoinMeeting {
     meetingRole: MeetingRole;
     avatarRole: MeetingAvatarRole;
   },
-  previousMeetingUserId: string
+  previousMeetingUserIds: string[];
+  isScheduled: boolean;
 }

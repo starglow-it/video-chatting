@@ -55,6 +55,7 @@ export const sendEmail = async ({
             template_content: [],
             message: {
                 subject: targetTemplate.name,
+                from_email: targetTemplate.from_email || 'mailchimp@theliveoffice.com',
                 to: sendTo,
                 merge_language: 'mailchimp',
                 global_merge_vars: [

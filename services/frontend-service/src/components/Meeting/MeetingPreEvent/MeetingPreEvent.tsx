@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import Router, { useRouter } from 'next/router';
@@ -11,30 +11,33 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
+import { PreEventPaymentForm } from '@components/PreEventPaymentForm/PreEventPaymentForm';
 
 //const
 import { PaymentType } from 'shared-const';
 import { MeetingRole } from 'shared-types';
 
-//helper
-import { parseCustomDateString } from '../../../helpers/parseCustomDateString';
-
-import {
-    downloadIcsFileFx
-} from '../../../store';
-
 import {
     $isOwner,
     $meetingTemplateStore,
-    $paymentMeetingParticipant,
-    $isRoomPaywalledStore,
+    $enabledPaymentPaywallParticipant,
+    $enabledPaymentPaywallAudience,
+    $paymentPaywallParticipant,
+    $paymentPaywallAudience,
+    $localUserStore,
+    $isOwnerInMeeting,
+    $doNotDisturbStore,
+    $isLoadingJoinWaitingRoom,
+    $meetingRoleStore,
+    $preEventPaymentCodeCheckStore,
     createPaymentIntentFx,
-
+    updateLocalUserEvent,
+    sendJoinWaitingRoomSocketEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -54,15 +57,20 @@ const Component = ({
 }) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
-    const isRoomPaywalledStore = useStore($isRoomPaywalledStore);
-
-    const startMeetingAt =
-        meetingTemplate !== null &&
-            meetingTemplate.meetingInstance !== null &&
-            meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? parseCustomDateString(meetingTemplate.meetingInstance.startAt)?.formattedDate : '';
+    const enabledPaymentPaywallParticipant = useStore($enabledPaymentPaywallParticipant);
+    const enabledPaymentPaywallAudience = useStore($enabledPaymentPaywallAudience);
+    const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
+    const paymentPaywallAudience = useStore($paymentPaywallAudience);
+    const localUserStore = useStore($localUserStore);
+    const isJoinWaitingRoomPending = useStore($isLoadingJoinWaitingRoom);
+    const [isPreviewShow, setIsPreviewShow] = useState(true);
     const aboutTheHost = meetingTemplate !== null &&
         meetingTemplate.meetingInstance !== null &&
         meetingTemplate.meetingInstance.hasOwnProperty('startAt') ? meetingTemplate.meetingInstance.aboutTheHost : '';
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const doNotDisturb = useStore($doNotDisturbStore);
+    const meetingRole = useStore($meetingRoleStore);
+    const preEventPaymentCodeCheck = useStore($preEventPaymentCodeCheckStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -72,14 +80,10 @@ const Component = ({
         Router.back();
     }, [router]);
 
-    const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const meetingRole = !!router.query.role ? MeetingRole.Audience : MeetingRole.Participant;
-
-                if (isRoomPaywalledStore) {
+                if (enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience) {
                     await createPaymentIntentFx({
                         templateId: meetingTemplate.id,
                         meetingRole: meetingRole,
@@ -92,149 +96,163 @@ const Component = ({
         };
 
         fetchData();
-    }, [meetingTemplate.id, meetingTemplate.type, isRoomPaywalledStore]);
+    }, [meetingTemplate.id, enabledPaymentPaywallParticipant, enabledPaymentPaywallAudience, meetingRole]);
 
-    const handleDownloadInviteICSFile = async () => {
-        if (!!meetingTemplate.id && !!meetingTemplate.meetingInstance.content) {
-            await downloadIcsFileFx({
-                templateId: meetingTemplate.id,
-                content: meetingTemplate.meetingInstance.content
-            });
+    const handleEnterMeeting = () => {
+        if ((
+            (meetingRole === MeetingRole.Participant && enabledPaymentPaywallParticipant) ||
+            (meetingRole === MeetingRole.Audience && enabledPaymentPaywallAudience)
+        ) && (!isOwnerInMeeting || doNotDisturb || localUserStore.isPaywallPaid)
+        ) {
+            setIsPreviewShow(false);
+        } else {
+            handleSetMeetingPreviewShow();
+        }
+    };
+
+    const handlePaywallPrepayment = () => {
+        if (!localUserStore.isPaywallPaid) {
+            updateLocalUserEvent({ ...localUserStore, isPaywallPaid: true });
+        }
+        if (preEventPaymentCodeCheck === 'success') {
+            handleSetMeetingPreviewShow();
+        } 
+
+        let meetingUserIds = localStorage.getItem('meetingUserIds');
+        let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
+
+        if (!!localUserStore.id && parsedMeetingUserIds.findIndex(item => item.id === localUserStore.id) === -1) {
+            parsedMeetingUserIds.push({ id: localUserStore.id, date: new Date() });
+            localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
         }
     };
 
     return (
         <CustomGrid width="100%">
             <ConditionalRender condition={isShow}>
-                <CustomGrid
-                    container
-                    alignItems="center"
-                    className={clsx(styles.meetingPreviewWrapper, {
-                        [styles.mobile]: isMobile,
-                    })}
-                    wrap="nowrap"
-                >
-                    <CustomBox className={styles.imageWrapper} />
-                    <ProfileAvatar
-                        className={clsx(styles.profileAvatar, {
+                <ConditionalRender condition={isPreviewShow}>
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        className={clsx(styles.meetingPreviewWrapper, {
                             [styles.mobile]: isMobile,
                         })}
-                        width={isMobile ? '50px' : '120px'}
-                        height={isMobile ? '50px' : '120px'}
-                        src={meetingTemplate?.user?.profileAvatar?.url || ''}
-                        userName={meetingTemplate.fullName}
-                    />
-                    <CustomGrid
-                        item
-                        container
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        className={styles.textWrapper}
-                        flex="1 1 auto"
+                        wrap="nowrap"
                     >
-                        <CustomTypography
-                            variant="h3"
-                            color="colors.white.primary"
-                            className={styles.companyName}
-                            fontSize={isMobile ? 15 : 20}
-                            lineHeight={isMobile ? '20px' : '36px'}
+                        <CustomBox className={styles.imageWrapper} />
+                        <ProfileAvatar
+                            className={clsx(styles.profileAvatar, {
+                                [styles.mobile]: isMobile,
+                            })}
+                            width={isMobile ? '50px' : '100px'}
+                            height={isMobile ? '50px' : '100px'}
+                            src={meetingTemplate?.user?.profileAvatar?.url || ''}
+                            userName={meetingTemplate.fullName}
+                        />
+                        <CustomGrid
+                            item
+                            container
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            className={styles.textWrapper}
+                            flex="1 1 auto"
                         >
-                            {meetingTemplate.companyName}
-                        </CustomTypography>
-                        <ConditionalRender condition={!isOwner}>
                             <CustomTypography
+                                variant="h3"
+                                color="colors.white.primary"
+                                className={styles.titleText}
+                                fontSize={isMobile ? 15 : 20}
+                                lineHeight={isMobile ? '20px' : '36px'}
+                            >
+                                {meetingTemplate.companyName}
+                            </CustomTypography>
+                            <ConditionalRender condition={!isOwner}>
+                                <CustomTypography
+                                    textAlign="center"
+                                    color="colors.white.primary"
+                                    nameSpace="meeting"
+                                    translation="preview.invitedText"
+                                    fontSize={isMobile ? 12 : 14}
+                                    lineHeight={isMobile ? '18px' : '24px'}
+                                    className={styles.invitedText}
+                                />
+                            </ConditionalRender>
+                            <CustomTypography
+                                variant="h3bold"
+                                color="colors.white.primary"
+                                className={clsx(styles.titleText, styles.roomName)}
+                                fontSize={isMobile ? 18 : 30}
+                                lineHeight={isMobile ? '20px' : '36px'}
+                            >
+                                {meetingTemplate.name}
+                            </CustomTypography>
+                            <CustomTypography
+                                variant="h6"
+                                color="colors.white.primary"
+                                nameSpace="createRoom"
+                                translation="editDescription.form.description"
+                                className={clsx(styles.formLabel, styles.descriptionLabel, {
+                                    [styles.mobile]: isMobile
+                                })}
+                            />
+                            <CustomTypography
+                                variant="body1"
                                 textAlign="center"
                                 color="colors.white.primary"
-                                nameSpace="meeting"
-                                translation="preview.invitedText"
-                                fontSize={isMobile ? 12 : 14}
+                                className={clsx(styles.description, {
+                                    [styles.mobile]: isMobile
+                                })}
+                                fontSize={isMobile ? 12 : 16}
                                 lineHeight={isMobile ? '18px' : '24px'}
-                                className={styles.invitedText}
-                            />
-                        </ConditionalRender>
-                        <CustomTypography
-                            variant="h3bold"
-                            color="colors.white.primary"
-                            className={styles.companyName}
-                            fontSize={isMobile ? 18 : 30}
-                            lineHeight={isMobile ? '20px' : '36px'}
-                        >
-                            {meetingTemplate.name}
-                        </CustomTypography>
-                        <CustomTypography
-                            variant="body1"
-                            color="colors.white.primary"
-                            className={styles.companyName}
-                            fontSize={isMobile ? 18 : 30}
-                            lineHeight={isMobile ? '24px' : '44px'}
-                        >
-                            {startMeetingAt}
-                        </CustomTypography>
-                        <CustomTypography
-                            variant="h6"
-                            color="colors.white.primary"
-                            nameSpace="createRoom"
-                            translation="editDescription.form.description"
-                            className={clsx(styles.descriptionLabel, {
-                                [styles.mobile]: isMobile
-                            })}
-                        />
-                        <CustomTypography
-                            variant="body1"
-                            textAlign="center"
-                            color="colors.white.primary"
-                            className={clsx(styles.description, {
-                                [styles.mobile]: isMobile
-                            })}
-                            fontSize={isMobile ? 12 : 16}
-                            lineHeight={isMobile ? '18px' : '24px'}
-                        >
-                            {meetingTemplate.shortDescription ||
-                                meetingTemplate.description}
-                        </CustomTypography>
-                        <CustomTypography
-                            variant="h6"
-                            color="colors.white.primary"
-                            className={clsx(styles.descriptionLabel, {
-                                [styles.mobile]: isMobile
-                            })}
-                        >about {meetingTemplate.companyName}</CustomTypography>
-                        <CustomTypography
-                            variant="body1"
-                            textAlign="center"
-                            color="colors.white.primary"
-                            className={clsx(styles.description, {
-                                [styles.mobile]: isMobile
-                            })}
-                            fontSize={isMobile ? 12 : 16}
-                            lineHeight={isMobile ? '18px' : '24px'}
-                        >
-                            {aboutTheHost}
-                        </CustomTypography>
-                        <ConditionalRender condition={isRoomPaywalledStore}>
-                            <CustomPaper className={styles.payPaper}>
-                                <CustomTypography
-                                    variant="body2bold"
-                                    nameSpace="createRoom"
-                                    translation="editDescription.form.paymentTitle"
-                                    className={styles.paymentTitle}
-                                />
-                                <PaymentForm
-                                    isPreEvent={true}
-                                    onClose={() => { }}
-                                    payment={paymentMeetingParticipant}
-                                    setMeetingPreviewShow={handleSetMeetingPreviewShow}
-                                />
-                            </CustomPaper>
-                        </ConditionalRender>
-                        <ConditionalRender condition={!isRoomPaywalledStore}>
+                            >
+                                {meetingTemplate.shortDescription ||
+                                    meetingTemplate.description}
+                            </CustomTypography>
+                            <CustomTypography
+                                variant="h6"
+                                color="colors.white.primary"
+                                className={clsx(styles.formLabel, {
+                                    [styles.mobile]: isMobile
+                                })}
+                            >about {meetingTemplate.companyName}</CustomTypography>
+                            <CustomTypography
+                                variant="body1"
+                                textAlign="center"
+                                color="colors.white.primary"
+                                className={clsx(styles.description, {
+                                    [styles.mobile]: isMobile
+                                })}
+                                fontSize={isMobile ? 12 : 16}
+                                lineHeight={isMobile ? '18px' : '24px'}
+                            >
+                                {aboutTheHost}
+                            </CustomTypography>
+                            <ConditionalRender condition={!isOwnerInMeeting || doNotDisturb}>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    gap={0.5}
+                                    className={styles.preEventText}
+                                >
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="preview.preEventText1"
+                                    />
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="preview.preEventText2"
+                                    />
+                                </CustomGrid>
+                            </ConditionalRender>
                             <CustomGrid
                                 container
                                 gap={4}
                                 flexWrap="nowrap"
                                 justifyContent="center"
-                                className={styles.buttonsGroup}
+                                className={clsx(styles.buttonsGroup, { [styles.enterBtn]:  isOwnerInMeeting && !doNotDisturb})}
                             >
                                 <CustomGrid
                                     item
@@ -250,17 +268,47 @@ const Component = ({
                                     />
                                 </CustomGrid>
                                 <CustomGrid item xs>
-                                    <ActionButton
-                                        variant="accept"
-                                        label="Enter"
-                                        className={styles.actionButton}
-                                        onAction={handleSetMeetingPreviewShow}
-                                    />
+                                    {
+                                        !isOwnerInMeeting || doNotDisturb
+                                            ? <ActionButton
+                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Pre-pay" }
+                                                disabled={isJoinWaitingRoomPending}
+                                                className={clsx(styles.actionButton, styles.prePayBtn)}
+                                                onAction={handleEnterMeeting}
+                                            />
+                                            : <ActionButton
+                                                variant="accept"
+                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Enter" }
+                                                disabled={isJoinWaitingRoomPending}
+                                                className={clsx(styles.actionButton)}
+                                                onAction={handleEnterMeeting}
+                                            />
+                                    }
                                 </CustomGrid>
                             </CustomGrid>
-                        </ConditionalRender>
+                        </CustomGrid>
                     </CustomGrid>
-                </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={!isPreviewShow}>
+                    <ConditionalRender condition={meetingRole === MeetingRole.Participant}>
+                        <CustomPaper>
+                            <PreEventPaymentForm
+                                isPaywallPaid={localUserStore.isPaywallPaid}
+                                payment={paymentPaywallParticipant}
+                                setMeetingPreviewShow={handlePaywallPrepayment}
+                            />
+                        </CustomPaper>
+                    </ConditionalRender>
+                    <ConditionalRender condition={meetingRole === MeetingRole.Audience}>
+                        <CustomPaper>
+                            <PreEventPaymentForm
+                                isPaywallPaid={localUserStore.isPaywallPaid}
+                                payment={paymentPaywallAudience}
+                                setMeetingPreviewShow={handlePaywallPrepayment}
+                            />
+                        </CustomPaper>
+                    </ConditionalRender>
+                </ConditionalRender>
             </ConditionalRender>
         </CustomGrid>
     );

@@ -6,6 +6,7 @@ export type MeetingUsersListItemProps = {
     isOwnerItem?: boolean;
     isAcceptRequest?: boolean;
     isAudienceRequest?: boolean;
+    isAudience?: boolean;
     onAcceptUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onDeleteUser?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;
     onChangeHost?: ((data: { userId: MeetingUser['id'] }) => void) | undefined;

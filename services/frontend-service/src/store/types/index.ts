@@ -41,6 +41,11 @@ export type MeetingUser = {
     isPaywallPaid: boolean;
 };
 
+export type userLocation = {
+    country: string;
+    state: string;
+};
+
 export type joyride = {
     runDashboardJoyride: boolean,
     runMeetingJoyride: boolean
@@ -322,6 +327,7 @@ export enum NotificationType {
     RequestBecomeParticipantSuccess = 'request_become_participant_success',
     RequestBecomeAudienceSuccess = 'request_become_audience_success',
     RequestRecordingMeeting = 'request_recording_meeting',
+    HostIsAwayForAudiencePaywallPayment = 'host_is_away_for_audience_paywall_payment',
 }
 
 export type Notification = {
@@ -331,6 +337,16 @@ export type Notification = {
     withSuccessIcon?: boolean;
     withErrorIcon?: boolean;
     withManualClose?: boolean;
+};
+
+export type orangeNotification = {
+    type: NotificationType;
+    message: string;
+    messageOptions?: { [key: string]: any };
+    withSuccessIcon?: boolean;
+    withErrorIcon?: boolean;
+    withManualClose?: boolean;
+    isIconHand?: boolean;
 };
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
@@ -400,10 +416,22 @@ export type MeetingRecordVideo = {
     id: string;
     meeting: string;
     user: string;
+    endAt: string;
     url: string;
     price: number;
     createdAt: string;
     updatedAt: string;
+};
+
+export type RecordingVideo = {
+    id?: string;
+    meetingName?: string;
+    url?: string;
+    host?: Profile;
+    price?: number;
+    endAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type MeetingRecording = {
@@ -415,6 +443,12 @@ export type MeetingRecording = {
     isStopRecordingPending?: boolean;
     urlForCopy?: string;
 };
+
+export type preEvetnPaymentData = {
+    code: string;
+    email: string;
+};
+
 export * from './state';
 export * from './response';
 export * from './requestParams';

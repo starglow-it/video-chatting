@@ -157,8 +157,6 @@ const Component = ({
             }
 
             const file = acceptedFiles[0];
-            console.log(file);
-
             // return;
 
             if (ACCEPT_MIMES_IMAGE[file.type] && file.size > MAX_SIZE_IMAGE) {

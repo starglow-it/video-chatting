@@ -12,9 +12,10 @@ import {
     MeetingQuestionAnswerReaction,
     MeetingUser,
     Profile,
+    userLocation,
 } from '../../../types';
 import { MeetingPayment } from '../meetingPayment/type';
-import { MeetingRecordVideo } from '../../../types'; }
+import { MeetingRecordVideo, RecordingVideo } from '../../../types';
 
 export type JoinWaitingRoomPayload = {
     userData: {
@@ -27,7 +28,8 @@ export type JoinWaitingRoomPayload = {
         isAuraActive: boolean;
         maxParticipants: number;
     },
-    previousMeetingUserId: string;
+    previousMeetingUserIds: string[];
+    isScheduled: boolean;
 };
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
@@ -48,6 +50,7 @@ export type ClickMeetingLinkPayload = {
 export type EnterMeetingRequestPayload = {
     meetingId: Meeting['id'];
     user: MeetingUser;
+    userLocation: userLocation;
 };
 export type AnswerAccessMeetingRequestPayload = {
     meetingId: Meeting['id'];
@@ -111,6 +114,7 @@ export type JoinAudienceMeetingPayload = {
     meetingId: string;
     username: string;
     meetingAvatarId?: string;
+    userLocation: userLocation
 };
 
 export type SendMessageChatPayload = {
@@ -178,16 +182,31 @@ export type GetRecordingUrlsPayload = {
     profileId: string;
 };
 
-export type GetRecordingUrlPayload = {
-    meetingId: string;
-    videoId: string;
+export type GetRecordingVideoPayload = {
+    id: string;
+};
+
+export type GetRecordingVideoResponse = {
+    message: RecordingVideo
+};
+
+export type GetRecordingUrlResponse = {
+    message: string
 };
 
 export type SendRequestToHostWhenDndPayload = {
     meetingId: string;
+    username: string;
+};
+
+export type StartRecordingPayload = {
+    id: string;
+    meetingId: string;
+    url: string;
 };
 
 export type SaveRecordingEventPayload = {
+    id: string;
     meetingId: string;
     url: string;
 };
@@ -201,6 +220,10 @@ export type SetIsMeetingRecordingPayload = {
 export type RequestRecordingResponse = {
     userId: string;
     username: string;
+};
+
+export type StartRecordingResponse = {
+    message: string
 };
 
 export type ReceiveRecordingUrls = {
@@ -231,4 +254,22 @@ export type UpdateRecordingVideoPricePayload = {
 export type UpdateRecordingVideoPriceResponse = {
     message: string;
     video: MeetingRecordVideo;
+};
+
+export type PaywalPrePayment = {
+    isCodeNeeded: boolean
+};
+
+export type GeneratePrePaymentCodePayload = {
+    email?: string;
+    templateId: string;
+};
+
+export type GeneratePrePaymentCodeResponse = {
+    code: string;
+    email: string;
+};
+
+export type CheckPrePaymentCodePayload = {
+    code: string;
 };

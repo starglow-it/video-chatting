@@ -16,10 +16,11 @@ import {
 import { SavedSettings } from 'src/types';
 import Router from 'next/router';
 import { dashboardRoute } from 'src/const/client-routes';
-import { $meetingStore, updateMeetingEvent } from '../meeting/model';
+import { $meetingStore, setMeetingRecordingIdEvent, updateMeetingEvent } from '../meeting/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import {
     $localUserStore,
+    $userLocationStore,
     updateLocalUserEvent,
 } from '../../users/localUser/model';
 import { $profileStore } from '../../../profile/profile/model';
@@ -42,13 +43,19 @@ import {
     joinMeetingAudienceEvent,
     joinMeetingRecorderEvent,
     sentRequestToHostWhenDnd,
-    updateRecordingVideoPrice
+    updateRecordingVideoPrice,
+    getRecordingVideo,
+    getRecordingUrl,
+    startRecording,
+    generatePrePaymentCodeEvent,
+    checkPrePaymentCodeEvent
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
-import { updateUserSocketEvent } from '../../../roomStores';
+import { setRecordingVideoEvent, setPreEvenyPaymentCodeEvent, setPreEvenyPaymentCodeCheckEvent } from '../../../roomStores';
+import { GetRecordingUrlResponse, GetRecordingVideoResponse, StartRecordingResponse } from './types';
 
 import {
     AppDialogsEnum,
@@ -57,11 +64,12 @@ import {
     Profile,
     JoinMeetingResult,
 } from '../../../types';
-import { 
-    SendAnswerMeetingRequestParams, 
-    AnswerRequestRecordingResponse, 
-    SendRequestToHostWhenDndPayload, 
-    SendRequestToHostWhenDndResponse 
+import {
+    SendAnswerMeetingRequestParams,
+    AnswerRequestRecordingResponse,
+    SendRequestToHostWhenDndPayload,
+    SendRequestToHostWhenDndResponse,
+    GeneratePrePaymentCodeResponse
 } from './types';
 
 import {
@@ -118,11 +126,13 @@ export const joinAudienceMeetingSocketEvent = attach<
     source: combine({
         meeting: $meetingStore,
         localUser: $localUserStore,
+        userLocation: $userLocationStore
     }),
-    mapParams: (_, { meeting, localUser }) => {
+    mapParams: (_, { meeting, localUser, userLocation }) => {
         return {
             meetingId: meeting.id,
             username: localUser.username,
+            userLocation: userLocation
         };
     },
 });
@@ -186,7 +196,8 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             micStatus: source.localUser.micStatus,
             maxParticipants: source.template.maxParticipants,
         },
-        previousMeetingUserId: data
+        previousMeetingUserIds: data.userIds,
+        isScheduled: data.isScheduled
     }),
 });
 
@@ -231,10 +242,12 @@ export const sendEnterMeetingRequestSocketEvent = attach<
     source: combine({
         meeting: $meetingStore,
         user: $localUserStore,
+        userLocation: $userLocationStore
     }),
-    mapParams: (params, { meeting, user }) => ({
+    mapParams: (params, { meeting, user, userLocation }) => ({
         meetingId: meeting?.id,
         user,
+        userLocation
     }),
 });
 
@@ -376,6 +389,10 @@ answerAccessMeetingRequestSocketEvent.failData.watch(data =>
 );
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 updateRecordingVideoPrice.doneData.watch(handleUpdateRecordingVideoPrice);
+generatePrePaymentCodeEvent.doneData.watch(({ message }: GeneratePrePaymentCodeResponse) => setPreEvenyPaymentCodeEvent(message));
+checkPrePaymentCodeEvent.doneData.watch(({ message }: AnswerRequestRecordingResponse) => {
+    setPreEvenyPaymentCodeCheckEvent(message);
+});
 startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
     const savedSettings = WebStorage.get<SavedSettings>({
         key: StorageKeysEnum.meetingSettings,
@@ -419,6 +436,18 @@ joinMeetingRecorderEvent.failData.watch((error: any) => {
     console.log('audience join fail', error);
 });
 sentRequestToHostWhenDnd.doneData.watch(handleRequestToHostWHenDnd);
+getRecordingVideo.doneData.watch(({ message }: GetRecordingVideoResponse) => {
+    setRecordingVideoEvent(message);
+});
+getRecordingVideo.doneData.watch(({ message }: GetRecordingVideoResponse) => {
+    setRecordingVideoEvent(message);
+});
+getRecordingUrl.doneData.watch(({ message }: GetRecordingUrlResponse) => {
+    setRecordingVideoEvent({ url: message });
+});
+startRecording.doneData.watch(({ message }: StartRecordingResponse) => {
+    setMeetingRecordingIdEvent(message);
+});
 
 sample({
     clock: sendReconnectMeetingEvent.doneData,

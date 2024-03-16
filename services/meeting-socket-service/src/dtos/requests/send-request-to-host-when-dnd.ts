@@ -4,4 +4,8 @@ export class SendRequestToHostWhenDnd implements ISendRequestToHostWhenDnd {
   @IsNotEmpty()
   @IsString()
   meetingId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  username: string;
 }

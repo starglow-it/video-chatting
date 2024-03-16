@@ -29,7 +29,9 @@
         "mobile": "Reload & Allow Access to Mic & Cam"
     },
     "preview": {
-        "invitedText": "invited you to"
+        "invitedText": "invited you to",
+        "preEventText1": "The event has not started",
+        "preEventText2": "but you may Pre-pay"
     },
     "meetingNotStarted": {
         "title": "Meeting has not \nstarted yet",
@@ -189,10 +191,18 @@
     },
     "payments": {
         "perSession": "per session",
-        "yourCard": "Your card",
+        "yourCard": "Enter Your Card:",
         "stripe": "Stripe",
         "payWith": "Secure Pay with",
-        "title": "Payments"
+        "title": "Payments",
+        "endterYourCode": "If you already paid, enter your code: ",
+        "or": "or",
+        "prePayAndRegister": "Pre-pay & register:",
+        "registrationSubTitle": "Thank you for registering!",
+        "yourEntryCode": "Your entry Code is: ",
+        "codeNotify": "Save this code, you’ll need it to enter",
+        "byEmail": "An entry code has also been emailed to",
+        "codeError": "code is invalid"
     },
     "customLink": {
         "yourLink": "your meeting link here",

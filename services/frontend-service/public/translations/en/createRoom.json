@@ -55,7 +55,8 @@
       "monetizationContentOn": "On",
       "monetizationContentOff": "Off",
       "preMeetingNtfText": "you'll be able to join at the indicated time",
-      "paymentTitle": "Payment is required before entering"
+      "paymentTitle": "Payment is required before entering",
+      "prePaymentTitle": "Event / ruume name"
     }
   },
   "editPositions": {

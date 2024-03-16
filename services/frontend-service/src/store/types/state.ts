@@ -77,6 +77,10 @@ export type MeetingStatisticsState = {
         audienceEntryFee: number;
         participantFees: number;
         audienceFees: number;
-        donations: number;
+        participantDonationPrice: number,
+        audienceDonationPrice: number,
+        participantDonationsTotal: number,
+        audienceDonationsTotal: number,
+
     };
 }

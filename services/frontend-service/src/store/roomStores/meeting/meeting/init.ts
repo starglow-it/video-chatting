@@ -16,6 +16,8 @@ import {
     $activeTabPanel,
     setActiveTabPanelEvent,
     $isToggleLinksDrawer,
+    $sharedRecordingVideoStore,
+    $meetingRecordingIdStore,
     toggleLinksDrawerEvent,
     updateMeetingTemplateDashFx,
     receiveRequestRecordingEvent,
@@ -28,7 +30,9 @@ import {
     setRecordingUrlEvent,
     setUrlForCopyEvent,
     deleteRecordingUrlEvent,
-    updateRecordingVideoPriceEvent
+    updateRecordingVideoPriceEvent,
+    setRecordingVideoEvent,
+    setMeetingRecordingIdEvent
 } from './model';
 import {
     $changeStreamStore,
@@ -71,6 +75,8 @@ $isToggleLinksDrawer
         newToggle !== undefined ? newToggle : !toggle,
     )
     .reset(resetRoomStores);
+
+$sharedRecordingVideoStore.on(setRecordingVideoEvent, ( state, data ) => ({ ...state, ...data }));
 
 $meetingRecordingStore
     .on(setStopRecordingPendingEvent, (state, _) => ({ ...state, isStopRecordingPending: true }))
@@ -121,6 +127,8 @@ $meetingRecordingStore
     })
     .reset(resetMeetingRecordingStore);
 
+$meetingRecordingIdStore.on(setMeetingRecordingIdEvent, (state, data) => data);
+
 getMeetingUsersStatisticsFx.use(handleGetMeetingUsers);
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
@@ -147,13 +155,6 @@ sample({
         ...params,
     }),
     target: joinMeetingFx,
-});
-
-joinMeetingFx.doneData.watch(() => {
-    const isPaywallPaid = $isPaywallPaid.getState();
-    if (isPaywallPaid) {
-        updateUserSocketEvent({ isPaywallPaid: true });
-    }
 });
 
 sample({

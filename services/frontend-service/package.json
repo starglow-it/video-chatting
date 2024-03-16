@@ -90,6 +90,7 @@
         "webrtc-adapter": "8.1.2",
         "xregexp": "5.1.1",
         "yup": "0.32.11",
+        "@hookform/resolvers": "3.3.4",
         "@types/react-joyride": "2.0.5",
         "react-joyride": "2.7.2",
         "@fortawesome/fontawesome-svg-core": "6.5.1",

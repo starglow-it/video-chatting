@@ -66,7 +66,7 @@ import { resetRoomStores } from '../../../root';
 import { clearStreamStore } from '../../../../helpers/media/clearStreamStore';
 import { setNewStream } from '../../../../helpers/media/setNewStream';
 import { handleStartRecordingStream, handleStopRecordingStream } from './handlers/handleRecordingStream';
-import { resetRecordedVideoBlobStore, resetUploadVideoToS3Store, startRecordMeeting, stopRecordMeeting } from '../model';
+import { resetRecordedVideoBlobStore, resetUploadVideoToS3Store } from '../model';
 import { handleUploadToS3 } from './handlers/handleUploadToS3';
 
 $audioDevicesStore

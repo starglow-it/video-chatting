@@ -18,6 +18,7 @@ import { addNotificationEvent } from '../../store';
 import {
     $paymentIntent,
     createPaymentIntentWithData,
+    updateUserSocketEvent,
 } from '../../store/roomStores';
 
 // styles
@@ -25,6 +26,7 @@ import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
+import clsx from 'clsx';
 
 const currencySigns: { [key: string]: string } = {
     USD: '$',
@@ -35,7 +37,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
+const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -48,6 +50,12 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
             message: 'payments.paymentSuccess',
             withSuccessIcon: true,
         });
+
+        if (payment.type === PaymentType.Meeting) {
+            updateUserSocketEvent({
+                isDonated: true
+            });
+        }
     }, []);
 
     const handleSubmitError = useCallback(() => {
@@ -63,86 +71,93 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
     return (
         <CustomGrid container direction="column">
             <CustomGrid
+                item
                 container
-                alignItems="center"
-                sx={{
-                    marginBottom: {
-                        xs: '20px',
-                        sm: '10px',
-                        md: '20px',
-                        xl: '20px',
-                    },
-                }}
-                className={styles.title}
+                direction="column"
             >
-                {subLabel ? <>{subLabel} </> : null}
-                &nbsp;
-                <CustomTypography
-                    sx={{
-                        color: `${colorMain}`,
-                    }}
-                >
-                    {currencySigns[payment.currency]}
-                    {payment.price}
-                </CustomTypography>
-                &nbsp;
-            </CustomGrid>
-            <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
                 <CustomGrid
+                    item
                     container
-                    direction="column"
-                    className={styles.paymentForm}
+                    alignItems="center"
                     sx={{
-                        marginTop: {
+                        marginBottom: {
                             xs: '20px',
                             sm: '10px',
                             md: '20px',
                             xl: '20px',
                         },
                     }}
+                    className={styles.title}
                 >
+                    {subLabel ? <>{subLabel} </> : null}
+                    &nbsp;
                     <CustomTypography
-                        variant={isPreEvent ? "body3bold" : "body1bold"}
-                        color={isPreEvent ? 'black' : colorMain}
-                        nameSpace="meeting"
-                        translation="payments.yourCard"
-                        className={styles.titleCard}
                         sx={{
-                            marginBottom: {
+                            color: `${colorMain}`,
+                        }}
+                    >
+                        {currencySigns[payment.currency]}
+                        {payment.price}
+                    </CustomTypography>
+                    &nbsp;
+                </CustomGrid>
+                <CustomDivider light flexItem />
+                {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+                    <CustomGrid
+                        container
+                        direction="column"
+                        className={styles.paymentForm}
+                        sx={{
+                            marginTop: {
                                 xs: '20px',
                                 sm: '10px',
                                 md: '20px',
                                 xl: '20px',
                             },
                         }}
-                    />
-                    <StripeElement secret={paymentIntent.clientSecret}>
-                        <CardDataForm
-                            isPreEvent={isPreEvent}
-                            onSubmit={handleSubmit}
-                            onError={handleSubmitError}
-                            setMeetingPreviewShow={setMeetingPreviewShow}
-                            paymentIntentSecret={paymentIntent.clientSecret}
-                            colorForm={
-                                payment.type === PaymentType.Paywall
-                                    ? 'black'
-                                    : 'white'
-                            }
-                            paymentType={payment.type}
+                    >
+                        <CustomTypography
+                            variant="body1bold"
+                            color={colorMain}
+                            nameSpace="meeting"
+                            translation="payments.yourCard"
+                            className={styles.titleCard}
+                            sx={{
+                                marginBottom: {
+                                    xs: '20px',
+                                    sm: '10px',
+                                    md: '20px',
+                                    xl: '20px',
+                                },
+                            }}
                         />
-                    </StripeElement>
-                </CustomGrid>
-            ) : (
-                <CustomGrid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    className={styles.loader}
-                >
-                    <CustomLoader />
-                </CustomGrid>
-            )}
+                        <StripeElement secret={paymentIntent.clientSecret}>
+                            <CardDataForm
+                                isPreEvent={false}
+                                onSubmit={handleSubmit}
+                                onError={handleSubmitError}
+                                setMeetingPreviewShow={setMeetingPreviewShow}
+                                paymentIntentSecret={paymentIntent.clientSecret}
+                                colorForm={
+                                    payment.type === PaymentType.Paywall
+                                        ? 'black'
+                                        : 'white'
+                                }
+                                paymentType={payment.type}
+                            />
+                        </StripeElement>
+                    </CustomGrid>
+                ) : (
+                    <CustomGrid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        className={styles.loader}
+                    >
+                        <CustomLoader />
+                    </CustomGrid>
+                )}
+            </CustomGrid>
         </CustomGrid>
     );
 };

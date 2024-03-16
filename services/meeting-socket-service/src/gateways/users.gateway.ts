@@ -186,6 +186,18 @@ export class UsersGateway extends BaseGateway {
           })),
         });
 
+        if (!user.doNotDisturb) {
+          this.emitToRoom(`waitingRoom:${meeting.templateId}`, UserEmitEvents.UpdateUsers, {
+            users: plainUsers.map((user) => ({
+              ...user,
+              ...(message.userSize &&
+                message.id == user.id && { userSize: message.userSize }),
+              ...(message.userPosition &&
+                message.id == user.id && { userPosition: message.userPosition }),
+            })),
+          });
+        }
+
         return wsResult({
           user: {
             ...plainUser,
@@ -303,17 +315,14 @@ export class UsersGateway extends BaseGateway {
             const countriesMap = new Map<string, { count: number, states?: Map<string, number> }>();
 
             for (const user of users) {
-              if (user.profileId != profileId && user.meetingRole !== MeetingRole.Recorder) {
-                const profileId = user.profileId;
-                const profile = !!profileId ? await this.coreService.findUserById({ userId: profileId }) : { country: '', state: '' };
-
+              if (user.meetingRole !== MeetingRole.Host && user.meetingRole !== MeetingRole.Recorder) {
                 let country = "Other";
                 let state: string | undefined;
 
-                if (profile && profile.country) {
-                  country = profile.country;
-                  if (["Canada", "United States"].includes(country) && profile.state) {
-                    state = profile.state;
+                if (user.country) {
+                  country = user.country;
+                  if (["Canada", "United States"].includes(country) && user.state) {
+                    state = user.state;
                   }
                 }
 
@@ -376,8 +385,12 @@ export class UsersGateway extends BaseGateway {
               audienceEntryFee: 0,
               participantFees: 0,
               audienceFees: 0,
-              donations: 0
+              participantDonationPrice: 0,
+              audienceDonationPrice: 0,
+              participantDonationsTotal: 0,
+              audienceDonationsTotal: 0,
             };
+            
             const donatedParticipants = participants.filter(participant => participant.isDonated).length;
             const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
 
@@ -397,11 +410,13 @@ export class UsersGateway extends BaseGateway {
 
                 if (templatePayment.type === 'meeting') {
                   if (templatePayment.meetingRole === MeetingRole.Participant) {
-                    monetization.donations += templatePayment.price * donatedParticipants;
+                    monetization.participantDonationPrice = templatePayment.price;
+                    monetization.participantDonationsTotal = templatePayment.price * donatedParticipants;
                   }
 
                   if (templatePayment.meetingRole === MeetingRole.Audience) {
-                    monetization.donations += templatePayment.price * donatedAudiences;
+                    monetization.audienceDonationPrice = templatePayment.price;
+                    monetization.audienceDonationsTotal = templatePayment.price * donatedAudiences;
                   }
                 }
               });
@@ -475,13 +490,15 @@ export class UsersGateway extends BaseGateway {
           id: meeting.templateId,
         });
 
-        const u = await this.usersService.updateVideoContainer({
-          userTemplate,
-          userId: user._id.toString(),
-          event: UserActionInMeeting.Leave,
-        });
+        if (user.meetingRole === MeetingRole.Participant) {
+          const u = await this.usersService.updateVideoContainer({
+            userTemplate,
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Leave,
+          });
 
-        throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
+          throwWsError(!u, MeetingNativeErrorEnum.USER_HAS_BEEN_DELETED);
+        }
 
         await this.usersComponent.findOneAndUpdate({
           query: {
@@ -552,7 +569,7 @@ export class UsersGateway extends BaseGateway {
       async (session) => {
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
-        const { meetingId } = msg;
+        const { meetingId, username } = msg;
         const meeting = await this.meetingsService.findById({
           id: meetingId,
           session,
@@ -563,7 +580,10 @@ export class UsersGateway extends BaseGateway {
         await this.usersComponent.findByIdAndUpdate(
           {
             id: user._id,
-            data: { accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd },
+            data: {
+              username: username,
+              accessStatus: MeetingAccessStatusEnum.RequestSentWhenDnd
+            },
             session
           });
 

@@ -169,6 +169,17 @@ const Component = () => {
         }
     }, [isMicActive]);
 
+    useEffect(() => {
+        if (
+            localUser.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd &&
+            isHasMeeting &&
+            isOwnerInMeeting &&
+            !isOwnerDoNotDisturb
+        ) {
+            handleJoinMeeting();
+        }
+    }, [isHasMeeting, isOwnerInMeeting, isOwnerDoNotDisturb, localUser.accessStatus]);
+
     const handleToggleCamera = useCallback(() => {
         if (isVideoError) {
             addNotificationEvent({
@@ -218,9 +229,9 @@ const Component = () => {
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
 
-        const meetingUserId = localStorage.getItem('meetingUserId');
+        // const meetingUserId = localStorage.getItem('meetingUserId');
 
-        await rejoinMeetingEvent(meetingUserId || '');
+        // await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {
@@ -743,7 +754,8 @@ const Component = () => {
                 container
                 gap={1}
                 wrap="nowrap"
-                className={clsx(styles.joinBtn, {
+                className={clsx({
+                    [styles.joinBtn]: !isPayWallBeforeJoin,
                     [styles.mobile]: isMobile,
                     [styles.accessError]: isAudioError || isVideoError,
                 })}

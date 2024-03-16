@@ -9,9 +9,12 @@ import { MeetingsModule } from './modules/meetings/meetings.module';
 import { MeetingRecordModule } from './modules/meeting-record/meeting-record.module';
 import { UsersModule } from './modules/users/users.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
+import { MeetingDonationsModule } from './modules/meeting-donations/meeting-donations.module';
 import { MeetingTimeModule } from './modules/meeting-time/meeting-time.module';
 import { MeetingQuestionAnswersModule } from './modules/meeting-question-answer/meeting-question-answer.module';
 import { MeetingReactionsModule } from './modules/meeting-reactions/meeting-reactions.module';
+import { MeetingPreEventPaymentModule } from './modules/meeting-pre-event-payment/meeting-pre-event-payment.module';
+import { NotificationsModule } from './services/notifications/notifications.module';
 import {
   AudiencesGateway,
   ParticipantsGateway,
@@ -37,9 +40,12 @@ import {
     MeetingRecordModule,
     UsersModule,
     MeetingNotesModule,
+    MeetingDonationsModule,
     MeetingReactionsModule,
     MeetingTimeModule,
     MeetingQuestionAnswersModule,
+    MeetingPreEventPaymentModule,
+    NotificationsModule
   ],
   controllers: [],
   providers: [

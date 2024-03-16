@@ -38,17 +38,20 @@ import {
     $paymentIntent,
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
+    $localUserStore,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
+    updateUserSocketEvent
 } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
 
 // types
+import { MeetingRole } from 'shared-types';
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
@@ -70,6 +73,7 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
+    const localUser = useStore($localUserStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();
