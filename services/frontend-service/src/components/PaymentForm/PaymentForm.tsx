@@ -66,7 +66,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
         });
     }, []);
 
-    const colorMain = payment.type === PaymentType.Paywall ? 'black' : 'white';
+    const colorMain = 'black';
 
     return (
         <CustomGrid container direction="column" className={clsx({ [styles.wrapper]: isPreEvent })}>
@@ -157,11 +157,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                                 onError={handleSubmitError}
                                 setMeetingPreviewShow={setMeetingPreviewShow}
                                 paymentIntentSecret={paymentIntent.clientSecret}
-                                colorForm={
-                                    payment.type === PaymentType.Paywall
-                                        ? 'black'
-                                        : 'white'
-                                }
+                                colorForm={colorMain}
                                 paymentType={payment.type}
                             />
                         </StripeElement>

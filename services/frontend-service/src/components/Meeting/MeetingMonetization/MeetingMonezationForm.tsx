@@ -43,6 +43,7 @@ type MonezationFormProps = {
     paymentPaywall: PaymentItem;
     enableForm: boolean;
     activeValue: TabsValues;
+    isCreate: boolean;
 };
 
 export const MeetingMonezationForm = forwardRef(
@@ -53,6 +54,7 @@ export const MeetingMonezationForm = forwardRef(
             paymentPaywall,
             enableForm,
             activeValue,
+            isCreate = false
         }: MonezationFormProps,
         ref,
     ) => {
@@ -210,6 +212,7 @@ export const MeetingMonezationForm = forwardRef(
                                         translation="features.payWall"
                                         nameSpace="meeting"
                                         fontSize={13}
+                                        color={!isCreate ? 'black' : 'white'}
                                     />
                                 </CustomTooltip>
                                 <CustomBox flex={1} />
@@ -250,7 +253,7 @@ export const MeetingMonezationForm = forwardRef(
                                             'aria-label': 'amount',
                                         }}
                                         classes={{
-                                            root: styles.inputWrapper,
+                                            root: `${isCreate ? styles.createForm : ''} ${styles.inputWrapper} `,
                                             input: styles.input,
                                         }}
                                         {...registerPaywallData}
@@ -327,6 +330,7 @@ export const MeetingMonezationForm = forwardRef(
                                         translation="features.inMeeting"
                                         nameSpace="meeting"
                                         fontSize={13}
+                                        color={!isCreate ? 'black' : 'white'}
                                     />
                                 </CustomTooltip>
                                 <CustomBox flex={1} />
@@ -367,7 +371,7 @@ export const MeetingMonezationForm = forwardRef(
                                             'aria-label': 'amount',
                                         }}
                                         classes={{
-                                            root: styles.inputWrapper,
+                                            root: `${isCreate ? styles.createForm : ''} ${styles.inputWrapper}`,
                                             input: styles.input,
                                         }}
                                         {...registerData}
@@ -394,7 +398,6 @@ export const MeetingMonezationForm = forwardRef(
                                         />
                                     </CustomGrid>
                                 </CustomGrid>
-
                                 <ErrorMessage
                                     error={templatePriceMessage}
                                     className={styles.error}

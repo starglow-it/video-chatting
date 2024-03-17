@@ -32,6 +32,14 @@
   border-radius: 22.5%;
 }
 
+.sendNoteBtn, .stickyEmojiBtn {
+  cursor: pointer;
+
+  &:hover {
+    color: #EF8E5B;
+  }
+}
+
 .deviceButton {
   @extend %base-wrapper-icon-button;
 
@@ -46,6 +54,14 @@
   background: transparent;
   margin: rem(0px 10px);
   width: auto;
+  color: black;
+  cursor: pointer;
+
+  &:hover {
+    .actionBtn {
+      color: #EF8E5B;
+    }
+  }
 }
 
 .deviceButton:after {
@@ -184,6 +200,8 @@
 }
 
 .actionBtn {
+  cursor: pointer;
+
   &:hover {
     background: transparent;
   }
@@ -217,7 +235,7 @@
   height: fit-content;
   border-radius: 6px;
   padding: 5px;
-  background: rgba($color: #000000, $alpha: 0.8);
+  background: rgba($color: #000000, $alpha: 0.6);
   margin-right: 50px;
 
   &.mobile {

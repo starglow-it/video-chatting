@@ -45,6 +45,7 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // icons
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import CallEndIcon from '@mui/icons-material/CallEnd';
 
 // validation
 
@@ -82,6 +83,9 @@ import {
     $meetingStore,
     $meetingRecordingStore,
     $meetingRecordingIdStore,
+    $isToggleEditRuumePanel,
+    $isTogglProfilePanel,
+    $enabledPaymentMeetingAudience,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -103,7 +107,8 @@ import {
     $isScreenSharingStore,
     $meetingNotesStore,
     sendMeetingNoteSocketEvent,
-    toggleEditRuumeSettingEvent
+    toggleEditRuumeSettingEvent,
+    toggleProfilePanelEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -129,9 +134,9 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             '& .MuiOutlinedInput-root': {
                 background: 'transparent',
-                color: '#737373',
+                color: 'white',
                 '&.Mui-focused, &:hover': {
-                    color: '#737373',
+                    color: '#b5b5b5',
                 },
                 height: '30px',
                 fontSize: '14px'
@@ -174,6 +179,9 @@ const Component = () => {
     const meetingRecordingStore = useStore($meetingRecordingStore);
     const recordingStartPending = useStore(startRecordStreamFx.pending);
     const recordingStopPending = useStore(stopRecordStreamFx.pending);
+    const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
+    const isProfileOpen = useStore($isTogglProfilePanel);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -298,14 +306,85 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
-        toggleSchedulePanelEvent(false);
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
     };
 
     const handleToggleSchedulePanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleSchedulePanelEvent();
-        toggleUsersPanelEvent(false);
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
     };
+
+    const handleToggleEditRuumeSettingPanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleEditRuumeSettingEvent();
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+    };
+
+    const handleEmojiListToggle = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+    }
 
     const handleRequestToBecomeParticipant = useCallback(() => {
         requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
@@ -325,10 +404,6 @@ const Component = () => {
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
-
-    const handleEmojiListToggle = () => {
-        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
-    }
 
     //Do not disturb acion
     const handleDoNotDisturb = () => {
@@ -463,16 +538,16 @@ const Component = () => {
                                 </ConditionalRender>
                             </CustomGrid>
                             <ActionButton
-                                variant="transparentBlack"
-                                className={clsx({
+                                variant="transparentPure"
+                                className={clsx(styles.stickyEmojiBtn, {
                                     [styles.disabled]: isAudience && !!!profile.id,
                                 })}
                                 Icon={<InsertEmoticonIcon sx={{ fontSize: '30px' }} />}
                                 onClick={() => { }}
                             />
                             <ActionButton
-                                variant="transparentBlack"
-                                className={clsx({
+                                variant="transparentPure"
+                                className={clsx(styles.sendNoteBtn, {
                                     [styles.disabled]: isAudience && !!!profile.id,
                                 })}
                                 Icon={<NotesIcon width='30px' height='30px' />}
@@ -494,11 +569,11 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleEmojiListToggle}
                     >
                         <ActionButton
-                            variant="transparentBlack"
+                            variant="transparentPure"
                             className={styles.actionBtn}
-                            onAction={handleEmojiListToggle}
                             Icon={
                                 <FavoriteIcon width="25px" height="25px" />
                             }
@@ -523,11 +598,11 @@ const Component = () => {
             >
                 <CustomGrid
                     className={styles.deviceButton}
+                    onClick={handleToggleUsersPanel}
                 >
                     <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleUsersPanel}
-                        className={clsx(styles.actionButton, {
+                        variant="transparentPure"
+                        className={clsx(styles.actionButton, styles.actionBtn, {
                             [styles.active]: isUsersOpen,
                             [styles.newRequests]: !!isThereNewMessage || !!isThereNewQuestion,
                             [styles.mobile]: isMobile,
@@ -555,10 +630,11 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleSharing}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleSharing}
+                            variant="transparentPure"
+                            className={styles.actionBtn}
                             Icon={
                                 <ScreenShareIcon width="25px" height="25px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
                             }
@@ -584,11 +660,11 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleMic}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleMic}
-                            className={clsx({
+                            variant="transparentPure"
+                            className={clsx(styles.actionBtn, {
                                 [styles.inactive]: !isMicActive,
                             })}
                             Icon={
@@ -628,11 +704,12 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleRecordMeeting}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleRecordMeeting}
+                            variant="transparentPure"
                             disabled={isAudience && isRecording}
+                            className={styles.actionBtn}
                             Icon={
                                 (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
                                     ? <CircularProgress
@@ -670,11 +747,11 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleSchedulePanel}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleSchedulePanel}
-                            className={clsx(styles.actionButton, {
+                            variant="transparentPure"
+                            className={clsx(styles.actionButton, styles.actionBtn, {
                                 [styles.active]: isSchedulePannelOpen,
                                 [styles.newRequests]:
                                     (isThereNewRequests && isMeetingHost),
@@ -703,47 +780,22 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleRequestToBecomeParticipant}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleRequestToBecomeParticipant}
-                            className={styles.actionButton}
+                            variant="transparentPure"
+                            className={clsx(styles.actionButton, styles.actionBtn)}
                             Icon={<ArrowUp width="25px" height="25px" />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.becomeAParticipant"
+                            color="white"
+                            fontSize={12}
                         />
                     </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-
-
-            {/* Do not disturb button */}
-            {/* <ConditionalRender condition={isOwner}>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="doNotDisturb.tooltip"
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleDoNotDisturb}
-                            className={clsx(styles.deviceButton,
-                                styles.doNotDisturbButton,
-                                { [styles.disabled]: doNotDisturbStore }
-                            )}
-                            Icon={<DoNotDisturbAltIcon sx={{ fontSize: 20 }} />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender> */}
-
             <CustomTooltip
                 title={
                     <Translation
@@ -753,12 +805,14 @@ const Component = () => {
                 }
                 placement="top"
             >
-                <CustomGrid className={styles.deviceButton}>
+                <CustomGrid
+                    className={styles.deviceButton}
+                    onClick={handleEndVideoChat}
+                >
                     <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleEndVideoChat}
+                        variant="transparentPure"
                         className={styles.hangUpButton}
-                        Icon={<HangUpIcon width="25px" height="25px" />}
+                        Icon={<CallEndIcon width="25px" height="25px" sx={{ color: 'red' }} />}
                     />
                     <CustomTypography
                         nameSpace="meeting"
@@ -769,8 +823,7 @@ const Component = () => {
                 </CustomGrid>
 
             </CustomTooltip>
-
-            <ConditionalRender condition={true}>
+            <ConditionalRender condition={!isAudience || (isAudience && enabledPaymentMeetingAudience)}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -782,10 +835,11 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleEditRuumeSettingPanel}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={() => toggleEditRuumeSettingEvent()}
+                            variant="transparentPure"
+                            className={styles.actionBtn}
                             Icon={<MoreHorizIcon width="25px" height="25px" />}
                         />
                         <CustomTypography
@@ -797,37 +851,6 @@ const Component = () => {
                     </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-
-            {/* <ConditionalRender condition={!isAudience}>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="settings.main"
-                        />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleOpenSettingsDialog}
-                            className={styles.grey}
-                            Icon={<SettingsIcon width="22px" height="22px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender> */}
-
-            {/* <CustomGrid id="sideMenuBar" container gap={1.5} direction="column" className={styles.sideMenuWrapper}>
-                <MeetingMonetizationButton />
-
-
-            </CustomGrid> */}
         </CustomGrid>
     );
 };

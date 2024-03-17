@@ -3,7 +3,7 @@
 
 .panelWrapper {
   position: absolute;
-  bottom: rem(160px);
+  bottom: rem(140px);
   left: 50%;
   z-index: 1000;
   width: auto;
@@ -22,6 +22,18 @@
   &:not(:first-child) {
     margin: rem(0 0 0 -15px);
   }
+}
+
+.editRuumeScrollBar {
+  max-height: 745px;
+  padding-right: 20px;
+  padding-left: 10px;
+}
+
+.profileSettingScrollBar {
+  max-height: 600px;
+  padding-right: 20px;
+  padding-left: 10px;
 }
 
 .controlPanelWrapper {
@@ -81,8 +93,8 @@
   min-width: rem(310px);
   padding: rem(14px 16px);
   opacity: 0;
-  right: 70px;
-  bottom: 30px;
+  left: 15px;
+  bottom: 0px;
 
   &.mobile {
     left: 0%;
@@ -102,7 +114,7 @@
   position: absolute;
   max-width: rem(350px);
   min-width: rem(310px);
-  padding: rem(14px 16px);
+  padding: rem(14px 5px 14px 16px);
   opacity: 0;
   right: rem(260px);
   bottom: rem(0px);
@@ -121,11 +133,34 @@
   }
 }
 
-.editRuumePanel {
+.emojiPanel {
   position: absolute;
-  max-width: rem(405px);
+  max-width: rem(350px);
   min-width: rem(310px);
   padding: rem(14px 16px);
+  opacity: 0;
+  right: -180px;
+  bottom: 0px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
+.editRuumePanel {
+  position: absolute;
+  max-width: rem(425px);
+  min-width: rem(310px);
+  padding: rem(14px 5px 14px 16px);
   opacity: 0;
   left: rem(260px);
   bottom: rem(0px);
@@ -177,8 +212,8 @@
   max-width: rem(392px);
   min-width: rem(372px);
   padding: rem(20px);
-  right: 70px;
-  bottom: 30px;
+  left: 150px;
+  bottom: 0px;
 
   &.mobile {
     left: 0%;
@@ -192,8 +227,8 @@
   max-width: rem(392px);
   min-width: rem(372px);
   padding: rem(20px);
-  right: 70px;
-  bottom: 300px;
+  left: 150px;
+  bottom: 275px;
 
   &.mobile {
     left: 0%;

@@ -278,7 +278,8 @@
         "record": "record",
         "attendees": "attendees",
         "end": "end",
-        "more": "more"
+        "more": "more",
+        "becomeAParticipant": "participant request"
     },
     "profileSettingPanel": {
         "title": "profile",

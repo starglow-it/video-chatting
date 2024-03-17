@@ -58,7 +58,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    rejoinMeetingEvent,
+    cancelPaymentIntentWithData
 } from '../../store/roomStores';
 
 // types
@@ -250,6 +250,7 @@ const Component = () => {
         setWaitingPaywall(false);
         handleJoinMeeting();
         setIsPaywallPaymentEnabled(true);
+        cancelPaymentIntentWithData();
     };
 
     const isAudioError = Boolean(audioError);

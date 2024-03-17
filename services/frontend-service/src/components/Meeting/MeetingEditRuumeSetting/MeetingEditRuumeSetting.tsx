@@ -1,12 +1,17 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
 import clsx from 'clsx';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import * as yup from 'yup';
+import Router from 'next/router';
 
-import styles from './MeetingEditRuumeSetting.module.scss';
+import { PaymentType } from 'shared-const';
+
 import { MeetingChat } from '../MeetingChat/MeetingChat';
 import { Tab, Tabs, Typography } from '@mui/material';
 import { $activeTabPanel, $isAudience, $isHaveNewMessage, $isHaveNewQuestion, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, resetHaveNewQuestionEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
@@ -24,23 +29,154 @@ import { Translation } from '@library/common/Translation/Translation';
 import { Socials } from '@components/Socials/Socials';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeetingLink';
-import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
+import { MeetingMonetizationPanel } from '../MeetingMonetization/MeetingMonetizationPanel';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { CustomFade } from 'shared-frontend/library/custom/CustomFade';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
+import { CustomRange } from '@library/custom/CustomRange/CustomRange';
+
+//components
+import { MeetingAvatars } from '@components/Meeting/MeetingAvatars/MeetingAvatars';
+import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
+import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
+import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 //icons
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { BackgroundBlurIcon } from 'shared-frontend/icons/OtherIcons/BackgroundBlurIcon';
+import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
+import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 
 //hooks
 import { useFormContext } from 'react-hook-form';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { useToggle } from '@hooks/useToggle';
+
+import { SettingsData, FormDataPayment } from './types';
+import { customTemplateLinkSchema } from 'shared-frontend/validation';
+import { MeetingPayment, PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
+
+import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
+import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
+
+//const
+import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
+
+//store
+import {
+    checkCustomLinkFx,
+} from 'src/store';
+import {
+    $doNotDisturbStore,
+    $changeStreamStore,
+    $isAuraActive,
+    $meetingTemplateStore,
+    $isBackgroundAudioActive,
+    $backgroundAudioVolume,
+    $roleQueryUrlStore,
+    $isOwner,
+    $isParticipant,
+    $localUserStore,
+    $isCameraActiveStore,
+    $enabledPaymentMeetingParticipant,
+    $enabledPaymentMeetingAudience,
+    $paymentMeetingParticipant,
+    $paymentMeetingAudience,
+    $paymentIntent,
+    createPaymentIntentWithData,
+    cancelPaymentIntentWithData,
+    setDoNotDisturbEvent,
+    toggleIsAuraActive,
+    updateMeetingTemplateFxWithData,
+    updatePaymentMeetingEvent,
+    updateUserSocketEvent
+} from 'src/store/roomStores';
+
+const validationSchema = yup.object({
+    customLink: customTemplateLinkSchema(),
+});
+
+import styles from './MeetingEditRuumeSetting.module.scss';
 
 export const MeetingEditRuumeSetting = () => {
+    const doNotDisturbStore = useStore($doNotDisturbStore);
+    const changeStream = useStore($changeStreamStore);
+    const isAuraActive = useStore($isAuraActive);
+    const meetingTemplate = useStore($meetingTemplateStore);
+    const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const role = useStore($roleQueryUrlStore);
+    const isOwner = useStore($isOwner);
+    const isParticipant = useStore($isParticipant);
+    const localUser = useStore($localUserStore);
+    const isCameraActive = useStore($isCameraActiveStore);
+    const enabledPaymentMeetingParticipant = useStore(
+        $enabledPaymentMeetingParticipant,
+    );
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
+    const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
+    const paymentMeetingAudience = useStore($paymentMeetingAudience);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const paymentIntent = useStore($paymentIntent);
+
     const [currentAccordionId, setCurrentAccordionId] = useState('');
+    const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
+        useState<number>(backgroundAudioVolume);
+    const intentId = paymentIntent?.id;
 
     const {
-        formState: { errors },
-    } = useFormContext();
+        value: isSettingsAudioBackgroundActive,
+        onToggleSwitch: handleToggleBackgroundAudio,
+    } = useToggle(isBackgroundAudioActive);
+
+    const { isSafari, isMobile } = useBrowserDetect();
+
+    const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
+        null,
+    );
+    const formAudienceRef = useRef<{ getValues: () => FormDataPayment }>(null);
+
+    const resolver = useYupValidationResolver<SettingsData>(validationSchema);
+
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            customLink: meetingTemplate.customLink,
+        },
+    });
+
+    const {
+        handleSubmit,
+        formState: { dirtyFields, errors },
+        reset,
+        setError,
+        setFocus,
+    } = methods;
+
+    useEffect(() => {
+        if (currentAccordionId === 'monetization') {
+            handleTogglePayment();
+        }
+    }, [currentAccordionId]);
+
+    useEffect(() => {
+        (async () => {
+            let roomUrl = getClientMeetingUrlWithDomain(
+                meetingTemplate.customLink || meetingTemplate.id,
+            );
+
+            if (role === MeetingRole.Audience && !isOwner) {
+                roomUrl = `${roomUrl}?role=${role}`;
+            }
+
+            await Router.push(roomUrl, roomUrl, { shallow: true });
+        })();
+    }, [meetingTemplate.customLink, meetingTemplate.id, isOwner, role]);
 
     useEffect(() => {
         if (errors) {
@@ -50,11 +186,12 @@ export const MeetingEditRuumeSetting = () => {
                 }
                 return;
             }
-            if (errors.companyName && currentAccordionId !== 'company') {
-                handleChangeAccordion('company');
-            }
         }
     }, [errors]);
+
+    const handleChangeVolume = useCallback((event: any) => {
+        setSettingsBackgroundAudioVolume(event.target.value);
+    }, []);
 
     const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
@@ -62,106 +199,384 @@ export const MeetingEditRuumeSetting = () => {
         );
     }, []);
 
-    return (
-        <CustomGrid
-            container
-            direction="column"
-            className={styles.wrapper}
-            gap={3}
-        >
-            <CustomTypography
-                nameSpace="meeting"
-                translation="editRuumePanel.title"
-                color="white"
-                fontSize="20px"
-            />
-            <CustomScroll>
-                <CustomGrid
-                    container
-                    direction="column"
-                    className={styles.wrapper}
-                    gap={3}
-                >
-                    <EditMeetingLink />
-                    <CustomAccordion
-                        currentAccordionId={currentAccordionId}
-                        accordionId="monetization"
-                        onChange={handleChangeAccordion}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="templates.monetization"
-                            />
-                        }
-                    >
-                        <MeetingMonetization />
-                    </CustomAccordion>
-                    <CustomAccordion
-                        currentAccordionId={currentAccordionId}
-                        accordionId="videoAudioSettings"
-                        onChange={handleChangeAccordion}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="templates.videoAudioSettings"
-                            />
-                        }
-                    >
-                        {/* <EditTemplatePersonalInfo /> */}
-                    </CustomAccordion>
-                    <CustomAccordion
-                        currentAccordionId={currentAccordionId}
-                        accordionId="updateAvatar"
-                        onChange={handleChangeAccordion}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="templates.updateAvatar"
-                            />
-                        }
-                    >
-                        {/* <EditTemplatePersonalInfo /> */}
-                    </CustomAccordion>
-                    <CustomButton
-                        className={styles.doNotDisturbBtn}
-                    >
-                        <CustomGrid
-                            container
-                            justifyContent="space-between"
-                            alignItems="center"
-                            fontSize="18px"
-                        >
-                            <Translation
-                                nameSpace="meeting"
-                                translation="templates.doNotDisturb.title"
-                            />
-                            <Translation
-                                nameSpace="meeting"
-                                translation="templates.doNotDisturb.on"
-                            />
-                            <FiberManualRecordIcon sx={{ color: 'red' }} />
-                        </CustomGrid>
-                    </CustomButton>
-                </CustomGrid>
+    const handleDoNotDisturb = () => {
+        setDoNotDisturbEvent(!doNotDisturbStore);
+    };
 
-            </CustomScroll>
+    const dirtyFieldsCount = useMemo(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-            <CustomGrid
-                item
-                container
-                justifyContent="center"
-            >
-                <CustomButton
-                    className={styles.saveBtn}
-                    type="submit"
-                    label={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="profileSettingPanel.saveBtn"
-                        />
+        const values: any[] = Object.values(dirtyFieldsWithOutSocials);
+
+        const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
+
+        return newDirtyFieldsCount;
+    }, [Object.keys(dirtyFields).length]);
+
+    const handleUpdateMeetingTemplate = useCallback(async (updateData: any) => {
+        if (updateData) {
+            await updateMeetingTemplateFxWithData(updateData.data);
+        }
+    }, []);
+
+    const handleMonetizationSubmit = async () => {
+        const paymentParticipant = formParticipantsRef.current?.getValues();
+        const paymentAudience = formAudienceRef.current?.getValues();
+        updatePaymentMeetingEvent({
+            meeting: {
+                participant: {
+                    enabled: paymentParticipant?.enabledMeeting ?? false,
+                    price: paymentParticipant?.templatePrice ?? 5,
+                    currency:
+                        paymentParticipant?.templateCurrency ??
+                        DEFAULT_PAYMENT_CURRENCY,
+                },
+                audience: {
+                    enabled: paymentAudience?.enabledMeeting ?? false,
+                    price: paymentAudience?.templatePrice ?? 5,
+                    currency:
+                        paymentAudience?.templateCurrency ??
+                        DEFAULT_PAYMENT_CURRENCY,
+                },
+            },
+            paywall: {
+                participant: {
+                    enabled: paymentParticipant?.enabledPaywall ?? false,
+                    price: paymentParticipant?.paywallPrice ?? 5,
+                    currency:
+                        paymentParticipant?.paywallCurrency ??
+                        DEFAULT_PAYMENT_CURRENCY,
+                },
+                audience: {
+                    enabled: paymentAudience?.enabledPaywall ?? false,
+                    price: paymentAudience?.paywallPrice ?? 5,
+                    currency:
+                        paymentAudience?.paywallCurrency ??
+                        DEFAULT_PAYMENT_CURRENCY,
+                },
+            },
+        });
+    };
+
+    const handleTogglePayment = () => {
+        if (!isCreatePaymentIntentPending) {
+            if (!intentId &&
+                (
+                    (localUser.meetinRole === MeetingRole.Audience &&
+                        enabledPaymentMeetingAudience) ||
+                    (localUser.meetinRole === MeetingRole.Participant &&
+                        enabledPaymentMeetingParticipant)
+                )) {
+                createPaymentIntentWithData({
+                    paymentType: PaymentType.Meeting,
+                });
+            }
+        }
+    };
+
+    const handleCloseForm = () => {
+        setCurrentAccordionId('');
+        cancelPaymentIntentWithData();
+    };
+
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            if (!dirtyFieldsCount) {
+                handleUpdateMeetingTemplate();
+            } else {
+                const { ...dataWithoutSocials } = data;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { ...dirtyDataWithoutSocials } =
+                    dirtyFields;
+
+                const dirtyFieldsKeys = Object.keys(dirtyDataWithoutSocials);
+
+                const filteredData = Object.fromEntries(
+                    Object.entries(dataWithoutSocials).filter(([key]) =>
+                        dirtyFieldsKeys.includes(key),
+                    ),
+                );
+
+                if (
+                    filteredData.customLink &&
+                    meetingTemplate.customLink !== filteredData.customLink
+                ) {
+                    const isBusy = await checkCustomLinkFx({
+                        templateId: meetingTemplate.id,
+                        customLink: filteredData.customLink as string,
+                    });
+
+                    if (isBusy) {
+                        setError('customLink', {
+                            type: 'focus',
+                            message: 'meeting.settings.customLink.busy',
+                        });
+                        setFocus('customLink');
+                        return;
                     }
+                }
+
+                handleUpdateMeetingTemplate({
+                    data: {
+                        ...filteredData,
+                    } as any,
+                    templateId: meetingTemplate.id,
+                });
+
+                reset({
+                    ...dataWithoutSocials,
+                });
+            }
+
+            await handleMonetizationSubmit();
+            await updateUserSocketEvent({
+                meetingAvatarId: localUser.meetingAvatarId,
+                cameraStatus: isCameraActive ? 'active' : 'inactive'
+            });
+            //close panel
+        }),
+        [
+            localUser,
+            dirtyFieldsCount,
+            meetingTemplate.id,
+            meetingTemplate.customLink,
+            errors,
+        ],
+    );
+
+    return (
+        <FormProvider {...methods}>
+            <CustomGrid
+                container
+                direction="column"
+                className={styles.wrapper}
+                gap={3}
+            >
+                <CustomTypography
+                    nameSpace="meeting"
+                    translation="editRuumePanel.title"
+                    color="white"
+                    fontSize="20px"
                 />
+                <CustomScroll>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        className={styles.wrapper}
+                        gap={3}
+                    >
+                        <ConditionalRender condition={isOwner}>
+                            <form id="customLinkForm" onSubmit={onSubmit}>
+                                <EditMeetingLink />
+                            </form>
+                        </ConditionalRender>
+                        <CustomAccordion
+                            currentAccordionId={currentAccordionId}
+                            accordionId="monetization"
+                            onChange={handleChangeAccordion}
+                            label={
+                                <Translation
+                                    nameSpace="meeting"
+                                    translation="templates.monetization"
+                                />
+                            }
+                        >
+                            <ConditionalRender condition={isOwner}>
+                                <MeetingMonetizationPanel
+                                    formParticipantsRef={formParticipantsRef}
+                                    formAudienceRef={formAudienceRef}
+                                />
+                            </ConditionalRender>
+                            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+                                <PaymentForm
+                                    onClose={handleCloseForm}
+                                    payment={paymentMeetingParticipant}
+                                />
+                            </ConditionalRender>
+                            <ConditionalRender condition={enabledPaymentMeetingAudience}>
+                                <PaymentForm
+                                    onClose={handleCloseForm}
+                                    payment={paymentMeetingAudience}
+                                />
+                            </ConditionalRender>
+                        </CustomAccordion>
+                        <ConditionalRender condition={isOwner || isParticipant}>
+                            <CustomAccordion
+                                currentAccordionId={currentAccordionId}
+                                accordionId="videoAudioSettings"
+                                onChange={handleChangeAccordion}
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="templates.videoAudioSettings"
+                                    />
+                                }
+                            >
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    gap={2}
+                                    className={styles.selectDevicesWrapper}
+                                    sx={{
+                                        marginTop: {
+                                            xs: '15px',
+                                            sm: '15px',
+                                            xl: '30px',
+                                            md: '30px',
+                                        },
+                                    }}
+                                >
+                                    <SelectDevices key={changeStream?.id} />
+                                    <ConditionalRender condition={!isSafari}>
+                                        <LabeledSwitch
+                                            Icon={
+                                                <BackgroundBlurIcon
+                                                    width="24px"
+                                                    height="24px"
+                                                    className={styles.gapIcon}
+                                                />
+                                            }
+                                            nameSpace="meeting"
+                                            translation="features.blurBackground"
+                                            checked={isAuraActive}
+                                            onChange={toggleIsAuraActive}
+                                            className={clsx(styles.switchWrapper, {
+                                                [styles.switchWrapperMobile]: isMobile,
+                                            })}
+                                        />
+                                    </ConditionalRender>
+                                    <ConditionalRender
+                                        condition={meetingTemplate.isAudioAvailable && !isMobile}
+                                    >
+                                        <CustomGrid
+                                            container
+                                            direction="column"
+                                            wrap="nowrap"
+                                            className={clsx(styles.audioSettings, {
+                                                [styles.withVolume]:
+                                                    isSettingsAudioBackgroundActive && !isMobile,
+                                                [styles.mobile]: isMobile,
+                                            })}
+                                        >
+                                            <LabeledSwitch
+                                                Icon={
+                                                    <MusicIcon
+                                                        width="24px"
+                                                        height="24px"
+                                                    />
+                                                }
+                                                nameSpace="meeting"
+                                                translation="features.audioBackground"
+                                                checked={isSettingsAudioBackgroundActive}
+                                                onChange={handleToggleBackgroundAudio}
+                                                className={clsx(styles.audioWrapper, {
+                                                    [styles.switchWrapperMobile]:
+                                                        isMobile,
+                                                })}
+                                            />
+                                            <CustomFade open={isSettingsAudioBackgroundActive}>
+                                                <CustomDivider />
+                                                <CustomRange
+                                                    color={
+                                                        settingsBackgroundAudioVolume
+                                                            ? 'primary'
+                                                            : 'disabled'
+                                                    }
+                                                    value={settingsBackgroundAudioVolume}
+                                                    onChange={handleChangeVolume}
+                                                    sx={{
+                                                        padding: {
+                                                            xs: '0px 11px 6px 10px',
+                                                            sm: '0px 11px 6px 10px',
+                                                            xl: '13px 22px 13px 10px',
+                                                            md: '13px 22px 13px 10px',
+                                                        },
+                                                    }}
+                                                    className={clsx(styles.audioRange, {
+                                                        [styles.inactive]:
+                                                            !settingsBackgroundAudioVolume,
+                                                    })}
+                                                    Icon={
+                                                        <SpeakerIcon
+                                                            isActive={Boolean(
+                                                                settingsBackgroundAudioVolume,
+                                                            )}
+                                                            isHalfVolume={
+                                                                settingsBackgroundAudioVolume < 50
+                                                            }
+                                                            width="24px"
+                                                            height="24px"
+                                                        />
+                                                    }
+                                                />
+                                            </CustomFade>
+                                        </CustomGrid>
+                                    </ConditionalRender>
+                                </CustomGrid>
+                            </CustomAccordion>
+                        </ConditionalRender>
+                        <ConditionalRender condition={isOwner || isParticipant}>
+                            <CustomAccordion
+                                currentAccordionId={currentAccordionId}
+                                accordionId="updateAvatar"
+                                onChange={handleChangeAccordion}
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="templates.updateAvatar"
+                                    />
+                                }
+                            >
+                                <MeetingAvatars
+                                    devicesSettingsDialog={false}
+                                    onClose={() => { }}
+                                />
+                            </CustomAccordion>
+                        </ConditionalRender>
+                        <ConditionalRender condition={isOwner}>
+                            <CustomButton
+                                className={styles.doNotDisturbBtn}
+                                onClick={handleDoNotDisturb}
+                            >
+                                <CustomGrid
+                                    container
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    fontSize="18px"
+                                >
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="templates.doNotDisturb.title"
+                                    />
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation={doNotDisturbStore ? "templates.doNotDisturb.off" : "templates.doNotDisturb.on"}
+                                    />
+                                    <FiberManualRecordIcon sx={{ color: doNotDisturbStore ? '#3CD742' : 'red' }} />
+                                </CustomGrid>
+                            </CustomButton>
+                        </ConditionalRender>
+                    </CustomGrid>
+                </CustomScroll>
+                <CustomGrid
+                    item
+                    container
+                    justifyContent="center"
+                >
+                    <CustomButton
+                        className={styles.saveBtn}
+                        form="customLinkForm"
+                        type="submit"
+                        label={
+                            <Translation
+                                nameSpace="meeting"
+                                translation="profileSettingPanel.saveBtn"
+                            />
+                        }
+                    />
+                </CustomGrid>
             </CustomGrid>
-        </CustomGrid>
+        </FormProvider>
     );
 };

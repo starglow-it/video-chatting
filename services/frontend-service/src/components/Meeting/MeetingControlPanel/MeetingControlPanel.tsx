@@ -21,6 +21,7 @@ import { MeetingInviteParticipants } from '@components/Meeting/MeetingInvitePart
 import { MeetingAttendeesList } from '@components/Meeting/MeetingAttendeesList/MeetingAttendeesList';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+import { EmojiList } from '@components/EmojiList/EmojiList';
 
 // stores
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
@@ -41,13 +42,16 @@ import {
     $localUserStore,
     $isTogglProfilePanel,
     $isToggleEditRuumePanel,
+    $meetingEmojiListVisibilityStore,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateUserSocketEvent,
-    toggleProfilePanelEvent
+    toggleProfilePanelEvent,
+    setEmojiListVisibilityEvent,
+    toggleEditRuumeSettingEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -80,11 +84,14 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
-    const { isMobile } = useBrowserDetect();
+    useEffect(() => {
+        console.log(isEmojiListVisible);
+    }, [isEmojiListVisible]);
 
-    useEffect(() => { console.log(isProfileOpen); }, [isProfileOpen]);
+    const { isMobile } = useBrowserDetect();
 
     const handleClosePayment = useCallback(async () => {
         if (paymentIntent?.id) {
@@ -101,14 +108,14 @@ const Component = () => {
         console.log('#Duy Phan console', e);
     };
 
+    const toggleProfilePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleProfilePanelEvent(false);
+    }, []);
+
     const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent(false);
-    }, []);
-
-    const toggleOutsideProfilePanel = useCallback((e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        toggleProfilePanelEvent(false);
     }, []);
 
     const toggleOutsideSchedulePanel = useCallback(
@@ -142,10 +149,20 @@ const Component = () => {
         }
     }, [isOwner]);
 
+    const handleCloseEmojiListPanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        setEmojiListVisibilityEvent({ isEmojiListVisible: false })
+    }, []);
+
+    const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleEditRuumeSettingEvent(false);
+    }, []);
+
     const commonContent = useMemo(
         () => (
             <>
-                <ClickAwayListener onClickAway={() => {}}>
+                <ClickAwayListener onClickAway={handleCloseEditRuumePanel}>
                     <Fade in={isEditRuumeOpen}>
                         <CustomPaper
                             variant="black-glass"
@@ -155,11 +172,13 @@ const Component = () => {
                                     isMobile && !isPortraitLayout,
                             })}
                         >
-                            <MeetingEditRuumeSetting />
+                            <CustomScroll className={styles.editRuumeScrollBar}>
+                                <MeetingEditRuumeSetting />
+                            </CustomScroll>
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <ClickAwayListener onClickAway={() => {}}>
+                <ClickAwayListener onClickAway={toggleProfilePanel}>
                     <Fade in={isProfileOpen}>
                         <CustomPaper
                             variant="black-glass"
@@ -169,7 +188,21 @@ const Component = () => {
                                     isMobile && !isPortraitLayout,
                             })}
                         >
-                            <MeetingProfileSetting />
+                            <CustomScroll className={styles.profileSettingScrollBar}>
+                                <MeetingProfileSetting />
+                            </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={handleCloseEmojiListPanel}>
+                    <Fade in={isEmojiListVisible}>
+                        <CustomPaper
+                            className={clsx(styles.emojiPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
+                            variant="black-glass"
+                        >
+                            <EmojiList />
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
@@ -282,6 +315,9 @@ const Component = () => {
             isPaymentOpen,
             isScheduleOpen,
             isChangeBackgroundOpen,
+            isEditRuumeOpen,
+            isProfileOpen,
+            isEmojiListVisible
         ],
     );
 

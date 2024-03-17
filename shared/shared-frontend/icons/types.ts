@@ -3,6 +3,7 @@ import React from 'react';
 export type CommonIconProps = {
     width: string;
     height: string;
+    color?: string;
     className?: string;
     isActive?: boolean;
     style?: React.CSSProperties;

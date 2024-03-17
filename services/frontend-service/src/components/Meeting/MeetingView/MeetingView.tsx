@@ -37,7 +37,6 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
-import { EmojiList } from '@components/EmojiList/EmojiList';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import {
     StorageKeysEnum,
@@ -416,7 +415,6 @@ const Component = () => {
                     </ConditionalRender>
 
                     <LeaveNoteForm />
-                    <EmojiList />
                 </MeetingSettingsPanel>
             )}
             {Boolean(meetingTemplate?.id) && isMobileShared() && (

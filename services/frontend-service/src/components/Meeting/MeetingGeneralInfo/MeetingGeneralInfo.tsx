@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useRef, SyntheticEvent } from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
@@ -30,12 +30,24 @@ import {
     toggleEditTemplateOpen,
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
-    toggleProfilePanelEvent
+    $meetingEmojiListVisibilityStore,
+    $isToggleUsersPanel,
+    $isToggleSchedulePanel,
+    $isToggleEditRuumePanel,
+    toggleProfilePanelEvent,
+    setEmojiListVisibilityEvent,
+    toggleUsersPanelEvent,
+    toggleSchedulePanelEvent,
+    toggleEditRuumeSettingEvent
 } from '../../../store/roomStores';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
+    const isUsersOpen = useStore($isToggleUsersPanel);
+    const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
+    const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
 
     const wrapperRef = useRef(null);
 
@@ -56,14 +68,30 @@ const Component = () => {
         name: 'fullName',
     });
 
-    const handleMeetingAction = useCallback(() => {
+    const handleMeetingAction = (e: SyntheticEvent) => {
+        e.stopPropagation();
         if (isOwner) {
             toggleProfilePanelEvent();
             // toggleEditTemplateOpen();
+            if (isEmojiListVisible) {
+                setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+            }
+
+            if (isUsersOpen) {
+                toggleUsersPanelEvent(false);
+            }
+
+            if (isSchedulePannelOpen) {
+                toggleSchedulePanelEvent(false);
+            }
+
+            if (isEditRuumeSettingPanelOpen) {
+                toggleEditRuumeSettingEvent(false);
+            }
         } else {
             toggleMeetingInfoOpen();
         }
-    }, []);
+    }
 
     return (
         <CustomGrid
