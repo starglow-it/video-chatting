@@ -3,24 +3,14 @@ import { useStore } from 'effector-react';
 
 // icons
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
-import CloseIcon from '@mui/icons-material/Close';
 
 // custom
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import IconButton from '@mui/material/IconButton';
 
 // common
 // validation
-import { Translation } from '@library/common/Translation/Translation';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-
-// styles
-
-// stores
-
-// const
 
 import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
@@ -33,17 +23,10 @@ import {
     $paymentMeetingParticipant,
     $paymentPaywallAudience,
     $paymentPaywallParticipant,
-    updatePaymentMeetingEvent,
-    setCreateRoomPaymentDataEvent,
-    createMeetingPaymentEvent
 } from '../../../store/roomStores';
-import { $isConnectedStripe, addNotificationEvent } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
 import { MeetingMonezationForm } from './MeetingMonezationForm';
 import { FormDataPayment, TabsValues } from './type';
-import { MeetingRole } from 'shared-types';
-import { MeetingPayment, PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
-import { NotificationType } from 'src/store/types';
 
 enum TabsLabels {
     Participants = 'Participants',
@@ -62,7 +45,7 @@ const tabs: ValuesSwitcherAlias[] = [
                 display="flex"
                 flexDirection="column"
                 bgcolor="black"
-                color="black"
+                color="white"
                 padding="5px"
                 paddingTop="10px"
                 borderRadius="16px"
@@ -99,7 +82,7 @@ const tabs: ValuesSwitcherAlias[] = [
                 display="flex"
                 flexDirection="column"
                 bgcolor="black"
-                color="black"
+                color="white"
                 padding="5px"
                 paddingTop="10px"
                 borderRadius="16px"
@@ -145,7 +128,6 @@ const Component = (
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
     const paymentPaywallAudience = useStore($paymentPaywallAudience);
-    const isConnectedStripe = useStore($isConnectedStripe);
 
     const { activeItem, onValueChange } = useValueSwitcher<
         TabsValues,
@@ -155,16 +137,8 @@ const Component = (
         initialValue: tabs[0].value,
     });
 
-    const onSubmit = useCallback(async (event) => {
-
-    }, []);
-
     const handleFocusInput = () => {
         buttonSaveRef.current?.classList.add(styles.animate);
-    };
-
-    const handleEndAnimation = () => {
-        buttonSaveRef.current?.classList.remove(styles.animate);
     };
 
     const handleValueChange = (value: any) => {

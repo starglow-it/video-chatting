@@ -49,7 +49,11 @@ import { DEFAULT_PAYMENT_CURRENCY } from 'shared-const';
 //store
 import {
     checkCustomLinkFx,
+    $isConnectedStripe,
+    addNotificationEvent
 } from 'src/store';
+
+import { NotificationType } from 'src/store/types';
 import {
     $doNotDisturbStore,
     $changeStreamStore,
@@ -104,6 +108,7 @@ export const MeetingEditRuumeSetting = () => {
         createPaymentIntentWithData.pending,
     );
     const paymentIntent = useStore($paymentIntent);
+    const isConnectedStripe = useStore($isConnectedStripe);
 
     const [currentAccordionId, setCurrentAccordionId] = useState('');
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
@@ -311,11 +316,22 @@ export const MeetingEditRuumeSetting = () => {
                 });
             }
 
-            await handleMonetizationSubmit();
-            await updateUserSocketEvent({
-                meetingAvatarId: localUser.meetingAvatarId,
-                cameraStatus: isCameraActive ? 'active' : 'inactive'
-            });
+            if (isConnectedStripe) {
+                await handleMonetizationSubmit();
+            } else {
+                addNotificationEvent({
+                    type: NotificationType.PaymentFail,
+                    message: 'payments.isNotAccountConnected',
+                    withErrorIcon: true
+                });
+            }
+
+            if (localUser.meetingAvatarId) {
+                await updateUserSocketEvent({
+                    meetingAvatarId: localUser.meetingAvatarId,
+                    cameraStatus: isCameraActive ? 'active' : 'inactive'
+                });
+            }
             //close panel
         }),
         [
