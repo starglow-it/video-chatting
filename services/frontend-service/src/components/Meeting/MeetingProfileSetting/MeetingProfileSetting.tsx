@@ -1,9 +1,6 @@
 import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { $isPortraitLayout } from 'src/store';
-import { isMobile } from 'shared-utils';
-import clsx from 'clsx';
 import * as yup from 'yup';
 
 import styles from './MeetingProfileSetting.module.scss';

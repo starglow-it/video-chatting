@@ -755,7 +755,8 @@ const Component = () => {
                 container
                 gap={1}
                 wrap="nowrap"
-                className={clsx(styles.joinBtn, {
+                className={clsx({
+                    [styles.joinBtn]: !isPayWallBeforeJoin,
                     [styles.mobile]: isMobile,
                     [styles.accessError]: isAudioError || isVideoError,
                 })}

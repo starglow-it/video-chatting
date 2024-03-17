@@ -1,32 +1,19 @@
-import React, { memo, useCallback, useEffect, useState, useMemo, useRef } from 'react';
-import { useStore, useStoreMap } from 'effector-react';
+import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
+import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { $isPortraitLayout } from 'src/store';
-import { isMobile } from 'shared-utils';
 import clsx from 'clsx';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import * as yup from 'yup';
 import Router from 'next/router';
 
 import { PaymentType } from 'shared-const';
 
-import { MeetingChat } from '../MeetingChat/MeetingChat';
-import { Tab, Tabs, Typography } from '@mui/material';
-import { $activeTabPanel, $isAudience, $isHaveNewMessage, $isHaveNewQuestion, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, resetHaveNewQuestionEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
-import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
-import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
+import { MeetingRole } from 'shared-types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
-import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
-import { MeetingTranscribe } from '../MeetingChat/MeetingTranscribe';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
 import { CustomAccordion } from 'shared-frontend/library/custom/CustomAccordion';
 import { Translation } from '@library/common/Translation/Translation';
-import { Socials } from '@components/Socials/Socials';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeetingLink';
 import { MeetingMonetizationPanel } from '../MeetingMonetization/MeetingMonetizationPanel';
@@ -42,22 +29,17 @@ import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 //icons
-import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
-import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { BackgroundBlurIcon } from 'shared-frontend/icons/OtherIcons/BackgroundBlurIcon';
 import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
 import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 
 //hooks
-import { useFormContext } from 'react-hook-form';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { useToggle } from '@hooks/useToggle';
 
 import { SettingsData, FormDataPayment } from './types';
 import { customTemplateLinkSchema } from 'shared-frontend/validation';
-import { MeetingPayment, PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
-
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 

@@ -87,10 +87,6 @@ const Component = () => {
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
-    useEffect(() => {
-        console.log(isEmojiListVisible);
-    }, [isEmojiListVisible]);
-
     const { isMobile } = useBrowserDetect();
 
     const handleClosePayment = useCallback(async () => {

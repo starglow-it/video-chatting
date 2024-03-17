@@ -37,7 +37,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
+const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -69,58 +69,39 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
     const colorMain = 'black';
 
     return (
-        <CustomGrid container direction="column" className={clsx({ [styles.wrapper]: isPreEvent })}>
+        <CustomGrid container direction="column">
             <CustomGrid
                 item
                 container
                 direction="column"
-                className={clsx({ [styles.innerWrapper]: isPreEvent })}
             >
-                {
-                    isPreEvent &&
-                    <CustomTypography
-                        variant="h4bold"
-                        nameSpace="createRoom"
-                        translation="editDescription.form.prePaymentTitle"
-                        className={styles.paymentTitle}
-                    />
-                }
                 <CustomGrid
                     item
                     container
                     alignItems="center"
                     sx={{
                         marginBottom: {
-                            xs: isPreEvent ? '0px' : '20px',
-                            sm: isPreEvent ? '0px' : '10px',
-                            md: isPreEvent ? '0px' : '20px',
-                            xl: isPreEvent ? '0px' : '20px',
+                            xs: '20px',
+                            sm: '10px',
+                            md: '20px',
+                            xl: '20px',
                         },
                     }}
                     className={styles.title}
                 >
                     {subLabel ? <>{subLabel} </> : null}
                     &nbsp;
-                    {
-                        isPreEvent
-                            ?
-                            <CustomTypography variant="body1bold" className={styles.prePaymentSubTitile}>
-                                Please pay the entry fee: &nbsp;
-                                {currencySigns[payment.currency]}
-                                {payment.price}
-                            </CustomTypography>
-                            : <CustomTypography
-                                sx={{
-                                    color: `${colorMain}`,
-                                }}
-                            >
-                                {currencySigns[payment.currency]}
-                                {payment.price}
-                            </CustomTypography>
-                    }
+                    <CustomTypography
+                        sx={{
+                            color: `${colorMain}`,
+                        }}
+                    >
+                        {currencySigns[payment.currency]}
+                        {payment.price}
+                    </CustomTypography>
                     &nbsp;
                 </CustomGrid>
-                {!isPreEvent && <CustomDivider light flexItem />}
+                <CustomDivider light flexItem />
                 {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
                     <CustomGrid
                         container
@@ -128,16 +109,16 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                         className={styles.paymentForm}
                         sx={{
                             marginTop: {
-                                xs: isPreEvent ? '0px' : '20px',
-                                sm: isPreEvent ? '0px' : '10px',
-                                md: isPreEvent ? '0px' : '20px',
-                                xl: isPreEvent ? '0px' : '20px',
+                                xs: '20px',
+                                sm: '10px',
+                                md: '20px',
+                                xl: '20px',
                             },
                         }}
                     >
                         <CustomTypography
                             variant="body1bold"
-                            color={isPreEvent ? 'black' : colorMain}
+                            color={colorMain}
                             nameSpace="meeting"
                             translation="payments.yourCard"
                             className={styles.titleCard}
@@ -152,7 +133,7 @@ const Component = ({ isPreEvent = false, onClose, subLabel, payment, setMeetingP
                         />
                         <StripeElement secret={paymentIntent.clientSecret}>
                             <CardDataForm
-                                isPreEvent={isPreEvent}
+                                isPreEvent={false}
                                 onSubmit={handleSubmit}
                                 onError={handleSubmitError}
                                 setMeetingPreviewShow={setMeetingPreviewShow}

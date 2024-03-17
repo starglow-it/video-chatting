@@ -5,10 +5,18 @@ import {
     useStripe,
 } from '@stripe/react-stripe-js';
 
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import InputBase from '@mui/material/InputBase';
+import { addNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
 
 // stripe
 import { StripeIcon } from 'shared-frontend/icons/OtherIcons/StripeIcon';
@@ -25,11 +33,20 @@ import { $isPortraitLayout } from 'src/store';
 import { isMobile } from 'shared-utils';
 import styles from './CardDataForm.module.scss';
 import { CardDataFormProps } from './types';
+import { generatePrePaymentCodeEvent, checkPrePaymentCodeEvent } from 'src/store/roomStores';
+
+const schema = yup.object().shape({
+    email: yup.string().email(),
+});
 
 // types
 
 const Component = ({
     isPreEvent = false,
+    isError = false,
+    templateId,
+    code,
+    isPaywallPaid,
     onSubmit,
     onError,
     setMeetingPreviewShow = () => { },
@@ -42,37 +59,66 @@ const Component = ({
     const [isLoading, setIsLoading] = useState(false);
     const isPortraitLayout = useStore($isPortraitLayout);
 
-    const handleSubmit = useCallback(
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmitCodeByEmail = async (data: any) => {
+        generatePrePaymentCodeEvent({ email: data.email, templateId });
+    };
+
+    const handleSubmitForm = useCallback(
         async (event: { preventDefault: () => void }) => {
             event.preventDefault();
 
-            if (stripe && elements) {
-                setIsLoading(true);
+            if (isPaywallPaid) {
+                addNotificationEvent({
+                    type: NotificationType.RequestRecordingMeeting,
+                    message: "alreadyPaid",
+                    withSuccessIcon: true
+                });
+            } else {
+                if (stripe && elements && !errors.email) {
+                    setIsLoading(true);
 
-                const result = await stripe.confirmCardPayment(
-                    paymentIntentSecret,
-                    {
-                        payment_method: {
-                            card: elements.getElement(CardNumberElement) ?? {
-                                token: '',
+                    const result = await stripe.confirmCardPayment(
+                        paymentIntentSecret,
+                        {
+                            payment_method: {
+                                card: elements.getElement(CardNumberElement) ?? {
+                                    token: '',
+                                },
                             },
                         },
-                    },
-                );
+                    );
 
-                if (result?.error) {
-                    onError();
-                    setIsLoading(false);
-                } else {
-                    onSubmit();
-                    setIsLoading(false);
-                    setMeetingPreviewShow();
+                    if (result?.error) {
+                        onError();
+                        setIsLoading(false);
+                    } else {
+                        setIsLoading(false);
+                        if (isPreEvent) {
+                            await handleSubmit(onSubmitCodeByEmail)();
+                        }
+                        onSubmit();
+                    }
                 }
             }
-
         },
-        [stripe, elements],
+        [stripe, elements, errors],
     );
+
+    const handleCheckCode = (code: string) => {
+        if (isPaywallPaid) {
+            checkPrePaymentCodeEvent({ code });
+        } else {
+            addNotificationEvent({
+                type: NotificationType.RequestRecordingMeeting,
+                message: "notPaid",
+                withErrorIcon: true
+            });
+        }
+    };
 
     const isFormBlack = colorForm === 'black';
 
@@ -160,6 +206,18 @@ const Component = ({
     const renderFormPaywall = () => {
         return (
             <CustomGrid container gap={2}>
+                {
+                    isPreEvent &&
+                    <CustomBox sx={{ width: '100%' }}>
+                        <InputBase
+                            {...register('email')}
+                            placeholder="Email to send your entry Code"
+                            fullWidth
+                            className={clsx(styles.codeInput, styles.emailInput, { [styles.error]: errors.email })}
+                        />
+                        {errors.email && <span className={styles.errorText}>{errors.email.message}</span>}
+                    </CustomBox>
+                }
                 <StripeCardNumber
                     className={clsx(styles.cardField, {
                         [styles.borderFieldBlack]: isFormBlack,
@@ -182,36 +240,64 @@ const Component = ({
         );
     };
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitForm}>
             <ConditionalRender condition={paymentType === PaymentType.Meeting}>
                 {renderFormMeeting()}
             </ConditionalRender>
             <ConditionalRender condition={paymentType === PaymentType.Paywall}>
                 {renderFormPaywall()}
             </ConditionalRender>
-            <CustomButton
-                type="submit"
-                variant="custom-common"
-                Icon={<StripeIcon width="24px" height="24px" />}
-                className={clsx(styles.button, {
-                    [styles.isPreEvent]: isPreEvent,
-                    [styles.paddingButton]: paymentType === PaymentType.Meeting,
-                    [styles.mobile]: isMobile() && !isPortraitLayout,
-                })}
-                isLoading={isLoading}
-            >
-                &nbsp;
-                <CustomTypography
-                    nameSpace="meeting"
-                    translation="payments.payWith"
-                />
-                &nbsp;
-                <CustomTypography
-                    variant="body1bold"
-                    nameSpace="meeting"
-                    translation="payments.stripe"
-                />
-            </CustomButton>
+            <ConditionalRender condition={Boolean(code)}>
+                <CustomButton
+                    variant="custom-common"
+                    Icon={<StripeIcon width="24px" height="24px" />}
+                    className={clsx(styles.button, {
+                        [styles.isPreEvent]: isPreEvent,
+                        [styles.paddingButton]: paymentType === PaymentType.Meeting,
+                        [styles.mobile]: isMobile() && !isPortraitLayout,
+                    })}
+                    isLoading={isLoading}
+                    onClick={() => handleCheckCode(code)}
+                >
+                    &nbsp;
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="payments.payWith"
+                    />
+                    &nbsp;
+                    <CustomTypography
+                        variant="body1bold"
+                        nameSpace="meeting"
+                        translation="payments.stripe"
+                    />
+                </CustomButton>
+            </ConditionalRender>
+            <ConditionalRender condition={!Boolean(code)}>
+                <CustomButton
+                    type="submit"
+                    variant="custom-common"
+                    Icon={<StripeIcon width="24px" height="24px" />}
+                    className={clsx(styles.button, {
+                        [styles.isPreEvent]: isPreEvent,
+                        [styles.paddingButton]: paymentType === PaymentType.Meeting,
+                        [styles.mobile]: isMobile() && !isPortraitLayout,
+                        [styles.disabled]: errors.email
+                    })}
+                    isLoading={isLoading}
+                >
+                    &nbsp;
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="payments.payWith"
+                    />
+                    &nbsp;
+                    <CustomTypography
+                        variant="body1bold"
+                        nameSpace="meeting"
+                        translation="payments.stripe"
+                    />
+                </CustomButton>
+            </ConditionalRender>
         </form>
     );
 };

@@ -36,6 +36,12 @@
   &.mobile {
     margin: rem(8px 0 0 0);
   }
+
+  &.disabled {
+    background-color: #fcc38e;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
 
 .paddingButton {
@@ -74,4 +80,34 @@
 .textField {
   font-size: 12px;
   color: black;
+}
+
+.emailInput {
+  border: 1px solid #c9c5c5;
+  border-radius: 8px;
+  padding: 8px;
+
+  &.error {
+    border: 1px solid red;
+  }
+}
+
+.errorText{
+  color: red;
+  font-size: 13px;
+}
+
+.emailInput {
+  border: 1px solid #c9c5c5;
+  border-radius: 8px;
+  padding: 8px;
+
+  &.error {
+    border: 1px solid red;
+  }
+}
+
+.errorText{
+  color: red;
+  font-size: 13px;
 }

@@ -91,5 +91,7 @@
   "user": {
     "exits": "This email is already used"
   },
-  "hostIsAway": "The Host is away but gave you permission to enter"
+  "hostIsAway": "The Host is away but gave you permission to enter",
+  "alreadyPaid": "You have already prepaid. Please confirm with your code.",
+  "notPaid": "You didn't paid yet."
 }

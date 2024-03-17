@@ -16,7 +16,6 @@ import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
 
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
@@ -27,7 +26,6 @@ import styles from './MeetingGeneralInfo.module.scss';
 // store
 import {
     $isOwner,
-    toggleEditTemplateOpen,
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
     $meetingEmojiListVisibilityStore,
@@ -57,11 +55,6 @@ const Component = () => {
     } = useToggle(false);
 
     const { control } = useFormContext();
-
-    const companyName = useWatch({
-        control,
-        name: 'companyName',
-    });
 
     const fullName = useWatch({
         control,
@@ -148,23 +141,6 @@ const Component = () => {
                         </Fade>
                     </CustomBox>
                 </CustomTooltip>
-
-                {/* <CustomGrid
-                    container
-                    direction="column"
-                    alignItems="flex-start"
-                    className={styles.companyName}
-                >
-                    <CustomTypography
-                        color="colors.white.primary"
-                        className={clsx(
-                            styles.companyNameTitle,
-                            styles.withoutBoard,
-                        )}
-                    >
-                        {isOwner ? companyName : meetingTemplate.companyName}
-                    </CustomTypography>
-                </CustomGrid> */}
             </CustomGrid>
         </CustomGrid>
     );
