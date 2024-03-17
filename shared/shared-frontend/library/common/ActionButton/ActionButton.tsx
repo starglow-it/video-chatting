@@ -16,10 +16,10 @@ const Component = (
     ref: ForwardedRef<HTMLButtonElement>,
 ) => {
     const buttonClassNames = clsx(
+        className,
         styles.iconWrapper,
         variant && styles[variant],
         { [styles.withAction]: Boolean(onAction) },
-        className,
     );
 
     const handleAction = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {

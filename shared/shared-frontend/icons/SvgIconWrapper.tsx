@@ -6,12 +6,12 @@ import { CommonIconProps } from './types';
 type ComponentProps = React.PropsWithChildren<CommonIconProps> & SvgIconProps;
 
 const Component = (
-    { width, height, children, className, onClick, ...rest }: ComponentProps,
+    { width, height, color, children, className, onClick, ...rest }: ComponentProps,
     ref: ForwardedRef<SVGSVGElement>,
 ) => (
     <SvgIcon
         ref={ref}
-        sx={{ width, height }}
+        sx={{ width, height, color }}
         className={className || ''}
         onClick={onClick}
         {...rest}

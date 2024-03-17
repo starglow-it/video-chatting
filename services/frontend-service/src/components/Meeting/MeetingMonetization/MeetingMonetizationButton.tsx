@@ -50,12 +50,6 @@ export const MeetingMonetizationButton = () => {
         }
     }, [isOwner]);
 
-    useEffect(() => {
-        createPaymentIntentWithData({
-            paymentType: PaymentType.Meeting,
-        });
-    }, [])
-
     return (
         <>
             <ConditionalRender condition={isOwner}>

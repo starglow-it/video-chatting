@@ -43,6 +43,7 @@
   "payments": {
     "paymentSuccess": "Your payment was successful!",
     "connectAccountSuccess": "Stripe is connected successfully",
+    "isNotAccountConnected": "You aren't connected to Stripe yet",
     "paymentFail": "An error occurred during the payment. Please try again",
     "connectAccountFail": "An error occurred during the connection. Please try again"
   },

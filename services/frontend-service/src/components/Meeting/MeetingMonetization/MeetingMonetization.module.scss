@@ -43,9 +43,12 @@
       border-radius: 8px;
     }
 
+    .createForm {
+      color: white;
+    }
+
     .inputWrapper {
       padding: rem(0 4px);
-      color: $primary-white;
       font-size: 13px;
 
       .input::-webkit-outer-spin-button,

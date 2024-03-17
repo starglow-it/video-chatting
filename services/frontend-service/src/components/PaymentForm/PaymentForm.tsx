@@ -66,7 +66,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
         });
     }, []);
 
-    const colorMain = payment.type === PaymentType.Paywall ? 'black' : 'white';
+    const colorMain = 'black';
 
     return (
         <CustomGrid container direction="column">
@@ -138,11 +138,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
                                 onError={handleSubmitError}
                                 setMeetingPreviewShow={setMeetingPreviewShow}
                                 paymentIntentSecret={paymentIntent.clientSecret}
-                                colorForm={
-                                    payment.type === PaymentType.Paywall
-                                        ? 'black'
-                                        : 'white'
-                                }
+                                colorForm={colorMain}
                                 paymentType={payment.type}
                             />
                         </StripeElement>

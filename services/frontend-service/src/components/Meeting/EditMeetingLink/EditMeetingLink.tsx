@@ -82,7 +82,7 @@ const Component = () => {
     const customLinkError = errors.customLink?.message;
 
     return (
-        <CustomGrid container direction="column">
+        <CustomGrid container direction="column" gap={1}>
             <CustomGrid
                 container
                 className={clsx(styles.linkWrapper, {

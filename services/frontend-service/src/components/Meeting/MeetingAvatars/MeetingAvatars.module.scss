@@ -1,7 +1,7 @@
 @import '../../../styles/variables.scss';
 
 .container {
-    width: 264px;
+    width: 320px;
     height: 290px;
     border-radius: 16px;
     background-color: $primary-white;
@@ -14,7 +14,7 @@
 .main {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .list {
