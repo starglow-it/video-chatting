@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
 
-// hooks
+//hooks
+import { FormProvider, useForm } from 'react-hook-form';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
@@ -16,6 +17,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
@@ -27,6 +29,32 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CircularProgress from '@mui/material/CircularProgress';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
+import * as yup from 'yup';
+import { Theme } from '@mui/system';
+import createStyles from '@mui/styles/createStyles';
+import { makeStyles } from '@mui/styles';
+
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { SendIcon } from 'shared-frontend/icons/OtherIcons/SendIcon';
+
+// custom
+import { CustomInput } from '@library/custom/CustomInput/CustomInput';
+
+// icons
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import CallEndIcon from '@mui/icons-material/CallEnd';
+
+// validation
+
+// stores
+
+// styles
+import { $profileStore } from 'src/store';
+import { simpleStringSchemaWithLength } from '../../../validation/common';
+import { MAX_NOTE_CONTENT } from '../../../const/general';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -55,6 +83,9 @@ import {
     $meetingStore,
     $meetingRecordingStore,
     $meetingRecordingIdStore,
+    $isToggleEditRuumePanel,
+    $isTogglProfilePanel,
+    $enabledPaymentMeetingAudience,
     setDoNotDisturbEvent,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -74,6 +105,10 @@ import {
     startRecordStreamFx,
     stopRecordStreamFx,
     $isScreenSharingStore,
+    $meetingNotesStore,
+    sendMeetingNoteSocketEvent,
+    toggleEditRuumeSettingEvent,
+    toggleProfilePanelEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -82,7 +117,50 @@ import { clientRoutes } from '../../../const/client-routes';
 import config from '../../../const/config';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { AppDialogsEnum, NotificationType } from 'src/store/types';
-import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
+import ScreenShareIcon from '@mui/icons-material/ScreenShare';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
+const validationSchema = yup.object({
+    note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
+});
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        textField: {
+            '& .MuiInputLabel-root': {
+                '&.Mui-focused': {
+                    color: '#77777a',
+                },
+            },
+            '& .MuiOutlinedInput-root': {
+                background: 'transparent',
+                color: 'white',
+                '&.Mui-focused, &:hover': {
+                    color: '#b5b5b5',
+                },
+                height: '30px',
+                fontSize: '14px'
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+                borderRadius: '8px',
+                border: 'none'
+            },
+            '& .MuiFormLabel-root': {
+                color: 'black',
+                top: '-8px',
+                fontSize: '14px',
+            },
+            '& .Mui-focused': {
+                top: 0,
+            },
+            '& .MuiFormLabel-filled': {
+                top: 0,
+            },
+        },
+    }),
+);
+
+type FormType = { note: string };
 
 const Component = () => {
     const router = useRouter();
@@ -101,6 +179,9 @@ const Component = () => {
     const meetingRecordingStore = useStore($meetingRecordingStore);
     const recordingStartPending = useStore(startRecordStreamFx.pending);
     const recordingStopPending = useStore(stopRecordStreamFx.pending);
+    const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
+    const isProfileOpen = useStore($isTogglProfilePanel);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -132,6 +213,11 @@ const Component = () => {
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+
+    const materialStyles = useStyles();
+    const meetingNotes = useStore($meetingNotesStore);
+    const profile = useStore($profileStore);
+    const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -220,14 +306,85 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
-        toggleSchedulePanelEvent(false);
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
     };
 
     const handleToggleSchedulePanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleSchedulePanelEvent();
-        toggleUsersPanelEvent(false);
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
     };
+
+    const handleToggleEditRuumeSettingPanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleEditRuumeSettingEvent();
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+    };
+
+    const handleEmojiListToggle = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+    }
 
     const handleRequestToBecomeParticipant = useCallback(() => {
         requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
@@ -247,10 +404,6 @@ const Component = () => {
     const handleSetStickyNotesVisible = () => {
         setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
     };
-
-    const handleEmojiListToggle = () => {
-        setEmojiListVisibilityEvent({ isEmojiListVisible: !isEmojiListVisible });
-    }
 
     //Do not disturb acion
     const handleDoNotDisturb = () => {
@@ -277,36 +430,132 @@ const Component = () => {
         }
     }
 
+    const methods = useForm({
+        resolver,
+        defaultValues: { note: '' },
+    });
+
+    const { reset, register, getValues } = methods;
+
+    const [isExpand, setIsExpand] = useState<boolean>(true);
+
+    const handleKeyDown = (e: any) => {
+        if (e.key === 'Enter' || e.keyCode === '13') {
+            if (meetingNotes.length < 3) {
+                sendMeetingNoteSocketEvent(getValues());
+                reset();
+            } else {
+                addNotificationEvent({
+                    message: 'Notes is limited to 3 on screen',
+                    type: NotificationType.validationError,
+                });
+            }
+        }
+    };
+
+    const { onChange, ...restRegisterData } = register('note', {
+        maxLength: MAX_NOTE_CONTENT,
+    });
+
+    const handleChange = useCallback(async (event: any) => {
+        if (event.target.value.length > MAX_NOTE_CONTENT) {
+            /* eslint-disable no-param-reassign */
+            event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);
+            /* eslint-enable no-param-reassign */
+        }
+
+        await onChange(event);
+    }, []);
+
+    const sendNote = () => {
+        if (meetingNotes.length < 3) {
+            sendMeetingNoteSocketEvent(getValues());
+            reset();
+        } else {
+            addNotificationEvent({
+                message: 'Notes is limited to 3 on screen',
+                type: NotificationType.validationError,
+            });
+        }
+    };
+
     return (
-        <CustomGrid id="menuBar" container gap={1.5} className={styles.devicesWrapper}>
+        <CustomGrid id="menuBar" container alignItems="center" className={styles.devicesWrapper}>
+            <CustomGrid
+                item
+                className={styles.profileAvatar}
+            >
+                <MeetingGeneralInfo />
+            </CustomGrid>
             <ConditionalRender condition={!isMobile && !isAudience}>
-                <CustomTooltip
-                    title={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="devices.stickyNotes"
-                        />
-                    }
-                    placement="top"
-                >
+                <FormProvider {...methods}>
                     <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile,
+                        })}
                     >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleSetStickyNotesVisible}
-                            className={clsx(styles.deviceButton)}
-                            Icon={
-                                <NotesIcon
-                                    width="22px"
-                                    height="22px"
-                                />
-                            }
-                        />
+                        <CustomGrid
+                            container
+                            alignItems="center"
+                            flexDirection="row"
+                            justifyContent="center"
+                        >
+                            <CustomGrid flex={1}>
+                                <ConditionalRender
+                                    condition={!isAudience || !!profile.id}
+                                >
+                                    <CustomInput
+                                        placeholder="post a sticky notes"
+                                        className={clsx(
+                                            materialStyles.textField,
+                                            styles.textField,
+                                            { [styles.expanded]: isExpand },
+                                        )}
+                                        onKeyDown={handleKeyDown}
+                                        {...restRegisterData}
+                                        onChange={handleChange}
+                                    />
+                                </ConditionalRender>
+                                <ConditionalRender
+                                    condition={isAudience && !!!profile.id}
+                                >
+                                    <CustomGrid
+                                        className={styles.fieldNoLogin}
+                                        display="flex"
+                                        alignItems="center"
+                                    >
+                                        <span>
+                                            <a
+                                                href={`${config.frontendUrl}/register`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Join
+                                            </a>{' '}
+                                            to Post a Sticky Note
+                                        </span>
+                                    </CustomGrid>
+                                </ConditionalRender>
+                            </CustomGrid>
+                            <ActionButton
+                                variant="transparentPure"
+                                className={clsx(styles.stickyEmojiBtn, {
+                                    [styles.disabled]: isAudience && !!!profile.id,
+                                })}
+                                Icon={<InsertEmoticonIcon sx={{ fontSize: '30px' }} />}
+                                onClick={() => { }}
+                            />
+                            <ActionButton
+                                variant="transparentPure"
+                                className={clsx(styles.sendNoteBtn, {
+                                    [styles.disabled]: isAudience && !!!profile.id,
+                                })}
+                                Icon={<NotesIcon width='30px' height='30px' />}
+                                onClick={sendNote}
+                            />
+                        </CustomGrid>
                     </CustomPaper>
-                </CustomTooltip>
+                </FormProvider>
             </ConditionalRender>
             <ConditionalRender condition={!isMobile}>
                 <CustomTooltip
@@ -318,20 +567,85 @@ const Component = () => {
                     }
                     placement="top"
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleEmojiListToggle}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleEmojiListToggle}
-                            className={clsx(styles.deviceButton)}
+                            variant="transparentPure"
+                            className={styles.actionBtn}
                             Icon={
-                                <FavoriteIcon fontSize="small" />
+                                <FavoriteIcon width="25px" height="25px" />
                             }
                         />
-                    </CustomPaper>
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.reactions"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
+            <CustomTooltip
+                title={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="chat.tooltip"
+                    />
+                }
+                placement="top"
+            >
+                <CustomGrid
+                    className={styles.deviceButton}
+                    onClick={handleToggleUsersPanel}
+                >
+                    <ActionButton
+                        variant="transparentPure"
+                        className={clsx(styles.actionButton, styles.actionBtn, {
+                            [styles.active]: isUsersOpen,
+                            [styles.newRequests]: !!isThereNewMessage || !!isThereNewQuestion,
+                            [styles.mobile]: isMobile,
+                        })}
+                        Icon={<ChatIcon width="25px" height="25px" />}
+                    />
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="controlButtonsLabel.chat"
+                        color="white"
+                        fontSize={12}
+                    />
+                </CustomGrid>
+            </CustomTooltip>
+            <ConditionalRender condition={!isAudience}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={isAbleToToggleSharing ? `modes.screensharing.${isSharingActive ? 'off' : 'on'
+                                }` : 'modes.screensharing.busy'}
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleSharing}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={
+                                <ScreenShareIcon width="25px" height="25px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
+                            }
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.screenSharing"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
             <ConditionalRender condition={!isMobile && !isAudience}>
@@ -344,26 +658,81 @@ const Component = () => {
                     }
                     placement="top"
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleMic}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleMic}
-                            className={clsx(styles.deviceButton, {
+                            variant="transparentPure"
+                            className={clsx(styles.actionBtn, {
                                 [styles.inactive]: !isMicActive,
                             })}
                             Icon={
                                 <MicIcon
                                     isActive={isMicActive}
-                                    width="22px"
-                                    height="22px"
+                                    width="25px"
+                                    height="25px"
                                 />
                             }
                         />
-                    </CustomPaper>
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.audio"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={
+                                isAudience
+                                    ? isRecording
+                                        ? "recordMeeting.noAccess"
+                                        : "recordMeeting.recordingRequest"
+                                    : isRecording
+                                        ? "recordMeeting.stop"
+                                        : "recordMeeting.start"
+                            }
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleRecordMeeting}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            disabled={isAudience && isRecording}
+                            className={styles.actionBtn}
+                            Icon={
+                                (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
+                                    ? <CircularProgress
+                                        size={25}
+                                        sx={{ color: 'white' }}
+                                    />
+                                    : isRecording
+                                        ? <FiberManualRecordIcon
+                                            width="25px"
+                                            height="25px"
+                                            color="error"
+                                            className={styles.recordingBtnAnimation}
+                                        />
+                                        : <FiberManualRecordIcon width="25px" height="25px" />
+                            }
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.record"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
             <ConditionalRender condition={!isAudience}>
@@ -376,52 +745,29 @@ const Component = () => {
                     }
                     placement="top"
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleSchedulePanel}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleToggleSchedulePanel}
-                            className={clsx(styles.actionButton, {
+                            variant="transparentPure"
+                            className={clsx(styles.actionButton, styles.actionBtn, {
                                 [styles.active]: isSchedulePannelOpen,
                                 [styles.newRequests]:
                                     (isThereNewRequests && isMeetingHost),
                                 [styles.mobile]: isMobile,
                             })}
-                            Icon={<PersonPlusIcon width="18px" height="18px" />}
+                            Icon={<PersonPlusIcon width="25px" height="25px" />}
                         />
-                    </CustomPaper>
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="controlButtonsLabel.attendees"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-
-            <CustomTooltip
-                title={
-                    <Translation
-                        nameSpace="meeting"
-                        translation="chat.tooltip"
-                    />
-                }
-                placement="top"
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.deviceButton}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleUsersPanel}
-                        className={clsx(styles.actionButton, {
-                            [styles.active]: isUsersOpen,
-                            [styles.newRequests]: !!isThereNewMessage || !!isThereNewQuestion,
-                            [styles.mobile]: isMobile,
-                        })}
-                        Icon={<ChatIcon width="18px" height="18px" />}
-                    />
-                </CustomPaper>
-            </CustomTooltip>
             <ConditionalRender condition={isAudience}>
                 <CustomTooltip
                     title={
@@ -432,51 +778,24 @@ const Component = () => {
                     }
                     placement="top"
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleRequestToBecomeParticipant}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleRequestToBecomeParticipant}
-                            className={styles.actionButton}
-                            Icon={<ArrowUp width="15px" height="15px" />}
+                            variant="transparentPure"
+                            className={clsx(styles.actionButton, styles.actionBtn)}
+                            Icon={<ArrowUp width="25px" height="25px" />}
                         />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
-
-
-            {/* Do not disturb button */}
-            <ConditionalRender condition={isOwner}>
-                <CustomTooltip
-                    title={
-                        <Translation
+                        <CustomTypography
                             nameSpace="meeting"
-                            translation="doNotDisturb.tooltip"
+                            translation="controlButtonsLabel.becomeAParticipant"
+                            color="white"
+                            fontSize={12}
                         />
-                    }
-                    placement="top"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleDoNotDisturb}
-                            className={clsx(styles.deviceButton,
-                                styles.doNotDisturbButton,
-                                { [styles.disabled]: doNotDisturbStore }
-                            )}
-                            Icon={<DoNotDisturbAltIcon sx={{ fontSize: 20 }} />}
-                        />
-                    </CustomPaper>
+                    </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-
             <CustomTooltip
                 title={
                     <Translation
@@ -486,111 +805,52 @@ const Component = () => {
                 }
                 placement="top"
             >
-                <ActionButton
-                    variant="danger"
-                    onAction={handleEndVideoChat}
-                    className={styles.hangUpButton}
-                    Icon={<HangUpIcon width="22px" height="22px" />}
-                />
-            </CustomTooltip>
+                <CustomGrid
+                    className={styles.deviceButton}
+                    onClick={handleEndVideoChat}
+                >
+                    <ActionButton
+                        variant="transparentPure"
+                        className={styles.hangUpButton}
+                        Icon={<CallEndIcon width="25px" height="25px" sx={{ color: 'red' }} />}
+                    />
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="controlButtonsLabel.end"
+                        color="white"
+                        fontSize={12}
+                    />
+                </CustomGrid>
 
-            <ConditionalRender condition={!isAudience}>
+            </CustomTooltip>
+            <ConditionalRender condition={!isAudience || (isAudience && enabledPaymentMeetingAudience)}>
                 <CustomTooltip
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation="settings.main"
+                            translation="buttons.more"
                         />
                     }
                     placement="top"
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <CustomGrid
                         className={styles.deviceButton}
+                        onClick={handleToggleEditRuumeSettingPanel}
                     >
                         <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleOpenSettingsDialog}
-                            className={styles.grey}
-                            Icon={<SettingsIcon width="22px" height="22px" />}
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<MoreHorizIcon width="25px" height="25px" />}
                         />
-                    </CustomPaper>
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="buttons.more"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-
-            <CustomGrid id="sideMenuBar" container gap={1.5} direction="column" className={styles.sideMenuWrapper}>
-                <MeetingMonetizationButton />
-                <ConditionalRender condition={!isAudience}>
-                    <CustomTooltip
-                        title={
-                            <Translation
-                                nameSpace="meeting"
-                                translation={isAbleToToggleSharing ? `modes.screensharing.${isSharingActive ? 'off' : 'on'
-                                    }` : 'modes.screensharing.busy'}
-                            />
-                        }
-                        placement="top"
-                    >
-                        <CustomPaper
-                            variant="black-glass"
-                            borderRadius={8}
-                            className={styles.deviceButton}
-                        >
-                            <ActionButton
-                                variant="transparentBlack"
-                                onAction={handleSharing}
-                                className={clsx(styles.deviceButton)}
-                                Icon={
-                                    <SharingIcon width="22px" height="22px" className={clsx({ [styles.active]: isSharingActive && isAbleToToggleSharing })} />
-                                }
-                            />
-                        </CustomPaper>
-                    </CustomTooltip>
-                </ConditionalRender>
-                <ConditionalRender condition={isOwner}>
-                    <CustomTooltip
-                        title={
-                            <Translation
-                                nameSpace="meeting"
-                                translation={
-                                    isAudience
-                                        ? isRecording
-                                            ? "recordMeeting.noAccess"
-                                            : "recordMeeting.recordingRequest"
-                                        : isRecording
-                                            ? "recordMeeting.stop"
-                                            : "recordMeeting.start"
-                                }
-                            />
-                        }
-                        placement="top"
-                    >
-                        <CustomPaper
-                            variant="black-glass"
-                            borderRadius={8}
-                            className={styles.deviceButton}
-                        >
-                            <ActionButton
-                                variant="transparentBlack"
-                                onAction={handleRecordMeeting}
-                                className={styles.deviceButton}
-                                disabled={isAudience && isRecording}
-                                Icon={
-                                    (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
-                                        ? <CircularProgress
-                                            size={15}
-                                            sx={{ color: 'white' }}
-                                        />
-                                        : isRecording
-                                            ? <FiberManualRecordIcon color="error" className={styles.recordingBtnAnimation} />
-                                            : <FiberManualRecordIcon />
-                                }
-                            />
-                        </CustomPaper>
-                    </CustomTooltip>
-                </ConditionalRender>
-            </CustomGrid>
         </CustomGrid>
     );
 };

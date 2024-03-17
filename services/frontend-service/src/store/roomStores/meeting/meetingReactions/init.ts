@@ -22,7 +22,4 @@ $meetingReactionsStore
     )
     .reset(resetRoomStores);
 
-$meetingEmojiListVisibilityStore.on(setEmojiListVisibilityEvent, (state, { isEmojiListVisible }) => ({
-    ...state,
-    isEmojiListVisible: isEmojiListVisible
-}));
+$meetingEmojiListVisibilityStore.on(setEmojiListVisibilityEvent, (state, data) => data);

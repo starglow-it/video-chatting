@@ -47,7 +47,8 @@ import {
     joinAudienceMeetingSocketEvent,
     joinRecorderMeetingSocketEvent,
     updateLocalUserEvent,
-    setIsPaywallPaymentEnabled
+    setIsPaywallPaymentEnabled,
+    cancelPaymentIntentWithData
 } from '../../store/roomStores';
 
 // types
@@ -151,6 +152,7 @@ const Component = () => {
     const handlePaymentSuccess = useCallback(() => {
         setIsPaywallPaymentEnabled(true);
         joinAudienceMeetingSocketEvent();
+        cancelPaymentIntentWithData();
     }, []);
 
     const fullNameError = errors.fullName?.message;

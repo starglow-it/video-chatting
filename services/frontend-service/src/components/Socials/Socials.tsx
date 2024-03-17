@@ -12,6 +12,7 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // styles
 import styles from './Socials.module.scss';
@@ -178,12 +179,13 @@ const Component = ({ buttonClassName, title = null }: Props) => {
     const profileLinks = useMemo(
         () =>
             fields?.map((social, index) => (
-                <SocialInput
-                    onRemove={handleRemove}
-                    key={social.id}
-                    social={social}
-                    index={index}
-                />
+                <CustomBox key={social.id}>
+                    <SocialInput
+                        onRemove={handleRemove}
+                        social={social}
+                        index={index}
+                    />
+                </CustomBox>
             )),
         [fields, errors],
     );

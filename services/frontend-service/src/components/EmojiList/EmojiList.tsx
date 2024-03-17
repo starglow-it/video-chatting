@@ -25,8 +25,6 @@ const Component = () => {
     const profile = useStore($profileStore);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
 
-    // const [isExpand, setIsExpand] = useState<boolean>(true);
-
     const addReaction = (event: React.MouseEvent<HTMLImageElement>) => {
         sendMeetingReactionSocketEvent({
             emojiName: event.target.dataset.key,
@@ -127,49 +125,35 @@ const Component = () => {
     ];
 
     return (
-        // <ClickAwayListener onClickAway={() => setIsExpand(false)}>
-        <ClickAwayListener onClickAway={() => setEmojiListVisibilityEvent({ isEmojiListVisible: false })}>
-            <>
-                {isEmojiListVisible &&
-                    <CustomPaper
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.mobile]: isMobile,
-                        })}
-                        variant="black-glass"
-                    >
-                        <CustomGrid
-                            container
-                            alignItems="center"
-                            flexDirection="row"
-                            justifyContent="center"
-                        >
-                            <ConditionalRender
-                                condition={!isAudience || !!profile.id}
-                            >
-                                {availableReactionArr.map(reaction => (
-                                    <CustomGrid item xs={4} className={styles.center}>
-                                        <CustomBox className={styles.emojiBox}>
-                                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
-                                        </CustomBox>
-                                    </CustomGrid>
-                                ))}
-                            </ConditionalRender>
-                            <ConditionalRender
-                                condition={isAudience}
-                            >
-                                {availableReactionArr.filter(reaction => reaction.isForAudience).map(reaction => (
-                                    <CustomGrid item xs={4} className={styles.center}>
-                                        <CustomBox className={styles.emojiBox}>
-                                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
-                                        </CustomBox>
-                                    </CustomGrid>
-                                ))}
-                            </ConditionalRender>
-                        </CustomGrid>
-                    </CustomPaper>
-                }
-            </>
-        </ClickAwayListener>
+        <CustomGrid
+            container
+            alignItems="center"
+            flexDirection="row"
+            justifyContent="center"
+        >
+            <ConditionalRender
+                condition={!isAudience}
+            >
+                {availableReactionArr.map(reaction => (
+                    <CustomGrid item xs={4} className={styles.center} key={reaction.text}>
+                        <CustomBox className={styles.emojiBox}>
+                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
+                        </CustomBox>
+                    </CustomGrid>
+                ))}
+            </ConditionalRender>
+            <ConditionalRender
+                condition={isAudience}
+            >
+                {availableReactionArr.filter(reaction => reaction.isForAudience).map(reaction => (
+                    <CustomGrid item xs={4} className={styles.center} key={reaction.text}>
+                        <CustomBox className={styles.emojiBox}>
+                            <CustomImage className={styles.emojiBtn} onClick={addReaction} src={reaction.icon} data-key={reaction.text} width="30" height="30" />
+                        </CustomBox>
+                    </CustomGrid>
+                ))}
+            </ConditionalRender>
+        </CustomGrid>
     );
 };
 

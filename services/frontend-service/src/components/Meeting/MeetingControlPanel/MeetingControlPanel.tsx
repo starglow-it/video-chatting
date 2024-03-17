@@ -21,6 +21,7 @@ import { MeetingInviteParticipants } from '@components/Meeting/MeetingInvitePart
 import { MeetingAttendeesList } from '@components/Meeting/MeetingAttendeesList/MeetingAttendeesList';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+import { EmojiList } from '@components/EmojiList/EmojiList';
 
 // stores
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
@@ -39,12 +40,18 @@ import {
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
     $localUserStore,
+    $isTogglProfilePanel,
+    $isToggleEditRuumePanel,
+    $meetingEmojiListVisibilityStore,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    updateUserSocketEvent
+    updateUserSocketEvent,
+    toggleProfilePanelEvent,
+    setEmojiListVisibilityEvent,
+    toggleEditRuumeSettingEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -54,6 +61,8 @@ import styles from './MeetingControlPanel.module.scss';
 import { MeetingRole } from 'shared-types';
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
+import { MeetingProfileSetting } from '../MeetingProfileSetting/MeetingProfileSetting';
+import { MeetingEditRuumeSetting } from '../MeetingEditRuumeSetting/MeetingEditRuumeSetting';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 
@@ -64,6 +73,8 @@ const Component = () => {
     const users = useStore($meetingUsersStore);
     const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isProfileOpen = useStore($isTogglProfilePanel);
+    const isEditRuumeOpen = useStore($isToggleEditRuumePanel);
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
@@ -73,7 +84,7 @@ const Component = () => {
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const paymentMeetingParticipant = useStore($paymentMeetingParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
-    const localUser = useStore($localUserStore);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
 
     const { isMobile } = useBrowserDetect();
@@ -92,6 +103,11 @@ const Component = () => {
     const handleCloseMobilePanel = (e: MouseEvent | TouchEvent) => {
         console.log('#Duy Phan console', e);
     };
+
+    const toggleProfilePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleProfilePanelEvent(false);
+    }, []);
 
     const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
@@ -129,9 +145,63 @@ const Component = () => {
         }
     }, [isOwner]);
 
+    const handleCloseEmojiListPanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        setEmojiListVisibilityEvent({ isEmojiListVisible: false })
+    }, []);
+
+    const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleEditRuumeSettingEvent(false);
+    }, []);
+
     const commonContent = useMemo(
         () => (
             <>
+                <ClickAwayListener onClickAway={handleCloseEditRuumePanel}>
+                    <Fade in={isEditRuumeOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.editRuumePanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                                [styles.landscape]:
+                                    isMobile && !isPortraitLayout,
+                            })}
+                        >
+                            <CustomScroll className={styles.editRuumeScrollBar}>
+                                <MeetingEditRuumeSetting />
+                            </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={toggleProfilePanel}>
+                    <Fade in={isProfileOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.profilePanel, {
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                                [styles.landscape]:
+                                    isMobile && !isPortraitLayout,
+                            })}
+                        >
+                            <CustomScroll className={styles.profileSettingScrollBar}>
+                                <MeetingProfileSetting />
+                            </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={handleCloseEmojiListPanel}>
+                    <Fade in={isEmojiListVisible}>
+                        <CustomPaper
+                            className={clsx(styles.emojiPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
+                            variant="black-glass"
+                        >
+                            <EmojiList />
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
                 <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
                     <Fade in={isUsersOpen}>
                         <CustomPaper
@@ -241,6 +311,9 @@ const Component = () => {
             isPaymentOpen,
             isScheduleOpen,
             isChangeBackgroundOpen,
+            isEditRuumeOpen,
+            isProfileOpen,
+            isEmojiListVisible
         ],
     );
 

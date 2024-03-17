@@ -17,15 +17,27 @@
 .devicesWrapper {
   position: absolute;
   z-index: 1000;
-  bottom: rem(8px);
-  right: rem(20px);
-  width: auto;
+  bottom: rem(30px);
+  right: 50%;
+  transform: translateX(50%);
+  width: max-content;
+  border-radius: 10px;
+  padding: rem(10px 30px);
+  background-color: rgba($color: #000000, $alpha: 0.5);
 }
 
 .hangUpButton {
   width: rem(34px);
   height: rem(34px);
   border-radius: 22.5%;
+}
+
+.sendNoteBtn, .stickyEmojiBtn {
+  cursor: pointer;
+
+  &:hover {
+    color: #EF8E5B;
+  }
 }
 
 .deviceButton {
@@ -38,10 +50,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  background: transparent;
+  margin: rem(0px 10px);
+  width: auto;
+  color: black;
+  cursor: pointer;
+
+  &:hover {
+    .actionBtn {
+      color: #EF8E5B;
+    }
+  }
 }
 
 .deviceButton:after {
   border-radius: 22.5%;
+  background: transparent;
 }
 
 .goodsButton {
@@ -74,13 +99,19 @@
 
 .actionButton {
   @extend %base-wrapper-icon-button;
+  background: transparent;
+
+  &:hover {
+    background: transparent;
+  }
+
   &.active {
-    background: rgba($primary-white, 0.25);
+    background: transparent;
   }
 
   &.withAction {
     &:hover {
-      background: rgba($primary-white, 0.25);
+      background: transparent;
     }
   }
 
@@ -126,7 +157,6 @@
   }
 }
 
-
 .grey {
   width: rem(34px);
   height: rem(34px);
@@ -136,16 +166,16 @@
   color: $primary-white;
 
   &:hover {
-      background-color: $primary-black;
+    background-color: $primary-black;
   }
 
   &.disabled {
-      color: $normal-gray-scale;
+    color: $normal-gray-scale;
   }
 
   &.active {
-      color: $primary-red;
-    }
+    color: $primary-red;
+  }
 }
 
 .sideMenuWrapper {
@@ -169,13 +199,85 @@
   animation: circular-transition 3s infinite;
 }
 
+.actionBtn {
+  cursor: pointer;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.form {
+  width: 100%;
+}
+
+.cancelNote {
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+  margin: rem(0 0 0 8px);
+  color: $primary-white;
+}
+
+.submitNote {
+  height: rem(29px);
+  width: rem(29px);
+  border-radius: rem(8px);
+  margin-right: 10px;
+}
+
+.textLength {
+  margin: rem(0 12px 0 auto);
+}
+
+.commonOpenPanel {
+  width: 315px;
+  height: fit-content;
+  border-radius: 6px;
+  padding: 5px;
+  background: rgba($color: #000000, $alpha: 0.6);
+  margin-right: 50px;
+
+  &.mobile {
+    display: none;
+  }
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.fieldNoLogin {
+  height: 35px;
+  border-radius: 8px;
+  border: 1px solid rgba($primary-white, 0.25);
+  padding-left: 10px;
+  font-size: 13px;
+
+  span {
+    color: rgba($primary-white, 0.25);
+  }
+
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: $primary-white;
+  }
+}
+
+.profileAvatar {
+  margin-right: 30px;
+}
+
 @keyframes circular-transition {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
+
   100% {
     opacity: 1;
   }

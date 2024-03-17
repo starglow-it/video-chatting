@@ -129,7 +129,7 @@ const tabs: ValuesSwitcherAlias[] = [
     },
 ];
 
-const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, onUpdate: () => void }) => {
+const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate: boolean, onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
         null,
@@ -320,6 +320,7 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formParticipantsRef}
+                    isCreate={isRoomCreate}
                 />
                 <MeetingMonezationForm
                     enableForm={activeItem.value === TabsValues.Audience}
@@ -328,6 +329,7 @@ const Component = ({ isRoomCreate = false, onUpdate }: { isRoomCreate: boolean, 
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formAudienceRef}
+                    isCreate={isRoomCreate}
                 />
                 <CustomButton
                     type="submit"

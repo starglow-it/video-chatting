@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useRef, SyntheticEvent } from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
@@ -16,7 +16,6 @@ import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
 
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
@@ -27,14 +26,26 @@ import styles from './MeetingGeneralInfo.module.scss';
 // store
 import {
     $isOwner,
-    toggleEditTemplateOpen,
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
+    $meetingEmojiListVisibilityStore,
+    $isToggleUsersPanel,
+    $isToggleSchedulePanel,
+    $isToggleEditRuumePanel,
+    toggleProfilePanelEvent,
+    setEmojiListVisibilityEvent,
+    toggleUsersPanelEvent,
+    toggleSchedulePanelEvent,
+    toggleEditRuumeSettingEvent
 } from '../../../store/roomStores';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
+    const isUsersOpen = useStore($isToggleUsersPanel);
+    const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
+    const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
 
     const wrapperRef = useRef(null);
 
@@ -45,34 +56,46 @@ const Component = () => {
 
     const { control } = useFormContext();
 
-    const companyName = useWatch({
-        control,
-        name: 'companyName',
-    });
-
     const fullName = useWatch({
         control,
         name: 'fullName',
     });
 
-    const handleMeetingAction = useCallback(() => {
+    const handleMeetingAction = (e: SyntheticEvent) => {
+        e.stopPropagation();
         if (isOwner) {
-            toggleEditTemplateOpen();
+            toggleProfilePanelEvent();
+            // toggleEditTemplateOpen();
+            if (isEmojiListVisible) {
+                setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+            }
+
+            if (isUsersOpen) {
+                toggleUsersPanelEvent(false);
+            }
+
+            if (isSchedulePannelOpen) {
+                toggleSchedulePanelEvent(false);
+            }
+
+            if (isEditRuumeSettingPanelOpen) {
+                toggleEditRuumeSettingEvent(false);
+            }
         } else {
             toggleMeetingInfoOpen();
         }
-    }, []);
+    }
 
     return (
         <CustomGrid
+            item
             container
             ref={wrapperRef}
             className={clsx(styles.profileInfo)}
         >
             <CustomGrid
-                gap={1}
+                item
                 container
-                className={styles.info}
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="center"
@@ -84,7 +107,7 @@ const Component = () => {
                             translation="meetingInfo.tooltip"
                         />
                     }
-                    placement="right"
+                    placement="top"
                 >
                     <CustomBox
                         onMouseEnter={handleToggleAvatarAction}
@@ -93,8 +116,8 @@ const Component = () => {
                     >
                         <ProfileAvatar
                             src={meetingTemplate?.user?.profileAvatar?.url}
-                            width="60px"
-                            height="60px"
+                            width="45px"
+                            height="45px"
                             userName={
                                 isOwner ? fullName : meetingTemplate.fullName
                             }
@@ -118,23 +141,6 @@ const Component = () => {
                         </Fade>
                     </CustomBox>
                 </CustomTooltip>
-
-                <CustomGrid
-                    container
-                    direction="column"
-                    alignItems="flex-start"
-                    className={styles.companyName}
-                >
-                    <CustomTypography
-                        color="colors.white.primary"
-                        className={clsx(
-                            styles.companyNameTitle,
-                            styles.withoutBoard,
-                        )}
-                    >
-                        {isOwner ? companyName : meetingTemplate.companyName}
-                    </CustomTypography>
-                </CustomGrid>
             </CustomGrid>
         </CustomGrid>
     );

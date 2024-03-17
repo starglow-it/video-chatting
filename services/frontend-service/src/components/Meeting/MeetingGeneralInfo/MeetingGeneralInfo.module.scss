@@ -3,10 +3,6 @@
 @import "../../../styles/rem";
 
 .profileInfo {
-  position: absolute;
-  width: max-content;
-  top: rem(20px);
-  left: rem(20px);
   z-index: 1000;
 
   &.withBoard {

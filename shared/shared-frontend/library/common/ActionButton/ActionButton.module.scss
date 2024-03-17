@@ -92,6 +92,17 @@
   }
 }
 
+.transparentPure {
+  background: transparent;
+  color: $primary-white;
+  border: none;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &.withAction {
+    @include withHoverAction("", 'transparent', '');
+  }
+}
+
 .transparentPrimary {
   background: transparent;
   color: $primary-black;

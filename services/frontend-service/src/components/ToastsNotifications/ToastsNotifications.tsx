@@ -67,6 +67,7 @@ const Component = () => {
                 horizontal: isMobile ? 'left' : 'center',
             }}
             open={open}
+            style={{ bottom: 115 }}
             {...(messageInfo?.withManualClose
                 ? {}
                 : { autoHideDuration: AUTO_HIDE_DURATION })}

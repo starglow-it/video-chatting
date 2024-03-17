@@ -140,17 +140,6 @@ export const MeetingAvatars = ({
 
     return (
         <CustomGrid className={styles.container}>
-            <CustomGrid className={styles.header}>
-                <CustomTypography fontSize={16} fontWeight={600}>
-                    Replace with Avatar
-                </CustomTypography>
-                <ActionButton
-                    Icon={<CloseIcon width="22px" height="22px" />}
-                    onAction={onClose}
-                    className={styles.closeButton}
-                    // variant="transparentPrimary"
-                />
-            </CustomGrid>
             <CustomGrid className={styles.main}>
                 {!isAuthenticated ? renderAvatarsNoLogin() : renderAvatars()}
             </CustomGrid>

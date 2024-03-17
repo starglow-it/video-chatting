@@ -51,7 +51,6 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 
 export const MeetingPeople = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
-    const isMeetingHost = useStore($isMeetingHostStore);
     const isAudience = useStore($isAudience);
     const value = useStore($activeTabPanel);
     const isThereNewMessage = useStore($isHaveNewMessage);
