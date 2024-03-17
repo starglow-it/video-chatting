@@ -249,12 +249,8 @@ export const MeetingEditRuumeSetting = () => {
     const handleTogglePayment = () => {
         if (!isCreatePaymentIntentPending) {
             if (!intentId &&
-                (
-                    (localUser.meetinRole === MeetingRole.Audience &&
-                        enabledPaymentMeetingAudience) ||
-                    (localUser.meetinRole === MeetingRole.Participant &&
-                        enabledPaymentMeetingParticipant)
-                )) {
+                (enabledPaymentMeetingAudience || enabledPaymentMeetingParticipant)
+            ) {
                 createPaymentIntentWithData({
                     paymentType: PaymentType.Meeting,
                 });
