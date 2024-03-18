@@ -26,7 +26,7 @@ export class MonitoringService {
 
   async createMonitoring(payload: CreateMonitoringPayload) {
     const pattern = { cmd: CoreBrokerPatterns.CreateMonitoring };
-    return this.coreService.sendCustom(pattern, payload);
+    return this.coreService.sendCustomForEmail(pattern, payload);
   }
 
   async getMonitoring(payload: GetMonitoringPayload): Promise<IMonitoring> {
