@@ -332,7 +332,7 @@ const Component = ({
                                     onClick={handleShowEnterEmails}
                                 />
                                 {
-                                    meetingId
+                                    meetingId || scheduleTemplate.id || scheduleTemplateId
                                         ? <CustomButton
                                             className={clsx({
                                                 [styles.hide]: !isInviteOpen,
