@@ -49,6 +49,7 @@ import {
 import {
     $isToggleCreateRoomPayment,
     $createRoomPaymentStore,
+    $meetingTemplateStore,
     updatePaymentMeetingFx
 } from '../../store/roomStores';
 
@@ -70,6 +71,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isToggleCreateRoomPayment = useStore($isToggleCreateRoomPayment);
     const createRoomPaymentStore = useStore($createRoomPaymentStore);
+    const { id: meetingTempalteId } = useStore($meetingTemplateStore);
 
     const router = useRouter();
 
@@ -213,7 +215,9 @@ const Component = () => {
         const userTemplate = await handleCreateRoom(data);
 
         if (Boolean(userTemplate?.id)) {
-            await getUserTemplateByIdFx({ templateId: userTemplate?.id });
+            if (!meetingTempalteId) {
+                await getUserTemplateByIdFx({ templateId: userTemplate?.id });
+            }
             setScheduleTemplateIdEvent(userTemplate?.id);
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
