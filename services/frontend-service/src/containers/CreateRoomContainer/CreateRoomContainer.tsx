@@ -42,12 +42,14 @@ import {
     startCheckoutSessionForSubscriptionFx,
     uploadTemplateFileFx,
     setScheduleTemplateIdEvent,
-    appDialogsApi
+    appDialogsApi,
+    getUserTemplateByIdFx
 } from '../../store';
 
 import {
     $isToggleCreateRoomPayment,
     $createRoomPaymentStore,
+    $meetingTemplateStore,
     updatePaymentMeetingFx
 } from '../../store/roomStores';
 
@@ -69,6 +71,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isToggleCreateRoomPayment = useStore($isToggleCreateRoomPayment);
     const createRoomPaymentStore = useStore($createRoomPaymentStore);
+    const { id: meetingTempalteId } = useStore($meetingTemplateStore);
 
     const router = useRouter();
 
@@ -211,7 +214,10 @@ const Component = () => {
     const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (!!userTemplate) {
+        if (Boolean(userTemplate?.id)) {
+            if (!meetingTempalteId) {
+                await getUserTemplateByIdFx({ templateId: userTemplate?.id });
+            }
             setScheduleTemplateIdEvent(userTemplate?.id);
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
