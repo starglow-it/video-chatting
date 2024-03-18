@@ -14,7 +14,7 @@ export const handleUpdateMeetingTemplate = async ({
 }: UpdateTemplatePayload): Promise<
     SuccessResult<IUserTemplate> | FailedResult<ErrorState>
 > => {
-    const response = await sendRequest<IUserTemplate, ErrorState>({
+        const response = await sendRequest<IUserTemplate, ErrorState>({
         ...postProfileTemplatesUrl({ templateId }),
         data,
     });

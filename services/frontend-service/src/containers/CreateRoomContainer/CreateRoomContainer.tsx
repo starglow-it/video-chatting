@@ -42,7 +42,8 @@ import {
     startCheckoutSessionForSubscriptionFx,
     uploadTemplateFileFx,
     setScheduleTemplateIdEvent,
-    appDialogsApi
+    appDialogsApi,
+    getUserTemplateByIdFx
 } from '../../store';
 
 import {
@@ -211,7 +212,8 @@ const Component = () => {
     const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (!!userTemplate) {
+        if (Boolean(userTemplate?.id)) {
+            await getUserTemplateByIdFx({ templateId: userTemplate?.id });
             setScheduleTemplateIdEvent(userTemplate?.id);
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,

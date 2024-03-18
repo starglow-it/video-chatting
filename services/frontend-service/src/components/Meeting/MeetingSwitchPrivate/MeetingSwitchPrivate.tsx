@@ -10,14 +10,16 @@ import { useStore } from 'effector-react';
 import styles from './MeetingSwitchPrivate.module.scss';
 
 export const MeetingSwitchPrivate = () => {
-    const { isAcceptNoLogin, subdomain, isPublishAudience } = useStore(
+    const { id: meetingId, isAcceptNoLogin, subdomain, isPublishAudience } = useStore(
         $meetingTemplateStore,
     );
 
     const onChangeSwitch = () => {
-        updateMeetingTemplateFxWithData({
-            isPublishAudience: !isPublishAudience,
-        });
+        if (meetingId) {
+            updateMeetingTemplateFxWithData({
+                isPublishAudience: !isPublishAudience,
+            });
+        }
     };
 
     return (
