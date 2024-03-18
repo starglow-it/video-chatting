@@ -2287,7 +2287,7 @@ export class MeetingsGateway
 
             await this.notificationService.sendEmail({
               template: {
-                key: 'recording-link',
+                key: emailTemplates.recordingLink,
                 data: [
                   { name: 'NAME', content: user.username },
                   { name: 'LINK', content: url },
