@@ -2280,6 +2280,22 @@ export class MeetingsGateway
               user.socketId,
               MeetingEmitEvents.GetMeetingUrlReceive
             );
+
+            const userProfile = await this.coreService.findUserById({ userId: user.profileId });
+
+            const frontendUrl = await this.configService.get('frontendUrl');
+
+            await this.notificationService.sendEmail({
+              template: {
+                key: 'recording-link',
+                data: [
+                  { name: 'NAME', content: user.username },
+                  { name: 'LINK', content: url },
+                  { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
+                ],
+              },
+              to: [{ email: userProfile.email }],
+            });
           }
         } else {
           this.emitToSocketId(
