@@ -32,6 +32,30 @@
   border-radius: 22.5%;
 }
 
+.noteEmojiListPanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  background: transparent;
+  opacity: 0;
+  left: 100px;
+  bottom: 70px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
 .sendNoteBtn, .stickyEmojiBtn {
   cursor: pointer;
 

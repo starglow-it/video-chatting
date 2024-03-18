@@ -79,7 +79,8 @@
         "close": "Close",
         "startRecording": "start recording",
         "reject": "reject",
-        "more": "more"
+        "more": "more",
+        "payDonate": "pay/donate"
     },
     "devices": {
         "turnOn": "Turn on",
