@@ -77,7 +77,8 @@ import {
     toggleIsAuraActive,
     updateMeetingTemplateFxWithData,
     updatePaymentMeetingEvent,
-    updateUserSocketEvent
+    updateUserSocketEvent,
+    toggleEditRuumeSettingEvent
 } from 'src/store/roomStores';
 
 const validationSchema = yup.object({
@@ -85,6 +86,7 @@ const validationSchema = yup.object({
 });
 
 import styles from './MeetingEditRuumeSetting.module.scss';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 export const MeetingEditRuumeSetting = () => {
     const doNotDisturbStore = useStore($doNotDisturbStore);
@@ -190,6 +192,10 @@ export const MeetingEditRuumeSetting = () => {
         setDoNotDisturbEvent(!doNotDisturbStore);
     };
 
+    const handleCloseEditRuumePanel = () => {
+        toggleEditRuumeSettingEvent(false);
+    };
+
     const dirtyFieldsCount = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
@@ -260,6 +266,9 @@ export const MeetingEditRuumeSetting = () => {
 
     const handleCloseForm = () => {
         setCurrentAccordionId('');
+        if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
+            handleCloseEditRuumePanel();
+        }
         cancelPaymentIntentWithData();
     };
 
@@ -314,12 +323,6 @@ export const MeetingEditRuumeSetting = () => {
 
             if (isConnectedStripe) {
                 await handleMonetizationSubmit();
-            } else {
-                addNotificationEvent({
-                    type: NotificationType.PaymentFail,
-                    message: 'payments.isNotAccountConnected',
-                    withErrorIcon: true
-                });
             }
 
             if (localUser.meetingAvatarId) {
@@ -329,6 +332,7 @@ export const MeetingEditRuumeSetting = () => {
                 });
             }
             //close panel
+            handleCloseEditRuumePanel();
         }),
         [
             localUser,
@@ -338,6 +342,17 @@ export const MeetingEditRuumeSetting = () => {
             errors,
         ],
     );
+
+    const handleParticipantSubmit = async () => {
+        if (localUser.meetingAvatarId) {
+            await updateUserSocketEvent({
+                meetingAvatarId: localUser.meetingAvatarId,
+                cameraStatus: isCameraActive ? 'active' : 'inactive'
+            });
+        }
+
+        handleCloseEditRuumePanel();
+    };
 
     return (
         <FormProvider {...methods}>
@@ -349,7 +364,7 @@ export const MeetingEditRuumeSetting = () => {
             >
                 <CustomTypography
                     nameSpace="meeting"
-                    translation="editRuumePanel.title"
+                    translation={!enabledPaymentMeetingAudience ? "editRuumePanel.title" : "buttons.payDonate"}
                     color="white"
                     fontSize="20px"
                 />
@@ -365,36 +380,43 @@ export const MeetingEditRuumeSetting = () => {
                                 <EditMeetingLink />
                             </form>
                         </ConditionalRender>
-                        <CustomAccordion
-                            currentAccordionId={currentAccordionId}
-                            accordionId="monetization"
-                            onChange={handleChangeAccordion}
-                            label={
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation="templates.monetization"
-                                />
-                            }
-                        >
-                            <ConditionalRender condition={isOwner}>
-                                <MeetingMonetizationPanel
-                                    formParticipantsRef={formParticipantsRef}
-                                    formAudienceRef={formAudienceRef}
-                                />
-                            </ConditionalRender>
-                            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
-                                <PaymentForm
-                                    onClose={handleCloseForm}
-                                    payment={paymentMeetingParticipant}
-                                />
-                            </ConditionalRender>
-                            <ConditionalRender condition={enabledPaymentMeetingAudience}>
+                        <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
+                            <CustomAccordion
+                                currentAccordionId={currentAccordionId}
+                                accordionId="monetization"
+                                onChange={handleChangeAccordion}
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation={
+                                            isOwner
+                                                ? "templates.monetization"
+                                                : "buttons.payDonate"}
+                                    />
+                                }
+                            >
+                                <ConditionalRender condition={isOwner}>
+                                    <MeetingMonetizationPanel
+                                        formParticipantsRef={formParticipantsRef}
+                                        formAudienceRef={formAudienceRef}
+                                    />
+                                </ConditionalRender>
+                                <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+                                    <PaymentForm
+                                        onClose={handleCloseForm}
+                                        payment={paymentMeetingParticipant}
+                                    />
+                                </ConditionalRender>
+                            </CustomAccordion>
+                        </ConditionalRender>
+                        <ConditionalRender condition={enabledPaymentMeetingAudience}>
+                            <CustomPaper className={styles.audienceDonationPaper}>
                                 <PaymentForm
                                     onClose={handleCloseForm}
                                     payment={paymentMeetingAudience}
                                 />
-                            </ConditionalRender>
-                        </CustomAccordion>
+                            </CustomPaper>
+                        </ConditionalRender>
                         <ConditionalRender condition={isOwner || isParticipant}>
                             <CustomAccordion
                                 currentAccordionId={currentAccordionId}
@@ -553,23 +575,43 @@ export const MeetingEditRuumeSetting = () => {
                         </ConditionalRender>
                     </CustomGrid>
                 </CustomScroll>
-                <CustomGrid
-                    item
-                    container
-                    justifyContent="center"
-                >
-                    <CustomButton
-                        className={styles.saveBtn}
-                        form="customLinkForm"
-                        type="submit"
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="profileSettingPanel.saveBtn"
-                            />
-                        }
-                    />
-                </CustomGrid>
+                <ConditionalRender condition={isOwner}>
+                    <CustomGrid
+                        item
+                        container
+                        justifyContent="center"
+                    >
+                        <CustomButton
+                            className={styles.saveBtn}
+                            form="customLinkForm"
+                            type="submit"
+                            label={
+                                <Translation
+                                    nameSpace="meeting"
+                                    translation="profileSettingPanel.saveBtn"
+                                />
+                            }
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={localUser.meetingRole === MeetingRole.Participant}>
+                    <CustomGrid
+                        item
+                        container
+                        justifyContent="center"
+                    >
+                        <CustomButton
+                            className={styles.saveBtn}
+                            onClick={handleParticipantSubmit}
+                            label={
+                                <Translation
+                                    nameSpace="meeting"
+                                    translation="profileSettingPanel.saveBtn"
+                                />
+                            }
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
             </CustomGrid>
         </FormProvider>
     );

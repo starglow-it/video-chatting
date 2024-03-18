@@ -24,6 +24,12 @@
   }
 }
 
+.noteEmojiListScrollBar {
+  max-height: 500px;
+  padding-right: 20px;
+  padding-left: 10px;
+}
+
 .editRuumeScrollBar {
   max-height: 745px;
   padding-right: 20px;
@@ -133,6 +139,29 @@
   }
 }
 
+.noteEmojiListPanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  opacity: 0;
+  right: 0px;
+  bottom: 0px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
 .emojiPanel {
   position: absolute;
   max-width: rem(350px);
@@ -164,6 +193,7 @@
   opacity: 0;
   left: rem(260px);
   bottom: rem(0px);
+  z-index: 0;
 
   &.mobile {
     left: 0%;

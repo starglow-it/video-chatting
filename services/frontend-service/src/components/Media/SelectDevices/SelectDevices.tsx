@@ -34,6 +34,7 @@ import {
     $videoDevicesStore,
     $videoErrorStore,
     changeStreamFxWithStore,
+    toggleEditRuumeSelectMenu
 } from '../../../store/roomStores';
 
 const Component = () => {
@@ -150,6 +151,12 @@ const Component = () => {
                     className={styles.selectDeviceInput}
                     value={currentVideoDevice}
                     onChange={handleChangeCamera}
+                    onOpen={() => {
+                        toggleEditRuumeSelectMenu(true);
+                    }}
+                    onClose={() => {
+                        toggleEditRuumeSelectMenu(false);
+                    }}
                     IconComponent={RoundArrowIcon}
                     MenuProps={{
                         disableScrollLock: true,
@@ -171,6 +178,12 @@ const Component = () => {
                     }
                     value={currentAudioDevice}
                     onChange={handleChangeMic}
+                    onOpen={() => {
+                        toggleEditRuumeSelectMenu(true);
+                    }}
+                    onClose={() => {
+                        toggleEditRuumeSelectMenu(false);
+                    }}
                     IconComponent={RoundArrowIcon}
                     MenuProps={{
                         disableScrollLock: true,

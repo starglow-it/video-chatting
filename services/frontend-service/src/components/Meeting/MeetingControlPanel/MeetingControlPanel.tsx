@@ -39,26 +39,25 @@ import {
     $paymentIntent,
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
-    $localUserStore,
     $isTogglProfilePanel,
     $isToggleEditRuumePanel,
     $meetingEmojiListVisibilityStore,
+    $isToggleEditRuumeSelectMenuOpenStore,
+    toggleEditRuumeSelectMenu,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    updateUserSocketEvent,
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
-    toggleEditRuumeSettingEvent
+    toggleEditRuumeSettingEvent,
 } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
 
 // types
-import { MeetingRole } from 'shared-types';
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingProfileSetting } from '../MeetingProfileSetting/MeetingProfileSetting';
@@ -78,6 +77,7 @@ const Component = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+    const isToggleEditRuumeSelectMenuOpen = useStore($isToggleEditRuumeSelectMenuOpenStore);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
@@ -151,14 +151,18 @@ const Component = () => {
     }, []);
 
     const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        
         e.stopPropagation();
-        toggleEditRuumeSettingEvent(false);
-    }, []);
+        if (!isToggleEditRuumeSelectMenuOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+    }, [isToggleEditRuumeSelectMenuOpen]);
 
     const commonContent = useMemo(
         () => (
             <>
-                <ClickAwayListener onClickAway={handleCloseEditRuumePanel}>
+                <ClickAwayListener onClickAway={handleCloseEditRuumePanel} >
+                {/* <ClickAwayListener onClickAway={() => {}}> */}
                     <Fade in={isEditRuumeOpen}>
                         <CustomPaper
                             variant="black-glass"
