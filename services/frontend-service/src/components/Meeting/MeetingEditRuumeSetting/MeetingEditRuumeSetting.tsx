@@ -567,9 +567,9 @@ export const MeetingEditRuumeSetting = () => {
                                     />
                                     <Translation
                                         nameSpace="meeting"
-                                        translation={doNotDisturbStore ? "templates.doNotDisturb.off" : "templates.doNotDisturb.on"}
+                                        translation={!doNotDisturbStore ? "templates.doNotDisturb.off" : "templates.doNotDisturb.on"}
                                     />
-                                    <FiberManualRecordIcon sx={{ color: doNotDisturbStore ? '#3CD742' : 'red' }} />
+                                    <FiberManualRecordIcon sx={{ color: !doNotDisturbStore ? '#3CD742' : 'red' }} />
                                 </CustomGrid>
                             </CustomButton>
                         </ConditionalRender>

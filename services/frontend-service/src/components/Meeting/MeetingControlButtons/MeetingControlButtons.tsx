@@ -572,7 +572,7 @@ const Component = () => {
                                     condition={!isAudience || !!profile.id}
                                 >
                                     <CustomInput
-                                        placeholder="post a sticky notes"
+                                        placeholder="post a sticky note"
                                         className={clsx(
                                             materialStyles.textField,
                                             styles.textField,
@@ -626,7 +626,7 @@ const Component = () => {
                                 className={clsx(styles.stickyEmojiBtn, {
                                     [styles.disabled]: isAudience && !!!profile.id,
                                 })}
-                                Icon={<InsertEmoticonIcon sx={{ fontSize: '30px' }} />}
+                                Icon={<InsertEmoticonIcon sx={{ fontSize: '25px' }} />}
                                 onClick={handleNoteEmojiListToggle}
                             />
                             <ActionButton
@@ -634,7 +634,7 @@ const Component = () => {
                                 className={clsx(styles.sendNoteBtn, {
                                     [styles.disabled]: isAudience && !!!profile.id,
                                 })}
-                                Icon={<NotesIcon width='30px' height='30px' />}
+                                Icon={<NotesIcon width='25px' height='25px' />}
                                 onClick={sendNote}
                             />
                         </CustomGrid>
