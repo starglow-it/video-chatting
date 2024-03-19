@@ -31,9 +31,21 @@
 }
 
 .editRuumeScrollBar {
-  max-height: 745px;
+  max-height: rem(650px);
   padding-right: 20px;
   padding-left: 10px;
+
+  @media screen and (max-height: 830px) {
+    max-height: rem(500px);
+  }
+
+  @media screen and (max-height: 675px) {
+    max-height: rem(400px);
+  }
+
+  @media screen and (max-height: 580px) {
+    max-height: rem(300px);
+  }
 }
 
 .profileSettingScrollBar {
@@ -99,7 +111,7 @@
   min-width: rem(310px);
   padding: rem(14px 16px);
   opacity: 0;
-  left: 15px;
+  left: -100px;
   bottom: 0px;
 
   &.mobile {
@@ -113,6 +125,14 @@
     min-width: 500px;
     max-width: 500px;
     right: 40px;
+  }
+
+  &.isParticipant {
+    left: -60px;
+  }
+
+  &.isAudience {
+    left: -160px;
   }
 }
 
@@ -168,7 +188,7 @@
   min-width: rem(310px);
   padding: rem(14px 16px);
   opacity: 0;
-  right: -180px;
+  left: -170px;
   bottom: 0px;
 
   &.mobile {
@@ -183,6 +203,14 @@
     max-width: 500px;
     right: 40px;
   }
+
+  &.isParticipant {
+    left: -150px;
+  }
+
+  &.isAudience {
+    left: -240px;
+  }
 }
 
 .editRuumePanel {
@@ -191,7 +219,7 @@
   min-width: rem(310px);
   padding: rem(14px 5px 14px 16px);
   opacity: 0;
-  left: rem(260px);
+  left: rem(160px);
   bottom: rem(0px);
   z-index: 0;
 
@@ -206,6 +234,10 @@
     min-width: 500px;
     max-width: 500px;
     right: 40px;
+  }
+
+  &.isAudience {
+    left: rem(-10px);
   }
 }
 
