@@ -43,6 +43,8 @@ import {
     $isToggleEditRuumePanel,
     $meetingEmojiListVisibilityStore,
     $isToggleEditRuumeSelectMenuOpenStore,
+    $isParticipant,
+    $isAudience,
     toggleEditRuumeSelectMenu,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
@@ -86,6 +88,8 @@ const Component = () => {
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
+    const isParticipant = useStore($isParticipant);
+    const isAudience = useStore($isAudience);
 
     const { isMobile } = useBrowserDetect();
 
@@ -162,11 +166,11 @@ const Component = () => {
         () => (
             <>
                 <ClickAwayListener onClickAway={handleCloseEditRuumePanel} >
-                {/* <ClickAwayListener onClickAway={() => {}}> */}
                     <Fade in={isEditRuumeOpen}>
                         <CustomPaper
                             variant="black-glass"
                             className={clsx(styles.editRuumePanel, {
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile && isPortraitLayout,
                                 [styles.landscape]:
                                     isMobile && !isPortraitLayout,
@@ -198,6 +202,8 @@ const Component = () => {
                     <Fade in={isEmojiListVisible}>
                         <CustomPaper
                             className={clsx(styles.emojiPanel, {
+                                [styles.isParticipant]: isParticipant,
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile,
                             })}
                             variant="black-glass"
@@ -211,6 +217,8 @@ const Component = () => {
                         <CustomPaper
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
+                                [styles.isParticipant]: isParticipant,
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile && isPortraitLayout,
                                 [styles.landscape]:
                                     isMobile && !isPortraitLayout,
