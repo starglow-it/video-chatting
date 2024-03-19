@@ -1,7 +1,8 @@
-import { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 //hooks
 import { FormProvider, useForm } from 'react-hook-form';
@@ -18,6 +19,8 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
+import { Fade } from '@mui/material';
+import { ClickAwayListener } from '@mui/base';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
@@ -46,15 +49,12 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 // icons
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import CallEndIcon from '@mui/icons-material/CallEnd';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
-// validation
-
-// stores
-
-// styles
 import { $profileStore } from 'src/store';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
 import { MAX_NOTE_CONTENT } from '../../../const/general';
+import { PaymentType } from 'shared-const';
 
 // stores
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
@@ -76,17 +76,18 @@ import {
     $meetingConnectedStore,
     $meetingUsersStore,
     $doNotDisturbStore,
-    $meetingNotesVisibilityStore,
     $meetingEmojiListVisibilityStore,
-    setMeetingNotesVisibilityEvent,
     setEmojiListVisibilityEvent,
     $meetingStore,
     $meetingRecordingStore,
     $meetingRecordingIdStore,
     $isToggleEditRuumePanel,
     $isTogglProfilePanel,
+    $isToggleNoteEmojiListPanel,
+    $enabledPaymentMeetingParticipant,
     $enabledPaymentMeetingAudience,
-    setDoNotDisturbEvent,
+    $paymentIntent,
+    createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
     sendLeaveMeetingSocketEvent,
@@ -108,8 +109,11 @@ import {
     $meetingNotesStore,
     sendMeetingNoteSocketEvent,
     toggleEditRuumeSettingEvent,
-    toggleProfilePanelEvent
+    toggleProfilePanelEvent,
+    toggleNoteEmojiListPanelEvent
 } from '../../../store/roomStores';
+
+import { $isPortraitLayout } from '../../../store';
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
@@ -139,7 +143,7 @@ const useStyles = makeStyles((theme: Theme) =>
                     color: '#b5b5b5',
                 },
                 height: '30px',
-                fontSize: '14px'
+                fontSize: '18px'
             },
             '& .MuiOutlinedInput-notchedOutline': {
                 borderRadius: '8px',
@@ -165,12 +169,14 @@ type FormType = { note: string };
 const Component = () => {
     const router = useRouter();
     const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const refStickyNote = useRef<any>(null);
 
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isNoteEmojiListPanelOpen = useStore($isToggleNoteEmojiListPanel);
     const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
     const isAudience = useStore($isAudience);
     const isOwner = useStore($isOwner);
@@ -205,7 +211,6 @@ const Component = () => {
     const isCamActive = localUser.cameraStatus === 'active';
 
     const { isMobile } = useBrowserDetect();
-    const { isVisible } = useStore($meetingNotesVisibilityStore);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const isRecording = useStore($isRecordingStore);
     const doNotDisturbStore = useStore($doNotDisturbStore);
@@ -213,6 +218,16 @@ const Component = () => {
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const paymentIntent = useStore($paymentIntent);
+    const intentId = paymentIntent?.id;
+    const enabledPaymentMeetingParticipant = useStore(
+        $enabledPaymentMeetingParticipant,
+    );
+    const isNoteEmojiListOpen = useStore($isToggleNoteEmojiListPanel);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
@@ -303,6 +318,18 @@ const Component = () => {
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 
+    const handleTogglePayment = () => {
+        if (!isCreatePaymentIntentPending) {
+            if (!intentId &&
+                (enabledPaymentMeetingAudience || enabledPaymentMeetingParticipant)
+            ) {
+                createPaymentIntentWithData({
+                    paymentType: PaymentType.Meeting,
+                });
+            }
+        }
+    };
+
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
@@ -321,6 +348,10 @@ const Component = () => {
 
         if (isEditRuumeSettingPanelOpen) {
             toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
         }
     };
 
@@ -341,6 +372,10 @@ const Component = () => {
 
         if (isEditRuumeSettingPanelOpen) {
             toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
         }
     };
 
@@ -363,7 +398,40 @@ const Component = () => {
         if (isSchedulePannelOpen) {
             toggleSchedulePanelEvent(false);
         }
+
+        if (enabledPaymentMeetingAudience) {
+            handleTogglePayment();
+        }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
+        }
     };
+
+    const handleNoteEmojiListToggle = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleNoteEmojiListPanelEvent(!isNoteEmojiListPanelOpen);
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+    }
 
     const handleEmojiListToggle = (e: SyntheticEvent) => {
         e.stopPropagation();
@@ -384,6 +452,10 @@ const Component = () => {
         if (isSchedulePannelOpen) {
             toggleSchedulePanelEvent(false);
         }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
+        }
     }
 
     const handleRequestToBecomeParticipant = useCallback(() => {
@@ -399,21 +471,6 @@ const Component = () => {
             }
 
         }
-    };
-
-    const handleSetStickyNotesVisible = () => {
-        setMeetingNotesVisibilityEvent({ isVisible: !isVisible });
-    };
-
-    //Do not disturb acion
-    const handleDoNotDisturb = () => {
-        setDoNotDisturbEvent(!doNotDisturbStore);
-    };
-
-    const handleOpenSettingsDialog = () => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.devicesSettingsDialog
-        })
     };
 
     const handleToggleSharing = () => {
@@ -435,7 +492,7 @@ const Component = () => {
         defaultValues: { note: '' },
     });
 
-    const { reset, register, getValues } = methods;
+    const { reset, register, getValues, setValue } = methods;
 
     const [isExpand, setIsExpand] = useState<boolean>(true);
 
@@ -477,6 +534,16 @@ const Component = () => {
                 type: NotificationType.validationError,
             });
         }
+    };
+
+    const handleCloseNoteEmojiListPanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleNoteEmojiListPanelEvent(false);
+    }, []);
+
+    const handleChooseEmoji = (data: EmojiClickData) => {
+        const currentValue = getValues('note');
+        setValue('note', currentValue + data.emoji);
     };
 
     return (
@@ -537,13 +604,30 @@ const Component = () => {
                                     </CustomGrid>
                                 </ConditionalRender>
                             </CustomGrid>
+                            <ClickAwayListener onClickAway={handleCloseNoteEmojiListPanel}>
+                                <Fade in={isNoteEmojiListOpen}>
+                                    <CustomPaper
+                                        className={clsx(styles.noteEmojiListPanel, {
+                                            [styles.mobile]: isMobile && isPortraitLayout,
+                                            [styles.landscape]:
+                                                isMobile && !isPortraitLayout,
+                                        })}
+                                    >
+                                        <EmojiPicker
+                                            searchDisabled
+                                            onEmojiClick={handleChooseEmoji}
+                                            previewConfig={{ showPreview: false }}
+                                        />
+                                    </CustomPaper>
+                                </Fade>
+                            </ClickAwayListener>
                             <ActionButton
                                 variant="transparentPure"
                                 className={clsx(styles.stickyEmojiBtn, {
                                     [styles.disabled]: isAudience && !!!profile.id,
                                 })}
                                 Icon={<InsertEmoticonIcon sx={{ fontSize: '30px' }} />}
-                                onClick={() => { }}
+                                onClick={handleNoteEmojiListToggle}
                             />
                             <ActionButton
                                 variant="transparentPure"
@@ -823,7 +907,7 @@ const Component = () => {
                 </CustomGrid>
 
             </CustomTooltip>
-            <ConditionalRender condition={!isAudience || (isAudience && enabledPaymentMeetingAudience)}>
+            <ConditionalRender condition={!isAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -845,6 +929,34 @@ const Component = () => {
                         <CustomTypography
                             nameSpace="meeting"
                             translation="buttons.more"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={(isAudience && enabledPaymentMeetingAudience)}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="buttons.more"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleToggleEditRuumeSettingPanel}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<AttachMoneyIcon width="25px" height="25px" />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="buttons.payDonate"
                             color="white"
                             fontSize={12}
                         />

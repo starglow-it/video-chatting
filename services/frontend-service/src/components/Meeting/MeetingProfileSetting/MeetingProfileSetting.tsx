@@ -38,7 +38,8 @@ import {
     $meetingTemplateStore,
     updateMeetingTemplateFxWithData,
     updateLocalUserEvent,
-    updateUserSocketEvent
+    updateUserSocketEvent,
+    toggleProfilePanelEvent
 } from 'src/store/roomStores';
 
 //hooks
@@ -107,6 +108,10 @@ export const MeetingProfileSetting = () => {
             prev === accordionId ? '' : accordionId,
         );
     }, []);
+
+    const handleCloseProfileSettingPanel = () => {
+        toggleProfilePanelEvent(false);
+    };
 
     const dirtyFieldsCount = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -203,7 +208,7 @@ export const MeetingProfileSetting = () => {
                 });
             }
 
-            //close panel
+            handleCloseProfileSettingPanel();
         }),
         [
             dirtyFieldsCount,

@@ -96,6 +96,10 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
+  async sendCustomForEmail(pattern, payload) {
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async updateMeetingInstance(
     payload: UpdateMeetingInstancePayload,
   ): Promise<boolean> {

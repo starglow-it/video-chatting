@@ -27,6 +27,7 @@ import { $meetingTemplateStore } from 'src/store/roomStores';
 import { MeetingSwitchPrivate } from '@components/Meeting/MeetingSwitchPrivate/MeetingSwitchPrivate';
 import { TemplateSwitchPrivate } from '@components/Templates/TemplateSwitchPrivate/TemplateSwitchPrivate';
 import { ScheduleAttendees } from './ScheduleAttendees';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // helpers
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
@@ -98,7 +99,7 @@ const Component = ({
         $scheduleTemplateStore,
     );
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
-    const { isPublishAudience } = useStore($meetingTemplateStore);
+    const { id: meetingId, isPublishAudience } = useStore($meetingTemplateStore);
 
     const [activeSchedulePage, setActiveSchedulePage] = useState(
         schedulePages[0],
@@ -330,22 +331,32 @@ const Component = ({
                                     }
                                     onClick={handleShowEnterEmails}
                                 />
-                                <CustomButton
-                                    className={clsx({
-                                        [styles.hide]: !isInviteOpen,
-                                    })}
-                                    disabled={
-                                        isScheduleMeetingInProgress ||
-                                        !userEmails?.length
-                                    }
-                                    onClick={onSubmit}
-                                    label={
-                                        <Translation
-                                            nameSpace="common"
-                                            translation="buttons.schedule"
+                                {
+                                    meetingId || scheduleTemplate.id || scheduleTemplateId
+                                        ? <CustomButton
+                                            className={clsx({
+                                                [styles.hide]: !isInviteOpen,
+                                            })}
+                                            disabled={
+                                                isScheduleMeetingInProgress ||
+                                                !userEmails?.length
+                                            }
+                                            onClick={onSubmit}
+                                            label={
+                                                <Translation
+                                                    nameSpace="common"
+                                                    translation="buttons.schedule"
+                                                />
+                                            }
                                         />
-                                    }
-                                />
+                                        : <CustomButton
+                                            className={clsx({
+                                                [styles.hide]: !isInviteOpen,
+                                            })}
+                                            disabled={true}
+                                            label={<CustomLoader />}
+                                        />
+                                }
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>

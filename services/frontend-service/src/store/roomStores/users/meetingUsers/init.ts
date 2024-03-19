@@ -7,6 +7,9 @@ import {
     $isRecordingUrlsListPanel,
     $isTogglProfilePanel,
     $isToggleEditRuumePanel,
+    $isToggleNoteEmojiListPanel,
+    isToggleEditRuumeSelectMenuOpenStore,
+    toggleEditRuumeSelectMenu,
     removeMeetingUsersEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
@@ -14,7 +17,9 @@ import {
     updateMeetingUsersEvent,
     toggleRecordingUrlsListPanel,
     toggleProfilePanelEvent,
-    toggleEditRuumeSettingEvent
+    toggleEditRuumeSettingEvent,
+    toggleNoteEmojiListPanelEvent,
+    $isToggleEditRuumeSelectMenuOpenStore
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
@@ -56,6 +61,10 @@ $meetingUsersStore
     )
     .reset(resetRoomStores);
 
+$isToggleEditRuumeSelectMenuOpenStore.on(toggleEditRuumeSelectMenu, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
 $isTogglProfilePanel.on(toggleProfilePanelEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
@@ -65,6 +74,9 @@ $isToggleEditRuumePanel.on(toggleEditRuumeSettingEvent, (toggle, newToggle) =>
 );
 
 $isToggleUsersPanel.on(toggleUsersPanelEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+$isToggleNoteEmojiListPanel.on(toggleNoteEmojiListPanelEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 

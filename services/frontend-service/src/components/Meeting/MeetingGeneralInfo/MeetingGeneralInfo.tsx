@@ -32,11 +32,13 @@ import {
     $isToggleUsersPanel,
     $isToggleSchedulePanel,
     $isToggleEditRuumePanel,
+    $isToggleNoteEmojiListPanel,
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleUsersPanelEvent,
     toggleSchedulePanelEvent,
-    toggleEditRuumeSettingEvent
+    toggleEditRuumeSettingEvent,
+    toggleNoteEmojiListPanelEvent
 } from '../../../store/roomStores';
 
 const Component = () => {
@@ -46,6 +48,7 @@ const Component = () => {
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
     const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
+    const isNoteEmojiListOpen = useStore($isToggleNoteEmojiListPanel);
 
     const wrapperRef = useRef(null);
 
@@ -80,6 +83,10 @@ const Component = () => {
 
             if (isEditRuumeSettingPanelOpen) {
                 toggleEditRuumeSettingEvent(false);
+            }
+
+            if (isNoteEmojiListOpen) {
+                toggleNoteEmojiListPanelEvent(false);
             }
         } else {
             toggleMeetingInfoOpen();

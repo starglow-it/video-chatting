@@ -39,26 +39,27 @@ import {
     $paymentIntent,
     $paymentMeetingAudience,
     $paymentMeetingParticipant,
-    $localUserStore,
     $isTogglProfilePanel,
     $isToggleEditRuumePanel,
     $meetingEmojiListVisibilityStore,
+    $isToggleEditRuumeSelectMenuOpenStore,
+    $isParticipant,
+    $isAudience,
+    toggleEditRuumeSelectMenu,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
-    updateUserSocketEvent,
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
-    toggleEditRuumeSettingEvent
+    toggleEditRuumeSettingEvent,
 } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
 
 // types
-import { MeetingRole } from 'shared-types';
 import { MeetingUser } from '../../../store/types';
 import { MeetingPeople } from '../MeetingPeople/MeetingPeople';
 import { MeetingProfileSetting } from '../MeetingProfileSetting/MeetingProfileSetting';
@@ -78,6 +79,7 @@ const Component = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const isScheduleOpen = useStore($isToggleSchedulePanel);
     const isChangeBackgroundOpen = useStore($isToggleBackgroundPanel);
+    const isToggleEditRuumeSelectMenuOpen = useStore($isToggleEditRuumeSelectMenuOpenStore);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
@@ -86,6 +88,8 @@ const Component = () => {
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
     const { isEmojiListVisible } = useStore($meetingEmojiListVisibilityStore);
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
+    const isParticipant = useStore($isParticipant);
+    const isAudience = useStore($isAudience);
 
     const { isMobile } = useBrowserDetect();
 
@@ -151,18 +155,22 @@ const Component = () => {
     }, []);
 
     const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        
         e.stopPropagation();
-        toggleEditRuumeSettingEvent(false);
-    }, []);
+        if (!isToggleEditRuumeSelectMenuOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+    }, [isToggleEditRuumeSelectMenuOpen]);
 
     const commonContent = useMemo(
         () => (
             <>
-                <ClickAwayListener onClickAway={handleCloseEditRuumePanel}>
+                <ClickAwayListener onClickAway={handleCloseEditRuumePanel} >
                     <Fade in={isEditRuumeOpen}>
                         <CustomPaper
                             variant="black-glass"
                             className={clsx(styles.editRuumePanel, {
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile && isPortraitLayout,
                                 [styles.landscape]:
                                     isMobile && !isPortraitLayout,
@@ -194,6 +202,8 @@ const Component = () => {
                     <Fade in={isEmojiListVisible}>
                         <CustomPaper
                             className={clsx(styles.emojiPanel, {
+                                [styles.isParticipant]: isParticipant,
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile,
                             })}
                             variant="black-glass"
@@ -207,6 +217,8 @@ const Component = () => {
                         <CustomPaper
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
+                                [styles.isParticipant]: isParticipant,
+                                [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile && isPortraitLayout,
                                 [styles.landscape]:
                                     isMobile && !isPortraitLayout,

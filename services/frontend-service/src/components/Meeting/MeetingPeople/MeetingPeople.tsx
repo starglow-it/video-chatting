@@ -110,6 +110,11 @@ export const MeetingPeople = () => {
                 classes={{
                     root: styles.tabs,
                 }}
+                sx={{
+                    '& .MuiTabs-flexContainer': {
+                        justifyContent: 'space-around',
+                    },
+                }}
             >
                 {tabs.map((tab, index) => (
                     <Tab
