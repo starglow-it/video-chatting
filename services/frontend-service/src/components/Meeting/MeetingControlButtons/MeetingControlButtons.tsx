@@ -18,18 +18,16 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { UserRoles } from 'shared-types';
 import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
 import { Fade } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
 
 // icons
-import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
-import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt'; //@mui icon
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CircularProgress from '@mui/material/CircularProgress';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -41,7 +39,6 @@ import { makeStyles } from '@mui/styles';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-import { SendIcon } from 'shared-frontend/icons/OtherIcons/SendIcon';
 
 // custom
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
@@ -51,7 +48,6 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import CallEndIcon from '@mui/icons-material/CallEnd';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
-import { $profileStore } from 'src/store';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
 import { MAX_NOTE_CONTENT } from '../../../const/general';
 import { PaymentType } from 'shared-const';
@@ -113,14 +109,13 @@ import {
     toggleNoteEmojiListPanelEvent
 } from '../../../store/roomStores';
 
-import { $isPortraitLayout } from '../../../store';
+import { $isPortraitLayout, $profileStore } from '../../../store';
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import config from '../../../const/config';
-import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
-import { AppDialogsEnum, NotificationType } from 'src/store/types';
+import { NotificationType } from 'src/store/types';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
@@ -768,7 +763,7 @@ const Component = () => {
                     </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={isOwner}>
+            <ConditionalRender condition={isOwner && profile.role !== UserRoles.Anonymous}>
                 <CustomTooltip
                     title={
                         <Translation
