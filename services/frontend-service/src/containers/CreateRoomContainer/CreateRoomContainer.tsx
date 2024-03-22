@@ -214,7 +214,7 @@ const Component = () => {
     const handleSubmitAndScheduleMeeting = async (data: IUploadTemplateFormData) => {
         const userTemplate = await handleCreateRoom(data);
 
-        if (Boolean(userTemplate?.id)) {
+        if (!!userTemplate) {
             if (!meetingTempalteId) {
                 await getUserTemplateByIdFx({ templateId: userTemplate?.id });
             }

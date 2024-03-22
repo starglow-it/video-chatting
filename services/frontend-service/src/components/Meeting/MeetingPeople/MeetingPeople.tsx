@@ -88,7 +88,7 @@ export const MeetingPeople = () => {
     const tabs = [
         'chat',
         'questions',
-        // 'transcript',
+        'transcript',
     ]
 
     return (
