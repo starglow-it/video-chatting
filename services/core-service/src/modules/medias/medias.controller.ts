@@ -126,7 +126,7 @@ export class MediaController {
       userTemplateQuery = {
         $in:
           mediaCategory.key === 'my ruumes'
-            ? userTemplate.user.templates
+            ? [...userTemplate.user.templates, null]
             : [userTemplate, null],
       };
     }
