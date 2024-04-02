@@ -1,7 +1,8 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { useStore } from 'effector-react';
 
 import { getRandomNumber } from 'shared-utils';
 
@@ -19,14 +20,15 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // styles
 import { NotificationType } from 'src/store/types';
-import { $isBusinessSubscription, addNotificationEvent } from 'src/store';
+import { $isProfessionalSubscription, $isBusinessSubscription, addNotificationEvent } from 'src/store';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { useStore } from 'effector-react';
 import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
 import { TemplatesLinksProps } from './TemplateLinks.types';
+
+import { $profileStore } from 'src/store';
 
 const Component = ({
     onNextStep,
@@ -34,6 +36,8 @@ const Component = ({
     onUpgrade,
 }: TemplatesLinksProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
+    const isProfessionalSubscription = useStore($isProfessionalSubscription);
+    useEffect(() => { console.log(isProfessionalSubscription); }, [isProfessionalSubscription])
     const { control, trigger } = useFormContext();
     const { isMobile } = useBrowserDetect();
 
@@ -182,12 +186,14 @@ const Component = ({
                     className={styles.actionButtonPrev}
                     onAction={onPreviousStep}
                 />
-                <ActionButton
-                    variant="accept"
-                    Icon={<ArrowRightIcon width="32px" height="32px" />}
-                    className={styles.actionButtonNext}
-                    onAction={handleClickNextStep}
-                />
+                <ConditionalRender condition={isProfessionalSubscription || isBusinessSubscription}>
+                    <ActionButton
+                        variant="accept"
+                        Icon={<ArrowRightIcon width="32px" height="32px" />}
+                        className={styles.actionButtonNext}
+                        onAction={handleClickNextStep}
+                    />
+                </ConditionalRender>
             </CustomGrid>
         </CustomGrid>
     );
