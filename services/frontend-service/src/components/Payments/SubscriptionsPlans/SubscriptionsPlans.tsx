@@ -67,7 +67,7 @@ const Component = ({
     );
 
     const productFiltered = useMemo(
-        () => products.filter(item => item?.product?.name !== activePlanKey),
+        () => products.filter(item => item?.product?.name === PlanKeys.Business),
         [products],
     );
 
