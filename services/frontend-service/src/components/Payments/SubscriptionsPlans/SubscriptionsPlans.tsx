@@ -44,6 +44,7 @@ const Component = ({
     onClose,
     buttonTranslation,
     onlyPaidPlans = true,
+    isCreate = false
 }: SubscriptionsPlansProps) => {
     const products = useStore($productsStore);
     const profile = useStore($profileStore);
@@ -67,7 +68,13 @@ const Component = ({
     );
 
     const productFiltered = useMemo(
-        () => products.filter(item => item?.product?.name === PlanKeys.Business),
+        () => products.filter(item => {
+            if (isCreate) {
+                return item?.product?.name === PlanKeys.Business
+            } else {
+                return item?.product?.name !== activePlanKey
+            }
+        }),
         [products],
     );
 

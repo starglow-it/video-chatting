@@ -13,6 +13,7 @@ export type SubscriptionsPlansProps = {
     ) => void;
     buttonTranslation?: string;
     onlyPaidPlans?: boolean;
+    isCreate?: boolean;
 };
 
 export type SubscriptionPlanItemProps = {

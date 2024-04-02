@@ -295,6 +295,7 @@ const Component = () => {
                 isSubscriptionStep={isSubscriptionStep}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
+                isCreate={true}
             />
         </>
     );
