@@ -113,6 +113,7 @@ sample({
                       },
                       url: '',
                       previewUrls: [],
+                      templateType: 'video'
                   }
                 : {
                       previewUrls: dataUpdate?.previewUrls.map(item => item.id),

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
@@ -42,7 +42,7 @@ const Component = ({
             >
                 <ConditionalRender
                     condition={
-                        templateType === 'video' && !mediaLink && !isMobile()
+                        templateType === 'video' && !mediaLink
                     }
                 >
                     <CustomVideoPlayer
@@ -54,7 +54,7 @@ const Component = ({
                     />
                 </ConditionalRender>
 
-                <ConditionalRender condition={!isMobile() && !!mediaLink}>
+                <ConditionalRender condition={ templateType === 'video' && !!mediaLink}>
                     <CustomYoutubePlayer
                         url={mediaLink?.src ?? ''}
                         className={styles.player}

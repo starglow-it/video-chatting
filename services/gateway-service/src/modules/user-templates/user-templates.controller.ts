@@ -152,7 +152,7 @@ export class UserTemplatesController {
           success: false,
         };
       }
-
+      
       let userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: templateId,
       });
