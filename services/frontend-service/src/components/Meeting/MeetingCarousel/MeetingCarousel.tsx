@@ -26,7 +26,7 @@ export const MeetingCarousel = () => {
     const elements: any = [];
     if (!isAudience)
         elements.push(
-            <CustomGrid width="100%" height="100%" bgcolor="#007A78">
+            <CustomGrid width="100%" height="100%" bgcolor="#007A78" key="0">
                 <MeetingSelfView />
             </CustomGrid>,
         );
@@ -39,6 +39,7 @@ export const MeetingCarousel = () => {
                 justifyContent="center"
                 alignItems="center"
                 position="relative"
+                key="1"
             >
                 <MeetingVideosCarousel users={users1} />
             </CustomGrid>,
@@ -52,6 +53,7 @@ export const MeetingCarousel = () => {
                 justifyContent="center"
                 alignItems="center"
                 position="relative"
+                key="2"
             >
                 <MeetingVideosCarousel users={users2} />
             </CustomGrid>,

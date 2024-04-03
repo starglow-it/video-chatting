@@ -371,7 +371,7 @@ const Component = () => {
                 mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={!!previewImage}>
+                    <ConditionalRender condition={!!previewImage && meetingTemplate.templateType === 'image'}>
                         <CustomImage
                             className={styles.image}
                             src={previewImage}
