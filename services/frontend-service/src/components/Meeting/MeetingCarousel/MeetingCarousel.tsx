@@ -26,7 +26,7 @@ export const MeetingCarousel = () => {
     const elements: any = [];
     if (!isAudience)
         elements.push(
-            <CustomGrid width="100%" height="100%" bgcolor="beige">
+            <CustomGrid width="100%" height="100%" bgcolor="#007A78">
                 <MeetingSelfView />
             </CustomGrid>,
         );

@@ -184,6 +184,7 @@ export const getMediaStream = async ({
 
     return {
         stream: stream || undefined, // Ensure stream is not null
-        error: result.error,
+        audioError: result.error,
+        videoError: result.error,
     };
 };
