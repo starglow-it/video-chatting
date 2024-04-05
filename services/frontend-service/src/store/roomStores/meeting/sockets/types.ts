@@ -273,3 +273,7 @@ export type GeneratePrePaymentCodeResponse = {
 export type CheckPrePaymentCodePayload = {
     code: string;
 };
+
+export type sendAiTranscriptionPayload = {
+    script: string[]
+};

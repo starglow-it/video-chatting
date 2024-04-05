@@ -231,6 +231,10 @@
   }
 }
 
+.activeText {
+  color: #EF8E5B;
+}
+
 .form {
   width: 100%;
 }
@@ -269,6 +273,10 @@
   &.open {
     opacity: 1;
   }
+}
+
+.aiTranscript {
+  font-size: 25px;
 }
 
 .fieldNoLogin {
