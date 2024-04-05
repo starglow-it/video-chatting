@@ -2,22 +2,14 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { useStore } from 'effector-react';
-import {
-    $isThereNewMessage,
-    $meetingChat,
-} from 'src/store/roomStores/meeting/meetingChat/model';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { MeetingReactionKind } from 'shared-types';
+import { useEffect, useRef, useState } from 'react';
 import {
     $isThereNewTranscriptionMessage,
     $transcriptionQueue,
-    sendMeetingReactionEvent,
-    sendMeetingUnReactionEvent,
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { isMobile } from 'shared-utils';
-import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
 import { MeetingTranscribeItem } from '../MeetingChatItem/MeetingTranscribeItem';
@@ -55,6 +47,7 @@ export const MeetingTranscribeList = () => {
             }
         }
     }, [isThereNewMessage]);
+
 
     const renderMessages = () => {
         return transcriptionList.map((item, index) => (

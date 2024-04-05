@@ -2,11 +2,13 @@ import {
     $meetingNotesStore,
     $meetingNotesVisibilityStore,
     $doNotDisturbStore,
+    $isAITranscriptEnabledStore,
     setDoNotDisturbEvent,
     setMeetingNotesVisibilityEvent,
     getMeetingNotesSocketEvent,
     setMeetingNotesEvent,
     removeLocalMeetingNoteEvent,
+    setAITranscriptEvent
 } from './model';
 import { resetRoomStores } from '../../../root';
 
@@ -22,6 +24,7 @@ $meetingNotesStore
     .reset(resetRoomStores);
 
 $doNotDisturbStore.on(setDoNotDisturbEvent, (state, data) => data);
+$isAITranscriptEnabledStore.on(setAITranscriptEvent, (state, data) => data);
 
 $meetingNotesVisibilityStore.on(setMeetingNotesVisibilityEvent, (state, { isVisible }) => ({
     ...state,

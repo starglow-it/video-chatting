@@ -47,4 +47,5 @@ export enum MeetingSubscribeEvents {
   OnPaymentPrePayment = 'meeting:paywall:pre:paid',
   OnGeneratePrePaymentCodeRequest = 'meeting:generate:pre:payment:code:request',
   OnCheckPrePaymentCodeRequest = 'meeting:check:pre:payment:code:request',
+  OnSendAiTranscription = 'meeting:send:ai:transcription:request',
 }

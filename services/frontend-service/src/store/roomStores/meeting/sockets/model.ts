@@ -54,6 +54,7 @@ import {
     StartRecordingResponse,
     GeneratePrePaymentCodePayload,
     CheckPrePaymentCodePayload,
+    sendAiTranscriptionPayload,
     GeneratePrePaymentCodeResponse,
     PaywalPrePayment
 } from './types';
@@ -249,3 +250,8 @@ export const checkPrePaymentCodeEvent = createMeetingSocketEvent<
     CheckPrePaymentCodePayload,
     AnswerRequestRecordingResponse
 >(MeetingSocketEmitters.CheckPrePaymentCode);
+
+export const sendAiTranscription = createMeetingSocketEvent<
+    sendAiTranscriptionPayload,
+    AnswerRequestRecordingResponse
+>(MeetingSocketEmitters.sendAiTranscription);

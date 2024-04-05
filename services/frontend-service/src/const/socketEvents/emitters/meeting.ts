@@ -46,4 +46,5 @@ export enum MeetingSocketEmitters {
     paywallPrePayment = 'meeting:paywall:pre:paid',
     GeneratePrePaymentCode = 'meeting:generate:pre:payment:code:request',
     CheckPrePaymentCode = 'meeting:check:pre:payment:code:request',
+    sendAiTranscription = 'meeting:send:ai:transcription:request',
 }

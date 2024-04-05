@@ -83,6 +83,7 @@ import {
     $enabledPaymentMeetingParticipant,
     $enabledPaymentMeetingAudience,
     $paymentIntent,
+    $isAITranscriptEnabledStore,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -106,7 +107,8 @@ import {
     sendMeetingNoteSocketEvent,
     toggleEditRuumeSettingEvent,
     toggleProfilePanelEvent,
-    toggleNoteEmojiListPanelEvent
+    toggleNoteEmojiListPanelEvent,
+    setAITranscriptEvent
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -227,6 +229,7 @@ const Component = () => {
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
     const profile = useStore($profileStore);
+    const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const users = useStoreMap({
@@ -482,6 +485,10 @@ const Component = () => {
         }
     }
 
+    const handleAiTranscript = () => {
+        setAITranscriptEvent(!isAITranscriptEnabled);
+    }
+
     const methods = useForm({
         resolver,
         defaultValues: { note: '' },
@@ -721,6 +728,36 @@ const Component = () => {
                         <CustomTypography
                             nameSpace="meeting"
                             translation="controlButtonsLabel.screenSharing"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={isAITranscriptEnabled ? "aiTranscriptOff" : "aiTranscriptOn"}
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleAiTranscript}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={
+                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: isAITranscriptEnabled })} >Ai</CustomTypography>
+                            }
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation={ isAITranscriptEnabled ? 'off' : 'on' }
                             color="white"
                             fontSize={12}
                         />
