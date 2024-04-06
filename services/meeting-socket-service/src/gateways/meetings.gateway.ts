@@ -2733,7 +2733,6 @@ export class MeetingsGateway
         const openAiApiKey = await this.configService.get('openaiApiKey');
         const awsAccessKeyId = await this.configService.get('awsAccessKeyId');
         const awsSecretAccessKey = await this.configService.get('awsSecretAccessKey');
-        console.log(frontendUrl, openAiUrl, openAiApiKey, awsAccessKeyId, awsSecretAccessKey);
 
         const prompt = `Chatgpt!, given the following video meeting transcription: ${scriptString}
         Every chat message is separated by & and the text of chat message is devied by @. 
@@ -2780,6 +2779,8 @@ export class MeetingsGateway
               to: [{ email: userProfile.email }],
             });
           }
+
+          console.log('email sent.');
         }
 
         return wsResult({

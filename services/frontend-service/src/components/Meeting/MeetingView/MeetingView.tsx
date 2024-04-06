@@ -72,8 +72,6 @@ import {
     $meetingUsersStore,
     $serverTypeStore,
     $videoErrorStore,
-    $transcriptionQueue,
-    $isAITranscriptEnabledStore,
     getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
@@ -81,7 +79,6 @@ import {
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
-    sendAiTranscription
 } from '../../../store/roomStores';
 
 //shared types
@@ -98,8 +95,6 @@ import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
 import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
 import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
-import { MeetingTranscription } from '../MeetingChangeBackground/MeetingTranscription';
-// helpers
 
 
 const Component = () => {
@@ -121,9 +116,6 @@ const Component = () => {
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
     const container = useRef(null);
-    const test = useRef(null)
-    const transcriptionQueue = useStore($transcriptionQueue);
-    const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -288,13 +280,7 @@ const Component = () => {
                     : meetingTemplate.templateType,
             },
         });
-
-        return () => {
-            if (isAiTranscriptEnabled) {
-                sendAiTranscription({ script: transcriptionQueue || [] });
-            }
-        }
-    }, [isAiTranscriptEnabled]);
+    }, []);
 
     useEffect(() => {
         if (isMobile) {
