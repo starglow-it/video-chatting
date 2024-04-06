@@ -84,6 +84,7 @@ import {
     $enabledPaymentMeetingAudience,
     $paymentIntent,
     $isAITranscriptEnabledStore,
+    $transcriptionQueue,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -108,7 +109,8 @@ import {
     toggleEditRuumeSettingEvent,
     toggleProfilePanelEvent,
     toggleNoteEmojiListPanelEvent,
-    setAITranscriptEvent
+    setAITranscriptEvent,
+    sendAiTranscription
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -231,6 +233,8 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
+    const transcriptionQueue = useStore($transcriptionQueue);
+    const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -243,6 +247,12 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Recorder,
             ),
     });
+
+    useEffect(() => {
+        if (isAiTranscriptEnabled) {
+            sendAiTranscription({ script: transcriptionQueue || [] });
+        }
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -269,6 +279,10 @@ const Component = () => {
     }, [isAudioError]);
 
     const handleEndVideoChat = useCallback(async () => {
+        if (isAiTranscriptEnabled) {
+            sendAiTranscription({ script: transcriptionQueue || [] });
+            setAITranscriptEvent(false);
+        }
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
             await deleteDraftUsers();
@@ -290,7 +304,7 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    }, []);
+    }, [isAiTranscriptEnabled]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {
@@ -757,7 +771,7 @@ const Component = () => {
                         />
                         <CustomTypography
                             nameSpace="meeting"
-                            translation={ isAITranscriptEnabled ? 'off' : 'on' }
+                            translation={isAITranscriptEnabled ? 'off' : 'on'}
                             color="white"
                             fontSize={12}
                         />
