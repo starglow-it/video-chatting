@@ -247,12 +247,7 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Recorder,
             ),
     });
-
-    useEffect(() => {
-        if (isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionQueue || [] });
-        }
-    }, []);
+    useEffect(() => {console.log(transcriptionQueue);}, [transcriptionQueue]);
 
     useEffect(() => {
         return () => {

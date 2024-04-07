@@ -2731,14 +2731,12 @@ export class MeetingsGateway
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
-        const awsAccessKeyId = await this.configService.get('awsAccessKeyId');
-        const awsSecretAccessKey = await this.configService.get('awsSecretAccessKey');
 
         const prompt = `Chatgpt!, given the following video meeting transcription: ${scriptString}
         Every chat message is separated by & and the text of chat message is devied by @. 
         pre-text of chat message is separated by @ is the user name and post-text of chat message is separated by @ is content of chat message.
         Please provide me summary of transcript.
-        If there is no transcription, please provide me only the text that is "There is no transcription".
+        If there is no transcription, please provide me only the text that is "There is no transcription, otherwise, please provide me only summary".
         `;
 
         const response = await axios.post(openAiUrl, {
@@ -2765,7 +2763,7 @@ export class MeetingsGateway
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
-          if (response.data.choices[0]['message']['content']) {
+          if (response.data.choices[0]['message']['content'] && userProfile) {
             await this.notificationService.sendEmail({
               template: {
                 key: emailTemplates.aiSummary,
