@@ -11,6 +11,9 @@ import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import * as AWS from 'aws-sdk';
+import * as fs from 'fs';
+
 
 import { BaseGateway } from './base.gateway';
 
@@ -101,6 +104,7 @@ import { UpdateRecordingVideo } from 'src/dtos/requests/update-recording-video.d
 import { SetMeetingDonations } from 'src/dtos/requests/set-meeting-donations.dto';
 import { GeneratePreEventPaymentCode } from 'src/dtos/requests/generate-pre-event-payment-code.dto';
 import { CheckPreEventPaymentCode } from 'src/dtos/requests/check-pre-event-payment-code.dto copy';
+import { handleAiTranscription } from 'src/dtos/requests/handle-ai-transcription.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -2709,4 +2713,83 @@ export class MeetingsGateway
       },
     );
   }
+
+  @WsEvent(MeetingSubscribeEvents.OnSendAiTranscription)
+  async handleAiTranscription(
+    @MessageBody() msg: handleAiTranscription,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+
+        const { script } = msg;
+        const scriptString = script.join('&');
+
+        const frontendUrl = await this.configService.get('frontendUrl');
+        const openAiUrl = await this.configService.get('openaiUrl');
+        const openAiApiKey = await this.configService.get('openaiApiKey');
+
+        const prompt = `Chatgpt!, given the following video meeting transcription: ${scriptString}
+        Every chat message is separated by & and the text of chat message is devied by @. 
+        pre-text of chat message is separated by @ is the user name and post-text of chat message is separated by @ is content of chat message.
+        Please provide me summary of transcript.
+        If there is no transcription, please provide me only the text that is "There is no transcription, otherwise, please provide me only summary".
+        `;
+
+        const response = await axios.post(openAiUrl, {
+          model: 'gpt-3.5-turbo-0125',
+          messages: [
+            {
+              role: 'user',
+              content: prompt, // Assuming script is a string
+            },
+          ],
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAiApiKey}`,
+          },
+        });
+
+        if (response.data) {
+          const now = new Date();
+          const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const formattedTime = `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+
+          const dateTime = `${formattedDate}-${formattedTime}`;
+
+          const userProfile = await this.coreService.findUserById({ userId: user.profileId });
+
+          if (response.data.choices[0]['message']['content'] && userProfile) {
+            await this.notificationService.sendEmail({
+              template: {
+                key: emailTemplates.aiSummary,
+                data: [
+                  { name: 'NAME', content: user.username },
+                  { name: 'DATE', content: dateTime },
+                  { name: 'CONTENT', content: response.data.choices[0]['message']['content'] },
+                  { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
+                ],
+              },
+              to: [{ email: userProfile.email }],
+            });
+          }
+
+          console.log('email sent.');
+        }
+
+        return wsResult({
+          message: 'success'
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
 }
+
+

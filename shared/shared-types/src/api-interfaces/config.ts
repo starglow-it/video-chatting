@@ -55,6 +55,10 @@ export interface IConfig {
   isSeed: boolean;
   mediaServicePort: string;
   geolocationApiKey: string;
+  openaiUrl: string;
+  openaiApiKey: string;
+  awsAccessKeyId: string;
+  awsSecretAccessKey: string;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -116,6 +120,10 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'isSeed',
   'mediaServicePort',
   'geolocationApiKey',
+  'openaiUrl',
+  'openaiApiKey',
+  'awsAccessKeyId',
+  'awsSecretAccessKey',
 ];
 
 export const DefaultConfigValues: Record<
@@ -175,4 +183,8 @@ export const DefaultConfigValues: Record<
   isSeed: false,
   mediaServicePort: '9091',
   geolocationApiKey: '',
+  openaiUrl: '',
+  openaiApiKey: '',
+  awsAccessKeyId: '',
+  awsSecretAccessKey: '',
 };

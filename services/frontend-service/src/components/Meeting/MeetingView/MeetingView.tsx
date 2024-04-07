@@ -95,8 +95,6 @@ import { MeetingLinksDrawer } from '../MeetingLinksDrawer/MeetingLinksDrawer';
 import { HostDeviceRequrieDialog } from '@components/Dialogs/HostDeviceRequrieDialog/HostDeviceRequrieDialog';
 import { UserToAudienceDialog } from '@components/Dialogs/UserToAudienceDialog/UserToAudienceDialog';
 import { RecordVideoDownloadDialog } from '@components/Dialogs/RecordVideoDownloadDialog/RecordVideoDownloadDialog';
-import { MeetingTranscription } from '../MeetingChangeBackground/MeetingTranscription';
-// helpers
 
 
 const Component = () => {
@@ -118,7 +116,6 @@ const Component = () => {
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
     const container = useRef(null);
-    const test = useRef(null)
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -371,7 +368,7 @@ const Component = () => {
                 mediaLink={meetingTemplate.mediaLink}
             >
                 <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={!!previewImage}>
+                    <ConditionalRender condition={!!previewImage && meetingTemplate.templateType === 'image'}>
                         <CustomImage
                             className={styles.image}
                             src={previewImage}

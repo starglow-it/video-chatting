@@ -11,9 +11,11 @@ export const $meetingNotesStore = meetingDomain.createStore<MeetingNote[]>(
 
 export const $meetingNotesVisibilityStore = meetingDomain.createStore<{ isVisible: boolean }>({ isVisible: false });
 export const $doNotDisturbStore = meetingDomain.createStore<boolean>(false);
+export const $isAITranscriptEnabledStore = meetingDomain.createStore<boolean>(false);
 
 export const setMeetingNotesVisibilityEvent = meetingDomain.createEvent<{ isVisible: boolean }>('setMeetingNotesVisibilityEvent');
 export const setDoNotDisturbEvent = meetingDomain.createEvent<boolean>('setDoNotDisturbEvent');
+export const setAITranscriptEvent = meetingDomain.createEvent<boolean>('setAITranscriptEvent');
 
 export const setMeetingNotesEvent = meetingDomain.createEvent<MeetingNote[]>(
     'setMeetingNotesEvent',

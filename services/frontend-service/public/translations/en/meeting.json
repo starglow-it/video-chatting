@@ -311,5 +311,9 @@
     "recordingRequestAcccept": "recording started",
     "recordingUrlsListTitle": "urls list",
     "noVideos": "no videos...",
-    "waitingRoom": "waiting ruume"
+    "waitingRoom": "waiting ruume",
+    "aiTranscriptOn": "AI transcript on",
+    "aiTranscriptOff": "AI transcript off",
+    "on": "on",
+    "off": "off"
 }

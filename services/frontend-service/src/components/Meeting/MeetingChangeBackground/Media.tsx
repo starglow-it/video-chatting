@@ -10,6 +10,7 @@ import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import { isMobile } from 'shared-utils';
 import styles from './MeetingChangeBackground.module.scss';
 import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
+import CustomYoutubeMediaPlayer from './CustomYoutubeMediaPlayer';
 
 const Component = ({
     isActive = false,
@@ -28,7 +29,7 @@ const Component = ({
     const handleLoadEnd = () => {
         setIsLoaded(true);
     };
-    const url = item.previewUrls.find(img => img.resolution === 240)?.url || '';
+    const url = item.url.includes("www.youtube.com") ? 'youtube' : item.previewUrls.find(img => img.resolution === 240)?.url || '';
 
     const {
         value: isHover,
@@ -61,14 +62,16 @@ const Component = ({
                 className={styles.image}
                 onLoad={handleLoadEnd}
             />
-        ) : (
-            <CustomVideoPlayer
-                src={item.url}
-                volume={0}
-                isPlaying
-                isMuted={false}
-            />
-        );
+        ) : item.url.includes("www.youtube.com")
+            ? (<CustomYoutubeMediaPlayer videoId={item.url} />)
+            : (
+                <CustomVideoPlayer
+                    src={item.url}
+                    volume={0}
+                    isPlaying
+                    isMuted={false}
+                />
+            );
     };
 
     return (

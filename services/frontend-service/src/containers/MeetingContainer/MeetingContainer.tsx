@@ -86,7 +86,7 @@ import {
     isRoomPaywalledFx,
     setIsPaywallPaymentEnabled,
     updateUserSocketEvent,
-    sentRequestToHostWhenDnd
+    sentRequestToHostWhenDnd,
 } from '../../store/roomStores';
 import getLocationInfo from '../../helpers/getLocationInfo';
 import { addOrangeNotificationEvent } from 'src/store/notifications/model';
@@ -182,6 +182,7 @@ const MeetingContainer = memo(() => {
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
     const meeting = useStore($meetingStore);
+    
 
     useEffect(() => {
         if (roleUrl) {
@@ -199,6 +200,7 @@ const MeetingContainer = memo(() => {
         return () => {
             removeWindowListeners();
             removeLandscapeListener();
+            
         };
     }, []);
 

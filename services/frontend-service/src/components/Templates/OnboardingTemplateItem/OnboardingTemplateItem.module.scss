@@ -44,4 +44,24 @@
 
 .button {
   width: rem(169px);
+
+  &.mobile {
+    padding: 8px;
+  }
+
+  @media screen and (max-width: 485px) {
+    width: rem(128px);
+
+    &.mobile {
+      padding: 4px;
+    }
+  }
+
+  @media screen and (max-width: 350px) {
+    width: rem(103px);
+
+    &.mobile {
+      padding: 4px;
+    }
+  }
 }

@@ -282,7 +282,6 @@ export class MediaController {
   ) {
     try {
       return withTransaction(this.connection, async (session) => {
-        console.log('uploadMediaFile: url', url);
         const maxRetries = 10;
         const previewUrls = await retry<PreviewUrls>(async () => {
           return await this.generatePreviewUrs({
@@ -309,7 +308,6 @@ export class MediaController {
           session,
         });
 
-        console.log('uploadMediaFile: media', media);
         return plainToInstance(CommonMediaDTO, media, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,

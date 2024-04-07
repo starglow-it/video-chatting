@@ -87,7 +87,7 @@ export class UserTemplatesController {
     private readonly templatePaymentsComponent: TemplatePaymentsComponent,
     private readonly userTemplatesComponent: UserTemplatesComponent,
     private readonly templatePaymentsService: TemplatePaymentsService,
-  ) {}
+  ) { }
 
   private async getMyRoomMediaCategory(
     session: ITransactionSession,
@@ -572,7 +572,7 @@ export class UserTemplatesController {
           draftUrl: data.draftUrl,
           links: data.links,
           templateType: data.templateType,
-          isPublishAudience: data.isPublishAudience ,
+          isPublishAudience: data.isPublishAudience,
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {
@@ -652,19 +652,21 @@ export class UserTemplatesController {
           };
 
           const myRoomCategory = await this.getMyRoomMediaCategory(session);
-          await this.mediaService.updateMedia({
-            query: {
-              mediaCategory: myRoomCategory._id,
-              userTemplate: userTemplate._id,
-            },
-            data: {
-              url: data.mediaLink ? data.mediaLink.src : userTemplate.url,
-              thumb: data.mediaLink ? data.mediaLink.thumb : null,
-              previewUrls: data.mediaLink ? [] : userTemplate.previewUrls,
-              type: userTemplate.templateType,
-            },
-            session,
-          });
+          if (data.mediaLink !== undefined || !!userTemplate.url) {
+            await this.mediaService.updateMedia({
+              query: {
+                mediaCategory: myRoomCategory._id,
+                userTemplate: userTemplate._id,
+              },
+              data: {
+                url: data.mediaLink ? data.mediaLink.src : userTemplate.url,
+                thumb: data.mediaLink ? data.mediaLink.thumb : null,
+                previewUrls: data.mediaLink ? [] : userTemplate.previewUrls,
+                type: userTemplate.templateType,
+              },
+              session,
+            });
+          }
 
           await this.commonTemplatesService.updateCommonTemplate({
             query: {

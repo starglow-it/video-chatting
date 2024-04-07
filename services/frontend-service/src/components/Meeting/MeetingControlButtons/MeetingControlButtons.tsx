@@ -83,6 +83,8 @@ import {
     $enabledPaymentMeetingParticipant,
     $enabledPaymentMeetingAudience,
     $paymentIntent,
+    $isAITranscriptEnabledStore,
+    $transcriptionQueue,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -106,7 +108,9 @@ import {
     sendMeetingNoteSocketEvent,
     toggleEditRuumeSettingEvent,
     toggleProfilePanelEvent,
-    toggleNoteEmojiListPanelEvent
+    toggleNoteEmojiListPanelEvent,
+    setAITranscriptEvent,
+    sendAiTranscription
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -227,7 +231,10 @@ const Component = () => {
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
     const profile = useStore($profileStore);
+    const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
+    const transcriptionQueue = useStore($transcriptionQueue);
+    const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -240,6 +247,7 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Recorder,
             ),
     });
+    useEffect(() => {console.log(transcriptionQueue);}, [transcriptionQueue]);
 
     useEffect(() => {
         return () => {
@@ -266,6 +274,10 @@ const Component = () => {
     }, [isAudioError]);
 
     const handleEndVideoChat = useCallback(async () => {
+        if (isAiTranscriptEnabled) {
+            sendAiTranscription({ script: transcriptionQueue || [] });
+            setAITranscriptEvent(false);
+        }
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
             await deleteDraftUsers();
@@ -287,7 +299,7 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    }, []);
+    }, [isAiTranscriptEnabled]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {
@@ -480,6 +492,10 @@ const Component = () => {
         if (isAbleToToggleSharing) {
             handleToggleSharing();
         }
+    }
+
+    const handleAiTranscript = () => {
+        setAITranscriptEvent(!isAITranscriptEnabled);
     }
 
     const methods = useForm({
@@ -721,6 +737,36 @@ const Component = () => {
                         <CustomTypography
                             nameSpace="meeting"
                             translation="controlButtonsLabel.screenSharing"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={isAITranscriptEnabled ? "aiTranscriptOff" : "aiTranscriptOn"}
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleAiTranscript}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={
+                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: isAITranscriptEnabled })} >Ai</CustomTypography>
+                            }
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation={isAITranscriptEnabled ? 'off' : 'on'}
                             color="white"
                             fontSize={12}
                         />

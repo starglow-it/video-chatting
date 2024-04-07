@@ -87,13 +87,6 @@ wss.on("connection", (socket, req) => {
         try {
           let binary = convertAudioToBinaryMessage(rawAudioChunk);
 
-          // if (rawAudioChunk === 'close') {
-          //     console.log('Client ordered to close the server !')
-          //     let emptyMessage = getAudioEventMessage(Buffer.from(Buffer.from([])));
-          //     let emptyBuffer = eventStreamMarshaller.marshall(emptyMessage);
-          //     socketAWS.send(emptyBuffer);
-          // }
-
           if (
             socketAWS.readyState === socketAWS.OPEN &&
             rawAudioChunk !== "close"
@@ -138,9 +131,9 @@ wss.on("connection", (socket, req) => {
     socketAWS.onclose = function (closeEvent) {
       if (!socketError && !transcribeException) {
         if (closeEvent.code != 1000) {
-          console.log(
-            "</i><strong>Streaming Exception</strong><br>" + closeEvent.reason
-          );
+          // console.log(
+          //   "</i><strong>Streaming Exception</strong><br>" + closeEvent.reason
+          // );
         }
       }
     };
