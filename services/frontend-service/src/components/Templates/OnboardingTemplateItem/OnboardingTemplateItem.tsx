@@ -103,7 +103,7 @@ const OnboardingTemplateItem = memo(
                     >
                         <CustomButton
                             onClick={handleSetUpTemplate}
-                            className={styles.button}
+                            className={clsx(styles.button, {[styles.mobile]: isMobile})}
                             disabled={template.type === 'paid'}
                             label={
                                 <Translation
@@ -114,7 +114,7 @@ const OnboardingTemplateItem = memo(
                         />
                         <CustomButton
                             onClick={handlePreviewTemplate}
-                            className={styles.button}
+                            className={clsx(styles.button, {[styles.mobile]: isMobile})}
                             variant="custom-transparent"
                             label={
                                 <Translation
