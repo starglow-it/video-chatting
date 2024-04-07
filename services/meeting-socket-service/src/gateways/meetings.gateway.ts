@@ -2763,7 +2763,7 @@ export class MeetingsGateway
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
-          if (response.data.choices[0]['message']['content']) {
+          if (response.data.choices[0]['message']['content'] && userProfile) {
             await this.notificationService.sendEmail({
               template: {
                 key: emailTemplates.aiSummary,
