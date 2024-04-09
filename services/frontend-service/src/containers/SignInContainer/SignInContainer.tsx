@@ -112,8 +112,20 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit((data: LoginUserParams) => {
+            const trimmedEmail = data.email.trim().toLowerCase();
+            const prevUser = localStorage.getItem('loginedUser');
+
+            if (prevUser) {
+                if (prevUser !== trimmedEmail) {
+                    localStorage.setItem('loginedUser', trimmedEmail);
+                    localStorage.removeItem('meetingUserIds');
+                }
+            } else {
+                localStorage.setItem('loginedUser', trimmedEmail);
+            }
+
             loginUserFx({
-                email: data.email.trim().toLowerCase(),
+                email: trimmedEmail,
                 password: data.password,
             });
         }),
@@ -256,7 +268,7 @@ const Component = () => {
 
                             {authState?.error?.message &&
                                 authState?.error?.message !==
-                                    USER_IS_BLOCKED.message && (
+                                USER_IS_BLOCKED.message && (
                                     <ErrorMessage
                                         className={styles.errorContainer}
                                         error={authState?.error?.message}
