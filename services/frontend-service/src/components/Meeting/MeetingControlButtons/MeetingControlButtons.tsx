@@ -84,7 +84,7 @@ import {
     $enabledPaymentMeetingAudience,
     $paymentIntent,
     $isAITranscriptEnabledStore,
-    $transcriptionQueue,
+    $transcriptionsStore,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -110,7 +110,7 @@ import {
     toggleProfilePanelEvent,
     toggleNoteEmojiListPanelEvent,
     setAITranscriptEvent,
-    sendAiTranscription
+    sendAiTranscription,
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -168,7 +168,6 @@ type FormType = { note: string };
 const Component = () => {
     const router = useRouter();
     const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const refStickyNote = useRef<any>(null);
 
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
@@ -233,7 +232,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
-    const transcriptionQueue = useStore($transcriptionQueue);
+    const transcriptionsStore = useStore($transcriptionsStore);
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
 
     const users = useStoreMap({
@@ -247,7 +246,6 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Recorder,
             ),
     });
-    useEffect(() => {console.log(transcriptionQueue);}, [transcriptionQueue]);
 
     useEffect(() => {
         return () => {
@@ -275,7 +273,7 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         if (isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionQueue || [] });
+            sendAiTranscription({ script: transcriptionsStore});
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -299,7 +297,7 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    }, [isAiTranscriptEnabled]);
+    }, [isAiTranscriptEnabled, transcriptionsStore]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {
@@ -748,7 +746,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isAITranscriptEnabled ? "aiTranscriptOff" : "aiTranscriptOn"}
+                            translation={isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
                         />
                     }
                     placement="top"
@@ -766,8 +764,8 @@ const Component = () => {
                         />
                         <CustomTypography
                             nameSpace="meeting"
-                            translation={isAITranscriptEnabled ? 'off' : 'on'}
-                            color="white"
+                            translation={isAITranscriptEnabled ? 'on' : 'off'}
+                            color={isAITranscriptEnabled ? "#EF8E5B" : "rgba(255, 255, 255, 0.6)"}
                             fontSize={12}
                         />
                     </CustomGrid>

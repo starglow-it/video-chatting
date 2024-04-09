@@ -2732,11 +2732,13 @@ export class MeetingsGateway
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
 
-        const prompt = `Chatgpt!, given the following video meeting transcription: ${scriptString}
-        Every chat message is separated by & and the text of chat message is devied by @. 
-        pre-text of chat message is separated by @ is the user name and post-text of chat message is separated by @ is content of chat message.
-        Please provide me summary of transcript.
-        If there is no transcription, please provide me only the text that is "There is no transcription, otherwise, please provide me only summary".
+        const prompt = `Chatgpt!, given the following video meeting transcription: 
+        ${scriptString}
+        -Chatgpt!, Every chat messages are divided by & if it is exist. The name of user is before @ and content is after @.
+        Please provide me the summary of transcript with such format.
+        Here is an example summary:
+        "The meeting transcript summary: summary content"
+        If there is no transcription, please provide me the text: "There is no transcriptions available for this meeting."
         `;
 
         const response = await axios.post(openAiUrl, {
@@ -2756,10 +2758,17 @@ export class MeetingsGateway
 
         if (response.data) {
           const now = new Date();
-          const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-          const formattedTime = `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+          const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+          const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-          const dateTime = `${formattedDate}-${formattedTime}`;
+          const date = now.getDate();
+          const month = months[now.getMonth()];
+          const year = now.getFullYear();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          const ampm = hours >= 12 ? 'pm' : 'am';
+
+          const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
@@ -2769,7 +2778,7 @@ export class MeetingsGateway
                 key: emailTemplates.aiSummary,
                 data: [
                   { name: 'NAME', content: user.username },
-                  { name: 'DATE', content: dateTime },
+                  { name: 'DATE', content: formattedDateTime },
                   { name: 'CONTENT', content: response.data.choices[0]['message']['content'] },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
                 ],

@@ -5,11 +5,13 @@ import {
     $transcriptionQueue,
     $transcriptionResults,
     $transcriptionResultsGuest,
+    $transcriptionsStore,
     setTranscriptionParticipant,
     setTranscriptionParticipantGuest,
     setTranscriptionQueue,
     setTranscriptionResult,
     setTranscriptionResultGuest,
+    setTranscriptionsEvent
 } from './model';
 import { resetRoomStores } from '../../root';
 
@@ -31,6 +33,10 @@ $transcriptionParticipantGuest
 
 $transcriptionQueue
     .on(setTranscriptionQueue, (state, data) => data)
+    .reset(resetRoomStores);
+
+$transcriptionsStore
+    .on(setTranscriptionsEvent, (state, data) => data)
     .reset(resetRoomStores);
 
 $isThereNewTranscriptionMessage
