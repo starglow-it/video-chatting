@@ -2734,10 +2734,8 @@ export class MeetingsGateway
 
         const prompt = `Chatgpt!, given the following video meeting transcription: 
         ${scriptString}
-        -Chatgpt!, Every chat messages are divided by & if it is exist. The name of user is before @ and content is after @.
-        Please provide me the summary of transcript with such format.
-        Here is an example summary:
-        "The meeting transcript summary: summary content"
+        -Chatgpt!, Every chat messages are divided by & and the name of user is before @ and content is after @ in the transcription.
+        Please review all chat messages and give me a simplified summary of the entire meeting transcription.
         If there is no transcription, please provide me the text: "There is no transcriptions available for this meeting."
         `;
 

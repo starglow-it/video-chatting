@@ -765,7 +765,7 @@ const Component = () => {
                         <CustomTypography
                             nameSpace="meeting"
                             translation={isAITranscriptEnabled ? 'on' : 'off'}
-                            color={isAITranscriptEnabled ? "#EF8E5B" : "rgba(255, 255, 255, 0.6)"}
+                            color={isAITranscriptEnabled ? "orange" : "#808080"}
                             fontSize={12}
                         />
                     </CustomGrid>

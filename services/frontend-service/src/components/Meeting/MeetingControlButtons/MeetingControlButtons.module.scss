@@ -273,11 +273,11 @@
 
 .aiTranscript {
   font-size: 25px;
-  color: rgba(255, 255, 255, 0.6);
+  color: grey;
   transition: all .2s;
 
   &.activeText {
-    color: #EF8E5B;
+    color: orange;
   }
 }
 
