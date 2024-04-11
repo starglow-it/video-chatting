@@ -94,5 +94,7 @@
   },
   "hostIsAway": "The Host is away but gave you permission to enter",
   "alreadyPaid": "You have already prepaid. Please confirm with your code.",
-  "notPaid": "You didn't paid yet."
+  "notPaid": "You didn't paid yet.",
+  "aiTranscriptionTurnOnNotification": "Host has turned on Ai",
+  "isRecordingStartedNotification": "Host has turned on Recording"
 }

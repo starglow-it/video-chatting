@@ -34,4 +34,6 @@ export enum MeetingSubscribeEvents {
     OnGetUrlFailDueToHostPermission = 'meeting:get:recording:url:fail:duoto:host:permission',
     OnGetUrlByAttendeeFailDueToHostPermission = 'meeting:get:recording:url:by:attendee:fail:duoto:host:permission',
     OnAttendeeRequestWhenDnd = 'users:attendee:request:when:dnd:receive',
+    OnAiTranscriptionReceive = 'meeting:ai:transcription:on:receive',
+    OnIsRecordingStarted = 'meeting:is:recording:started',
 }

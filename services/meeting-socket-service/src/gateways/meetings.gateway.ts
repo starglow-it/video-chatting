@@ -2241,6 +2241,12 @@ export class MeetingsGateway
 
         const record = await this.meetingRecordService.createMeetingRecord({ data: { meetingId: meeting._id, user: meetingUser.profileId, endAt: new Date() } });
 
+        this.broadcastToRoom(
+          socket,
+          `meeting:${meetingId}`,
+          MeetingEmitEvents.IsRecordingStarted,
+        );
+
         return wsResult({
           message: record._id.toString(),
         });
@@ -2789,6 +2795,41 @@ export class MeetingsGateway
 
         return wsResult({
           message: 'success'
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(MeetingSubscribeEvents.OnIsAiTranscriptionOn)
+  async handleIsAiTranscriptionOn(
+    @MessageBody() msg: void,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+
+        const user = this.getUserFromSocket(socket);
+        const meetingInstance = await this.meetingsService.findById({
+          id: user.meeting.toString(),
+          session,
+        });
+        console.log(meetingInstance);
+
+        throwWsError(!meetingInstance, MeetingNativeErrorEnum.MEETING_NOT_FOUND);
+
+        this.broadcastToRoom(
+          socket,
+          `meeting:${meetingInstance._id}`,
+          MeetingEmitEvents.ReceiveAiTranscriptionOn,
+        );
+
+        return wsResult({
+          message: 'success',
         });
       },
       {

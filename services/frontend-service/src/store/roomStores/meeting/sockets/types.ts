@@ -277,3 +277,7 @@ export type CheckPrePaymentCodePayload = {
 export type sendAiTranscriptionPayload = {
     script: string[]
 };
+
+export type isAiTranscriptionTurnedOnPayload = {
+    meetingId: string
+};
