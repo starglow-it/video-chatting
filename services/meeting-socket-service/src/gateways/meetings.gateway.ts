@@ -2732,11 +2732,10 @@ export class MeetingsGateway
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
 
-        const prompt = `Chatgpt!, given the following video meeting transcription: 
-        ${scriptString}
-        -Chatgpt!, Every chat messages are divided by & and the name of user is before @ and content is after @ in the transcription.
-        Please review all chat messages and give me a simplified summary of the entire meeting transcription.
-        If there is no transcription, please provide me the text: "There is no transcriptions available for this meeting."
+        const prompt = `Given the following video meeting transcription: 
+        ** ${scriptString} **
+        - Please review all chat messages and give me a simplified summary of the entire meeting transcription.
+        - If there is no transcription, please provide me the text: "There is no transcriptions available for this meeting."
         `;
 
         const response = await axios.post(openAiUrl, {
