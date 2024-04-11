@@ -328,6 +328,8 @@ export enum NotificationType {
     RequestBecomeAudienceSuccess = 'request_become_audience_success',
     RequestRecordingMeeting = 'request_recording_meeting',
     HostIsAwayForAudiencePaywallPayment = 'host_is_away_for_audience_paywall_payment',
+    IsAiTranscriptionTurnedOnByHost = 'is_ai_transcription_turned_on_by_host',
+    IsRecordingStarted = 'is_recording_started',
 }
 
 export type Notification = {

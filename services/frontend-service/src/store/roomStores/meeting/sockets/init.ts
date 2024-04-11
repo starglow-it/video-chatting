@@ -698,4 +698,16 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnAttendeeRequestWhenDnd,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnAiTranscriptionReceive,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnAiTranscriptionReceive,
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnIsRecordingStarted,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnIsRecordingStarted,
+        ),
+    );
 });

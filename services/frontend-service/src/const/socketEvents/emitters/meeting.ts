@@ -47,4 +47,5 @@ export enum MeetingSocketEmitters {
     GeneratePrePaymentCode = 'meeting:generate:pre:payment:code:request',
     CheckPrePaymentCode = 'meeting:check:pre:payment:code:request',
     sendAiTranscription = 'meeting:send:ai:transcription:request',
+    isAiTranscriptionOn = 'meeting:send:is:ai:transcription:on',
 }

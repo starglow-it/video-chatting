@@ -59,7 +59,8 @@ import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
-import { $authStore, addNotificationEvent, appDialogsApi, deleteDraftUsers } from '../../../store';
+import { $authStore, addNotificationEvent, deleteDraftUsers } from '../../../store';
+import { PlanKeys } from 'shared-types';
 import {
     $audioErrorStore,
     $isHaveNewMessage,
@@ -111,6 +112,7 @@ import {
     toggleNoteEmojiListPanelEvent,
     setAITranscriptEvent,
     sendAiTranscription,
+    aiTranscriptionOnEvent
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -230,6 +232,7 @@ const Component = () => {
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
     const profile = useStore($profileStore);
+    const isSubscriptionPlanHouse = profile.subscriptionPlanKey === PlanKeys.House;
     const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
     const transcriptionsStore = useStore($transcriptionsStore);
@@ -273,7 +276,7 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         if (isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionsStore});
+            sendAiTranscription({ script: transcriptionsStore });
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -493,7 +496,12 @@ const Component = () => {
     }
 
     const handleAiTranscript = () => {
-        setAITranscriptEvent(!isAITranscriptEnabled);
+        if (!isSubscriptionPlanHouse) {
+            if (!isAITranscriptEnabled) {
+                aiTranscriptionOnEvent();
+            }
+            setAITranscriptEvent(!isAITranscriptEnabled);
+        }
     }
 
     const methods = useForm({
@@ -746,7 +754,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
+                            translation={isSubscriptionPlanHouse? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
                         />
                     }
                     placement="top"
@@ -759,13 +767,13 @@ const Component = () => {
                             variant="transparentPure"
                             className={styles.actionBtn}
                             Icon={
-                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: isAITranscriptEnabled })} >Ai</CustomTypography>
+                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: !isSubscriptionPlanHouse && isAITranscriptEnabled })} >Ai</CustomTypography>
                             }
                         />
                         <CustomTypography
                             nameSpace="meeting"
                             translation={isAITranscriptEnabled ? 'on' : 'off'}
-                            color={isAITranscriptEnabled ? "orange" : "#808080"}
+                            color={isSubscriptionPlanHouse ? "#808080" : isAITranscriptEnabled ? "orange" : "#808080"}
                             fontSize={12}
                         />
                     </CustomGrid>
