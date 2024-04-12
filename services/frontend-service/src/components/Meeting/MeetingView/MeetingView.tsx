@@ -193,7 +193,6 @@ const Component = () => {
     ];
 
     useEffect(() => {
-        console.log(audioError, videoError);
         if (isOwner && !isMobile && (isAudioError || isVideoError)) {
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.hostDeviceRequireDialog,
