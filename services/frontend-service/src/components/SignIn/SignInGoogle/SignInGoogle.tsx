@@ -46,8 +46,29 @@ export const SignInGoogle = ({
             const client = window.google.accounts.oauth2.initTokenClient({
                 client_id: frontendConfig.googleClientId,
                 scope: 'email profile',
-                callback: res => {
+                callback: async res => {
                     handleSuccess(res.access_token);
+
+                    const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
+                        headers: {
+                            Authorization: `Bearer ${res.access_token}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const userInfo = await response.json();
+                        const email = userInfo.email;
+                        const prevUser = localStorage.getItem('loginedUser');
+
+                        if (prevUser) {
+                            if (prevUser !== email) {
+                                localStorage.setItem('loginedUser', email);
+                                localStorage.removeItem('meetingUserIds');
+                            }
+                        } else {
+                            localStorage.setItem('loginedUser', email);
+                        }
+                    }
                 },
                 error_callback: err => {
                     handleReject(err.message);

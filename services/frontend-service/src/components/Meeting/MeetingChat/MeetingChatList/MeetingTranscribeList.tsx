@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
     $isThereNewTranscriptionMessage,
     $transcriptionQueue,
+    setTranscriptionsEvent
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
@@ -46,6 +47,8 @@ export const MeetingTranscribeList = () => {
                 setShowNewMessageToast(true);
             }
         }
+
+        setTranscriptionsEvent(transcriptionQueue);
     }, [isThereNewMessage]);
 
 

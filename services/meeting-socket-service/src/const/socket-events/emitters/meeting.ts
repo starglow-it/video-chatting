@@ -33,4 +33,6 @@ export enum MeetingEmitEvents {
   GetUrlFailDueToPermission = 'meeting:get:recording:url:fail:duoto:permission',
   GetUrlFailDueToHostPermission = 'meeting:get:recording:url:fail:duoto:host:permission',
   GetUrlByAttendeeFailDueToHostPermission = 'meeting:get:recording:url:by:attendee:fail:duoto:host:permission',
+  ReceiveAiTranscriptionOn = 'meeting:ai:transcription:on:receive',
+  IsRecordingStarted = 'meeting:is:recording:started',
 }

@@ -34,8 +34,14 @@ export const $transcriptionQueue = transcriptionDomain.createStore<string[]>(
     defaultTranscriptionQueue,
 );
 
+export const $transcriptionsStore = transcriptionDomain.createStore<string[]>([]);
+
 export const setTranscriptionQueue = transcriptionDomain.createEvent<string[]>(
     'setTranscriptionQueue',
+);
+
+export const setTranscriptionsEvent = transcriptionDomain.createEvent<string>(
+    'setTranscriptionsEvent',
 );
 
 export const $isThereNewTranscriptionMessage =

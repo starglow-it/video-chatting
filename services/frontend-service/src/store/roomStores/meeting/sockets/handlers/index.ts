@@ -39,6 +39,8 @@ import { handleGetUrlFailDueToPermission } from './handleGetUrlFailDueToPermissi
 import { handleGetUrlFailDueToHostPermission } from './handleGetUrlFailDueToHostPermission';
 import { handleGetUrlByAttendeeFailDueToHostPermission } from './handleGetUrlByAttendeeFailDueToHostPermission';
 import { handleAttendeeRequestWhenDnd } from './handleAttendeeRequestWhenDnd';
+import { handleAiTranscriptionReceive } from './handleAiTranscriptionReceive';
+import { handleIsRecordingStarted } from './handleIsRecordingStarted';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -255,6 +257,18 @@ const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
             MeetingSubscribeEvents.OnAttendeeRequestWhenDnd,
             {
                 handler: handleAttendeeRequestWhenDnd,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnAiTranscriptionReceive,
+            {
+                handler: handleAiTranscriptionReceive,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnIsRecordingStarted,
+            {
+                handler: handleIsRecordingStarted,
             },
         ],
     ]);

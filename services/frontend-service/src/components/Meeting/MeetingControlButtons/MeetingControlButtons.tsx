@@ -59,7 +59,8 @@ import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
-import { $authStore, addNotificationEvent, appDialogsApi, deleteDraftUsers } from '../../../store';
+import { $authStore, addNotificationEvent, deleteDraftUsers } from '../../../store';
+import { PlanKeys } from 'shared-types';
 import {
     $audioErrorStore,
     $isHaveNewMessage,
@@ -84,7 +85,7 @@ import {
     $enabledPaymentMeetingAudience,
     $paymentIntent,
     $isAITranscriptEnabledStore,
-    $transcriptionQueue,
+    $transcriptionsStore,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -110,7 +111,8 @@ import {
     toggleProfilePanelEvent,
     toggleNoteEmojiListPanelEvent,
     setAITranscriptEvent,
-    sendAiTranscription
+    sendAiTranscription,
+    aiTranscriptionOnEvent
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -168,7 +170,6 @@ type FormType = { note: string };
 const Component = () => {
     const router = useRouter();
     const fullUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const refStickyNote = useRef<any>(null);
 
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
@@ -231,9 +232,10 @@ const Component = () => {
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
     const profile = useStore($profileStore);
+    const isSubscriptionPlanHouse = profile.subscriptionPlanKey === PlanKeys.House;
     const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
-    const transcriptionQueue = useStore($transcriptionQueue);
+    const transcriptionsStore = useStore($transcriptionsStore);
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
 
     const users = useStoreMap({
@@ -247,7 +249,6 @@ const Component = () => {
                     user.meetingRole !== MeetingRole.Recorder,
             ),
     });
-    useEffect(() => {console.log(transcriptionQueue);}, [transcriptionQueue]);
 
     useEffect(() => {
         return () => {
@@ -275,7 +276,7 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         if (isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionQueue || [] });
+            sendAiTranscription({ script: transcriptionsStore });
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -299,7 +300,7 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    }, [isAiTranscriptEnabled]);
+    }, [isAiTranscriptEnabled, transcriptionsStore]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {
@@ -495,7 +496,12 @@ const Component = () => {
     }
 
     const handleAiTranscript = () => {
-        setAITranscriptEvent(!isAITranscriptEnabled);
+        if (!isSubscriptionPlanHouse) {
+            if (!isAITranscriptEnabled) {
+                aiTranscriptionOnEvent();
+            }
+            setAITranscriptEvent(!isAITranscriptEnabled);
+        }
     }
 
     const methods = useForm({
@@ -748,7 +754,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isAITranscriptEnabled ? "aiTranscriptOff" : "aiTranscriptOn"}
+                            translation={isSubscriptionPlanHouse? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
                         />
                     }
                     placement="top"
@@ -761,13 +767,13 @@ const Component = () => {
                             variant="transparentPure"
                             className={styles.actionBtn}
                             Icon={
-                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: isAITranscriptEnabled })} >Ai</CustomTypography>
+                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: !isSubscriptionPlanHouse && isAITranscriptEnabled })} >Ai</CustomTypography>
                             }
                         />
                         <CustomTypography
                             nameSpace="meeting"
-                            translation={isAITranscriptEnabled ? 'off' : 'on'}
-                            color="white"
+                            translation={isAITranscriptEnabled ? 'on' : 'off'}
+                            color={isSubscriptionPlanHouse ? "#808080" : isAITranscriptEnabled ? "orange" : "#808080"}
                             fontSize={12}
                         />
                     </CustomGrid>

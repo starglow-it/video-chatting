@@ -231,10 +231,6 @@
   }
 }
 
-.activeText {
-  color: #EF8E5B;
-}
-
 .form {
   width: 100%;
 }
@@ -277,6 +273,12 @@
 
 .aiTranscript {
   font-size: 25px;
+  color: grey;
+  transition: all .2s;
+
+  &.activeText {
+    color: orange;
+  }
 }
 
 .fieldNoLogin {
