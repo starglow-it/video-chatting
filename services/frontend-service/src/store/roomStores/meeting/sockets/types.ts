@@ -28,7 +28,7 @@ export type JoinWaitingRoomPayload = {
         isAuraActive: boolean;
         maxParticipants: number;
     },
-    previousMeetingUserIds: string[];
+    previousMeetingUserId: string;
     isScheduled: boolean;
 };
 

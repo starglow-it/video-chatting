@@ -292,20 +292,8 @@ const MeetingContainer = memo(() => {
                     await initDevicesEventFxWithStore();
                 }
 
-                let meetingUserIds = localStorage.getItem('meetingUserIds');
-                let parsedMeetingUserIds: { id: string, date: string }[] =
-                    meetingUserIds &&
-                        Array.isArray(JSON.parse(meetingUserIds))
-                        ? JSON.parse(meetingUserIds)
-                        : [];
-                parsedMeetingUserIds = parsedMeetingUserIds
-                    .filter((item: { id: string, date: string }) => {
-                        const diffInMs: number = new Date().getTime() - new Date(item.date).getTime();
-                        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-                        return diffInDays <= 7;
-                    });
-                const userIds = parsedMeetingUserIds.map(item => item.id);
-                await sendJoinWaitingRoomSocketEvent({userIds, isScheduled: Boolean(isMuteYb)});
+                let meetingUserId: string = localStorage.getItem('meetingUserId') || '';
+                await sendJoinWaitingRoomSocketEvent({meetingUserId, isScheduled: Boolean(isMuteYb)});
 
                 if (isOwner) {
                     if (isHasSettings) {
@@ -383,12 +371,10 @@ const MeetingContainer = memo(() => {
             localUser.accessStatus === MeetingAccessStatusEnum.InMeeting ||
             localUser.isPaywallPaid
         ) {
-            let meetingUserIds = localStorage.getItem('meetingUserIds');
-            let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
+            let meetingUserId: string = localStorage.getItem('meetingUserId') || '';
 
-            if (!!localUser.id && parsedMeetingUserIds.findIndex(item => item.id === localUser.id) === -1) {
-                parsedMeetingUserIds.push({ id: localUser.id, date: new Date() });
-                localStorage.setItem('meetingUserIds', JSON.stringify(parsedMeetingUserIds));
+            if (!!localUser.id && meetingUserId !== localUser.id) {
+                localStorage.setItem('meetingUserId', localUser.id);
             }
         }
     }, [localUser]);
