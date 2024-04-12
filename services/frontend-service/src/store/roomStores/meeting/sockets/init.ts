@@ -196,7 +196,7 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             micStatus: source.localUser.micStatus,
             maxParticipants: source.template.maxParticipants,
         },
-        previousMeetingUserIds: data.userIds,
+        previousMeetingUserId: data.meetingUserId,
         isScheduled: data.isScheduled
     }),
 });

@@ -497,7 +497,7 @@ export class MeetingsGateway
       this.connection,
       async (session) => {
         subscribeWsError(socket);
-        const { userData, previousMeetingUserIds, isScheduled } = message;
+        const { userData, previousMeetingUserId, isScheduled } = message;
         const waitingRoom = `waitingRoom:${userData.templateId}`;
         const rejoinRoom = `rejoin:${userData.templateId}`;
         this.joinRoom(socket, waitingRoom);
@@ -560,58 +560,55 @@ export class MeetingsGateway
         let user: MeetingUserDocument;
         let isExist = false;
 
-        if (previousMeetingUserIds.length !== 0 && meeting) {
+        if (previousMeetingUserId && meeting) {
           let userModel: MeetingUserDocument;
 
-          for (let previousMeetingUserId of previousMeetingUserIds) {
-            const prevMeetingUser = await this.usersComponent.findById({ id: previousMeetingUserId, session });
-            if (!!prevMeetingUser && (prevMeetingUser.meeting.toString() === meeting._id.toString())) {
-              userModel = prevMeetingUser;
-            }
+          const prevMeetingUser = await this.usersComponent.findById({ id: previousMeetingUserId, session });
+          if (!!prevMeetingUser && (prevMeetingUser.meeting.toString() === meeting._id.toString())) {
+            userModel = prevMeetingUser;
+          }
 
-            if (!!userModel) {
-              if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
+          if (!!userModel) {
+            if (userModel.accessStatus !== MeetingAccessStatusEnum.InMeeting) {
 
-                const { templatePayments } = await this.coreService.findTemplatePayment({
-                  userTemplateId: meeting.templateId,
-                  userId: template.user.id
-                });
+              const { templatePayments } = await this.coreService.findTemplatePayment({
+                userTemplateId: meeting.templateId,
+                userId: template.user.id
+              });
 
-                const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enabled) !== -1;
-                const isParticipantPaywallEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enabled) !== -1;
+              const isAudiencePaywallPaymentEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Audience && tp.enabled) !== -1;
+              const isParticipantPaywallEnabled = !!templatePayments ?? templatePayments.findIndex(tp => tp.type === 'paywall' && tp.meetingRole === MeetingRole.Participant && tp.enabled) !== -1;
 
-                let accessStatus = userData.accessStatus;
-                if (userModel.isPaywallPaid) {
-                  if (userData.meetingRole === MeetingRole.Participant && isParticipantPaywallEnabled) {
-                    accessStatus = MeetingAccessStatusEnum.Settings;
-                  }
-
-                  if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled && !isScheduled) {
-                    accessStatus = MeetingAccessStatusEnum.InMeeting;
-                  }
-                } else {
-                  if (userData.meetingRole === MeetingRole.Participant && !isParticipantPaywallEnabled) {
-                    accessStatus = MeetingAccessStatusEnum.Settings;
-                  }
-
-                  if (userData.meetingRole === MeetingRole.Audience && !isAudiencePaywallPaymentEnabled) {
-                    accessStatus = MeetingAccessStatusEnum.Settings;
-                  }
+              let accessStatus = userData.accessStatus;
+              if (userModel.isPaywallPaid) {
+                if (userData.meetingRole === MeetingRole.Participant && isParticipantPaywallEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
                 }
 
-                user = await this.usersService.findByIdAndUpdate(
-                  previousMeetingUserId,
-                  {
-                    ...userData,
-                    accessStatus,
-                    socketId: socket.id
-                  },
-                  session
-                );
+                if (userData.meetingRole === MeetingRole.Audience && isAudiencePaywallPaymentEnabled && !isScheduled) {
+                  accessStatus = MeetingAccessStatusEnum.InMeeting;
+                }
+              } else {
+                if (userData.meetingRole === MeetingRole.Participant && !isParticipantPaywallEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
+                }
 
-                isExist = true;
-                continue;
+                if (userData.meetingRole === MeetingRole.Audience && !isAudiencePaywallPaymentEnabled) {
+                  accessStatus = MeetingAccessStatusEnum.Settings;
+                }
               }
+
+              user = await this.usersService.findByIdAndUpdate(
+                previousMeetingUserId,
+                {
+                  ...userData,
+                  accessStatus,
+                  socketId: socket.id
+                },
+                session
+              );
+
+              isExist = true;
             }
           }
         }
