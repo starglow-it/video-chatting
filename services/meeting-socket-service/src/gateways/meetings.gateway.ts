@@ -2732,7 +2732,8 @@ export class MeetingsGateway
         const prompt = `Given the following video meeting transcription: 
         ** ${scriptString} **
         - Please review all chat messages and give me a simplified summary of the entire meeting transcription.
-        - If there is no transcription, please provide me the text: "There is no transcriptions available for this meeting."
+        - If the transcription is insufficient to generate a summary, acknowledge the limited content and provide an appropriate response.
+        - If there is no transcription or the transcription is insufficient to generate a summary, please provide me the text: "Transcript is insufficient for summary."
         `;
 
         const response = await axios.post(openAiUrl, {
