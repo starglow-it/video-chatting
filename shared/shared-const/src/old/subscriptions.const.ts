@@ -29,7 +29,7 @@ const houseSubscription: PlanData = {
     comissionFee: {
       recorder: 0,
       audience: 0.3,
-      participant: 0.2,
+      participant: 0.1,
     },
   },
 };
