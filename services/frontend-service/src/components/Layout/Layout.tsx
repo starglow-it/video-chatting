@@ -164,6 +164,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
     const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
+    const isRecordingRoute = new RegExp(`${recordingRoute}`).test(router.pathname);
     const isNotFoundRoute = new RegExp(`${NotFoundRoute}`).test(
         router.pathname,
     );
@@ -294,8 +295,12 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleAvatarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleAvatarClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isRecordingRoute) {
+            await router.push(profileRoute);
+        } else {
+            setAnchorEl(event.currentTarget);
+        }
     };
 
     const handleMenuClose = () => {
