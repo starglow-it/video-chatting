@@ -241,8 +241,6 @@ export class UsersGateway extends BaseGateway {
         if (meetings.length > 0) {
           for (const meeting of meetings) {
             const ownerProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
-            console.log('ownerProfile+++++++++++++++++++++');
-            console.log(ownerProfile);
             let meetingInstance = {
               id: meeting._id,
               name: 'Anonymous',
