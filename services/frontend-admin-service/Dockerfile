@@ -1,4 +1,4 @@
-FROM node:18.9.1-alpine as builder
+FROM node:18.12.0-alpine as builder
 
 ARG VULTR_STORAGE_HOSTNAME
 ENV VULTR_STORAGE_HOSTNAME=$VULTR_STORAGE_HOSTNAME
@@ -23,7 +23,7 @@ COPY ./services/frontend-admin-service ./services/frontend-admin-service
 
 RUN npx nx run-many --target=build --projects=shared-const,shared-utils,shared-types,frontend-admin-service
 
-FROM node:18.9.1-alpine
+FROM node:18.12.0-alpine
 
 RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
