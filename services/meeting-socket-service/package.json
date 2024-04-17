@@ -51,7 +51,7 @@
     "source-map-support": "^0.5.21",
     "uuid": "9.0.0",
     "moment": "2.29.4",
-    "countries-and-timezones": "3.6.0"
+    "countries-and-timezones": "3.4.1"
   },
   "devDependencies": {
     "@nestjs/cli": "9.1.3",
