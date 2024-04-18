@@ -3,7 +3,7 @@ FROM node:18.9.1-alpine as builder
 ARG VULTR_STORAGE_HOSTNAME
 ENV VULTR_STORAGE_HOSTNAME=$VULTR_STORAGE_HOSTNAME
 
-RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer@8.15.4 | node
+RUN apk add --no-cache curl && curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=8.15.5 node
 
 WORKDIR /app
 
