@@ -1,4 +1,4 @@
-FROM node:18.12.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
 
 RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
@@ -20,7 +20,7 @@ COPY ./services/core-service ./services/core-service
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils,core-service
 
-FROM node:18.12.0-alpine
+FROM node:18.9.1-alpine
 
 RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
