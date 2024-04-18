@@ -25,7 +25,7 @@ RUN npx nx run-many --target=build --projects=shared-const,shared-utils,shared-t
 
 FROM node:18.9.1-alpine
 
-RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
+RUN apk add --no-cache curl && curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | PNPM_VERSION=8.15.5 node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
