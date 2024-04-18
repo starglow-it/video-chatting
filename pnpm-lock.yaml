@@ -6187,7 +6187,7 @@ packages:
 
   /@yarnpkg/parsers@3.0.0-rc.50:
     resolution: {integrity: sha512-rsqnaP3NnFZdmTbgs5WoybBSx4wCvcCM4e3btvH7YdsTmnuSn4mE6KuILxca8MVTSY5xYFsXOb5ZvwhyhsX8qw==}
-    engines: {node: '>=18.12.0'}
+    engines: {node: '>=18.9.1'}
     dependencies:
       js-yaml: 3.14.1
       tslib: 2.6.2
