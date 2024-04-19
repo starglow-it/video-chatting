@@ -29,7 +29,7 @@ export const componentsTheme = (theme: Theme) =>
                         right: '10px',
                     },
                     select: {
-                        maxWidth: '90%',
+                        maxWidth: '100%',
                         lineHeight: '32px',
                     },
                 },

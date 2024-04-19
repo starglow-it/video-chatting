@@ -6,6 +6,7 @@ import {
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
+import { getTimezonesForCountry, getAllCountries } from 'countries-and-timezones';
 
 // gateways
 import { BaseGateway } from './base.gateway';
@@ -114,8 +115,12 @@ export class UsersGateway extends BaseGateway {
     });
   }
 
-  private dateFormat = (value) => {
+  private dateFormat = (value, country) => {
     let date = new Date(value);
+    const allCountries = getAllCountries();
+    const countryInstance = Object.values(allCountries).find((countryObj: { id: string, name: string, timezones: string[] }) => countryObj.name === country);
+    const countryInfo = getTimezonesForCountry(countryInstance.id);
+    date.toLocaleString('en-US', { timeZone: countryInfo && countryInfo.length > 0 ? countryInfo[0].name : 'America/Los_Angeles' });
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
 
@@ -123,15 +128,10 @@ export class UsersGateway extends BaseGateway {
     const month = months[date.getMonth()];
     const day = date.getDate();
     const year = date.getFullYear();
-    const hours = date.getHours() % 12 || 12; // Convert to 12-hour format
+    const hours = date.getHours() % 12 || 12;
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    const timezoneOffsetInMinutes = date.getTimezoneOffset();
-    const timezoneOffsetHours = Math.abs(Math.floor(timezoneOffsetInMinutes / 60));
-    const timezoneOffsetMinutes = Math.abs(timezoneOffsetInMinutes % 60);
-    const timezoneSign = timezoneOffsetInMinutes > 0 ? '-' : '+';
-    const timezone = `UTC${timezoneSign}${timezoneOffsetHours}:${String(timezoneOffsetMinutes).padStart(2, '0')}`;
 
-    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${timezone}`;
+    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'America/Los_Angeles Timezone'}`;
 
     return formattedDate;
   };
@@ -240,10 +240,11 @@ export class UsersGateway extends BaseGateway {
         let validMeetings = [];
         if (meetings.length > 0) {
           for (const meeting of meetings) {
+            const ownerProfile = await this.coreService.findUserById({ userId: meeting.ownerProfileId });
             let meetingInstance = {
               id: meeting._id,
               name: 'Anonymous',
-              startedAt: meeting.startAt ? this.dateFormat(meeting.startAt) : ""
+              startedAt: meeting.startAt ? this.dateFormat(meeting.startAt, ownerProfile.country || '') : ""
             };
             try {
 
@@ -390,7 +391,7 @@ export class UsersGateway extends BaseGateway {
               participantDonationsTotal: 0,
               audienceDonationsTotal: 0,
             };
-            
+
             const donatedParticipants = participants.filter(participant => participant.isDonated).length;
             const donatedAudiences = audiences.filter(audience => audience.isDonated).length;
 

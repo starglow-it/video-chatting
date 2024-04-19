@@ -101,6 +101,10 @@
 
 .dropdownMenu {
   width: 50%;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .chipResponsiveVisible {
@@ -145,4 +149,8 @@
   .chipResponsiveInVisible {
     display: none;
   }
+}
+
+.MuiSelect-select {
+  max-width: 100%;
 }
