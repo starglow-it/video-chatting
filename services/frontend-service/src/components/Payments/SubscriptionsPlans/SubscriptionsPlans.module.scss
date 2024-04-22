@@ -234,20 +234,19 @@
 }
 
 .scrollWrapper {
-  width: 100%;
+  width: 45%;
   max-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 30px;
-  z-index: 9999;
 }
 
 .subscriptionTitle {
   background-color: black;
   padding: 30px;
-  width: 100%;
+  width: 45%;
   border-radius: 20px;
   margin-bottom: 20px;
 
@@ -256,17 +255,11 @@
   }
 }
 
-.scrollWrapper {
-  width: 45%;
-  height: 100vh;
-  background-color: transparent;
-}
-
 .subscriptionContent {
-  width: 100%;
+  width: 45%;
 
   @media screen and (max-width: 1320px) {
-    width: 100%;
+    width: 45%;
   }
 }
 

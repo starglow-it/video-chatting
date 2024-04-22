@@ -151,80 +151,78 @@ const Component = ({
                 }
             >
                 <ClickAwayListener onClickAway={handleClose}>
-                    <CustomScroll className={styles.scrollWrapper}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={4}
+                        className={styles.subscriptionScrollWrapper}
+                    >
                         <CustomGrid
                             container
-                            direction="column"
                             justifyContent="center"
                             alignItems="center"
-                            gap={4}
-                            className={styles.subscriptionScrollWrapper}
+                            gap={1}
+                            className={styles.subscriptionTitle}
                         >
-                            <CustomGrid
-                                container
-                                justifyContent="center"
-                                alignItems="center"
-                                gap={1}
-                                className={styles.subscriptionTitle}
-                            >
-                                {title ?
-                                    (<CustomGrid
-                                        container
-                                        item
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        gap={5}
-                                        className={styles.subscriptionPlansTitle}
-                                    >
-                                        <CustomTypography
-                                            variant="h2"
-                                            nameSpace="subscriptions"
-                                            translation="upgradePlan.title"
-                                            color="white"
-                                        />
+                            {title ?
+                                (<CustomGrid
+                                    container
+                                    item
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    gap={5}
+                                    className={styles.subscriptionPlansTitle}
+                                >
+                                    <CustomTypography
+                                        variant="h2"
+                                        nameSpace="subscriptions"
+                                        translation="upgradePlan.title"
+                                        color="white"
+                                    />
+                                    <CustomImage
+                                        src="/images/rocket-transpt.png"
+                                        width="40px"
+                                        height="40px"
+                                        className={styles.rocketIcon}
+                                    />
+                                </CustomGrid>)
+                                : (
+                                    <>
                                         <CustomImage
-                                            src="/images/rocket-transpt.png"
-                                            width="40px"
-                                            height="40px"
-                                            className={styles.rocketIcon}
+                                            src="/images/winking-face.webp"
+                                            width="30px"
+                                            height="30px"
                                         />
-                                    </CustomGrid>)
-                                    : (
-                                        <>
-                                            <CustomImage
-                                                src="/images/winking-face.webp"
-                                                width="30px"
-                                                height="30px"
-                                            />
-                                            <CustomTypography
-                                                variant="h2bold"
-                                                nameSpace="subscriptions"
-                                                color="colors.white.primary"
-                                                translation="subscriptions.selectPlan"
-                                            />
-                                        </>
-                                    )}
-                            </CustomGrid>
-                            <CustomGrid
-                                container
-                                gap={3.5}
-                                justifyContent="center"
-                                wrap="nowrap"
-                                alignItems="stretch"
-                                className={styles.subscriptionContent}
-                            >
-                                {is1320Media ? (
-                                    <SubscriptionPlansWrapper
-                                        products={productFiltered}
-                                    >
-                                        {renderSubscriptionPlans}
-                                    </SubscriptionPlansWrapper>
-                                ) : (
-                                    renderSubscriptionPlans
+                                        <CustomTypography
+                                            variant="h2bold"
+                                            nameSpace="subscriptions"
+                                            color="colors.white.primary"
+                                            translation="subscriptions.selectPlan"
+                                        />
+                                    </>
                                 )}
-                            </CustomGrid>
                         </CustomGrid>
-                    </CustomScroll>
+                        <CustomGrid
+                            container
+                            gap={3.5}
+                            justifyContent="center"
+                            wrap="nowrap"
+                            alignItems="stretch"
+                            className={styles.subscriptionContent}
+                        >
+                            {is1320Media ? (
+                                <SubscriptionPlansWrapper
+                                    products={productFiltered}
+                                >
+                                    {renderSubscriptionPlans}
+                                </SubscriptionPlansWrapper>
+                            ) : (
+                                renderSubscriptionPlans
+                            )}
+                        </CustomGrid>
+                    </CustomGrid>
                 </ClickAwayListener>
             </ConditionalRender>
         </Backdrop>
