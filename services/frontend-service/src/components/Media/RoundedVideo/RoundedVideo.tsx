@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 // custom
@@ -42,7 +42,6 @@ const Component = ({
         () => ({ '--sizeCoef': size / 150 } as React.CSSProperties),
         [size],
     );
-
     return (
         <CustomGrid
             container
@@ -119,7 +118,6 @@ const Component = ({
                     autoPlay
                 />
             </ConditionalRender>
-
         </CustomGrid>
     );
 };

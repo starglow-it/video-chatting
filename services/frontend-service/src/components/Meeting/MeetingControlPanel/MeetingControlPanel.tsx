@@ -45,7 +45,6 @@ import {
     $isToggleEditRuumeSelectMenuOpenStore,
     $isParticipant,
     $isAudience,
-    toggleEditRuumeSelectMenu,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
@@ -54,6 +53,7 @@ import {
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleEditRuumeSettingEvent,
+    setActiveTabPanelEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -116,6 +116,7 @@ const Component = () => {
     const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent(false);
+        setActiveTabPanelEvent(0);
     }, []);
 
     const toggleOutsideSchedulePanel = useCallback(

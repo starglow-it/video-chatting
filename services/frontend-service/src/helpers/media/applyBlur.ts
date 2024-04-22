@@ -28,6 +28,20 @@ class BackgroundManagerInstance {
         ];
     }
 
+    async makeBackgroundTransparent(stream: CustomMediaStream) {
+        if (stream && this.videoEffects && this.isBackgroundSupported) {
+            const videoTrack = stream.getVideoTracks()[0];
+            
+            if (videoTrack) {
+                videoTrack.enabled = true;
+                await this.videoEffects.setEffect(this.effectBackground, videoTrack, {
+                    // Set options for transparency effect, if available
+                    transparency: true
+                });
+            }
+        }
+    }
+
     async init() {
         try {
             if ('navigator' in window) {

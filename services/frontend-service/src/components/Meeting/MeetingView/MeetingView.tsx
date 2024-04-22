@@ -437,7 +437,6 @@ const Component = () => {
             <EmojiPlayground userId={meeting.hostUserId} />
 
             <AudienceEmojiPlayground />
-
             <DevicesSettingsDialog />
             <EndMeetingDialog />
             <InviteAttendeeDialog />
@@ -452,7 +451,6 @@ const Component = () => {
             <ConfirmBecomeAudienceDialog />
             <DownloadIcsEventDialog />
             <RecordVideoDownloadDialog />
-
         </CustomGrid>
     );
 };

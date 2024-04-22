@@ -87,7 +87,7 @@ const Component = () => {
                     label={
                         <Translation
                             nameSpace="common"
-                            translation="buttons.cancel"
+                            translation="buttons.exit"
                         />
                     }
                 />
