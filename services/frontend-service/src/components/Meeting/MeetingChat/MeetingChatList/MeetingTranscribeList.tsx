@@ -67,6 +67,7 @@ export const MeetingTranscribeList = () => {
                     justifyContent="center"
                     flexDirection="column"
                     height="100%"
+                    className={styles.imageWrapper}
                 >
                     <CustomImage
                         src="/images/empty-chat.png"
@@ -76,10 +77,7 @@ export const MeetingTranscribeList = () => {
                         loading="eager"
                         alt="media-item"
                     />
-                    <span className={styles.textEmpty}>Chat is empy</span>
-                    <span className={styles.textEmpty}>
-                        Please type a message and send.
-                    </span>
+                    <span className={styles.textEmpty}>Transcript is empy</span>
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender condition={!!transcriptionList.length}>

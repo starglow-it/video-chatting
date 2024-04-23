@@ -26,7 +26,8 @@
     background-color: #ddd;
     z-index:2;
     cursor: pointer;
-    
+}
 
-
+.imageWrapper {
+    pointer-events: none;
 }
