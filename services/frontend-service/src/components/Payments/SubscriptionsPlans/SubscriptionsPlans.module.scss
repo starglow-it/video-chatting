@@ -41,6 +41,7 @@
 
   padding: rem(4px 0);
   font-weight: 700;
+
   &:first-child {
     padding: rem(0 0 4px 0);
   }
@@ -53,14 +54,17 @@
     color: rgb($primary-black, 0.25);
   }
 }
-.listItemFade{
-  .mainText{
+
+.listItemFade {
+  .mainText {
     color: rgb($primary-black, 0.25);
   }
-  .listIcon{
+
+  .listIcon {
     opacity: 0.25;
   }
 }
+
 .listIcon {
   width: rem(16px);
   height: rem(16px);
@@ -208,6 +212,7 @@
     flex: 1 1;
   }
 }
+
 .subscriptionWrapper {
   position: relative;
   height: 100%;
@@ -218,11 +223,48 @@
   inset: 0;
 }
 
-.commissionFee{
+.commissionFee {
   text-align: center;
   font-size: rem(15px);
   margin-bottom: rem(4px);
-  &.bold{
+
+  &.bold {
     font-family: 600;
+  }
+}
+
+.scrollWrapper {
+  width: 45%;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.subscriptionTitle {
+  background-color: black;
+  padding: 30px;
+  width: 45%;
+  border-radius: 20px;
+  margin-bottom: 20px;
+
+  @media screen and (max-width: 1320px) {
+    width: 60%;
+  }
+}
+
+.subscriptionContent {
+  width: 45%;
+
+  @media screen and (max-width: 1320px) {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width: 790px) {
+  .rocketIcon {
+      display: none;
   }
 }

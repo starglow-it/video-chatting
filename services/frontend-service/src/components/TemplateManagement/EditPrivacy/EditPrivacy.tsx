@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useState, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
@@ -20,6 +20,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChalkboardUser, faFolderClosed, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import IconButton from '@mui/material/IconButton';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { addNotificationEvent } from 'src/store';
+import { NotificationType } from 'src/store/types';
 
 // components
 import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/types';
@@ -71,6 +74,7 @@ const Component = ({
     const isCustom = !!router.query.tags;
     const businessCategories = useStore($businessCategoriesStore);
     const { isMobile } = useBrowserDetect();
+    const [customUrl, setCustomUrl] = useState('');
 
     const { control, register, setValue, watch, formState: { errors } } = useFormContext();
 
@@ -85,13 +89,23 @@ const Component = ({
     const customLinkErrorMessage: string =
         errors?.customLink?.[0]?.message || '';
     const customLinkProps = useMemo(() => register('customLink'), []);
+    const customLinkValue = watch('customLink');
 
     useEffect(() => {
         const isPublic = watch('isPublic');
         if (isPublic) {
             onChange(options[1].value);
         }
-    }, []);
+    }, [watch]);
+
+    useEffect(() => {
+        if (!!customLinkValue) {
+            const domain = new URL(window.location.href);
+            setCustomUrl(`${domain.origin}/room/${customLinkValue}`);
+        } else {
+            setCustomUrl('');
+        }
+    }, [customLinkValue]);
 
     useEffect(() => {
         if (isCustom) {
@@ -108,6 +122,14 @@ const Component = ({
             })),
         [businessCategories.list],
     );
+
+    const handleCustomLinkCopy = () => {
+        navigator.clipboard.writeText(customUrl);
+        addNotificationEvent({
+            type: NotificationType.LinkInfoCopied,
+            message: "Url copied.",
+        });
+    };
 
     return (
         <CustomGrid
@@ -133,6 +155,22 @@ const Component = ({
                             translation="editDescription.form.link"
                             className={styles.linkLabel}
                         />
+                        <ConditionalRender condition={!!customUrl}>
+                            <CustomGrid>
+                                <CustomTypography variant="body3" color="colors.white.primary">
+                                    {customUrl}
+                                </CustomTypography>
+                                <CustomTooltip
+                                    nameSpace="createRoom"
+                                    translation="urlCopy"
+                                    placement="right"
+                                >
+                                    <IconButton aria-label="copy-link" size="small" sx={{ color: "white" }} onClick={handleCustomLinkCopy}>
+                                        <ContentCopyIcon fontSize="small" />
+                                    </IconButton>
+                                </CustomTooltip>
+                            </CustomGrid>
+                        </ConditionalRender>
                     </CustomGrid>
                     <CustomInput
                         autoComplete="off"

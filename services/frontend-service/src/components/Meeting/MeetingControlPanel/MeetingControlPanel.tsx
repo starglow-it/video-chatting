@@ -45,7 +45,6 @@ import {
     $isToggleEditRuumeSelectMenuOpenStore,
     $isParticipant,
     $isAudience,
-    toggleEditRuumeSelectMenu,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
@@ -54,6 +53,7 @@ import {
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleEditRuumeSettingEvent,
+    setActiveTabPanelEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -66,6 +66,7 @@ import { MeetingProfileSetting } from '../MeetingProfileSetting/MeetingProfileSe
 import { MeetingEditRuumeSetting } from '../MeetingEditRuumeSetting/MeetingEditRuumeSetting';
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
+import Draggable from 'react-draggable';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -116,6 +117,7 @@ const Component = () => {
     const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent(false);
+        setActiveTabPanelEvent(0);
     }, []);
 
     const toggleOutsideSchedulePanel = useCallback(
@@ -155,7 +157,7 @@ const Component = () => {
     }, []);
 
     const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
-        
+
         e.stopPropagation();
         if (!isToggleEditRuumeSelectMenuOpen) {
             toggleEditRuumeSettingEvent(false);
@@ -212,7 +214,11 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
+                {/* <ClickAwayListener onClickAway={toggleOutsideUserPanel}> */}
+                <Draggable
+                    axis="both"
+                    defaultPosition={{x: 0, y: 0}}
+                >
                     <Fade in={isUsersOpen}>
                         <CustomPaper
                             variant="black-glass"
@@ -227,7 +233,8 @@ const Component = () => {
                             <MeetingPeople />
                         </CustomPaper>
                     </Fade>
-                </ClickAwayListener>
+                </Draggable>
+                {/* </ClickAwayListener> */}
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
                         <div className={styles.scheduleOpenPanelWrapper}>

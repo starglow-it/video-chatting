@@ -66,6 +66,7 @@ export const MeetingChatList = () => {
                     justifyContent="center"
                     flexDirection="column"
                     height="100%"
+                    className={styles.imageWrapper}
                 >
                     <CustomImage
                         src="/images/empty-chat.png"

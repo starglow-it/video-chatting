@@ -1,6 +1,12 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
 
+.wrapper {
+    padding: 10px;
+    padding-top: 30px;
+    position: relative;
+}
+
 .tab {
     text-transform: initial;
     min-height: 40px;
@@ -60,4 +66,11 @@
       top: -1px;
       right: -1px;
     }
+  }
+
+  .closeBtn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: white;
   }

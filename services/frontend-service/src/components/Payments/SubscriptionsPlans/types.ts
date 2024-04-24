@@ -1,7 +1,7 @@
 export type SubscriptionsPlansProps = {
     activePlanKey?: string;
     isDisabled: boolean;
-    title?: JSX.Element;
+    title?: boolean;
     onClose?: () => void;
     isSubscriptionStep: boolean;
     withBackgroundBlur?: boolean;

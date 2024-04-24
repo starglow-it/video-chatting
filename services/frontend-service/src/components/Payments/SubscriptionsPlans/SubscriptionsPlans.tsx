@@ -8,6 +8,7 @@ import { ClickAwayListener } from '@mui/base';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
@@ -32,13 +33,15 @@ import {
 } from '../../../store';
 
 // styles
+import styles from './SubscriptionsPlans.module.scss';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 const Component = ({
     isSubscriptionStep,
     onChooseSubscription,
     isDisabled,
     activePlanKey,
-    title,
+    title = false,
     withBackgroundBlur = false,
     withActivePlan = true,
     onClose,
@@ -134,6 +137,8 @@ const Component = ({
                 zIndex: theme => theme.zIndex.drawer + 1,
                 pointerEvents: 'none',
                 backdropFilter: withBackgroundBlur ? 'blur(28px)' : undefined,
+                width: '100%',
+                height: '100vh',
             }}
             open={isSubscriptionStep}
         >
@@ -150,29 +155,54 @@ const Component = ({
                         container
                         direction="column"
                         justifyContent="center"
+                        alignItems="center"
                         gap={4}
+                        className={styles.subscriptionScrollWrapper}
                     >
                         <CustomGrid
                             container
                             justifyContent="center"
                             alignItems="center"
                             gap={1}
+                            className={styles.subscriptionTitle}
                         >
-                            {title ?? (
-                                <>
-                                    <CustomImage
-                                        src="/images/winking-face.webp"
-                                        width="30px"
-                                        height="30px"
-                                    />
+                            {title ?
+                                (<CustomGrid
+                                    container
+                                    item
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    gap={5}
+                                    className={styles.subscriptionPlansTitle}
+                                >
                                     <CustomTypography
-                                        variant="h2bold"
+                                        variant="h2"
                                         nameSpace="subscriptions"
-                                        color="colors.white.primary"
-                                        translation="subscriptions.selectPlan"
+                                        translation="upgradePlan.title"
+                                        color="white"
                                     />
-                                </>
-                            )}
+                                    <CustomImage
+                                        src="/images/rocket-transpt.png"
+                                        width="40px"
+                                        height="40px"
+                                        className={styles.rocketIcon}
+                                    />
+                                </CustomGrid>)
+                                : (
+                                    <>
+                                        <CustomImage
+                                            src="/images/winking-face.webp"
+                                            width="30px"
+                                            height="30px"
+                                        />
+                                        <CustomTypography
+                                            variant="h2bold"
+                                            nameSpace="subscriptions"
+                                            color="colors.white.primary"
+                                            translation="subscriptions.selectPlan"
+                                        />
+                                    </>
+                                )}
                         </CustomGrid>
                         <CustomGrid
                             container
@@ -180,6 +210,7 @@ const Component = ({
                             justifyContent="center"
                             wrap="nowrap"
                             alignItems="stretch"
+                            className={styles.subscriptionContent}
                         >
                             {is1320Media ? (
                                 <SubscriptionPlansWrapper

@@ -38,7 +38,7 @@ const professionalSubscription: PlanData = {
   name: PlanKeys.Professional,
   key: 'professional',
   priceInCents: 500,
-  description: 'Monetize meetings + upload room',
+  description: 'Customize meetings with your pics & videos for immersion',
   features: {
     emailSlug: 'subscriptionSuccessful',
     templatesLimit: 20,
@@ -57,7 +57,7 @@ const businessSubscription: PlanData = {
   name: PlanKeys.Business,
   key: 'business',
   priceInCents: 2500,
-  description: 'Add Links to your content',
+  description: 'Customize your immersive background + embed your links',
   features: {
     emailSlug: 'subscriptionBusiness',
     templatesLimit: 50,

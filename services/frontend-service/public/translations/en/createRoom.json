@@ -6,7 +6,7 @@
     "title": "Cancel Ruume creation?",
     "description": "All your settings will be lost.",
     "buttons": {
-      "cancel": "Cancel",
+      "cancel": "Exit",
       "stay": "Stay"
     }
   },
@@ -113,5 +113,7 @@
     "commission": "0% Commission on Payments",
     "linkDescription1": "book links, merchandise, newsletters, websites",
     "linkDescription2": "place links anywhere in the ruume for high clickthrough rates"
-  }
+  },
+  "urlCopy": "copy the url",
+  "urlCopied": "copied"
 }

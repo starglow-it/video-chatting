@@ -36,6 +36,7 @@ import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
 import { MenusTemplate } from '../Menus/Menus';
 import styles from './MainTemplates.module.scss';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const Component = () => {
     const router = useRouter();
@@ -208,8 +209,7 @@ const Component = () => {
         const response = await createTemplateFx();
         if (isBusinessSubscription || isProfessionalSubscription) {
             router.push(
-                `${getCreateRoomUrl(response?.id ?? '')}?tags=${
-                    queryTemplatesStore.businessCategories?.[0]
+                `${getCreateRoomUrl(response?.id ?? '')}?tags=${queryTemplatesStore.businessCategories?.[0]
                 }`,
             );
             return;
@@ -313,26 +313,7 @@ const Component = () => {
                 activePlanKey={profile.subscriptionPlanKey}
                 onChooseSubscription={handleChooseSubscription}
                 buttonTranslation="buttons.upgradeTo"
-                title={
-                    <CustomGrid
-                        container
-                        direction="column"
-                        alignItems="center"
-                        className={styles.subscriptionPlansTitle}
-                    >
-                        <CustomTypography
-                            variant="h2"
-                            nameSpace="subscriptions"
-                            translation="upgradePlan.title"
-                            color="colors.orange.primary"
-                        />
-                        <CustomTypography
-                            nameSpace="subscriptions"
-                            translation="upgradePlan.description"
-                            color="colors.orange.primary"
-                        />
-                    </CustomGrid>
-                }
+                title={true}
                 onClose={handleCloseSubscriptionPlans}
             />
         </>

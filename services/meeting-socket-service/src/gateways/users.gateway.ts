@@ -118,23 +118,37 @@ export class UsersGateway extends BaseGateway {
   private dateFormat = (value, country) => {
     let date = new Date(value);
     const allCountries = getAllCountries();
-    const countryInstance = Object.values(allCountries).find((countryObj: { id: string, name: string, timezones: string[] }) => countryObj.name === country);
-    const countryInfo = getTimezonesForCountry(countryInstance.id);
+    let countryInstance: { id: string, name: string, timezones: string[] } | undefined;
+    
+    if (country) {
+      countryInstance = Object.values(allCountries).find((countryObj: { id: string, name: string, timezones: string[] }) => countryObj.name === country);
+    } else {
+      countryInstance = undefined;
+    }
+    
+    let countryInfo: { name: string }[] = [];
+    if (countryInstance && typeof countryInstance === 'object' && Object.keys(countryInstance).length > 0) {
+      countryInfo = getTimezonesForCountry(countryInstance?.id);
+    }
+    
     date.toLocaleString('en-US', { timeZone: countryInfo && countryInfo.length > 0 ? countryInfo[0].name : 'America/Los_Angeles' });
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
-
+  
     // Get components
     const month = months[date.getMonth()];
     const day = date.getDate();
     const year = date.getFullYear();
     const hours = date.getHours() % 12 || 12;
     const minutes = String(date.getMinutes()).padStart(2, '0');
-
+  
     const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'America/Los_Angeles Timezone'}`;
-
+  
     return formattedDate;
   };
+  
+  
+
 
   @WsEvent(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(

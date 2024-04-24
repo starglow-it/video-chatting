@@ -56,6 +56,7 @@
 
 .controlPanelWrapper {
   position: relative;
+  background: transparent;
 
   .actionButton {
     position: relative;
@@ -109,10 +110,11 @@
   position: absolute;
   max-width: rem(350px);
   min-width: rem(310px);
-  padding: rem(14px 16px);
+  padding: rem(20px);
   opacity: 0;
   left: -100px;
   bottom: 0px;
+  z-index: 9999;
 
   &.mobile {
     left: 0%;

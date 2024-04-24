@@ -112,7 +112,8 @@ import {
     toggleNoteEmojiListPanelEvent,
     setAITranscriptEvent,
     sendAiTranscription,
-    aiTranscriptionOnEvent
+    aiTranscriptionOnEvent,
+    setActiveTabPanelEvent
 } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
@@ -341,6 +342,7 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
+        setActiveTabPanelEvent(0);
 
         if (isProfileOpen) {
             toggleProfilePanelEvent(false);

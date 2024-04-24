@@ -1,4 +1,4 @@
-import { useStore, useStoreMap } from 'effector-react';
+import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ReactNode, useCallback, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -8,15 +8,22 @@ import clsx from 'clsx';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingChat } from '../MeetingChat/MeetingChat';
-import { Tab, Tabs, Typography } from '@mui/material';
-import { $activeTabPanel, $isAudience, $isHaveNewMessage, $isHaveNewQuestion, $isMeetingHostStore, $meetingUsersStore, resetHaveNewMessageEvent, resetHaveNewQuestionEvent, setActiveTabPanelEvent } from 'src/store/roomStores';
-import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
-import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
+import { Tab, Tabs } from '@mui/material';
+import {
+    $activeTabPanel,
+    $isAudience,
+    $isHaveNewMessage,
+    $isHaveNewQuestion,
+    resetHaveNewMessageEvent,
+    resetHaveNewQuestionEvent,
+    setActiveTabPanelEvent,
+    toggleUsersPanelEvent
+} from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { MeetingAudiences } from '../MeetingAudiences/MeetingAudiences';
 import { MeetingQuestionAnswer } from '../MeetingQuestionAnswer/MeetingQuestionAnswer';
 import { MeetingTranscribe } from '../MeetingChat/MeetingTranscribe';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -78,6 +85,12 @@ export const MeetingPeople = () => {
         }
     };
 
+    const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleUsersPanelEvent(false);
+        setActiveTabPanelEvent(0);
+    }, []);
+
     const a11yProps = useCallback((index: number) => {
         return {
             id: `simple-tab-${index}`,
@@ -95,8 +108,12 @@ export const MeetingPeople = () => {
         <CustomGrid
             display="flex"
             flexDirection="column"
-            height={isMobile() && !isPortraitLayout ? '250px' : '400px'}
+            height={isMobile() && !isPortraitLayout ? '250px' : '440px'}
+            className={styles.wrapper}
         >
+            <IconButton aria-label="close" size="small" className={styles.closeBtn} onClick={toggleOutsideUserPanel}>
+                <CloseIcon />
+            </IconButton>
             <Tabs
                 value={value}
                 onChange={handleChange}

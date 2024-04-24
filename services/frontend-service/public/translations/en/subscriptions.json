@@ -145,14 +145,13 @@
             "type": "fade"
           },
           {
-            "key": "callers",
-            "text": "10 Participants, 1000 Audience",
-            "type": "fade"
-          },
-          {
             "key": "commission",
             "text": "Ruume Commission: 5% (Participants), 20% (Audience)",
             "type": "fade"
+          },
+          {
+            "key": "transcript",
+            "text": "Ai Summary"            
           },
           {
             "key": "upload",
@@ -173,14 +172,14 @@
             "type": "fade"
           },
           {
-            "key": "callers",
-            "text": "10 Participants, 1000 Audience",
-            "type": "fade"
-          },
-          {
             "key": "commission",
             "text": "Ruume Commission: 0% (Participants), 10% (Audience)",
             "type": "fade"          
+          },
+          {
+            "key": "transcription",
+            "text": "Ai Summary",
+            "type": "fade"           
           },
           {
             "key": "upload",
@@ -189,7 +188,7 @@
           },
           {
             "key": "embed",
-            "text": "Embed Links in Backgrounds"            
+            "text": "Embed Links"            
           }
         ]
       ],
@@ -197,7 +196,7 @@
     }
   },
   "upgradePlan": {
-    "title": "Upgrade plan to Create room",
+    "title": "Upgrade and start creating",
     "description": "Only users with Professional and Business plan can create rooms"
   },
   "paywall":{
