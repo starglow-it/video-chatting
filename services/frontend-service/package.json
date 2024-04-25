@@ -95,8 +95,7 @@
         "react-joyride": "2.7.2",
         "@fortawesome/fontawesome-svg-core": "6.5.1",
         "@fortawesome/free-solid-svg-icons": "6.5.1",
-        "@fortawesome/react-fontawesome": "0.2.0",
-        "@tensorflow-models/body-pix": "2.2.1"
+        "@fortawesome/react-fontawesome": "0.2.0"
     },
     "devDependencies": {
         "@types/compression": "1.7.2",
