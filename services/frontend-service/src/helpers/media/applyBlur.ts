@@ -3,12 +3,6 @@ import { VIDEO_CONSTRAINTS } from 'src/const/media/VIDEO_CONSTRAINTS';
 import { CustomMediaStream } from '../../types';
 import { BROWSER_NAMES } from '../../types/browsers';
 
-// Uncomment the line below if you want to use TensorFlow.js runtime.
-// import '@tensorflow/tfjs-converter';
-
-// Uncomment the line below if you want to use MediaPipe runtime.
-import '@mediapipe/selfie_segmentation';
-
 class BackgroundManagerInstance {
     supportedBrowsers: string[];
 
