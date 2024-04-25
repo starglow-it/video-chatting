@@ -28,20 +28,6 @@ class BackgroundManagerInstance {
         ];
     }
 
-    async makeBackgroundTransparent(stream: CustomMediaStream) {
-        if (stream && this.videoEffects && this.isBackgroundSupported) {
-            const videoTrack = stream.getVideoTracks()[0];
-            
-            if (videoTrack) {
-                videoTrack.enabled = true;
-                await this.videoEffects.setEffect(this.effectBackground, videoTrack, {
-                    // Set options for transparency effect, if available
-                    transparency: true
-                });
-            }
-        }
-    }
-
     async init() {
         try {
             if ('navigator' in window) {
@@ -57,10 +43,14 @@ class BackgroundManagerInstance {
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            this.effectBackground =
-                                new Module.EffectBackground();
+                            // this.effectBackground =
+                            //     new Module.EffectBackground();
+                            // this.effectBackground.setBackgroundImage(
+                            //     this.segmentation,
+                            // );
+                            this.effectBackground = new Module.EffectBackground();
                             this.effectBackground.setBackgroundImage(
-                                this.segmentation,
+                                '/images/trans_bg.png',
                             );
                         }
 
@@ -82,7 +72,7 @@ class BackgroundManagerInstance {
     ) {
         if (stream) {
             const videoTrack = stream.getVideoTracks()[0];
-            let blurTrack;
+            let blurTrack: MediaStreamTrack;
 
             if (videoTrack && this.videoEffects && isAuraActive) {
                 videoTrack.enabled = true;
@@ -94,15 +84,17 @@ class BackgroundManagerInstance {
 
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
+
+                callback?.(stream);
             }
-            callback?.(stream);
+            return stream;
         }
-        return stream;
     }
 
     applyBlur(stream: CustomMediaStream) {
         if (stream) {
             const canvasEl = document.createElement('canvas');
+            canvasEl.setAttribute('id', 'canvas');
             canvasEl.width = VIDEO_CONSTRAINTS.width.ideal;
             canvasEl.height = VIDEO_CONSTRAINTS.height.ideal;
             const ctx = canvasEl.getContext('2d');
