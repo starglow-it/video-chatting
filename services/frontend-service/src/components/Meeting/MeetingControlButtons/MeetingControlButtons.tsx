@@ -756,7 +756,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isSubscriptionPlanHouse? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
+                            translation={isSubscriptionPlanHouse ? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
                         />
                     }
                     placement="top"
