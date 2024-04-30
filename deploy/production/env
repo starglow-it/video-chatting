@@ -27,6 +27,7 @@ LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
 # This is env Livekit Server
 # LIVEKIT_HOST=https://livekit.chatruume.com
 # LIVEKIT_WSS=wss://livekit.chatruume.com
+NEXT_PUBLIC_FRONTEND_URL=https://my.chatruume.com
 
 # This is env Livekit Cloud
 LIVEKIT_HOST=https://ruume-psl3vadv.livekit.cloud
@@ -72,6 +73,8 @@ IS_SEED=true
 FRONTEND_ADMIN_URL=https://my.chatruume.com
 AWS_ACCESS_KEY_ID=AKIAQY5KRUCZUR7ZCFR7
 AWS_SECRET_ACCESS_KEY=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
+NEXT_PUBLIC_AWS_ACCESS_KEY_ID=AKIAQY5KRUCZUR7ZCFR7
+NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY=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
 AWS_REGION=us-east-2
 AWS_S3_BUCKET=theliveofficemedia
 EGRESS_WSS=wss://my.chatruume.com

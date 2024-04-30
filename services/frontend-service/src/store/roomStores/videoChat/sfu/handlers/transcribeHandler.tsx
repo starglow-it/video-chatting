@@ -68,7 +68,7 @@ const startStreaming = async (
     };
 
     try {
-        await audioContext.audioWorklet.addModule('http://localhost:8000/worklets/chatruume-processor.js');
+        await audioContext.audioWorklet.addModule(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/worklets/chatruume-processor.js`);
         const mediaRecorder = new AudioWorkletNode(audioContext, 'chatruume-processor', {
             processorOptions: recordingProps,
         });
@@ -216,16 +216,6 @@ const LiveTranscriptions = (props: LiveTranscriptionProps) => {
             console.log('No media recorder');
         }
     };
-
-    async function toggleTranscribe() {
-        if (transcribeStatus) {
-            console.log('Start Recording');
-            await startRecording();
-        } else {
-            console.log('Stop Recording');
-            await stopRecording();
-        }
-    }
 
     useEffect(() => {
         startRecording();
