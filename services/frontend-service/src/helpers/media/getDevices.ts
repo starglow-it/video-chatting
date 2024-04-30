@@ -8,26 +8,34 @@ export const getDevices = async (): Promise<{
     audio: MediaDeviceInfo[];
     video: MediaDeviceInfo[];
 }> => {
-    const allDevices = await navigator.mediaDevices.enumerateDevices();
-
-    const inputDevices = allDevices.filter(
-        device =>
-            Boolean(device.label) &&
-            device.deviceId !== 'default' &&
-            INPUT_KIND_ARRAY.includes(device.kind as DeviceInputKindEnum),
-    );
-
-    const audioDevices = inputDevices.filter(
-        device => device.kind === DeviceInputKindEnum.AudioInput,
-    );
-    const videoDevices = inputDevices.filter(
-        device => device.kind === DeviceInputKindEnum.VideoInput,
-    );
-
-    return {
-        audio: audioDevices,
-        video: videoDevices,
-    };
+    try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia is not supported in this browser');
+        }
+        
+        const allDevices = await navigator.mediaDevices.enumerateDevices();
+    
+        const inputDevices = allDevices.filter(
+            device =>
+                Boolean(device.label) &&
+                device.deviceId !== 'default' &&
+                INPUT_KIND_ARRAY.includes(device.kind as DeviceInputKindEnum),
+        );
+    
+        const audioDevices = inputDevices.filter(
+            device => device.kind === DeviceInputKindEnum.AudioInput,
+        );
+        const videoDevices = inputDevices.filter(
+            device => device.kind === DeviceInputKindEnum.VideoInput,
+        );
+    
+        return {
+            audio: audioDevices,
+            video: videoDevices,
+        };
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export const getDevicesFromStream = (
