@@ -28,8 +28,6 @@ import styles from './TemplateLinks.module.scss';
 import { TemplateLinkItem } from './TemplateLinkItem';
 import { TemplatesLinksProps } from './TemplateLinks.types';
 
-import { $profileStore } from 'src/store';
-
 const Component = ({
     onNextStep,
     onPreviousStep,
@@ -37,7 +35,6 @@ const Component = ({
 }: TemplatesLinksProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
-    useEffect(() => { console.log(isProfessionalSubscription); }, [isProfessionalSubscription])
     const { control, trigger } = useFormContext();
     const { isMobile } = useBrowserDetect();
 

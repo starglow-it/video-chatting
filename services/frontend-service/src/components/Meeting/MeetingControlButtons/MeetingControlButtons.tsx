@@ -484,7 +484,6 @@ const Component = () => {
     };
 
     const handleToggleSharing = () => {
-        console.log(meeting.sharingUserId);
         if (!meeting.sharingUserId) {
             startScreenSharing();
         } else if (isMeetingHost || isSharingScreenActive) {
