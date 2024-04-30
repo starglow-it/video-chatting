@@ -7,7 +7,7 @@ export const handleStopSFUSharing = async ({ room }: StopSFUSharingPayload) => {
         if (room) {
             const { localParticipant } = room;
     
-            const oldSharingTrack = localParticipant.getTrack(
+            const oldSharingTrack = localParticipant.getTrackPublication(
                 Track.Source.ScreenShare,
             );
     
