@@ -40,31 +40,12 @@ import {
 import { awsTranscribeServiceUrl } from 'src/const/urls/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mic = require('microphone-stream').default;
-
+  
 let myRoomName = '';
 let userName = '';
 let socket: WebSocket;
 
 let i = 1;
-function streamAudioToWebSocket(userMediaStream: MediaStream) {
-    // eslint-disable-next-line new-cap
-    const micStream = new mic();
-    micStream.setStream(userMediaStream);
-
-    socket.binaryType = 'arraybuffer';
-
-    micStream.on(
-        'data',
-        (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
-            if (socket.readyState === socket.OPEN) {
-                socket.send(rawAudioChunk);
-                i++;
-            } else {
-                // console.log(`Else condition- ${socket.readyState}`);
-            }
-        },
-    );
-}
 
 function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
     // Check if the new value partially matches the last element of the array (assuming all elements are strings)
@@ -123,49 +104,57 @@ const handleLocalTrackPublished = async (
     localTrackPublication: LocalTrackPublication,
     localParticipant: LocalParticipant,
 ) => {
-    console.log(
-        'Publish Local Track',
-        localTrackPublication.trackSid,
-        RoomEvent.Connected,
-    );
-
-    if (localTrackPublication.kind === 'audio') {
-        console.log('Audio Track', localTrackPublication.kind);
-        console.log('Local', localTrackPublication);
-        console.log('Starting - audio stream1');
-        window.navigator.mediaDevices
-            .getUserMedia({
-                video: false,
-                audio: true,
-            })
-            .then(streamAudioToWebSocket)
-            .catch(error => {
-                console.error(
-                    error,
-                    'There was an error streaming your audio to Amazon Transcribe. Please try again.',
-                );
-            });
-            
-        const info = await new EgressClient(
-            frontendConfig.livekitHost,
-            frontendConfig.livekitApi,
-            frontendConfig.livekitSecret,
-        ).startTrackEgress(
-            myRoomName.toString(),
-            `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${userName}`,
-            localTrackPublication.trackSid.toString(),
+    try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia is not supported in this browser');
+        }
+        
+        console.log(
+            'Publish Local Track',
+            localTrackPublication.trackSid,
+            RoomEvent.Connected,
         );
-        console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
-    }
 
-    setConnectionStream(
-        setStreamDataHelper({
-            type: localTrackPublication.kind as unknown as TrackKind,
-            source: localTrackPublication.source,
-            userId: localParticipant.identity,
-            trackPub: localTrackPublication,
-        }),
-    );
+        if (localTrackPublication.kind === 'audio') {
+            console.log('Audio Track', localTrackPublication.kind);
+            console.log('Local', localTrackPublication);
+            console.log('Starting - audio stream1');
+            window.navigator.mediaDevices
+                .getUserMedia({
+                    video: false,
+                    audio: true,
+                })
+                .then(streamAudioToWebSocket)
+                .catch(error => {
+                    console.error(
+                        error,
+                        'There was an error streaming your audio to Amazon Transcribe. Please try again.',
+                    );
+                });
+
+            const info = await new EgressClient(
+                frontendConfig.livekitHost,
+                frontendConfig.livekitApi,
+                frontendConfig.livekitSecret,
+            ).startTrackEgress(
+                myRoomName.toString(),
+                `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${userName}`,
+                localTrackPublication.trackSid.toString(),
+            );
+            console.log('🚀 ~ file: handleConnectToSFU.ts:81 ~ info:', info);
+        }
+
+        setConnectionStream(
+            setStreamDataHelper({
+                type: localTrackPublication.kind as unknown as TrackKind,
+                source: localTrackPublication.source,
+                userId: localParticipant.identity,
+                trackPub: localTrackPublication,
+            }),
+        );
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 const handleLocalTrackUnpublished = (localTrackPub: LocalTrackPublication) => {
@@ -257,7 +246,7 @@ export const handleConnectToSFU = async ({
                 videoCodec: 'vp8',
             },
         });
-    
+
         room.on(RoomEvent.LocalTrackPublished, handleLocalTrackPublished)
             .on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished)
             .on(RoomEvent.ParticipantConnected, handleParticipantConnected)
@@ -279,7 +268,7 @@ export const handleConnectToSFU = async ({
             .on(RoomEvent.Reconnected, () => {
                 console.log(RoomEvent.Reconnected);
             });
-        
+
         const livekitWssUrl = [
             'localhost',
             frontendConfig.defaultServerIp,
@@ -288,33 +277,32 @@ export const handleConnectToSFU = async ({
             : getMeetingInstanceLivekitUrl(serverIp);
 
         await room.connect(livekitWssUrl, token);
-    
+
         myRoomName = room.name;
         userName = participantName;
-    
         socket = new WebSocket(
             `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
         );
-        
+
         console.log('Socket created');
         const participantNameInQueue: string[] = [];
         const transcriptionQueue: string[] = [];
         socket.onmessage = function (event) {
             pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
-    
+
             setTranscriptionQueue(transcriptionQueue);
 
             if (participantNameInQueue.length === 0) {
                 setTranscriptionResult(event.data.split('@')[1]);
                 setTranscriptionParticipant(event.data.split('@')[0]);
             }
-    
+
             if (!participantNameInQueue.includes(event.data.split('@')[0])) {
                 participantNameInQueue.push(
                     setTranscriptionParticipant(event.data.split('@')[0]),
                 );
             }
-    
+
             if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
                 setTranscriptionResult(event.data.split('@')[1]);
                 setTranscriptionParticipant(event.data.split('@')[0]);
@@ -323,7 +311,7 @@ export const handleConnectToSFU = async ({
                 setTranscriptionParticipantGuest(event.data.split('@')[0]);
             }
         };
-    
+
         socket.onclose = function (event) {
             if (event.wasClean) {
                 console.log(

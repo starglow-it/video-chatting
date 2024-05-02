@@ -21,6 +21,7 @@ VULTR_SNAPSHOT_ID=ee0246a5-6d61-4469-bdad-19807a97df41
 MEETING_SOCKET_URL=wss://stg-socket.chatruume.com
 LIVEKIT_API_KEY=APIGZAoRvLhzuaE
 LIVEKIT_API_SECRET=3O2sNFulNTeLwCQ1928peis1ecpVcSyGI5wl68NZ8kZB
+NEXT_PUBLIC_FRONTEND_URL=https://stg-my.chatruume.com
 # This is env Livekit Server
 # LIVEKIT_HOST=http://livekit-service:7880
 # LIVEKIT_WSS=wss://stg-livekit.chatruume.com
@@ -69,6 +70,8 @@ IS_SEED=true
 FRONTEND_ADMIN_URL=https://stg-my.chatruume.com
 AWS_ACCESS_KEY_ID=AKIAQY5KRUCZUR7ZCFR7
 AWS_SECRET_ACCESS_KEY=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
+NEXT_PUBLIC_AWS_ACCESS_KEY_ID=AKIAQY5KRUCZUR7ZCFR7
+NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY=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
 AWS_REGION=us-east-2
 AWS_S3_BUCKET=theliveofficemedia
 EGRESS_WSS=wss://stg-my.chatruume.com
