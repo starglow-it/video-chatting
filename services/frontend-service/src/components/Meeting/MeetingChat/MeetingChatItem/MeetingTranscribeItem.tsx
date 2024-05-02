@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger */
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import clsx from 'clsx';
@@ -57,14 +56,15 @@ export const MeetingTranscribeItem = memo(
                             </ConditionalRender>
                             <CustomGrid className={styles.right}>
                                 <ConditionalRender condition={!isLocal}>
+                                    {/* Ensure body is a string and split safely */}
                                     <span className={styles.userName}>
-                                        {body.split('@')[0] || sender.username}
+                                        {(typeof body === 'string' ? body.split('@')[0] : sender.username) || sender.username}
                                     </span>
                                 </ConditionalRender>
                                 <div
                                     className={styles.content}
                                     dangerouslySetInnerHTML={{
-                                        __html: body.split('@')[1],
+                                        __html: typeof body === 'string' ? body.split('@')[1] : "",
                                     }}
                                 />
                             </CustomGrid>

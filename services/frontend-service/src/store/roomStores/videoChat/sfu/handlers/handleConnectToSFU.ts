@@ -31,6 +31,7 @@ import frontendConfig from '../../../../../const/config';
 import { getMeetingInstanceLivekitUrl } from '../../../../../utils/functions/getMeetingInstanceLivekitUrl';
 import { getConnectionKey } from '../../../../../helpers/media/getConnectionKey';
 import {
+    $transcriptionQueue,
     setTranscriptionParticipant,
     setTranscriptionParticipantGuest,
     setTranscriptionQueue,
@@ -47,22 +48,58 @@ let socket: WebSocket;
 
 let i = 1;
 
-function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
-    // Check if the new value partially matches the last element of the array (assuming all elements are strings)
-    const lastElement = array[array.length - 1];
+let lastMessageTime = Date.now();
 
-    if (
-        lastElement?.split('@')[0] === newValue.split('@')[0] &&
-        lastElement?.split('@')[2] === newValue.split('@')[2]
-    ) {
-        // If there is a partial match, replace the last element with the new value
-        array[array.length - 1] = newValue;
+function streamAudioToWebSocket(userMediaStream: MediaStream) {
+    // eslint-disable-next-line new-cap
+    const micStream = new mic();
+    micStream.setStream(userMediaStream);
+
+    socket.binaryType = 'arraybuffer';
+
+    micStream.on(
+        'data',
+        (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
+            if (socket.readyState === socket.OPEN) {
+                socket.send(rawAudioChunk);
+                i++;
+            } else {
+                // console.log(`Else condition- ${socket.readyState}`);
+            }
+        },
+    );
+}
+
+function deduplicateText(input: any) {
+    const tokens = input.split(" ");
+    const seen = new Set();
+    let result: any = [];
+
+    tokens.forEach((token: any) => {
+        let phrase = token.toLowerCase();
+        if (!seen.has(phrase)) {
+            seen.add(phrase);
+            result.push(token);
+        }
+    });
+
+    return result.join(" ");
+}
+
+function pushOrReplaceWithPartialMatch(queue: any, sender: any, rawMessage: any) {
+    const now = Date.now();
+    const timeSinceLastMessage = now - lastMessageTime;
+    lastMessageTime = now;
+    const isBreak = timeSinceLastMessage > 2000;
+
+    const cleanedMessage = deduplicateText(rawMessage);
+    if (isBreak || queue.length === 0 || queue[queue.length - 1].sender !== sender) {
+        queue.push({ sender, message: cleanedMessage });
     } else {
-        // If there is no partial match, push the new value to the array
-        array.push(newValue);
+        let lastEntry = queue[queue.length - 1];
+        lastEntry.message += " " + cleanedMessage;
     }
-
-    return array;
+    return queue;
 }
 
 const getConnectionIdHelper = ({
@@ -108,7 +145,6 @@ const handleLocalTrackPublished = async (
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw new Error('getUserMedia is not supported in this browser');
         }
-        
         console.log(
             'Publish Local Track',
             localTrackPublication.trackSid,
@@ -116,21 +152,18 @@ const handleLocalTrackPublished = async (
         );
 
         if (localTrackPublication.kind === 'audio') {
-            // console.log('Audio Track', localTrackPublication.kind);
-            // console.log('Local', localTrackPublication);
-            // console.log('Starting - audio stream1');
-            // window.navigator.mediaDevices
-            //     .getUserMedia({
-            //         video: false,
-            //         audio: true,
-            //     })
-            //     .then(streamAudioToWebSocket)
-            //     .catch(error => {
-            //         console.error(
-            //             error,
-            //             'There was an error streaming your audio to Amazon Transcribe. Please try again.',
-            //         );
-            //     });
+            window.navigator.mediaDevices
+                .getUserMedia({
+                    video: false,
+                    audio: true,
+                })
+                .then(streamAudioToWebSocket)
+                .catch(error => {
+                    console.error(
+                        error,
+                        'There was an error streaming your audio to Amazon Transcribe. Please try again.',
+                    );
+                });
 
             const info = await new EgressClient(
                 frontendConfig.livekitHost,
@@ -286,31 +319,43 @@ export const handleConnectToSFU = async ({
 
         console.log('Socket created');
         const participantNameInQueue: string[] = [];
-        const transcriptionQueue: string[] = [];
+        // const transcriptionQueue: string[] = [];
         // socket.onmessage = function (event) {
         //     pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
 
         //     setTranscriptionQueue(transcriptionQueue);
+        // const transcriptionQueue: string[] = [];
 
-        //     if (participantNameInQueue.length === 0) {
-        //         setTranscriptionResult(event.data.split('@')[1]);
-        //         setTranscriptionParticipant(event.data.split('@')[0]);
-        //     }
+        // const transcriptionQueue = [{
+        //     sender: "65c3c30c4e06ea38ddf68572",
+        //     message: "Initial message"
+        // }];
 
-        //     if (!participantNameInQueue.includes(event.data.split('@')[0])) {
-        //         participantNameInQueue.push(
-        //             setTranscriptionParticipant(event.data.split('@')[0]),
-        //         );
-        //     }
+        socket.onmessage = function (event) {
 
-        //     if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
-        //         setTranscriptionResult(event.data.split('@')[1]);
-        //         setTranscriptionParticipant(event.data.split('@')[0]);
-        //     } else {
-        //         setTranscriptionResultGuest(event.data.split('@')[1]);
-        //         setTranscriptionParticipantGuest(event.data.split('@')[0]);
-        //     }
-        // };
+            const [sender, rawMessage] = event.data.split('@', 2); // Splitting sender and message
+            const updatedQueue = pushOrReplaceWithPartialMatch($transcriptionQueue.getState(), sender, rawMessage);
+            setTranscriptionQueue(updatedQueue);
+
+            if (participantNameInQueue.length === 0) {
+                setTranscriptionResult(event.data.split('@')[1]);
+                setTranscriptionParticipant(event.data.split('@')[0]);
+            }
+
+            if (!participantNameInQueue.includes(event.data.split('@')[0])) {
+                participantNameInQueue.push(
+                    setTranscriptionParticipant(event.data.split('@')[0]),
+                );
+            }
+
+            if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
+                setTranscriptionResult(event.data.split('@')[1]);
+                setTranscriptionParticipant(event.data.split('@')[0]);
+            } else {
+                setTranscriptionResultGuest(event.data.split('@')[1]);
+                setTranscriptionParticipantGuest(event.data.split('@')[0]);
+            }
+        };
 
         socket.onclose = function (event) {
             if (event.wasClean) {
