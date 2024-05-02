@@ -2,7 +2,14 @@ import { transcriptionDomain } from '../../domains';
 
 const defaultTranscriptionText = '';
 const defaultTranscriptionParticipant = 'Host';
-const defaultTranscriptionQueue: string[] = [];
+
+type TranscriptionEntry = {
+    sender: string;
+    message: string;
+};
+
+// const defaultTranscriptionQueue: string[] = [];
+const defaultTranscriptionQueue: TranscriptionEntry[] = [];
 
 export const $transcriptionResults = transcriptionDomain.createStore<string>(
     defaultTranscriptionText,
@@ -30,13 +37,19 @@ export const $transcriptionParticipantGuest =
 export const setTranscriptionParticipantGuest =
     transcriptionDomain.createEvent<string>('setTranscriptionParticipantGuest');
 
-export const $transcriptionQueue = transcriptionDomain.createStore<string[]>(
+// export const $transcriptionQueue = transcriptionDomain.createStore<string[]>(
+//     defaultTranscriptionQueue,
+// );
+export const $transcriptionQueue = transcriptionDomain.createStore<TranscriptionEntry[]>(
     defaultTranscriptionQueue,
 );
 
 export const $transcriptionsStore = transcriptionDomain.createStore<string[]>([]);
 
-export const setTranscriptionQueue = transcriptionDomain.createEvent<string[]>(
+// export const setTranscriptionQueue = transcriptionDomain.createEvent<string[]>(
+//     'setTranscriptionQueue',
+// );
+export const setTranscriptionQueue = transcriptionDomain.createEvent<TranscriptionEntry[]>(
     'setTranscriptionQueue',
 );
 
