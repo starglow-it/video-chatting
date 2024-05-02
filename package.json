@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "nx": "14.8.2"
+    "nx": "14.8.2",
+    "@types/audioworklet": "^0.0.50"
   },
   "dependencies": {
     "@mui/base": "5.0.0-alpha.100",

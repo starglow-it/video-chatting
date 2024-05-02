@@ -3,6 +3,8 @@ const express = require('express');
 const next = require('next');
 const compression = require('compression');
 
+const path = require('path');
+
 const apiPort = parseInt(process.env.GATEWAY_PORT || '3000', 10);
 const apiHost = process.env.GATEWAY_HOST || 'gateway-service';
 const apiProtocol = process.env.GATEWAY_PROTOCOL || 'http';
@@ -64,6 +66,9 @@ if (process.env.NODE_ENV !== 'production') {
 app.prepare()
     .then(() => {
         server = express();
+        
+        const workletsPath = path.join(__dirname, 'public', 'worklets');
+        server.use('/worklets', express.static(workletsPath));
 
         if (!dev) {
             server.use(compression());

@@ -40,31 +40,12 @@ import {
 import { awsTranscribeServiceUrl } from 'src/const/urls/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mic = require('microphone-stream').default;
-
+  
 let myRoomName = '';
 let userName = '';
 let socket: WebSocket;
 
 let i = 1;
-function streamAudioToWebSocket(userMediaStream: MediaStream) {
-    // eslint-disable-next-line new-cap
-    const micStream = new mic();
-    micStream.setStream(userMediaStream);
-
-    socket.binaryType = 'arraybuffer';
-
-    micStream.on(
-        'data',
-        (rawAudioChunk: string | ArrayBufferLike | Blob | ArrayBufferView) => {
-            if (socket.readyState === socket.OPEN) {
-                socket.send(rawAudioChunk);
-                i++;
-            } else {
-                // console.log(`Else condition- ${socket.readyState}`);
-            }
-        },
-    );
-}
 
 function pushOrReplaceWithPartialMatch(array: any[], newValue: any) {
     // Check if the new value partially matches the last element of the array (assuming all elements are strings)
@@ -299,7 +280,6 @@ export const handleConnectToSFU = async ({
 
         myRoomName = room.name;
         userName = participantName;
-
         socket = new WebSocket(
             `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
         );
