@@ -116,21 +116,21 @@ const handleLocalTrackPublished = async (
         );
 
         if (localTrackPublication.kind === 'audio') {
-            console.log('Audio Track', localTrackPublication.kind);
-            console.log('Local', localTrackPublication);
-            console.log('Starting - audio stream1');
-            window.navigator.mediaDevices
-                .getUserMedia({
-                    video: false,
-                    audio: true,
-                })
-                .then(streamAudioToWebSocket)
-                .catch(error => {
-                    console.error(
-                        error,
-                        'There was an error streaming your audio to Amazon Transcribe. Please try again.',
-                    );
-                });
+            // console.log('Audio Track', localTrackPublication.kind);
+            // console.log('Local', localTrackPublication);
+            // console.log('Starting - audio stream1');
+            // window.navigator.mediaDevices
+            //     .getUserMedia({
+            //         video: false,
+            //         audio: true,
+            //     })
+            //     .then(streamAudioToWebSocket)
+            //     .catch(error => {
+            //         console.error(
+            //             error,
+            //             'There was an error streaming your audio to Amazon Transcribe. Please try again.',
+            //         );
+            //     });
 
             const info = await new EgressClient(
                 frontendConfig.livekitHost,
@@ -287,30 +287,30 @@ export const handleConnectToSFU = async ({
         console.log('Socket created');
         const participantNameInQueue: string[] = [];
         const transcriptionQueue: string[] = [];
-        socket.onmessage = function (event) {
-            pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
+        // socket.onmessage = function (event) {
+        //     pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
 
-            setTranscriptionQueue(transcriptionQueue);
+        //     setTranscriptionQueue(transcriptionQueue);
 
-            if (participantNameInQueue.length === 0) {
-                setTranscriptionResult(event.data.split('@')[1]);
-                setTranscriptionParticipant(event.data.split('@')[0]);
-            }
+        //     if (participantNameInQueue.length === 0) {
+        //         setTranscriptionResult(event.data.split('@')[1]);
+        //         setTranscriptionParticipant(event.data.split('@')[0]);
+        //     }
 
-            if (!participantNameInQueue.includes(event.data.split('@')[0])) {
-                participantNameInQueue.push(
-                    setTranscriptionParticipant(event.data.split('@')[0]),
-                );
-            }
+        //     if (!participantNameInQueue.includes(event.data.split('@')[0])) {
+        //         participantNameInQueue.push(
+        //             setTranscriptionParticipant(event.data.split('@')[0]),
+        //         );
+        //     }
 
-            if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
-                setTranscriptionResult(event.data.split('@')[1]);
-                setTranscriptionParticipant(event.data.split('@')[0]);
-            } else {
-                setTranscriptionResultGuest(event.data.split('@')[1]);
-                setTranscriptionParticipantGuest(event.data.split('@')[0]);
-            }
-        };
+        //     if (participantNameInQueue.indexOf(event.data.split('@')[0]) === 0) {
+        //         setTranscriptionResult(event.data.split('@')[1]);
+        //         setTranscriptionParticipant(event.data.split('@')[0]);
+        //     } else {
+        //         setTranscriptionResultGuest(event.data.split('@')[1]);
+        //         setTranscriptionParticipantGuest(event.data.split('@')[0]);
+        //     }
+        // };
 
         socket.onclose = function (event) {
             if (event.wasClean) {

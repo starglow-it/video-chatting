@@ -27,7 +27,7 @@ export const MeetingTranscribeList = ({ lines }: any) => {
         return lines.map((line: any, index: any) => (
             <MeetingTranscribeItem
                 key={`transcript-${line.channel}-${index}`}
-                type="text"  // Assuming all messages are text
+                type="text"
                 body={line.text || ""}
                 sender={{ id: line.channel, username: "Transcription Service" }}
                 isBreak={line.partial}
