@@ -3,7 +3,6 @@ import axios from 'axios';
 import { mediaServerUrl } from '../../../../../const/urls/common';
 import { addNotificationEvent } from '../../../../../store';
 import {
-    requestRecordingAcceptEvent,
     saveRecordingUrl,
     isRequestRecordingStartEvent,
     setIsMeetingRecording,

@@ -12,8 +12,8 @@ export const handleChangeSFUStream = async ({
     if (room) {
         const { localParticipant } = room;
 
-        const oldVideoTrack = localParticipant.getTrack(Track.Source.Camera);
-        const oldAudioTrack = localParticipant.getTrack(
+        const oldVideoTrack = localParticipant.getTrackPublication(Track.Source.Camera);
+        const oldAudioTrack = localParticipant.getTrackPublication(
             Track.Source.Microphone,
         );
 
