@@ -2733,6 +2733,7 @@ export class MeetingsGateway
         const { script } = msg;
         const scriptString = script.join('&');
 
+        console.log('msg', msg);
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
@@ -2759,6 +2760,7 @@ export class MeetingsGateway
           },
         });
 
+        console.log('response', response);
         if (response.data) {
           const now = new Date();
           const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -2774,6 +2776,8 @@ export class MeetingsGateway
           const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
+
+          console.log('response.data.choices[0]', response.data.choices[0]);
 
           if (response.data.choices[0]['message']['content'] && userProfile) {
             await this.notificationService.sendEmail({
