@@ -45,7 +45,8 @@ class BackgroundManagerInstance {
                         if (!this.effectBackground) {
                             this.effectBackground = new Module.EffectBackground();
                             this.effectBackground.setBackgroundImage(
-                                '/images/BG-user1.svg',
+                                // '/images/BG-user1.svg',
+                                this.segmentation
                             );
                         }
 
