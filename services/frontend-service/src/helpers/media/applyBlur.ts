@@ -43,14 +43,9 @@ class BackgroundManagerInstance {
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            // this.effectBackground =
-                            //     new Module.EffectBackground();
-                            // this.effectBackground.setBackgroundImage(
-                            //     this.segmentation,
-                            // );
                             this.effectBackground = new Module.EffectBackground();
                             this.effectBackground.setBackgroundImage(
-                                '/images/trans_bg.png',
+                                '/images/BG-user1.png',
                             );
                         }
 
@@ -70,26 +65,39 @@ class BackgroundManagerInstance {
         isAuraActive: boolean,
         callback?: (stream: CustomMediaStream) => void,
     ) {
-        if (stream) {
-            const videoTrack = stream.getVideoTracks()[0];
-            let blurTrack: MediaStreamTrack;
+        try {
+            if (stream) {
+                const videoTrack = stream.getVideoTracks()[0];
+                let blurTrack: MediaStreamTrack | CanvasCaptureMediaStreamTrack;
 
-            if (videoTrack && this.videoEffects && isAuraActive) {
-                videoTrack.enabled = true;
+                if (videoTrack && this.videoEffects && isAuraActive) {
+                    videoTrack.enabled = true;
 
-                blurTrack = await this.videoEffects.setEffect(
-                    this.effectBackground,
-                    videoTrack,
-                );
+                    if (videoTrack instanceof CanvasCaptureMediaStreamTrack) {
+                        // Handle CanvasCaptureMediaStreamTrack differently
+                        // You might need custom logic to deal with this case
+                        // console.log('CanvasCaptureMediaStreamTrack detected!');
+                        // Handle accordingly or skip processing
+                    } else {
+                        // For regular MediaStreamTrack
+                        blurTrack = await this.videoEffects.setEffect(
+                            this.effectBackground,
+                            videoTrack,
+                        );
+                        stream.removeTrack(videoTrack);
+                        stream.addTrack(blurTrack);
+                    }
 
-                stream.removeTrack(videoTrack);
-                stream.addTrack(blurTrack);
+                    callback?.(stream);
+                }
 
-                callback?.(stream);
+                return stream;
             }
-            return stream;
+        } catch (error) {
+            console.log(error);
         }
     }
+
 
     applyBlur(stream: CustomMediaStream) {
         if (stream) {
