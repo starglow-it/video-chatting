@@ -35,9 +35,6 @@ import { NotificationType } from 'src/store/types';
 import { EmojiPlayground } from '../EmojiPlayground/EmojiPlayground';
 
 // utils
-import { getBrowserData } from 'shared-utils';
-import { CustomMediaStream } from '../../../types';
-import { BROWSER_NAMES } from '../../../types/browsers';
 
 const MeetingUserVideoChildCom = ({
     isLocal,
@@ -125,94 +122,10 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            // if (!isLocal) {
-            //     BackgroundManager.onBlur(mediaStreamRef.current, true, stream => {
-            //         console.log(stream);
-            //         mediaStreamRef.current = stream;
-            //     });
-            // }
-
-            // const newStream = new MediaStream();
-            // newStream.addTrack(videoTrack);
-
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                console.log(stream);
-                mediaStreamRef.current = stream;
-            });
-
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }
     }, [localStream, userTracks, isVideoSelfView]);
-
-    const handleRemoveBackground = async (
-        stream: CustomMediaStream,
-        isAuraActive: boolean,
-        callback?: (stream: CustomMediaStream) => void,
-    ) => {
-        try {
-            const Module = await import('@vkontakte/calls-video-effects');
-            const browserData = getBrowserData();
-            const supportedBrowsers = [
-                BROWSER_NAMES.chrome,
-                BROWSER_NAMES.chromium,
-                BROWSER_NAMES.edge,
-                BROWSER_NAMES.safari,
-            ];
-            let effectBackground = null;
-            let videoEffects = null;
-
-            if (browserData) {
-                const isBackgroundSupported =
-                    supportedBrowsers.includes(
-                        browserData.browser.name || '',
-                    ) && Module.isSupported();
-
-                if (isBackgroundSupported) {
-                    if (!effectBackground) {
-                        effectBackground = new Module.EffectBackground();
-                        effectBackground.setBackgroundImage(
-                            '/images/transparent_bg.png',
-                        );
-                    }
-
-                    if (!videoEffects) {
-                        videoEffects = new Module.VideoEffects();
-                    }
-                }
-            }
-
-            if (stream) {
-                const videoTrack = stream.getVideoTracks()[0];
-                let blurTrack: MediaStreamTrack | CanvasCaptureMediaStreamTrack;
-
-                if (videoTrack && videoEffects && isAuraActive) {
-                    videoTrack.enabled = true;
-
-                    if (videoTrack instanceof CanvasCaptureMediaStreamTrack) {
-                        // Handle CanvasCaptureMediaStreamTrack differently
-                        // You might need custom logic to deal with this case
-                        // console.log('CanvasCaptureMediaStreamTrack detected!');
-                        // Handle accordingly or skip processing
-                    } else {
-                        // For regular MediaStreamTrack
-                        blurTrack = await videoEffects.setEffect(
-                            effectBackground,
-                            videoTrack,
-                        );
-                        stream.removeTrack(videoTrack);
-                        stream.addTrack(blurTrack);
-                    }
-
-                    callback?.(stream);
-                }
-
-                return stream;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
         setScale(data.size.width);

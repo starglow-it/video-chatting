@@ -45,7 +45,7 @@ class BackgroundManagerInstance {
                         if (!this.effectBackground) {
                             this.effectBackground = new Module.EffectBackground();
                             this.effectBackground.setBackgroundImage(
-                                '/images/transparent_bg.png',
+                                '/images/BG-user1.png',
                             );
                         }
 
