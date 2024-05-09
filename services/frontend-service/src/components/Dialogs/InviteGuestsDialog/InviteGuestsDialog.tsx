@@ -118,27 +118,35 @@ export const InviteGuestsDialog = () => {
     }
 
     const linkToDefault = () => {
-        const role = refRoleGroup.current?.getValue();
-        window.open(
-            `mailto:?view=cm&fs=1&subject=Meeting Link
+        try {
+            const role = refRoleGroup.current?.getValue();
+            window.open(
+                `mailto:?view=cm&fs=1&subject=Meeting Link
             &body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
-                router.query.token as string,
-            )}${role === MeetingRole.Audience ? '?role=audience' : ''}`,
-            '_blank',
-        );
+                    router.query.token as string,
+                )}${role === MeetingRole.Audience ? '?role=audience' : ''}`,
+                '_blank',
+            );
+        } catch (error) {
+
+        }
     };
 
     const linkToGmail = () => {
-        const role = refRoleGroup.current?.getValue();
-        window.open(
-            `
+        try {
+            const role = refRoleGroup.current?.getValue();
+            window.open(
+                `
         https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
-                `Meeting Link`,
-            )}&body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
-                router.query.token as string,
-            )}${role === MeetingRole.Audience ? '?role=audience' : ''}`,
-            '_blank',
-        );
+                    `Meeting Link`,
+                )}&body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
+                    router.query.token as string,
+                )}${role === MeetingRole.Audience ? '?role=audience' : ''}`,
+                '_blank',
+            );
+        } catch (error) {
+
+        }
     };
 
     const handleChangeRole = (role: MeetingRole) => {

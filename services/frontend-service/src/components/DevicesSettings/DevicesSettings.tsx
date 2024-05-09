@@ -283,21 +283,29 @@ const Component = () => {
     const joinHandler = isOwner ? onSubmit : functionPaywall;
 
     const linkToDefault = () => {
-        window.open(
-            `mailto:?view=cm&fs=1&subject=While you were out
-            &body=${encodeURI('Missed you on Ruume… Shall we re-schedule?')}`,
-            '_blank',
-        );
+        try {
+            window.open(
+                `mailto:?view=cm&fs=1&subject=While you were out
+                &body=${encodeURI('Missed you on Ruume… Shall we re-schedule?')}`,
+                '_blank',
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const linkToGmail = () => {
-        window.open(
-            `
-        https://mail.google.com/mail/?view=cm&fs=1&su=While you were out&body=${encodeURI(
-                'Missed you on Ruume… Shall we re-schedule?',
-            )}`,
-            '_blank',
-        );
+        try {
+            window.open(
+                `
+            https://mail.google.com/mail/?view=cm&fs=1&su=While you were out&body=${encodeURI(
+                    'Missed you on Ruume… Shall we re-schedule?',
+                )}`,
+                '_blank',
+            );
+        } catch (error) {
+
+        }
     };
 
     const renderMeetingNotStartedYet = () => {
