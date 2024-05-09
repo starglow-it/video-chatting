@@ -224,7 +224,6 @@ const Component = () => {
                 const clonedStream = changeStream?.clone();
 
                 BackgroundManager.applyBlur(clonedStream);
-                await BackgroundManager.makeBackgroundTransparent(clonedStream);
                 const streamWithBackground = await BackgroundManager.onBlur(
                     clonedStream,
                     isAuraEnabled,
