@@ -44,13 +44,16 @@ const Component = () => {
                 id: 4,
                 name: 'Start Calling for Free',
                 onAction: async () => {
-                    const { userWithoutLoginId, userTemplateId } =
-                        parseCookies();
-                    if (!userWithoutLoginId) await initUserWithoutTokenFx({});
-                    else {
-                        const newPageUrl = await getClientMeetingUrl(userTemplateId);
-
-                        window.open(newPageUrl, '_blank');
+                    try {
+                        const { userWithoutLoginId, userTemplateId } =
+                            parseCookies();
+                        if (!userWithoutLoginId) await initUserWithoutTokenFx({});
+                        else {
+                            const newPageUrl = await getClientMeetingUrl(userTemplateId);
+                            window.open(newPageUrl, '_blank');
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
                 },
             },

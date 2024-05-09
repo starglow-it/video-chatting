@@ -38,13 +38,17 @@ const Component = () => {
     }, []);
 
     const handleDownloadIcsLink = useCallback(async () => {
-        window.open(scheduleEventLink);
+        try {
+            window.open(scheduleEventLink);
 
-        setScheduleEventLinkEvent('');
+            setScheduleEventLinkEvent('');
 
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-        });
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+            });
+        } catch (error) {
+
+        }
     }, [scheduleEventLink]);
 
     return (
