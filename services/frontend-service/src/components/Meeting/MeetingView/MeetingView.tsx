@@ -192,19 +192,19 @@ const Component = () => {
         },
     ];
 
-    // useEffect(() => {
-    //     if (isOwner && !isMobile && (isAudioError || isVideoError)) {
-    //         appDialogsApi.openDialog({
-    //             dialogKey: AppDialogsEnum.hostDeviceRequireDialog,
-    //         });
-    //     } else {
-    //         if (isOwner && !isMobile) {
-    //             appDialogsApi.openDialog({
-    //                 dialogKey: AppDialogsEnum.inviteGuestsDialog,
-    //             });
-    //         }
-    //     }
-    // }, [isOwner, isMobile, isAudioError, isVideoError]);
+    useEffect(() => {
+        if (isOwner && !isMobile && (isAudioError || isVideoError)) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.hostDeviceRequireDialog,
+            });
+        } else {
+            if (isOwner && !isMobile) {
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.inviteGuestsDialog,
+                });
+            }
+        }
+    }, [isOwner, isMobile, isAudioError, isVideoError]);
 
     useEffect(() => {
         if (!isOwnerInMeeting && isMeetingConnected) {
