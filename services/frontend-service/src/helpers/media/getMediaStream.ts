@@ -62,6 +62,10 @@ export const getVideoMediaStream = async (
     error?: MediaStreamError;
 }> => {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia is not supported in this browser');
+        }
+        
         const videoStream = await navigator.mediaDevices.getUserMedia({
             video: isMobile()
                 ? {}
@@ -88,6 +92,10 @@ export const getAudioMediaStream = async (
     error?: MediaStreamError;
 }> => {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia is not supported in this browser');
+        }
+
         const audioStream = await navigator.mediaDevices.getUserMedia({
             audio:
                 isMobile() || !audioDeviceId
@@ -148,6 +156,10 @@ export const getVideoAndAudioStream = async ({
     videoDeviceId,
 }: MediaStreamOptions = {}) => {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia is not supported in this browser');
+        }
+        
         const stream = await navigator.mediaDevices.getUserMedia({
             video: isMobile()
                 ? {}
@@ -174,26 +186,17 @@ export const getMediaStream = async ({
     audioDeviceId,
     videoDeviceId,
 }: MediaStreamOptions = {}): Promise<GetMediaStream> => {
-    let videoResult: {
-        stream?: MediaStream | null;
-        error?: MediaStreamError;
-    } = {};
-    let audioResult: {
+    let result: {
         stream?: MediaStream | null;
         error?: MediaStreamError;
     } = {};
 
-    videoResult = await getVideoMediaStream(videoDeviceId);
-    audioResult = await getAudioMediaStream(audioDeviceId);
-
-    const videoStream = videoResult.stream || undefined;
-    const audioStream = audioResult.stream || undefined;
-
-    const composedStream = composeMediaStream(videoStream, audioStream);
+    result = await getVideoAndAudioStream({audioDeviceId, videoDeviceId});
+    const stream = result.stream || undefined;
 
     return {
-        stream: composedStream || undefined, // Ensure stream is not null
-        audioError: audioResult.error,
-        videoError: videoResult.error,
+        stream: stream || undefined, // Ensure stream is not null
+        audioError: result.error,
+        videoError: result.error,
     };
 };
