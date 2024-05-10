@@ -130,7 +130,6 @@ const Component = () => {
         }
     }, [isSideUsersOpen]);
 
-
     if (isScreenSharing && isMobile) {
         return (
             <CustomGrid
