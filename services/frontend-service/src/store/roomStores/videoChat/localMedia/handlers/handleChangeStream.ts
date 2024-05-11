@@ -20,6 +20,7 @@ export const handleChangeStream = async ({
     stream,
 }: ChangeStreamPayload) => {
     let newStream: GetMediaStream = {};
+    console.log('handleChangeStream', kind, deviceId, stream);
 
     if (stream) {
         const { audioDeviceId, videoDeviceId } = getDevicesFromStream(stream);

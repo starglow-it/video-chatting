@@ -19,7 +19,7 @@ export const handleJoinMeetingWithAudience = async ({
 
     const clonedStream = changeStream?.clone();
 
-    if (!isMobile()) {
+    if (!isMobile() && false) {
         await BackgroundManager.applyBlur(clonedStream);
 
         await BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
