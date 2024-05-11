@@ -269,7 +269,7 @@ export const handleConnectToSFU = async ({
             userId,
         });
         console.log(templateId, userId, serverIp, participantName);
-        serverIp = frontendConfig.defaultServerIp;
+        // serverIp = frontendConfig.defaultServerIp;
         // const room = new Room({
         //     dynacast: true,
         //     videoCaptureDefaults: {
@@ -281,6 +281,7 @@ export const handleConnectToSFU = async ({
         //     },
         // });
         const room = new Room();
+        console.log(room);
 
         room.on(RoomEvent.LocalTrackPublished, handleLocalTrackPublished)
             .on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished)
