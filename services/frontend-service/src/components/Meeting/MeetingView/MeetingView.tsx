@@ -72,6 +72,7 @@ import {
     $meetingUsersStore,
     $serverTypeStore,
     $videoErrorStore,
+    $SFURoom,
     getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
@@ -116,6 +117,9 @@ const Component = () => {
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
     const container = useRef(null);
+    const sfuRoom = useStore($SFURoom);
+
+    useEffect(() => { console.log(sfuRoom); }, [sfuRoom]);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
