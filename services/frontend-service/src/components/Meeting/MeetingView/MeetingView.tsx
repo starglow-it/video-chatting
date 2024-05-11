@@ -81,6 +81,7 @@ import {
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
 } from '../../../store/roomStores';
+import { publishTracksEvent } from 'src/store/roomStores/videoChat/sfu/model';
 
 //shared types
 import { MeetingRole } from 'shared-types';
@@ -119,7 +120,15 @@ const Component = () => {
     const container = useRef(null);
     const sfuRoom = useStore($SFURoom);
 
-    useEffect(() => { console.log(sfuRoom); }, [sfuRoom]);
+    useEffect(() => {
+        const handlePublishTracksEvent = async () => {
+            await publishTracksEvent();
+        };
+        if (sfuRoom !== null) {
+            handlePublishTracksEvent();
+        }
+        console.log('meetingview', sfuRoom);
+    }, [sfuRoom]);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
