@@ -73,6 +73,11 @@ import {
     $serverTypeStore,
     $videoErrorStore,
     $SFURoom,
+    $meetingRoleStore,
+    $activeStreamStore,
+    $isCameraActiveStore,
+    $isMicActiveStore,
+    $isRoomPublished,
     getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
@@ -80,6 +85,7 @@ import {
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
+    publishTracksFx
 } from '../../../store/roomStores';
 import { publishTracksEvent } from 'src/store/roomStores/videoChat/sfu/model';
 
@@ -119,16 +125,27 @@ const Component = () => {
     const [stepIndex, setStepIndex] = useState(0);
     const container = useRef(null);
     const sfuRoom = useStore($SFURoom);
+    const meetingRole = useStore($meetingRoleStore);
+    const isCameraActive = useStore($isCameraActiveStore);
+    const isMicActive = useStore($isMicActiveStore);
+    const activeStreamStore = useStore($activeStreamStore);
+    const isRoomPublished = useStore($isRoomPublished);
 
     useEffect(() => {
         const handlePublishTracksEvent = async () => {
-            await publishTracksEvent();
+            await publishTracksFx({
+                stream: activeStreamStore,
+                room: sfuRoom,
+                localUser: localUser,
+                isCameraActive: isCameraActive,
+                isMicActive: isMicActive
+            });
         };
-        if (sfuRoom !== null) {
+        if (!isRoomPublished &&sfuRoom !== null && meetingRole !== MeetingRole.Audience && meetingRole !== MeetingRole.Recorder) {
             handlePublishTracksEvent();
         }
         console.log('meetingview', sfuRoom);
-    }, [sfuRoom]);
+    }, [sfuRoom, activeStreamStore, localUser, isCameraActive, isMicActive, isRoomPublished]);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
