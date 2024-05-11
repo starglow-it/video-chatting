@@ -17,7 +17,7 @@ import {
     removeConnectionStream,
     setConnectionStream,
 } from '../../model';
-import { getLiveKitTokenFx } from '../model';
+import { getLiveKitTokenFx, isRoomPublishedEvent } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
 import {
@@ -142,6 +142,7 @@ const handleLocalTrackPublished = async (
     localParticipant: LocalParticipant,
 ) => {
     try {
+        isRoomPublishedEvent(true);
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw new Error('getUserMedia is not supported in this browser');
         }
