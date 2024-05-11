@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useEffect } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 import { ClickAwayListener } from '@mui/base';
@@ -48,6 +48,7 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
+    useEffect(() => { console.log('activeStream', activeStream); }, [activeStream]);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
