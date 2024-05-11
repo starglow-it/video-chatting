@@ -67,7 +67,8 @@ sample({
 });
 
 sample({
-    clock: [connectToSFUFx.doneData, publishTracksEvent],
+    // clock: [connectToSFUFx.doneData, publishTracksEvent],
+    clock: publishTracksEvent,
     source: combine({
         stream: $activeStreamStore,
         room: $SFURoom,
