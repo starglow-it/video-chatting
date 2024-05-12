@@ -9,14 +9,11 @@ export const handlePublishTracks = async ({
     localUser,
 }: PublishTracksPayload) => {
     try {
-        console.log(isCameraActive, isMicActive, room, stream, localUser);
         if (room) {
             const videoTrack = stream?.getVideoTracks?.()?.[0];
             const audioTrack = stream?.getAudioTracks?.()?.[0];
-            console.log(localUser);
 
             if (videoTrack) {
-                console.log('video track exist');
                 const videoTrackPub = await room.localParticipant.publishTrack(
                     videoTrack,
                     {

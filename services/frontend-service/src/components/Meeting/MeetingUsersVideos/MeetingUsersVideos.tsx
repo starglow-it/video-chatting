@@ -48,7 +48,6 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
-    useEffect(() => { console.log('activeStream', activeStream); }, [activeStream]);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);

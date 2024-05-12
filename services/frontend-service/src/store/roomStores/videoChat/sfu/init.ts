@@ -2,7 +2,6 @@ import { combine, sample } from 'effector-next';
 import { MeetingRole } from 'shared-types';
 import {
     $SFURoom,
-    $isRoomPublished,
     connectToSFUFx,
     getLiveKitTokenFx,
     publishTracksFx,
@@ -18,7 +17,6 @@ import {
     changeSFUActiveStreamEvent,
     changeSFUActiveStreamFx,
     publishTracksEvent,
-    isRoomPublishedEvent
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
@@ -53,9 +51,6 @@ $SFURoom
     .on(connectToSFUFx.doneData, (state, data) => data)
     .on(disconnectFromSFUFx.doneData, () => null);
 
-$isRoomPublished
-    .on(isRoomPublishedEvent, (state, data) => data)
-
 sample({
     clock: initSFUVideoChat,
     source: combine({
@@ -72,8 +67,7 @@ sample({
 });
 
 sample({
-    // clock: [connectToSFUFx.doneData, publishTracksEvent],
-    clock: publishTracksEvent,
+    clock: [connectToSFUFx.doneData, publishTracksEvent],
     source: combine({
         stream: $activeStreamStore,
         room: $SFURoom,

@@ -78,7 +78,6 @@ export const handleInitDevices = async ({
             audioDeviceId: audioDevice?.deviceId,
             videoDeviceId: videoDevice?.deviceId,
         });
-        console.log(stream, newAudioError, newVideoError);
 
         if (stream) {
             const { videoDeviceId: oldDevice } =

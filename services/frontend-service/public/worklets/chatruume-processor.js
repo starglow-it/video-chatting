@@ -85,7 +85,6 @@ class RecordingProcessor extends AudioWorkletProcessor {
 
       } 
     } else {
-      console.log('stopping worklet processor node')
       this.recordedFrames = 0;
       this.framesSinceLastPublish = 0;
       return false;
