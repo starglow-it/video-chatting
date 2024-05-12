@@ -17,7 +17,7 @@ import {
     removeConnectionStream,
     setConnectionStream,
 } from '../../model';
-import { getLiveKitTokenFx, isRoomPublishedEvent } from '../model';
+import { getLiveKitTokenFx } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
 import {
@@ -142,7 +142,6 @@ const handleLocalTrackPublished = async (
     localParticipant: LocalParticipant,
 ) => {
     try {
-        isRoomPublishedEvent(true);
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw new Error('getUserMedia is not supported in this browser');
         }
@@ -269,20 +268,17 @@ export const handleConnectToSFU = async ({
             templateId,
             userId,
         });
-        console.log(templateId, userId, serverIp, participantName);
         // serverIp = frontendConfig.defaultServerIp;
-        // const room = new Room({
-        //     dynacast: true,
-        //     videoCaptureDefaults: {
-        //         resolution: VideoPresets.h360.resolution,
-        //     },
-        //     stopLocalTrackOnUnpublish: false,
-        //     publishDefaults: {
-        //         videoCodec: 'vp8',
-        //     },
-        // });
-        const room = new Room();
-        console.log(room);
+        const room = new Room({
+            dynacast: true,
+            videoCaptureDefaults: {
+                resolution: VideoPresets.h360.resolution,
+            },
+            stopLocalTrackOnUnpublish: false,
+            publishDefaults: {
+                videoCodec: 'vp8',
+            },
+        });
 
         room.on(RoomEvent.LocalTrackPublished, handleLocalTrackPublished)
             .on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished)
@@ -321,7 +317,6 @@ export const handleConnectToSFU = async ({
             `${frontendConfig.egressWss.toString()}/${awsTranscribeServiceUrl}?roomId=${myRoomName}&participantName=${participantName}`,
         );
 
-        console.log('Socket created');
         const participantNameInQueue: string[] = [];
         // const transcriptionQueue: string[] = [];
         // socket.onmessage = function (event) {

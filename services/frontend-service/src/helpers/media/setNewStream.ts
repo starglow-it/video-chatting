@@ -6,6 +6,5 @@ export const setNewStream = (
     data: CustomMediaStream,
 ) => {
     stopStream(state);
-    console.log('setActiveStream',data);
     return data;
 };

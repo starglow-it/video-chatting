@@ -14,7 +14,6 @@ import {
 import { MeetingUser } from '../../../types';
 
 export const $SFURoom = videoChatDomain.createStore<RoomStore>(null);
-export const $isRoomPublished = videoChatDomain.createStore<RoomStore>(false);
 
 // effects
 export const getLiveKitTokenFx = videoChatDomain.createEffect<
@@ -59,9 +58,7 @@ export const initSFUVideoChat = videoChatDomain.createEvent('initSFUVideoChat');
 export const disconnectFromSFUEvent = videoChatDomain.createEvent<void>(
     'disconnectFromSFUEvent',
 );
-export const isRoomPublishedEvent = videoChatDomain.createEvent<void>(
-    'isRoomPublishedEvent',
-);
+
 export const toggleSFUPermissionsEvent =
     videoChatDomain.createEvent<ToggleDevicePayload>(
         'toggleSFUPermissionsEvent',
