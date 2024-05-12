@@ -389,16 +389,6 @@ const Component = ({
                         />
                     </CustomGrid>
                     <CustomGrid item md={5} xs={5} container direction="row" justifyContent="flex-end" alignItems="center">
-                        {/* <div className={styles.customSwitchContainer} onClick={toggleSelected}>
-                            <div className={clsx(styles.dialogButton, { [styles.disabledButton]: !enableMonetization })} />
-                        </div>
-                        <CustomTypography
-                            variant="body2"
-                            color="colors.white.primary"
-                            nameSpace="createRoom"
-                            translation={enableMonetization ? "editDescription.form.monetizationContentOn" : "editDescription.form.monetizationContentOff"}
-                            className={styles.monetizationContentToggleValue}
-                        /> */}
                         <Button
                             color="secondary"
                             aria-label="edit fees"

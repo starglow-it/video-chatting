@@ -44,6 +44,7 @@ type MonezationFormProps = {
     enableForm: boolean;
     activeValue: TabsValues;
     isCreate: boolean;
+    onSave: (event: any) => void
 };
 
 export const MeetingMonezationForm = forwardRef(
@@ -54,9 +55,10 @@ export const MeetingMonezationForm = forwardRef(
             paymentPaywall,
             enableForm,
             activeValue,
-            isCreate = false
+            isCreate = false,
+            onSave = () => {}
         }: MonezationFormProps,
-        ref,
+        ref: any,
     ) => {
         const isConnectedStripe = useStore($isConnectedStripe);
 
@@ -143,6 +145,12 @@ export const MeetingMonezationForm = forwardRef(
             control,
             name: 'paywallCurrency',
         });
+
+        const handleOnChange = async (event: any): Promise<void> => {
+            if (onSave) {
+                await onSave(event);
+            }
+        };
 
         useImperativeHandle(ref, () => ({
             getValues,
@@ -262,6 +270,7 @@ export const MeetingMonezationForm = forwardRef(
                                             !enabledPaywall ||
                                             !isConnectedStripe
                                         }
+                                        onChange={handleOnChange}
                                     />
                                     <CustomGrid>
                                         <CustomDropdown
@@ -380,6 +389,7 @@ export const MeetingMonezationForm = forwardRef(
                                             !enabledMeeting ||
                                             !isConnectedStripe
                                         }
+                                        onChange={handleOnChange}
                                     />
                                     <CustomGrid>
                                         <CustomDropdown
