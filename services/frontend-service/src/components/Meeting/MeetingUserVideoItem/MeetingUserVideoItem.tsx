@@ -35,6 +35,7 @@ import { NotificationType } from 'src/store/types';
 import { EmojiPlayground } from '../EmojiPlayground/EmojiPlayground';
 
 // utils
+import { handleRemoveBackground } from '../../../helpers/media/transparentBackground'
 
 const MeetingUserVideoChildCom = ({
     isLocal,
@@ -121,6 +122,10 @@ const MeetingUserVideoChildCom = ({
             }
 
             mediaStreamRef.current.addTrack(videoTrack);
+
+            handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                mediaStreamRef.current = stream;
+            });
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
