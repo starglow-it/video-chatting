@@ -160,7 +160,7 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
         }
     }, []);
 
-    const onSubmit = useCallback(async (event) => {
+    const onSubmit = useCallback(async (event: any) => {
         event.preventDefault();
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
@@ -321,6 +321,7 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
                     activeValue={activeItem.value}
                     ref={formParticipantsRef}
                     isCreate={isRoomCreate}
+                    onSave={onSubmit}
                 />
                 <MeetingMonezationForm
                     enableForm={activeItem.value === TabsValues.Audience}
@@ -330,8 +331,9 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
                     activeValue={activeItem.value}
                     ref={formAudienceRef}
                     isCreate={isRoomCreate}
+                    onSave={onSubmit}
                 />
-                <CustomButton
+                {/* <CustomButton
                     type="submit"
                     className={styles.button}
                     disabled={!isConnectedStripe}
@@ -346,7 +348,7 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
                     id="buttonSubmit"
                     onAnimationEnd={handleEndAnimation}
                     onClick={onSubmit}
-                />
+                /> */}
             </CustomGrid>
         </>
     );
