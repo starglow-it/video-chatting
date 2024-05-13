@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { useStore, useStoreMap } from 'effector-react';
 import {
@@ -8,8 +9,10 @@ import {
 import { CircularProgress } from '@mui/material';
 import {
     $localUserStore,
+    $isCameraActiveStore,
     setIsCameraActiveEvent,
     updateLocalUserEvent,
+    updateUserSocketEvent
 } from 'src/store/roomStores';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { $authStore } from 'src/store';
@@ -24,13 +27,16 @@ import config from '../../../const/config';
 export const MeetingAvatars = ({
     devicesSettingsDialog = false,
     onClose,
+    onSave = () => { }
 }: {
     devicesSettingsDialog: boolean;
     onClose(): void;
+    onSave(): void;
 }) => {
     const isLoading = useStore(getAvatarsMeetingFx.pending);
     const localUser = useStore($localUserStore);
     const { isAuthenticated } = useStore($authStore);
+    const isCameraActive = useStore($isCameraActiveStore);
     const {
         avatar: { list },
         avatarTmp,
@@ -54,7 +60,20 @@ export const MeetingAvatars = ({
             ),
     });
 
-    const handleSelectAvatar = (id: string) => {
+    useEffect(() => {
+        const handleUpdateUserSocketEvent = async () => {
+            await updateUserSocketEvent({
+                meetingAvatarId: localUser.meetingAvatarId,
+                cameraStatus: isCameraActive ? 'active' : 'inactive'
+            });
+        };
+        
+        if (localUser.meetingAvatarId) {
+            handleUpdateUserSocketEvent();
+        }
+    }, [localUser.meetingAvatarId]);
+
+    const handleSelectAvatar = async (id: string) => {
         if (devicesSettingsDialog) {
             setAvatarTmpEvent(avatarTmp === id ? '' : id);
         } else {
@@ -64,6 +83,8 @@ export const MeetingAvatars = ({
             });
             setIsCameraActiveEvent(false);
         }
+
+        await onSave();
     };
 
     const handleStartedEmail = () => {

@@ -116,11 +116,13 @@ const Component = (
     {
         formParticipantsRef,
         formAudienceRef,
-        onUpdate = () => { }
+        onUpdate = () => { },
+        onSave = () => {}
     }: {
         formParticipantsRef: { getValues: () => FormDataPayment },
         formAudienceRef: { getValues: () => FormDataPayment },
-        onUpdate: () => void
+        onUpdate: () => void,
+        onSave: () => void
     }
 ) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
@@ -191,6 +193,7 @@ const Component = (
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formParticipantsRef}
+                    onSave={onSave}
                 />
                 <MeetingMonezationForm
                     enableForm={activeItem.value === TabsValues.Audience}
@@ -199,6 +202,7 @@ const Component = (
                     onFocusInput={handleFocusInput}
                     activeValue={activeItem.value}
                     ref={formAudienceRef}
+                    onSave={onSave}
                 />
             </CustomGrid>
         </>

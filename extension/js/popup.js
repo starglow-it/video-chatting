@@ -28,13 +28,28 @@ document.addEventListener("DOMContentLoaded", function () {
   const forgotPasswordSpan = document.getElementById("forgot-password");
 
   const timezoneOffset = -new Date().getTimezoneOffset() / 60;
+  setCurrentDate();
 
-  $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
-    "selected"
-  );
+  // $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
+  //   "selected"
+  // );
 
 
-  $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
+  // $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
+  // Get the user's timezone offset in hours
+var userTimezoneOffsetHours = new Date().getTimezoneOffset() / 60; // Convert to hours
+
+// Find the corresponding option in the HTML
+var $selectedOption = $('#timezone').find('[data-value="' + userTimezoneOffsetHours + '"]');
+
+// Get the text of the selected option
+var selectedOptionText = $selectedOption.text();
+
+// Add 'selected' class to the selected option
+$selectedOption.addClass('selected');
+
+// Update the displayed timezone value
+$('#timezone_value').text(selectedOptionText);
 
   renderCal();
 
@@ -387,3 +402,17 @@ function convertUTCOffset(offset) {
   const formattedOffset = absOffset.toString().padStart(2, "0");
   return sign + formattedOffset;
 }
+
+function setCurrentDate() {
+  var currentDate = new Date();
+  var currentMonth = currentDate.getMonth(); // returns 0-11 for Jan-Dec
+  var currentYear = currentDate.getFullYear();
+
+  // Set the default selected options
+  document.querySelector('#month .custom-option[data-value="' + currentMonth + '"]').classList.add('selected');
+  document.querySelector('#year .custom-option[data-value="' + currentYear + '"]').classList.add('selected');
+
+  // Update the custom-select__trigger text
+  document.querySelector('#month .custom-select__trigger span').textContent = document.querySelector('#month .custom-option.selected').textContent;
+  document.querySelector('#year .custom-select__trigger span').textContent = document.querySelector('#year .custom-option.selected').textContent;
+};
