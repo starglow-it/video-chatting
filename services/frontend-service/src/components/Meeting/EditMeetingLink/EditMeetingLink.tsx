@@ -9,6 +9,9 @@ import { useStore } from 'effector-react';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomIconButton } from '@library/custom/CustomIconButton/CustomIconButton';
+import DoneIcon from '@mui/icons-material/Done';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
@@ -26,7 +29,7 @@ type UpdateMeetingLink = {
     customLink: IUserTemplate['customLink'];
 };
 
-const Component = () => {
+const Component = (onSave: () => Promise<void>) => {
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const {
@@ -80,6 +83,9 @@ const Component = () => {
     const meetingLinkStart = `* /room/`;
 
     const customLinkError = errors.customLink?.message;
+    const handleOnChange = async () => {
+        await onSave();
+    };
 
     return (
         <CustomGrid container direction="column" gap={1}>
@@ -102,7 +108,9 @@ const Component = () => {
                         input: styles.input,
                     }}
                     {...registerData}
+                    // onChange={handleOnChange}
                 />
+                <CustomIconButton type="submit" size="small"><DoneIcon /></CustomIconButton>
             </CustomGrid>
             <CustomGrid
                 container

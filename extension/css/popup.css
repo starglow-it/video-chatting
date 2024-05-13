@@ -516,7 +516,7 @@ ul.animate {
 }
 
 .confirmBtn {
-  background-color: #807f7f;
+  background-color: blue;
   color: white;
   border-radius: 0 0 10px 10px;
   border: 1px solid rgb(238, 111, 50);
@@ -527,7 +527,7 @@ ul.animate {
 }
 
 .confirmBtn:hover {
-  background-color: #646464;
+  background-color: rgb(81, 81, 255);
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,

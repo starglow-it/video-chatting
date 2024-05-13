@@ -324,15 +324,6 @@ export const MeetingEditRuumeSetting = () => {
             if (isConnectedStripe) {
                 await handleMonetizationSubmit();
             }
-
-            if (localUser.meetingAvatarId) {
-                await updateUserSocketEvent({
-                    meetingAvatarId: localUser.meetingAvatarId,
-                    cameraStatus: isCameraActive ? 'active' : 'inactive'
-                });
-            }
-            //close panel
-            handleCloseEditRuumePanel();
         }),
         [
             localUser,
@@ -350,8 +341,16 @@ export const MeetingEditRuumeSetting = () => {
                 cameraStatus: isCameraActive ? 'active' : 'inactive'
             });
         }
+    };
 
-        handleCloseEditRuumePanel();
+    const handleOnSave = async () => {
+        if (isOwner) {
+            await onSubmit();
+        }
+
+        if (localUser.meetingRole === MeetingRole.Participant) {
+            await handleParticipantSubmit();
+        }
     };
 
     return (
@@ -377,7 +376,7 @@ export const MeetingEditRuumeSetting = () => {
                     >
                         <ConditionalRender condition={isOwner}>
                             <form id="customLinkForm" onSubmit={onSubmit}>
-                                <EditMeetingLink />
+                                <EditMeetingLink onSave={handleOnSave}/>
                             </form>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
@@ -399,6 +398,7 @@ export const MeetingEditRuumeSetting = () => {
                                     <MeetingMonetizationPanel
                                         formParticipantsRef={formParticipantsRef}
                                         formAudienceRef={formAudienceRef}
+                                        onSave={handleOnSave}
                                     />
                                 </ConditionalRender>
                                 <ConditionalRender condition={enabledPaymentMeetingParticipant}>
@@ -547,6 +547,7 @@ export const MeetingEditRuumeSetting = () => {
                                 <MeetingAvatars
                                     devicesSettingsDialog={false}
                                     onClose={() => { }}
+                                    onSave={handleOnSave}
                                 />
                             </CustomAccordion>
                         </ConditionalRender>
@@ -575,7 +576,7 @@ export const MeetingEditRuumeSetting = () => {
                         </ConditionalRender>
                     </CustomGrid>
                 </CustomScroll>
-                <ConditionalRender condition={isOwner}>
+                {/* <ConditionalRender condition={isOwner}>
                     <CustomGrid
                         item
                         container
@@ -611,7 +612,7 @@ export const MeetingEditRuumeSetting = () => {
                             }
                         />
                     </CustomGrid>
-                </ConditionalRender>
+                </ConditionalRender> */}
             </CustomGrid>
         </FormProvider>
     );
