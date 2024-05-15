@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const forgotPasswordSpan = document.getElementById("forgot-password");
 
   const timezoneOffset = -new Date().getTimezoneOffset() / 60;
+
   setCurrentDate();
 
   // $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
@@ -37,19 +38,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
   // Get the user's timezone offset in hours
-var userTimezoneOffsetHours = new Date().getTimezoneOffset() / 60; // Convert to hours
+  var userTimezoneOffsetHours = new Date().getTimezoneOffset() / 60; // Convert to hours
 
-// Find the corresponding option in the HTML
-var $selectedOption = $('#timezone').find('[data-value="' + userTimezoneOffsetHours + '"]');
+  // Find the corresponding option in the HTML
+  var $selectedOption = $('#timezone').find('[data-value="' + userTimezoneOffsetHours + '"]');
 
-// Get the text of the selected option
-var selectedOptionText = $selectedOption.text();
+  // Get the text of the selected option
+  var selectedOptionText = $selectedOption.text();
 
-// Add 'selected' class to the selected option
-$selectedOption.addClass('selected');
+  // Add 'selected' class to the selected option
+  $selectedOption.addClass('selected');
 
-// Update the displayed timezone value
-$('#timezone_value').text(selectedOptionText);
+  // Update the displayed timezone value
+  $('#timezone_value').text(selectedOptionText);
 
   renderCal();
 
