@@ -101,7 +101,7 @@ export const MeetingPeople = () => {
     const tabs = [
         'chat',
         'questions',
-        'transcript',
+        // 'transcript',
     ]
 
     return (
@@ -151,9 +151,9 @@ export const MeetingPeople = () => {
                 <CustomTabPanel value={value} index={1}>
                     <MeetingQuestionAnswer />
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
+                {/* <CustomTabPanel value={value} index={2}>
                     <MeetingTranscribe />
-                </CustomTabPanel>
+                </CustomTabPanel> */}
             </ConditionalRender>
             <ConditionalRender condition={isAudience}>
                 <CustomTabPanel value={value} index={0}>
@@ -162,9 +162,9 @@ export const MeetingPeople = () => {
                 <CustomTabPanel value={value} index={1}>
                     <MeetingQuestionAnswer />
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
+                {/* <CustomTabPanel value={value} index={2}>
                     <MeetingTranscribe />
-                </CustomTabPanel>
+                </CustomTabPanel> */}
             </ConditionalRender>
         </CustomGrid>
     );
