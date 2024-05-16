@@ -80,6 +80,7 @@ import {
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
 } from '../../../store/roomStores';
+import { $isThereNewTranscriptionMessage, $transcriptionQueue, setTranscriptionsEvent } from '../../../store/roomStores';
 
 //shared types
 import { MeetingRole } from 'shared-types';
@@ -116,6 +117,14 @@ const Component = () => {
     const { runMeetingJoyride } = useStore($joyrideStore);
     const [stepIndex, setStepIndex] = useState(0);
     const container = useRef(null);
+    const transcriptionQueue = useStore($transcriptionQueue);
+    const isThereNewMessage = useStore($isThereNewTranscriptionMessage);
+
+    useEffect(() => { 
+        if (isThereNewMessage) {
+            setTranscriptionsEvent(transcriptionQueue);
+        }
+    }, [isThereNewMessage]);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
