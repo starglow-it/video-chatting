@@ -3,5 +3,13 @@ import { IHandleAiTranscription } from 'src/interfaces/handle-ai-transcriptioin.
 export class handleAiTranscription implements IHandleAiTranscription {
   @IsNotEmpty()
   @IsArray()
-  script: string[]
+  script: {
+    body: string;
+    id: string;
+    sender: {
+      id: string;
+      username: string;
+      profileAvatar: string;
+    };
+  }[]
 }

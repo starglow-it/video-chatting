@@ -1,3 +1,12 @@
+
 export interface IHandleAiTranscription {
-  script: string[];
+  script: {
+    body: string;
+    id: string;
+    sender: {
+      id: string;
+      username: string;
+      profileAvatar: string;
+    };
+  }[];
 }

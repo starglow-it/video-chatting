@@ -115,6 +115,7 @@ import {
     aiTranscriptionOnEvent,
     setActiveTabPanelEvent
 } from '../../../store/roomStores';
+import { $transcriptionQueue } from '../../../store/roomStores';
 
 import { $isPortraitLayout, $profileStore } from '../../../store';
 
@@ -233,11 +234,38 @@ const Component = () => {
     const materialStyles = useStyles();
     const meetingNotes = useStore($meetingNotesStore);
     const profile = useStore($profileStore);
-    const isSubscriptionPlanHouse = profile.subscriptionPlanKey === PlanKeys.House;
+    const isSubscriptionPlanBusiness = profile.subscriptionPlanKey === PlanKeys.Business;
     const isAITranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
     const transcriptionsStore = useStore($transcriptionsStore);
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
+    const transcriptionQueue = useStore($transcriptionQueue);
+
+    function deduplicateText(input: string) {
+        const tokens = input.split(/\W+/);
+        const seen = new Set();
+        const result: any = [];
+
+        tokens.forEach(token => {
+            const phrase = token.toLowerCase();
+            if (!seen.has(phrase) && phrase.trim() !== "") {
+                seen.add(phrase);
+                result.push(token);
+            }
+        });
+
+        return result.join(" ");
+    }
+
+    const transcriptionList = transcriptionQueue.map((element: any) => ({
+        body: deduplicateText(element.message),
+        id: element.sender + new Date().getTime(),
+        sender: {
+            id: element.sender,
+            username: element.sender,
+            profileAvatar: '',
+        },
+    }));
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -276,8 +304,9 @@ const Component = () => {
     }, [isAudioError]);
 
     const handleEndVideoChat = useCallback(async () => {
-        if (isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionsStore });
+        if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
+            console.log(transcriptionList);
+            sendAiTranscription({ script: transcriptionList });
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -498,7 +527,7 @@ const Component = () => {
     }
 
     const handleAiTranscript = () => {
-        if (!isSubscriptionPlanHouse) {
+        if (isSubscriptionPlanBusiness) {
             if (!isAITranscriptEnabled) {
                 aiTranscriptionOnEvent();
             }
@@ -756,7 +785,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation={isSubscriptionPlanHouse ? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
+                            translation={!isSubscriptionPlanBusiness ? "upgratePlan" : isAITranscriptEnabled ? "aiTranscriptOn" : "aiTranscriptOff"}
                         />
                     }
                     placement="top"
@@ -769,13 +798,13 @@ const Component = () => {
                             variant="transparentPure"
                             className={styles.actionBtn}
                             Icon={
-                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: !isSubscriptionPlanHouse && isAITranscriptEnabled })} >Ai</CustomTypography>
+                                <CustomTypography className={clsx(styles.aiTranscript, { [styles.activeText]: isSubscriptionPlanBusiness && isAITranscriptEnabled })} >Ai</CustomTypography>
                             }
                         />
                         <CustomTypography
                             nameSpace="meeting"
                             translation={isAITranscriptEnabled ? 'on' : 'off'}
-                            color={isSubscriptionPlanHouse ? "#808080" : isAITranscriptEnabled ? "orange" : "#808080"}
+                            color={!isSubscriptionPlanBusiness ? "#808080" : isAITranscriptEnabled ? "orange" : "#808080"}
                             fontSize={12}
                         />
                     </CustomGrid>

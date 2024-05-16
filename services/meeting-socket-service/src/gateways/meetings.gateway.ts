@@ -13,6 +13,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
+import OpenAI from 'openai'
 
 
 import { BaseGateway } from './base.gateway';
@@ -2731,37 +2732,35 @@ export class MeetingsGateway
         const user = this.getUserFromSocket(socket);
 
         const { script } = msg;
-        const scriptString = script.join('&');
+        let scriptString = "";
+        if (script.length > 0) {
+          script.forEach(item => {
+            scriptString += `${item.sender.username}@${item.body}\n`;
+          });
+        }
 
-        console.log('msg', msg);
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
 
-        const prompt = `Given the following video meeting transcription: 
-        ** ${scriptString} **
-        - Please review all chat messages and give me a simplified summary of the entire meeting transcription.
-        - If the transcription is insufficient to generate a summary, acknowledge the limited content and provide an appropriate response.
-        - If there is no transcription or the transcription is insufficient to generate a summary, please provide me the text: "Transcript is insufficient for summary."
+        const prompt = `Given the following meeting transcription: 
+        ** \n ${scriptString} \n**
+        - The transcription content is covered by ** above.
+        - From this transcription, provide me a transcription json object that has summary and transcription keys.
+        - If there is no transcription, return { summary: 'No transcription', transcription: '' }.
         `;
 
-        const response = await axios.post(openAiUrl, {
-          model: 'gpt-3.5-turbo-0125',
-          messages: [
-            {
-              role: 'user',
-              content: prompt, // Assuming script is a string
-            },
-          ],
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openAiApiKey}`,
-          },
-        });
+        const openai = new OpenAI({ apiKey: openAiApiKey });
+        const params: OpenAI.Chat.ChatCompletionCreateParams = {
+          messages: [{ role: 'user', content: prompt }],
+          model: 'gpt-3.5-turbo',
+        };
+        const chatCompletion: OpenAI.Chat.ChatCompletion = await openai.chat.completions.create(params);
+        const jsonResult = JSON.parse(chatCompletion.choices[0].message.content);
+        const summary = jsonResult.summary || 'No summary';
+        const transcription = jsonResult.transcription || 'No transcription';
 
-        console.log('response', response);
-        if (response.data) {
+        if (chatCompletion.choices[0].message.content) {
           const now = new Date();
           const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
           const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -2777,24 +2776,21 @@ export class MeetingsGateway
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
-          console.log('response.data.choices[0]', response.data.choices[0]);
-
-          if (response.data.choices[0]['message']['content'] && userProfile) {
+          if (chatCompletion.choices[0].message.content && userProfile) {
             await this.notificationService.sendEmail({
               template: {
                 key: emailTemplates.aiSummary,
                 data: [
                   { name: 'NAME', content: user.username },
                   { name: 'DATE', content: formattedDateTime },
-                  { name: 'CONTENT', content: response.data.choices[0]['message']['content'] },
+                  { name: 'SUMMARY', content: summary },
+                  { name: 'TRANSCRIPTION', content: transcription },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
                 ],
               },
               to: [{ email: userProfile.email }],
             });
           }
-
-          console.log('email sent.');
         }
 
         return wsResult({
