@@ -305,8 +305,7 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
-            console.log(transcriptionList);
-            sendAiTranscription({ script: transcriptionList });
+            sendAiTranscription({ script: transcriptionsStore });
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -338,7 +337,8 @@ const Component = () => {
         isRecording,
         meetingRecordingId,
         isWithoutAuthen,
-        clientRoutes
+        clientRoutes,
+        transcriptionsStore
     ]);
 
     const handleToggleMic = useCallback(() => {
