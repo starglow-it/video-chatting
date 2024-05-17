@@ -303,8 +303,6 @@ const Component = () => {
         }
     }, [isAudioError]);
 
-    useEffect(() => {console.log(transcriptionsStore)}, [transcriptionsStore]);
-
     const handleEndVideoChat = useCallback(async () => {
         if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
             sendAiTranscription({ script: transcriptionsStore });
