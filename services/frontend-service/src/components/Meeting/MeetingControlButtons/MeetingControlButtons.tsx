@@ -330,7 +330,16 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    }, [isAiTranscriptEnabled, transcriptionsStore]);
+    }, [
+        isAiTranscriptEnabled, 
+        transcriptionList, 
+        isSubscriptionPlanBusiness, 
+        isOwner,
+        isRecording,
+        meetingRecordingId,
+        isWithoutAuthen,
+        clientRoutes
+    ]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {

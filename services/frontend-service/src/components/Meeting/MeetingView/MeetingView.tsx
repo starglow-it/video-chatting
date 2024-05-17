@@ -120,11 +120,11 @@ const Component = () => {
     const transcriptionQueue = useStore($transcriptionQueue);
     const isThereNewMessage = useStore($isThereNewTranscriptionMessage);
 
-    useEffect(() => { 
+    useEffect(() => {
         if (isThereNewMessage) {
             setTranscriptionsEvent(transcriptionQueue);
         }
-    }, [isThereNewMessage]);
+    }, [isThereNewMessage, transcriptionQueue]);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,

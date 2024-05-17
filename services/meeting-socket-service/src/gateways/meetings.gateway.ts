@@ -2739,6 +2739,8 @@ export class MeetingsGateway
           });
         }
 
+        console.log('scriptstring ++++', scriptString);
+
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
@@ -2746,7 +2748,12 @@ export class MeetingsGateway
         const prompt = `Given the following meeting transcription: 
         ** \n ${scriptString} \n**
         - The transcription content is covered by ** above.
-        - From this transcription, provide me a transcription json object that has summary and transcription keys.
+        - From this meeting transcription, provide me the json object that contains the following fields:
+        - JSON object format:
+        {
+          summary: write the summary of given transcription here,
+          transcription: write the transcription of given transcription here
+        }
         - If there is no transcription, return { summary: 'No transcription', transcription: '' }.
         `;
 
@@ -2756,11 +2763,11 @@ export class MeetingsGateway
           model: 'gpt-3.5-turbo',
         };
         const chatCompletion: OpenAI.Chat.ChatCompletion = await openai.chat.completions.create(params);
-        const jsonResult = JSON.parse(chatCompletion.choices[0].message.content);
-        const summary = jsonResult.summary || 'No summary';
-        const transcription = jsonResult.transcription || 'No transcription';
+        let messageContent = chatCompletion.choices[0].message.content;
 
-        if (chatCompletion.choices[0].message.content) {
+        messageContent = messageContent.replace(/{|}/g, '').trim();
+
+        if (messageContent) {
           const now = new Date();
           const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
           const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -2776,15 +2783,29 @@ export class MeetingsGateway
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
-          if (chatCompletion.choices[0].message.content && userProfile) {
+          const parts = messageContent.split(',');
+
+          let result = {
+            summary: 'No summary',
+            transcription: 'No transcription'
+          };
+          parts.forEach(part => {
+            const [key, value] = part.split(':').map(item => item.trim());
+            if (key && value) {
+              const cleanValue = value.slice(1, -1);
+              result[key] = cleanValue;
+            }
+          });
+
+          if (messageContent && userProfile) {
             await this.notificationService.sendEmail({
               template: {
                 key: emailTemplates.aiSummary,
                 data: [
                   { name: 'NAME', content: user.username },
                   { name: 'DATE', content: formattedDateTime },
-                  { name: 'SUMMARY', content: summary },
-                  { name: 'TRANSCRIPTION', content: transcription },
+                  { name: 'SUMMARY', content: result['summary'] },
+                  { name: 'TRANSCRIPTION', content: result['transcription'] },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
                 ],
               },
