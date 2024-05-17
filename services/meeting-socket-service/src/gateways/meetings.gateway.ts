@@ -2735,7 +2735,7 @@ export class MeetingsGateway
         let scriptString = "";
         if (script.length > 0) {
           script.forEach(item => {
-            scriptString += `${item.sender.username}@${item.body}\n`;
+            scriptString += `${item.sender.username}: ${item.body} | `;
           });
         }
 
@@ -2747,14 +2747,13 @@ export class MeetingsGateway
 
         const prompt = `Given the following meeting transcription: 
         ** \n ${scriptString} \n**
-        - The transcription content is covered by ** above.
         - From this meeting transcription, provide me the json object that contains the following fields:
         - JSON object format:
         {
-          summary: write the summary of given transcription here,
-          transcription: write the transcription of given transcription here
+          summary: write the summary of the meeting transcription here,
+          transcription: write the transcription of the meeting transcription here
         }
-        - If there is no transcription, return { summary: 'No transcription', transcription: '' }.
+        - If there is no given transcription, return { summary: 'No transcription', transcription: '' }.
         `;
 
         const openai = new OpenAI({ apiKey: openAiApiKey });
