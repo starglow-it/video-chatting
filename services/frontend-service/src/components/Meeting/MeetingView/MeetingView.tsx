@@ -122,7 +122,33 @@ const Component = () => {
 
     useEffect(() => {
         if (isThereNewMessage) {
-            setTranscriptionsEvent(transcriptionQueue);
+            function deduplicateText(input: string) {
+                const tokens = input.split(/\W+/);
+                const seen = new Set();
+                const result: any = [];
+
+                tokens.forEach(token => {
+                    const phrase = token.toLowerCase();
+                    if (!seen.has(phrase) && phrase.trim() !== "") {
+                        seen.add(phrase);
+                        result.push(token);
+                    }
+                });
+
+                return result.join(" ");
+            }
+
+            const transcriptionList = transcriptionQueue.map((element: any) => ({
+                body: deduplicateText(element.message),
+                id: element.sender + new Date().getTime(),
+                sender: {
+                    id: element.sender,
+                    username: element.sender,
+                    profileAvatar: '',
+                },
+            }));
+
+            setTranscriptionsEvent(transcriptionList);
         }
     }, [isThereNewMessage, transcriptionQueue]);
 

@@ -2739,7 +2739,7 @@ export class MeetingsGateway
           });
         }
 
-        console.log('scriptstring ++++', scriptString);
+        console.log('scriptstring: ', scriptString);
 
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
