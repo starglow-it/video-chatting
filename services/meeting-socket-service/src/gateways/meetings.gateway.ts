@@ -2735,11 +2735,9 @@ export class MeetingsGateway
         let scriptString = "";
         if (script.length > 0) {
           script.forEach(item => {
-            scriptString += `${item.sender.username}: ${item.body} | `;
+            scriptString += `${item.sender.username}-${item.body} | `;
           });
         }
-
-        console.log('scriptstring: ', scriptString);
 
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiUrl = await this.configService.get('openaiUrl');
@@ -2792,7 +2790,7 @@ export class MeetingsGateway
             const [key, value] = part.split(':').map(item => item.trim());
             if (key && value) {
               const cleanValue = value.slice(1, -1);
-              result[key] = cleanValue;
+              result[key] = cleanValue.replace(/-/g, ":");
             }
           });
 
