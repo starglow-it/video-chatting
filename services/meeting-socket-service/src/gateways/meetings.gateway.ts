@@ -2748,7 +2748,7 @@ export class MeetingsGateway
         - From this meeting transcription, provide me the json object that contains the following fields:
         - JSON object format:
         {
-          summary: write the summary of the meeting transcription here,
+          summary: write a summary of the meeting transcription in three sentences or less here,
           transcription: write the transcription of the meeting transcription here
         }
         - If there is no given transcription, return { summary: 'No transcription', transcription: '' }.
@@ -2794,6 +2794,8 @@ export class MeetingsGateway
             }
           });
 
+          const transcription = scriptString.replace(/-/g, ": ");
+
           if (messageContent && userProfile) {
             await this.notificationService.sendEmail({
               template: {
@@ -2802,7 +2804,7 @@ export class MeetingsGateway
                   { name: 'NAME', content: user.username },
                   { name: 'DATE', content: formattedDateTime },
                   { name: 'SUMMARY', content: result['summary'] },
-                  { name: 'TRANSCRIPTION', content: result['transcription'] },
+                  { name: 'TRANSCRIPTION', content: transcription },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
                 ],
               },
