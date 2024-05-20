@@ -4,6 +4,7 @@ import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWr
 import { PersonalInfoSection } from '@components/Profile/PersonalInfoSection/PersonalInfoSection';
 import { MainInfo } from '@components/Profile/MainInfo/MainInfo';
 import { RecordingList } from '@components/Profile/RecordingList/RecordingList';
+import { SeatsTeamMembers } from '@components/Profile/SeatsTeamMembers/SeatsTeamMembers';
 import { SubscriptionInfo } from '@components/Profile/SubscriptionInfo/SubscriptionInfo';
 
 import styles from './ProfileContainer.module.scss';
@@ -13,6 +14,7 @@ const ProfileContainer = memo(() => {
         <MainProfileWrapper className={styles.wrapper}>
             <MainInfo />
             <PersonalInfoSection />
+            <SeatsTeamMembers />
             <RecordingList />
             <SubscriptionInfo />
         </MainProfileWrapper>

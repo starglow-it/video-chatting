@@ -9,6 +9,17 @@ import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
 import { ICommonUser, LoginTypes, PlanKeys, UserRoles } from 'shared-types';
 
+@Schema()
+export class TeamMember {
+  @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
+  status: string;
+}
+
+const TeamMemberSchema = SchemaFactory.createForClass(TeamMember);
+
 @Schema({
   timestamps: true,
 })
@@ -236,6 +247,11 @@ export class User {
     default: LoginTypes.Local,
   })
   loginType: ICommonUser['loginType'];
+
+  @Prop({
+    type: [TeamMemberSchema],
+  })
+  teamMembers: { email: string, status: string }[];
 }
 
 export type UserDocument = User & Document;

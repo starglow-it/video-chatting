@@ -5,10 +5,12 @@ import {
     $registerStore,
     confirmRegistrationUserFx,
     registerUserFx,
+    seatRegisterUserFx,
     registerWithoutTemplateFx,
     resetRegisterErrorEvent,
 } from './model';
 import { handleRegisterUser } from './handlers/handleRegisterUser';
+import { handleSeatRegisterUser } from './handlers/handleSeatRegisterUser';
 import { handleConfirmRegistration } from './handlers/handleConfirmRegistration';
 import {
     StorageKeysEnum,
@@ -18,13 +20,14 @@ import { handleRegisterWithoutTemplate } from './handlers/handleRegisterWithoutT
 import { loginUserFx } from '../auth/model';
 import { addNotificationEvent } from '../notifications/model';
 
+seatRegisterUserFx.use(handleSeatRegisterUser);
 registerUserFx.use(handleRegisterUser);
 confirmRegistrationUserFx.use(handleConfirmRegistration);
 registerWithoutTemplateFx.use(handleRegisterWithoutTemplate);
 
 $registerStore
     .on(resetRegisterErrorEvent, state => ({ ...state, error: null }))
-    .on(registerUserFx.doneData, (_state, data) => {
+    .on([registerUserFx.doneData, seatRegisterUserFx.doneData], (_state, data) => {
         if (!localStorage.getItem("isFirstDashboardVisit")) {
             localStorage.setItem("isFirstDashboardVisit", "true");
         }
@@ -35,7 +38,7 @@ $registerStore
 
         return data;
     })
-    .on(registerUserFx.failData, (state, error) => ({
+    .on([registerUserFx.failData, seatRegisterUserFx.failData], (state, error) => ({
         isUserRegistered: false,
         error: { message: error.message },
     }))
@@ -45,6 +48,16 @@ $registerStore
     }));
 
 registerUserFx.doneData.watch(data => {
+    if (data.isUserRegistered) {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.isUserRegisteredDialog,
+        });
+
+        WebStorage.delete({ key: StorageKeysEnum.templateId });
+    }
+});
+
+seatRegisterUserFx.doneData.watch(data => {
     if (data.isUserRegistered) {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.isUserRegisteredDialog,

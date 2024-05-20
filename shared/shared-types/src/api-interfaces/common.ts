@@ -15,6 +15,11 @@ export interface IBusinessCategory {
   icon: string;
 }
 
+export interface ITeamMember {
+  email: string;
+  status: string;
+}
+
 export interface IMediaCategory {
   key: string;
   value: string;

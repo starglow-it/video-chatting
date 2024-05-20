@@ -1,4 +1,4 @@
-import { RegisteredUserState, RegisterUserParams } from '../types';
+import { RegisteredUserState, RegisterUserParams, SeatRegisterUserParams } from '../types';
 import { rootDomain } from '../domains';
 
 export const registerDomain = rootDomain.createDomain('registerDomain');
@@ -20,6 +20,11 @@ export const registerUserFx = registerDomain.effect<
     RegisterUserParams,
     RegisteredUserState
 >('registerUserFx');
+
+export const seatRegisterUserFx = registerDomain.effect<
+    SeatRegisterUserParams,
+    RegisteredUserState
+>('seatRegisterUserFx');
 
 export const confirmRegistrationUserFx = registerDomain.effect<
     string,

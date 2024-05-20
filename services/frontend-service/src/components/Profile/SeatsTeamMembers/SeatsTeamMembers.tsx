@@ -1,0 +1,341 @@
+import { memo, useEffect, useState } from 'react';
+import { useStore } from 'effector-react';
+import {
+    FieldValues,
+    useForm,
+} from 'react-hook-form';
+import * as yup from 'yup';
+
+//hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
+//types
+import { FormDataPayment } from './types';
+
+//custom components
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+
+//@mui
+import Button from '@mui/material/Button';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+
+//fontawesome icon
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
+
+//store
+import { $profileStore, updateProfileFx, setProfileEvent } from '../../../store';
+import {
+    $meetingRecordingStore,
+    $isMeetingSocketConnected,
+    initiateMeetingSocketConnectionFx,
+    getRecordingUrls,
+} from '../../../store/roomStores';
+
+import { handleSendEmailToInviteNewTeamMember } from 'src/store/templates/handlers/handleSendEmailToInviteNewTeamMember';
+
+//const
+import { PlanKeys } from 'shared-types';
+
+// @mui
+import { InputBase } from '@mui/material';
+
+//helpers
+import formatRecordingUrls from '../../../helpers/formatRecordingUrl';
+
+//styles
+import styles from './SeatsTeamMembers.module.scss';
+
+const Component = () => {
+    const meetingRecordingStore = useStore($meetingRecordingStore);
+    const profile = useStore($profileStore);
+    const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
+    const [isShow, setIsShow] = useState(false);
+    const [videos, setVideos] = useState({});
+    const [priceErrorMessage, setPriceErrorMessage] = useState('');
+    const [teamMembers, setTeamMembers] = useState([]);
+    const [profileTeamMembers, setProfileTeamMembers] = useState([]);
+    const [remindTeamMemberNum, setReminTeamMemberNum] = useState(3);
+
+    const validationSchema = yup.object({
+        price: yup.number().min(0, 'not allowed to negative value.'),
+    });
+
+    const resolver =
+        useYupValidationResolver<FieldValues>(validationSchema);
+
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            price: 0
+        } as FormDataPayment,
+    });
+
+    const {
+        formState: { errors },
+    } = methods;
+
+    useEffect(() => {
+        if (profile.teamMembers) {
+            setReminTeamMemberNum(prev => prev - profile.teamMembers.length);
+            setProfileTeamMembers(profile.teamMembers);
+        }
+    }, [profile.teamMembers]);
+
+    useEffect(() => {
+        (async () => {
+            await initiateMeetingSocketConnectionFx({ isStatistics: true });
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (isMeetingSocketConnected && profile.id) {
+            getRecordingUrls({ profileId: profile.id });
+        }
+    }, [isMeetingSocketConnected, profile]);
+
+    useEffect(() => {
+        if (meetingRecordingStore.videos.length > 0) {
+            setVideos(formatRecordingUrls(meetingRecordingStore.videos));
+        }
+    }, [meetingRecordingStore]);
+
+    useEffect(() => {
+        if (profile && profile.subscriptionPlanKey && profile.subscriptionPlanKey !== PlanKeys.House) {
+            setIsShow(true);
+        }
+    }, [profile]);
+
+    useEffect(() => {
+        if (errors.price && Array.isArray(errors.price)) {
+            if (['min', 'max'].includes(errors.price[0].type.toString() ?? '')) {
+                setPriceErrorMessage(errors.price[0].message.toString() ?? '');
+            }
+        } else {
+            setPriceErrorMessage('');
+        }
+    }, [errors]);
+
+    const handleAddMember = () => {
+        if (teamMembers.length < remindTeamMemberNum) {
+            setTeamMembers([...teamMembers, { email: '', valid: false }]);
+        }
+    };
+
+    const handleRemoveMember = (index) => {
+        const updatedMembers = [...teamMembers];
+        updatedMembers.splice(index, 1);
+        setTeamMembers(updatedMembers);
+    };
+
+    const handleRemoveMemberFromProfile = async (email) => {
+        profile.teamMembers = profile.teamMembers.filter(member => member.email !== email);
+        await updateProfileFx({ teamMembers: profile.teamMembers });
+    };
+
+    const handleEmailChange = (index, value) => {
+        const updatedMembers = [...teamMembers];
+        updatedMembers[index].email = value;
+        updatedMembers[index].valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        setTeamMembers(updatedMembers);
+    };
+
+    const handleSendInvitation = async (index) => {
+        if (teamMembers[index].email) {
+            const result = await handleSendEmailToInviteNewTeamMember({ email: teamMembers[index].email, hostEmail: profile.email });
+            if (result) {
+                handleRemoveMember(index);
+                setProfileEvent({
+                    user: {
+                        teamMembers: [...profile.teamMembers, { email: teamMembers[index].email, status: 'pending' }]
+                    }
+                });
+            }
+        }
+    };
+
+    return (
+        <CustomPaper className={styles.personalInfoWrapper}>
+            <CustomGrid container marginBottom={2}>
+                <PersonAddAlt1Icon
+                    className={styles.favoriteIcon}
+                    width="24px"
+                    height="24px"
+                />
+                <CustomTypography
+                    variant="body1"
+                    fontWeight="600"
+                    nameSpace="profile"
+                    translation="seatsTeamMembers.title"
+                />
+            </CustomGrid>
+            <CustomGrid
+                container
+                flexDirection="column"
+                className={styles.recordingListInnerWrapper}
+                gap={1.5}
+            >
+                <CustomGrid
+                    container
+                    gap={0.5}
+                >
+                    <CustomButton
+                        onClick={handleAddMember}
+                        disabled={teamMembers.length >= 3}
+                        variant="custom-primary"
+                        label={
+                            <Translation
+                                nameSpace="profile"
+                                translation="seatsTeamMembers.inviteTeamMembers"
+                            />
+                        }
+                        sx={{ width: '206px', marginBottom: '10px' }}
+                    />
+                </CustomGrid>
+                <CustomGrid
+                    container
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    align-items="center"
+                >
+
+                    <CustomGrid
+                        item
+                        xs={6}
+                        sx={{ textAlign: 'left' }}
+                    >
+                        <CustomTypography
+                            variant="body2"
+                            fontWeight="600"
+                            nameSpace="profile"
+                            translation="seatsTeamMembers.email"
+                        />
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        xs={3}
+                        sx={{ textAlign: 'center' }}
+                    >
+                        <CustomTypography
+                            variant="body2"
+                            fontWeight="600"
+                            nameSpace="profile"
+                            translation="seatsTeamMembers.role"
+                        />
+                    </CustomGrid>
+                    <CustomGrid
+                        item
+                        xs={3}
+                        sx={{ textAlign: 'center' }}
+                    >
+                        <CustomTypography
+                            variant="body2"
+                            fontWeight="600"
+                            nameSpace="profile"
+                            translation="seatsTeamMembers.status"
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+                {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
+                    <CustomGrid container item spacing={2} key={tindex} alignItems="center">
+                        <CustomGrid item xs={6}>
+                            <CustomTypography
+                                variant="body2"
+                                color='#D9D9D9'
+                            >{tm.email}</CustomTypography>
+                        </CustomGrid>
+                        <CustomGrid item xs={3}>
+                            <CustomTypography
+                                variant="body2"
+                                nameSpace="profile"
+                                translation="seatsTeamMembers.teamMember"
+                                color='#D9D9D9'
+                            />
+                        </CustomGrid>
+                        {
+                            tm.status === 'pending'
+                                ? (<CustomGrid item xs={3} container justifyContent="center">
+                                    <CustomTypography
+                                        variant="body2"
+                                        color='#D9D9D9'
+                                    >
+                                        pending
+                                    </CustomTypography>
+                                </CustomGrid>)
+                                : (
+                                    <CustomGrid item container xs={3} justifyContent="center">
+                                        <CustomPaper
+                                            variant="black-glass"
+                                            className={styles.deviceButton}
+                                        >
+                                            <ActionButton
+                                                variant="black"
+                                                onAction={() => handleRemoveMemberFromProfile(tm.email)}
+                                                className={styles.deviceButton}
+                                                Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                            />
+                                        </CustomPaper>
+                                    </CustomGrid>
+                                )
+                        }
+                    </CustomGrid>
+                ))
+                }
+                {
+                    teamMembers.map((member, index) => (
+                        <CustomGrid container item spacing={2} key={index} alignItems="center">
+                            <CustomGrid item xs={6}>
+                                <InputBase
+                                    label="Email"
+                                    value={member.email}
+                                    placeholder="email"
+                                    onChange={(e) => handleEmailChange(index, e.target.value)}
+                                    className={styles.emailInputBase}
+                                />
+                            </CustomGrid>
+                            <CustomGrid item xs={3}>
+                                <CustomTypography
+                                    variant="body2"
+                                    nameSpace="profile"
+                                    translation="seatsTeamMembers.teamMember"
+                                    color='#D9D9D9'
+                                />
+                            </CustomGrid>
+                            <CustomGrid item container xs={3} justifyContent="center">
+                                {member.valid ? (
+                                    <Button
+                                        variant="text"
+                                        className={styles.sendInvitationBtn}
+                                        onClick={() => handleSendInvitation(index)}
+                                    >
+                                        send invitation
+                                    </Button>
+                                ) : (
+                                    <CustomPaper
+                                        variant="black-glass"
+                                        className={styles.deviceButton}
+                                    >
+                                        <ActionButton
+                                            variant="black"
+                                            onAction={() => handleRemoveMember(index)}
+                                            className={styles.deviceButton}
+                                            Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                        />
+                                    </CustomPaper>
+                                )}
+                            </CustomGrid>
+                        </CustomGrid>
+                    ))
+                }
+            </CustomGrid >
+        </CustomPaper >
+    );
+};
+
+export const SeatsTeamMembers = memo(Component);

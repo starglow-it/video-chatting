@@ -1,6 +1,6 @@
 import { ICommonTemplate, IUserTemplate, QueryParams } from 'shared-types';
 import { HttpMethods } from '../../store/types';
-import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
+import { authScope, profileScope, serverUrl, uploadScope, usersScope } from './baseData';
 
 export const baseProfileUrl = `${serverUrl}/${profileScope}`;
 
@@ -95,6 +95,11 @@ export const addTemplateToUserUrl = ({
     method: HttpMethods.Post,
 });
 
+export const sendEmailToInviteNewTeamMemberUrl = {
+    url: `${serverUrl}/${usersScope}/invite-new-team-member`,
+    method: HttpMethods.Post,
+};
+
 export const profileEmailUrl = {
     url: `${baseProfileUrl}/email`,
     method: HttpMethods.Post,
@@ -107,6 +112,11 @@ export const uploadProfileAvatarUrl = {
 
 export const registerUserUrl = {
     url: `${serverUrl}/${authScope}/register`,
+    method: HttpMethods.Post,
+};
+
+export const seatRegisterUserUrl = {
+    url: `${serverUrl}/${authScope}/seat-register`,
     method: HttpMethods.Post,
 };
 

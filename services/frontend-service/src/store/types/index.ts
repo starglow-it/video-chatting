@@ -131,6 +131,15 @@ export type RegisterUserParams = {
     registerType?: RegisterType;
 };
 
+export type SeatRegisterUserParams = {
+    email: string;
+    password: string;
+    profileId?: string;
+    hostId: string;
+    templateId?: ICommonTemplate['id'];
+    registerType?: RegisterType;
+};
+
 export type LoginUserResponse = { user: Profile } & TokenPair & {
     isFirstLogin: boolean;
 };

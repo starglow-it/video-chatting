@@ -232,6 +232,7 @@ export class UsersService {
       isDowngradeMessageShown: data.isDowngradeMessageShown,
       country: data.country,
       registerTemplate: data.registerTemplate,
+      teamMembers: data.teamMembers
     };
   }
 }
