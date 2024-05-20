@@ -4,6 +4,7 @@ import {
   ISocialLink,
   IProfileAvatar,
   PlanKeys,
+  ITeamMember
 } from './common';
 
 export enum UserRoles {
@@ -58,6 +59,7 @@ export interface ICommonUser {
   isSubscriptionActive?: boolean;
   isDowngradeMessageShown: boolean;
   loginType: LoginTypes;
+  teamMembers?: { email: string, status: string }[];
 }
 
 export interface IUpdateProfile {
@@ -97,6 +99,7 @@ export interface IUpdateProfile {
     twitter?: string;
     custom?: string;
   };
+  teamMembers?: ITeamMember[];
 }
 
 export interface IUpdateProfileAvatar {

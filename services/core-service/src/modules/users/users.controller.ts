@@ -295,13 +295,18 @@ export class UsersController {
       });
 
       if (!user) {
-        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+        // throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+        return null;
       }
 
-      return plainToInstance(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
+
+      plainUser.teamMembers = user.teamMembers;
+
+      return plainUser;
     });
   }
 
@@ -321,10 +326,13 @@ export class UsersController {
             throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
           }
 
-          return plainToInstance(CommonUserDTO, user, {
+          const plainUser = plainToInstance(CommonUserDTO, user, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
+
+          plainUser.teamMembers = user.teamMembers;
+          return plainUser;
         }
       });
     } catch (e) {
@@ -636,6 +644,7 @@ export class UsersController {
           position: '',
           contactEmail: '',
           maxMeetingTime: 10,
+          teamMembers: []
         },
         session,
       );

@@ -63,6 +63,7 @@ import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { ScheduleRequestDto, DownloadIcsFileRequestDto } from '../../dtos/requests/schedule.dto';
+import { InviteNewTeamMemberDTO } from 'src/dtos/requests/inviteNewTeamMember.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -81,7 +82,7 @@ export class UsersController {
     private paymentsService: PaymentsService,
     private socketService: SocketService,
     private meetingService: MeetingsService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
@@ -490,11 +491,10 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${body.meetingId}${
-                acceptRoles.includes(body.role)
-                  ? `?role=${body.role}&videoMute=1`
-                  : '?videoMute=1'
-              }`,
+              content: `${this.frontendUrl}/room/${body.meetingId}${acceptRoles.includes(body.role)
+                ? `?role=${body.role}&videoMute=1`
+                : '?videoMute=1'
+                }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
           ],
@@ -563,13 +563,11 @@ export class UsersController {
       const endAt = parseDateObject(body.endAt);
 
       const tzOffset = getTzOffset(startAt, body.timeZone);
-      const meetingUrl = `${this.frontendUrl}/room/${
-        template.customLink || template.id
-      }${
-        acceptRoles.includes(body.role)
+      const meetingUrl = `${this.frontendUrl}/room/${template.customLink || template.id
+        }${acceptRoles.includes(body.role)
           ? `?role=${body.role}&videoMute=1`
           : '?videoMute=1'
-      }`;
+        }`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
@@ -704,5 +702,99 @@ export class UsersController {
       throw new BadRequestException(err);
     }
   }
+
+  // @UseGuards(JwtAuthGuard)
+  @Post('/invite-new-team-member')
+  @ApiOperation({ summary: 'Send Email To Invite New Team Member' })
+  @ApiOkResponse({
+    description: 'Send email to invite new team member',
+  })
+  async SendEmailToInviteNewTeamMember(
+    @Req() req, @Body() body: InviteNewTeamMemberDTO
+  ) {
+    try {
+
+      const host = await this.coreService.findUserByEmail({ email: body.hostEmail });
+      const user = await this.coreService.findUserByEmail({ email: body.userEmail });
+      let profileId = '';
+
+      if (user) {
+        profileId = user.id;
+      }
+
+      if (host) {
+        if (host.teamMembers && host.teamMembers.length < 3) {
+          await this.coreService.findUserAndUpdate({
+            userId: host.id,
+            data: { teamMembers: [...host.teamMembers, { email: body.userEmail, status: 'pending' }] }
+          });
+        }
+
+        await this.notificationService.sendEmail({
+          to: [{ email: body.userEmail }],
+          template: {
+            key: emailTemplates.seatInvitation,
+            data: [
+              { name: 'NAME', content: 'Hi there,' },
+              { name: 'SENDER', content: host.fullName },
+              { name: 'CONFIRMLINK', content: `${this.frontendUrl}/seat-register?profileId=${profileId}&hostId=${host.id}` },
+            ],
+          },
+        });
+
+        return {
+          success: true,
+        };
+      } else
+        return {
+          success: false,
+        };
+    } catch (err) {
+      console.log(err);
+      this.logger.error(
+        {
+          message: `An error occurs, while sending email to invite new team member`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/accept-team-member-invitation/:profileId/:hostId')
+  @ApiOperation({ summary: 'Accept Team Member Invitation' })
+  @ApiOkResponse({
+    description: 'Accept team member invitation',
+  })
+  async AcceptTeamMemberInvitation(
+    @Param('profileId') profildId: string,
+    @Param('hostId') hostId: string
+  ) {
+    try {
+      const host = await this.coreService.findUserById({ userId: hostId });
+
+      if (host) {
+        const teamMember = host.teamMembers.find(e => e.email === profildId && e.status === 'pending');
+        if (teamMember) {
+          teamMember.status = 'confirmed';
+
+          await this.coreService.findUserAndUpdate({ userId: hostId, data: { teamMembers: [...host.teamMembers, teamMember] } });
+        }
+      }
+
+      return {
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while sending email to invite new team member`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
 }
-  

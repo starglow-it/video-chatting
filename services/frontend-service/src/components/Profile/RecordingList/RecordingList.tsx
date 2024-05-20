@@ -41,7 +41,6 @@ import {
     getRecordingUrls,
     updateRecordingVideoPrice
 } from '../../../store/roomStores';
-import { MeetingRecordVideo } from '../../../store/types';
 
 //const
 import { PlanKeys } from 'shared-types';

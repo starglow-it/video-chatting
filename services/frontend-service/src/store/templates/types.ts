@@ -58,6 +58,7 @@ export type AddTemplateToUserEffectPayload = {
     templateId: ICommonTemplate['id'];
 };
 export type AddTemplateToUserEffectResponse = IUserTemplate | null;
+export type SendEmailToInviteNewTeamMemberResponse = { success: boolean } | null;
 
 export type DeleteCommonTemplatePayload = { templateId: ICommonTemplate['id'] };
 

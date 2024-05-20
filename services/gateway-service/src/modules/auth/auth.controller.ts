@@ -48,6 +48,7 @@ import { CommonUserRestDTO } from '../../dtos/response/common-user.dto';
 // requests
 import { TokenRequest } from '../../dtos/requests/token.request';
 import { UserCredentialsRequest } from '../../dtos/requests/userCredentials.request';
+import { SeatUserCredentialsRequest } from 'src/dtos/requests/seatUserCredentials.request';
 
 // guards
 import { LocalAuthGuard } from '../../guards/local.guard';
@@ -82,7 +83,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private configService: ConfigClientService,
     private paymentsService: PaymentsService,
     private userTemplateService: UserTemplatesService,
-  ) {}
+  ) { }
 
   private googleClientId: string;
   private googleSecret: string;
@@ -126,6 +127,64 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         result: null,
       };
     } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while register`,
+          ctx: { email: body.email },
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/seat-register')
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'Team Member account registered success',
+  })
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  async seatRegister(
+    @Body() body: SeatUserCredentialsRequest,
+  ): Promise<ResponseSumType<void>> {
+    try {
+      const user = await this.coreService.findUserByEmail({
+        email: body.email,
+      });
+
+      if (user) {
+        await this.coreService.deleteGlobalUser({ id: user.id });
+      }
+
+      const updateData = {
+        email: body.email,
+        password: body.password,
+        registerType: body.registerType,
+        country: body.country,
+        state: body.state
+      };
+
+      await this.authService.register(updateData);
+
+      const host = await this.coreService.findUserById({ userId: body.hostId });
+      if (host && host.teamMembers && host.teamMembers.length > 0) {
+        const teamMembers = host.teamMembers.map(tm => {
+          if (tm.email === body.email && tm.status === 'pending') {
+            tm.status = 'confirmed';
+          }
+
+          return tm;
+        });
+
+        await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
+      }
+
+      return {
+        success: true,
+        result: null,
+      };
+    } catch (err) {
+      console.log(err);
       this.logger.error(
         {
           message: `An error occurs, while register`,
@@ -204,11 +263,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         template = await this.coreService.findCommonTemplateByTemplate({
           ...(templateId
             ? {
-                _id: templateId,
-              }
+              _id: templateId,
+            }
             : {
-                isAcceptNoLogin: true,
-              }),
+              isAcceptNoLogin: true,
+            }),
         });
       }
 
@@ -421,6 +480,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
+      console.log(user);
 
       return { success: true, result: user };
     } catch (err) {
@@ -550,7 +610,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       if (!isUserExists) {
         isFirstLogin = true;
-        
+
         user = await this.authService.createUserFromGoogleAccount({
           password: 'default',
           email,

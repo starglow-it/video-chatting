@@ -15,6 +15,15 @@
     "your": "Your",
     "logo": "Logo"
   },
+  "seatsTeamMembers": {
+    "title": "Seats / Team members",
+    "email": "email",
+    "role": "role",
+    "status": "status",
+    "sendInvitation": "send invitation",
+    "teamMember": "team member",
+    "inviteTeamMembers": "Invite team members"
+  },
   "sharedRecordingVideo": {
     "title": "Recording",
     "meetingName": "meeting name:",

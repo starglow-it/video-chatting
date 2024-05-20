@@ -20,4 +20,5 @@ export const emailTemplates = {
   prePaymentCode: 'pre-payment-code',
   recordingLink: 'recording-link',
   aiSummary: 'ai-summary',
+  seatInvitation: 'seat-invitation'
 };

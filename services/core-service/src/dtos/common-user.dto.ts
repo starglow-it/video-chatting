@@ -135,4 +135,7 @@ export class CommonUserDTO implements ICommonUser {
 
   @Expose()
   loginType: ICommonUser['loginType'];
+
+  @Expose()
+  teamMembers: ICommonUser['teamMembers'];
 }

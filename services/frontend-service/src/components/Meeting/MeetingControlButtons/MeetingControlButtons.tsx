@@ -329,6 +329,8 @@ const Component = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
+
+        window.location.reload();
     }, [
         isAiTranscriptEnabled, 
         transcriptionList, 

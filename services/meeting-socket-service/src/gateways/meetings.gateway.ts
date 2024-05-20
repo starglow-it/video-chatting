@@ -2748,7 +2748,7 @@ export class MeetingsGateway
         - From this meeting transcription, provide me the json object that contains the following fields:
         - JSON object format:
         {
-          summary: write a summary of the meeting transcription in three sentences or less here,
+          summary: write 3-5 sentences summary of the meeting transcription ,
           transcription: write the transcription of the meeting transcription here
         }
         - If there is no given transcription, return { summary: 'No transcription', transcription: '' }.
@@ -2758,11 +2758,10 @@ export class MeetingsGateway
         const params: OpenAI.Chat.ChatCompletionCreateParams = {
           messages: [{ role: 'user', content: prompt }],
           model: 'gpt-3.5-turbo',
+          response_format: { "type": "json_object" }
         };
         const chatCompletion: OpenAI.Chat.ChatCompletion = await openai.chat.completions.create(params);
         let messageContent = chatCompletion.choices[0].message.content;
-
-        messageContent = messageContent.replace(/{|}/g, '').trim();
 
         if (messageContent) {
           const now = new Date();
@@ -2782,19 +2781,10 @@ export class MeetingsGateway
 
           const parts = messageContent.split(',');
 
-          let result = {
-            summary: 'No summary',
-            transcription: 'No transcription'
-          };
-          parts.forEach(part => {
-            const [key, value] = part.split(':').map(item => item.trim());
-            if (key && value) {
-              const cleanValue = value.slice(1, -1);
-              result[key] = cleanValue.replace(/-/g, ":");
-            }
-          });
+          let summary = JSON.parse(messageContent).summary || 'No summary';
+          let transcription = JSON.parse(messageContent).transcription || 'No transcription';
 
-          const transcription = scriptString.replace(/-/g, ": ");
+          transcription = transcription.replace(/-/g, ": ").replace(/\|/g, "<br>").trim();
 
           if (messageContent && userProfile) {
             await this.notificationService.sendEmail({
@@ -2803,7 +2793,7 @@ export class MeetingsGateway
                 data: [
                   { name: 'NAME', content: user.username },
                   { name: 'DATE', content: formattedDateTime },
-                  { name: 'SUMMARY', content: result['summary'] },
+                  { name: 'SUMMARY', content: summary },
                   { name: 'TRANSCRIPTION', content: transcription },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },
                 ],
