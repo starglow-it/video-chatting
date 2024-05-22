@@ -25,6 +25,7 @@ import {
   PAYMENTS_SCOPE,
   PAYMENTS_SERVICE,
   plans,
+  seatTeamMembersSubscription,
   emailTemplates,
 } from 'shared-const';
 
@@ -68,7 +69,7 @@ export class PaymentsController {
     private paymentService: PaymentsService,
     private coreService: CoreService,
     private socketService: SocketService,
-  ) {}
+  ) { }
 
   @Post('/webhook')
   async webhookHandler(
@@ -452,6 +453,30 @@ export class PaymentsController {
     }
   }
 
+  @MessagePattern({ cmd: PaymentsBrokerPatterns.GetStripeSeatSubscriptionProducts })
+  async getStripeSeatSubscriptionsProducts() {
+    try {
+      const seatSubscriptionProducts =
+        await this.paymentService.getStripeSeatSubscriptions();
+
+      const pricesPromise = seatSubscriptionProducts.map(async (product) => {
+        const price = await this.paymentService.getProductPrice(product.id);
+
+        return {
+          product,
+          price,
+        };
+      });
+
+      return await Promise.all(pricesPromise);
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: PAYMENTS_SERVICE,
+      });
+    }
+  }
+
   @MessagePattern({ cmd: PaymentsBrokerPatterns.GetStripeCheckoutSession })
   async getStripeCheckoutSession(
     @Payload()
@@ -716,39 +741,43 @@ export class PaymentsController {
       stripeSubscriptionId: subscription.id,
     });
 
-    const currentPlanName = plans[productData.name || PlanKeys.House];
+    if (productData.name === 'seatTeamMember') {
+      // TODO: send email to user with seat info
+    } else {
+      const currentPlanName = plans[productData.name || PlanKeys.House];
 
-    await this.coreService.updateUser({
-      query: { stripeSubscriptionId: subscription.id },
-      data: {
-        isSubscriptionActive: ['active', 'trialing'].includes(
-          subscription.status,
-        ),
-        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
-      },
-    });
-
-    if (
-      Boolean(user.isSubscriptionActive) === false &&
-      ['active', 'trialing'].includes(subscription.status) &&
-      currentPlanName.features.emailSlug
-    ) {
-      this.notificationsService.sendEmail({
-        template: {
-          key: emailTemplates[currentPlanName.features.emailSlug],
-          data: [
-            {
-              name: 'BACKURL',
-              content: `${frontendUrl}/dashboard/profile`,
-            },
-            {
-              name: 'USERNAME',
-              content: user.fullName,
-            },
-          ],
+      await this.coreService.updateUser({
+        query: { stripeSubscriptionId: subscription.id },
+        data: {
+          isSubscriptionActive: ['active', 'trialing'].includes(
+            subscription.status,
+          ),
+          renewSubscriptionTimestampInSeconds: subscription.current_period_end,
         },
-        to: [{ email: user.email, name: user.fullName }],
       });
+
+      if (
+        Boolean(user.isSubscriptionActive) === false &&
+        ['active', 'trialing'].includes(subscription.status) &&
+        currentPlanName.features.emailSlug
+      ) {
+        this.notificationsService.sendEmail({
+          template: {
+            key: emailTemplates[currentPlanName.features.emailSlug],
+            data: [
+              {
+                name: 'BACKURL',
+                content: `${frontendUrl}/dashboard/profile`,
+              },
+              {
+                name: 'USERNAME',
+                content: user.fullName,
+              },
+            ],
+          },
+          to: [{ email: user.email, name: user.fullName }],
+        });
+      }
     }
   }
 
@@ -769,94 +798,121 @@ export class PaymentsController {
       subscription['plan'].product,
     );
 
-    const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
-    const nextPlan = plans[productData.name || PlanKeys.House];
-
-    const isPlanHasChanged = nextPlan.name !== currentPlan.name;
-    const isPlanDowngraded = currentPlan.priceInCents > nextPlan.priceInCents;
-    const isCurrentSubscriptionIsActive =
-      user.renewSubscriptionTimestampInSeconds * 1000 > Date.now();
-
-    const isSubscriptionPeriodUpdated =
-      user.renewSubscriptionTimestampInSeconds <
-      subscription.current_period_end;
-
-    Object.assign(updateData, {
-      subscriptionPlanKey: isSubscriptionPeriodUpdated
-        ? nextPlan.name
-        : currentPlan.name,
-      nextSubscriptionPlanKey: !isSubscriptionPeriodUpdated
-        ? nextPlan.name
-        : null,
-      prevSubscriptionPlanKey: user.subscriptionPlanKey,
-      maxTemplatesNumber: isSubscriptionPeriodUpdated
-        ? nextPlan.features.templatesLimit
-        : currentPlan.features.templatesLimit,
-      maxMeetingTime: isSubscriptionPeriodUpdated
-        ? nextPlan.features.timeLimit
-        : currentPlan.features.timeLimit,
-      renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
-        ? user.renewSubscriptionTimestampInSeconds
-        : subscription.current_period_end,
-      isDowngradeMessageShown: !(
-        isPlanHasChanged &&
-        isPlanDowngraded &&
-        (isCurrentSubscriptionIsActive || isSubscriptionPeriodUpdated)
-      ),
-    });
-
-    await this.coreService.updateUser({
-      query: { stripeSubscriptionId: subscription.id },
-      data: updateData,
-    });
-
-    if (isSubscriptionPeriodUpdated) {
-      await this.coreService.deleteLeastUsedUserTemplates({
-        userId: user.id,
-        templatesLimit: nextPlan.features.templatesLimit,
+    if (productData.name === 'seatTeamMember') {
+      Object.assign(updateData, {
+        maxSeatNumForTeamMembers:
+          subscription.items.data[0].quantity +
+          user.maxSeatNumForTeamMembers,
       });
+    } else {
+      const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
+      const nextPlan = plans[productData.name || PlanKeys.House];
+
+      const isPlanHasChanged = nextPlan.name !== currentPlan.name;
+      const isPlanDowngraded = currentPlan.priceInCents > nextPlan.priceInCents;
+      const isCurrentSubscriptionIsActive =
+        user.renewSubscriptionTimestampInSeconds * 1000 > Date.now();
+
+      const isSubscriptionPeriodUpdated =
+        user.renewSubscriptionTimestampInSeconds <
+        subscription.current_period_end;
+
+      Object.assign(updateData, {
+        subscriptionPlanKey: isSubscriptionPeriodUpdated
+          ? nextPlan.name
+          : currentPlan.name,
+        nextSubscriptionPlanKey: !isSubscriptionPeriodUpdated
+          ? nextPlan.name
+          : null,
+        prevSubscriptionPlanKey: user.subscriptionPlanKey,
+        maxTemplatesNumber: isSubscriptionPeriodUpdated
+          ? nextPlan.features.templatesLimit
+          : currentPlan.features.templatesLimit,
+        maxMeetingTime: isSubscriptionPeriodUpdated
+          ? nextPlan.features.timeLimit
+          : currentPlan.features.timeLimit,
+        renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
+          ? user.renewSubscriptionTimestampInSeconds
+          : subscription.current_period_end,
+        isDowngradeMessageShown: !(
+          isPlanHasChanged &&
+          isPlanDowngraded &&
+          (isCurrentSubscriptionIsActive || isSubscriptionPeriodUpdated)
+        ),
+      });
+
+      await this.coreService.updateUser({
+        query: { stripeSubscriptionId: subscription.id },
+        data: updateData,
+      });
+
+      if (isSubscriptionPeriodUpdated) {
+        await this.coreService.deleteLeastUsedUserTemplates({
+          userId: user.id,
+          templatesLimit: nextPlan.features.templatesLimit,
+        });
+      }
     }
   }
 
   async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     const environment = await this.configService.get('environment');
+    const product = await this.paymentService.getStripeProduct(
+      subscription.items.data[0].price.product,
+    );
 
-    const planData = plans[PlanKeys.House];
+    if (product.name === 'seatTeamMember') {
+      const user = await this.coreService.findUser({
+        stripeSubscriptionId: subscription.id,
+      });
 
-    const trialExpired =
-      subscription.trial_end === subscription.current_period_end;
+      if (user) {
+        await this.coreService.updateUser({
+          query: { stripeSubscriptionId: subscription.id },
+          data: {
+            maxSeatNumForTeamMembers: user.maxSeatNumForTeamMembers - 1,
+            stripeSubscriptionId: null,
+          },
+        });
+      }
+    } else {
+      const planData = plans[PlanKeys.House];
 
-    const user = await this.coreService.findUser({
-      stripeSubscriptionId: subscription.id,
-    });
+      const trialExpired =
+        subscription.trial_end === subscription.current_period_end;
 
-    await this.coreService.updateUser({
-      query: { stripeSubscriptionId: subscription.id },
-      data: {
-        isSubscriptionActive: false,
-        stripeSubscriptionId: null,
-        subscriptionPlanKey: PlanKeys.House,
-        maxTemplatesNumber: planData.features.templatesLimit,
-        maxMeetingTime: planData.features.timeLimit,
-        shouldShowTrialExpiredNotification: trialExpired,
-        renewSubscriptionTimestampInSeconds:
-          (['production', 'demo'].includes(environment)
-            ? addMonthsCustom(Date.now(), 1)
-            : addDaysCustom(Date.now(), 1)
-          ).getTime() / 1000,
-      },
-    });
+      const user = await this.coreService.findUser({
+        stripeSubscriptionId: subscription.id,
+      });
 
-    if (trialExpired) {
-      await this.socketService.sendTrialExpiredNotification({
+      await this.coreService.updateUser({
+        query: { stripeSubscriptionId: subscription.id },
+        data: {
+          isSubscriptionActive: false,
+          stripeSubscriptionId: null,
+          subscriptionPlanKey: PlanKeys.House,
+          maxTemplatesNumber: planData.features.templatesLimit,
+          maxMeetingTime: planData.features.timeLimit,
+          shouldShowTrialExpiredNotification: trialExpired,
+          renewSubscriptionTimestampInSeconds:
+            (['production', 'demo'].includes(environment)
+              ? addMonthsCustom(Date.now(), 1)
+              : addDaysCustom(Date.now(), 1)
+            ).getTime() / 1000,
+        },
+      });
+
+      if (trialExpired) {
+        await this.socketService.sendTrialExpiredNotification({
+          userId: user.id,
+        });
+      }
+
+      await this.coreService.deleteLeastUsedUserTemplates({
         userId: user.id,
+        templatesLimit: planData.features.templatesLimit,
       });
     }
-
-    await this.coreService.deleteLeastUsedUserTemplates({
-      userId: user.id,
-      templatesLimit: planData.features.templatesLimit,
-    });
   }
 
   async handleSubscriptionCreated(subscription: Stripe.Subscription) {
@@ -871,10 +927,11 @@ export class PaymentsController {
 
   async createSubscriptionsIfNotExists() {
     const subscriptions = await this.paymentService.getStripeSubscriptions();
+    const seatSubscriptions = await this.paymentService.getStripeSeatSubscriptions();
 
     if (!subscriptions?.length) {
       const plansPromises = Object.values(plans).map(
-        (planData) => async () =>
+        (planData: any) => async () =>
           this.paymentService.createProduct({
             name: planData.name,
             priceInCents: planData.priceInCents,
@@ -884,6 +941,20 @@ export class PaymentsController {
       );
 
       await executePromiseQueue(plansPromises);
+    }
+
+    if (!seatSubscriptions?.length && seatTeamMembersSubscription.length) {
+      const seatPlansPromises = seatTeamMembersSubscription.map(
+        (planData: any) => async () =>
+          this.paymentService.createProduct({
+            name: planData.name,
+            priceInCents: planData.priceInCents,
+            description: planData.description,
+            type: 'seatTeamMembership',
+          }),
+      );
+
+      await executePromiseQueue(seatPlansPromises);
     }
   }
 
@@ -897,34 +968,47 @@ export class PaymentsController {
         subscription['plan'].product,
       );
 
-      const plan = plans[product.name || PlanKeys.House];
+      if (product.name === 'seatTeamMember') {
+        const user = await this.coreService.findUser({ stripeSessionId: session.id });
 
-      await this.coreService.updateUser({
-        query: { stripeSessionId: session.id },
-        data: {
-          stripeSubscriptionId: session.subscription as string,
-          subscriptionPlanKey: plan.name,
-          maxTemplatesNumber: plan.features.templatesLimit,
-          maxMeetingTime: plan.features.timeLimit,
-          isProfessionalTrialAvailable: false,
-        },
-      });
+        if (user) {
+          await this.coreService.updateUser({
+            query: { stripeSessionId: session.id },
+            data: {
+              maxSeatNumForTeamMembers: user.maxSeatNumForTeamMembers + 1,
+            },
+          });
+        }
+      } else {
+        const plan = plans[product.name || PlanKeys.House];
 
-      if (
-        subscription.status === 'trialing' &&
-        !subscription.cancel_at_period_end
-      ) {
-        await this.paymentService.updateSubscription({
-          subscriptionId: subscription.id,
-          options: { cancelAtPeriodEnd: true },
+        await this.coreService.updateUser({
+          query: { stripeSessionId: session.id },
+          data: {
+            stripeSubscriptionId: session.subscription as string,
+            subscriptionPlanKey: plan.name,
+            maxTemplatesNumber: plan.features.templatesLimit,
+            maxMeetingTime: plan.features.timeLimit,
+            isProfessionalTrialAvailable: false,
+          },
+        });
+
+        if (
+          subscription.status === 'trialing' &&
+          !subscription.cancel_at_period_end
+        ) {
+          await this.paymentService.updateSubscription({
+            subscriptionId: subscription.id,
+            options: { cancelAtPeriodEnd: true },
+          });
+        }
+
+        await this.coreService.updateMonetizationStatistic({
+          period: MonetizationStatisticPeriods.AllTime,
+          type: MonetizationStatisticTypes.Subscriptions,
+          value: session.amount_total,
         });
       }
-
-      await this.coreService.updateMonetizationStatistic({
-        period: MonetizationStatisticPeriods.AllTime,
-        type: MonetizationStatisticTypes.Subscriptions,
-        value: session.amount_total,
-      });
     }
   }
 

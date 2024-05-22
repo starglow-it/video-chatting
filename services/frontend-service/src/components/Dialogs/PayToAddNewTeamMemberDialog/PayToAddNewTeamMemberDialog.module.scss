@@ -1,0 +1,127 @@
+@import "../../../styles/rem";
+
+.content {
+    width: rem(472px);
+    padding: rem(12px);
+    position: relative;
+}
+
+.main {
+    width: 100%;
+}
+
+.buttonClose {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.header {
+    padding-top: 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    span {
+        font-size: 18px;
+        font-weight: 500;
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+    height: 90px;
+}
+
+.actionItem {
+    width: 130px;
+    height: 80px;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f1f1f1;
+    }
+
+    .button {
+        width: 40px;
+        height: 40px;
+    }
+
+    span {
+        text-align: center;
+        margin-top: 5px;
+        font-size: 14px;
+    }
+}
+
+.roleGroup {
+    justify-content: center;
+    margin-bottom: 0px;
+}
+
+.paper {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    background-color: #9243B7;
+    color: white;
+    max-width: 100%;
+    padding: 25px 50px;
+    z-index: 1301;
+}
+
+.mobilePaper {
+    width: 320px;
+    padding: 20px;
+    display: none;
+}
+
+.closeBtn {
+    color: white;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    transition: all 0.3;
+
+    &:hover {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+
+    &:focus {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+}
+
+.actionBtn {
+    color: white;
+    padding: 0px;
+    width: auto;
+    justify-content: flex-start;
+    transition: all 0.3;
+
+    &:hover {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+
+    &:focus {
+        background-color: transparent;
+        color: #ddb0f2;
+    }
+}
+
+.disableWelcomeMeeting {
+    display: none;
+}

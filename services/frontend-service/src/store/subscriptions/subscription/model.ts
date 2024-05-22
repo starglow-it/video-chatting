@@ -7,7 +7,7 @@ import { GetSubscriptionPayload } from './types';
 
 export const $subscriptionStore = subscriptionsDomain.createStore<any>({});
 export const $isTrial = $subscriptionStore.map(
-    subscription => subscription?.status === 'trialing',
+    (subscription: any) => subscription?.status === 'trialing',
 );
 
 export const getSubscriptionFx = subscriptionsDomain.createEffect<

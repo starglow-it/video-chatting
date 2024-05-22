@@ -122,15 +122,15 @@
         [
           {
             "key": "meetingTime",
-            "text": "No Time Limit"
+            "text": "no time limit"
           },
           {
             "key": "callers",
-            "text": "10 Participants, 1000 Audience"
+            "text": "10 participants, 1000 audience"
           },
           {
             "key": "commission",
-            "text": "Ruume Commission: 10% (Participants), 30% (Audience)"
+            "text": "your earnings: 90% from participants, 70% from the audience"
           }
         ]
       ],
@@ -141,21 +141,21 @@
         [
           {
             "key": "meetingTime",
-            "text": "No Time Limit",
+            "text": "all free features +",
             "type": "fade"
           },
           {
-            "key": "commission",
-            "text": "Ruume Commission: 5% (Participants), 20% (Audience)",
-            "type": "fade"
-          },
-          {
-            "key": "transcript",
-            "text": "Ai Summary"            
+            "key": "recording_storage_monetization",
+            "text": "recordings, storage & monetization"            
           },
           {
             "key": "upload",
-            "text": "Upload Backgrounds"            
+            "text": "upload images & videos for immersion"            
+          },
+          {
+            "key": "commission",
+            "text": "your earnings: 95% from participants, 80% from the audience",
+            "type": "fade"
           }
         ]
       ],
@@ -168,27 +168,22 @@
         [
           {
             "key": "meetingTime",
-            "text": "No Time Limit",
+            "text": "all pro features +",
             "type": "fade"
           },
           {
-            "key": "commission",
-            "text": "Ruume Commission: 0% (Participants), 10% (Audience)",
-            "type": "fade"          
+            "key": "embed",
+            "text": "embed interactive links in the ui"            
           },
           {
             "key": "transcription",
-            "text": "Ai Summary",
+            "text": "ai transcript & summary",
             "type": "fade"           
           },
           {
-            "key": "upload",
-            "text": "Upload Backgrounds",
-            "type": "fade"           
-          },
-          {
-            "key": "embed",
-            "text": "Embed Links"            
+            "key": "commission",
+            "text": "your earnings: 100% from participants, 90% from the audience",
+            "type": "fade"          
           }
         ]
       ],

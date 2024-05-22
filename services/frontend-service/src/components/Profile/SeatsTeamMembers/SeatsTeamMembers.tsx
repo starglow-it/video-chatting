@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import {
     FieldValues,
@@ -11,6 +11,11 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 //types
 import { FormDataPayment } from './types';
+
+import {
+    appDialogsApi,
+} from 'src/store';
+import { AppDialogsEnum } from 'src/store/types';
 
 //custom components
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -50,6 +55,7 @@ import formatRecordingUrls from '../../../helpers/formatRecordingUrl';
 
 //styles
 import styles from './SeatsTeamMembers.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const Component = () => {
     const meetingRecordingStore = useStore($meetingRecordingStore);
@@ -61,6 +67,8 @@ const Component = () => {
     const [teamMembers, setTeamMembers] = useState([]);
     const [profileTeamMembers, setProfileTeamMembers] = useState([]);
     const [remindTeamMemberNum, setReminTeamMemberNum] = useState(3);
+
+    const isSubscriptionBusiness = profile.subscriptionPlanKey === PlanKeys.Business;
 
     const validationSchema = yup.object({
         price: yup.number().min(0, 'not allowed to negative value.'),
@@ -122,11 +130,21 @@ const Component = () => {
         }
     }, [errors]);
 
-    const handleAddMember = () => {
-        if (teamMembers.length < remindTeamMemberNum) {
-            setTeamMembers([...teamMembers, { email: '', valid: false }]);
+    const handleAddMember = useCallback(() => {
+        if (isSubscriptionBusiness) {
+            if (teamMembers.length + profile.teamMembers.length < profile.maxSeatNumForTeamMembers) {
+                setTeamMembers([...teamMembers, { email: '', valid: false }]);
+            } else {
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.payToAddNewTeamMemberDialog,
+                });
+            }
         }
-    };
+    }, [
+        profile,
+        isSubscriptionBusiness,
+        teamMembers
+    ]);
 
     const handleRemoveMember = (index) => {
         const updatedMembers = [...teamMembers];
@@ -137,6 +155,16 @@ const Component = () => {
     const handleRemoveMemberFromProfile = async (email) => {
         profile.teamMembers = profile.teamMembers.filter(member => member.email !== email);
         await updateProfileFx({ teamMembers: profile.teamMembers });
+    };
+
+    const handleRemovePendingMember = async email => {
+        const updatedMembers = profile.teamMembers.filter(member => member.email !== email);
+        setProfileEvent({
+            user: {
+                teamMembers: updatedMembers
+            }
+        });
+        await updateProfileFx({ teamMembers: updatedMembers });
     };
 
     const handleEmailChange = (index, value) => {
@@ -187,7 +215,7 @@ const Component = () => {
                 >
                     <CustomButton
                         onClick={handleAddMember}
-                        disabled={teamMembers.length >= 3}
+                        disabled={!isSubscriptionBusiness}
                         variant="custom-primary"
                         label={
                             <Translation
@@ -198,108 +226,73 @@ const Component = () => {
                         sx={{ width: '206px', marginBottom: '10px' }}
                     />
                 </CustomGrid>
-                <CustomGrid
-                    container
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    align-items="center"
-                >
+                <ConditionalRender condition={!isSubscriptionBusiness}>
+                    <CustomTypography
+                        variant="body1"
+                        color="error"
+                        nameSpace="profile"
+                        translation="seatsTeamMembers.upgratePlanToBusiness"
+                    />
+                </ConditionalRender>
+                <ConditionalRender condition={isSubscriptionBusiness}>
+                    <CustomGrid
+                        container
+                        flexDirection="row"
+                        justifyContent="space-between"
+                        align-items="center"
+                    >
 
-                    <CustomGrid
-                        item
-                        xs={6}
-                        sx={{ textAlign: 'left' }}
-                    >
-                        <CustomTypography
-                            variant="body2"
-                            fontWeight="600"
-                            nameSpace="profile"
-                            translation="seatsTeamMembers.email"
-                        />
-                    </CustomGrid>
-                    <CustomGrid
-                        item
-                        xs={3}
-                        sx={{ textAlign: 'center' }}
-                    >
-                        <CustomTypography
-                            variant="body2"
-                            fontWeight="600"
-                            nameSpace="profile"
-                            translation="seatsTeamMembers.role"
-                        />
-                    </CustomGrid>
-                    <CustomGrid
-                        item
-                        xs={3}
-                        sx={{ textAlign: 'center' }}
-                    >
-                        <CustomTypography
-                            variant="body2"
-                            fontWeight="600"
-                            nameSpace="profile"
-                            translation="seatsTeamMembers.status"
-                        />
-                    </CustomGrid>
-                </CustomGrid>
-                {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
-                    <CustomGrid container item spacing={2} key={tindex} alignItems="center">
-                        <CustomGrid item xs={6}>
+                        <CustomGrid
+                            item
+                            xs={6}
+                            sx={{ textAlign: 'left' }}
+                        >
                             <CustomTypography
                                 variant="body2"
-                                color='#D9D9D9'
-                            >{tm.email}</CustomTypography>
-                        </CustomGrid>
-                        <CustomGrid item xs={3}>
-                            <CustomTypography
-                                variant="body2"
+                                fontWeight="600"
                                 nameSpace="profile"
-                                translation="seatsTeamMembers.teamMember"
-                                color='#D9D9D9'
+                                translation="seatsTeamMembers.email"
                             />
                         </CustomGrid>
-                        {
-                            tm.status === 'pending'
-                                ? (<CustomGrid item xs={3} container justifyContent="center">
-                                    <CustomTypography
-                                        variant="body2"
-                                        color='#D9D9D9'
-                                    >
-                                        pending
-                                    </CustomTypography>
-                                </CustomGrid>)
-                                : (
-                                    <CustomGrid item container xs={3} justifyContent="center">
-                                        <CustomPaper
-                                            variant="black-glass"
-                                            className={styles.deviceButton}
-                                        >
-                                            <ActionButton
-                                                variant="black"
-                                                onAction={() => handleRemoveMemberFromProfile(tm.email)}
-                                                className={styles.deviceButton}
-                                                Icon={<FontAwesomeIcon icon={faTrashCan} />}
-                                            />
-                                        </CustomPaper>
-                                    </CustomGrid>
-                                )
-                        }
+                        <CustomGrid
+                            item
+                            xs={3}
+                            sx={{ textAlign: 'center' }}
+                        >
+                            <CustomTypography
+                                variant="body2"
+                                fontWeight="600"
+                                nameSpace="profile"
+                                translation="seatsTeamMembers.role"
+                            />
+                        </CustomGrid>
+                        <CustomGrid
+                            item
+                            xs={2}
+                            sx={{ textAlign: 'center' }}
+                        >
+                            <CustomTypography
+                                variant="body2"
+                                fontWeight="600"
+                                nameSpace="profile"
+                                translation="seatsTeamMembers.status"
+                            />
+                        </CustomGrid>
+                        <CustomGrid
+                            item
+                            xs={1}
+                        >
+                        </CustomGrid>
                     </CustomGrid>
-                ))
-                }
-                {
-                    teamMembers.map((member, index) => (
-                        <CustomGrid container item spacing={2} key={index} alignItems="center">
+                    {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
+                        <CustomGrid container item spacing={2} key={tindex} alignItems="center">
                             <CustomGrid item xs={6}>
-                                <InputBase
-                                    label="Email"
-                                    value={member.email}
-                                    placeholder="email"
-                                    onChange={(e) => handleEmailChange(index, e.target.value)}
-                                    className={styles.emailInputBase}
-                                />
+                                <CustomTypography
+                                    variant="body2"
+                                    color='#D9D9D9'
+                                >{tm.email}</CustomTypography>
                             </CustomGrid>
-                            <CustomGrid item xs={3}>
+                            <CustomGrid item xs={3} container justifyContent="center">
                                 <CustomTypography
                                     variant="body2"
                                     nameSpace="profile"
@@ -307,32 +300,100 @@ const Component = () => {
                                     color='#D9D9D9'
                                 />
                             </CustomGrid>
-                            <CustomGrid item container xs={3} justifyContent="center">
-                                {member.valid ? (
-                                    <Button
-                                        variant="text"
-                                        className={styles.sendInvitationBtn}
-                                        onClick={() => handleSendInvitation(index)}
-                                    >
-                                        send invitation
-                                    </Button>
-                                ) : (
-                                    <CustomPaper
-                                        variant="black-glass"
-                                        className={styles.deviceButton}
-                                    >
-                                        <ActionButton
-                                            variant="black"
-                                            onAction={() => handleRemoveMember(index)}
-                                            className={styles.deviceButton}
-                                            Icon={<FontAwesomeIcon icon={faTrashCan} />}
-                                        />
-                                    </CustomPaper>
-                                )}
-                            </CustomGrid>
+                            {
+                                tm.status === 'pending'
+                                    ? (
+                                        <>
+                                            <CustomGrid item xs={2} container justifyContent="center">
+                                                <CustomTypography
+                                                    variant="body2"
+                                                    color='#D9D9D9'
+                                                >
+                                                    pending
+                                                </CustomTypography>
+                                            </CustomGrid>
+                                            <CustomGrid item xs={1} container justifyContent="center">
+                                                <ActionButton
+                                                    variant="black"
+                                                    onAction={() => handleRemovePendingMember(tm.email)}
+                                                    className={styles.deviceButton}
+                                                    Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                                />
+                                            </CustomGrid>
+                                        </>
+                                    )
+                                    : (
+                                        <>
+                                            <CustomGrid item container xs={2} justifyContent="center">
+                                                <CustomPaper
+                                                    variant="black-glass"
+                                                    className={styles.deviceButton}
+                                                >
+                                                    <ActionButton
+                                                        variant="black"
+                                                        onAction={() => handleRemoveMemberFromProfile(tm.email)}
+                                                        className={styles.deviceButton}
+                                                        Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                                    />
+                                                </CustomPaper>
+                                            </CustomGrid>
+                                            <CustomGrid item container xs={1} justifyContent="center">
+                                            </CustomGrid>
+                                        </>
+                                    )
+                            }
                         </CustomGrid>
                     ))
-                }
+                    }
+                    {
+                        teamMembers.map((member, index) => (
+                            <CustomGrid container item spacing={2} key={index} alignItems="center">
+                                <CustomGrid item xs={6}>
+                                    <InputBase
+                                        label="Email"
+                                        value={member.email}
+                                        placeholder="email"
+                                        onChange={(e) => handleEmailChange(index, e.target.value)}
+                                        className={styles.emailInputBase}
+                                    />
+                                </CustomGrid>
+                                <CustomGrid item xs={3} container justifyContent="center">
+                                    <CustomTypography
+                                        variant="body2"
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.teamMember"
+                                        color='#D9D9D9'
+                                    />
+                                </CustomGrid>
+                                <CustomGrid item container xs={2} justifyContent="center">
+                                    {member.valid ? (
+                                        <Button
+                                            variant="text"
+                                            className={styles.sendInvitationBtn}
+                                            onClick={() => handleSendInvitation(index)}
+                                        >
+                                            send invitation
+                                        </Button>
+                                    ) : (
+                                        <CustomPaper
+                                            variant="black-glass"
+                                            className={styles.deviceButton}
+                                        >
+                                            <ActionButton
+                                                variant="black"
+                                                onAction={() => handleRemoveMember(index)}
+                                                className={styles.deviceButton}
+                                                Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                            />
+                                        </CustomPaper>
+                                    )}
+                                </CustomGrid>
+                                <CustomGrid item container xs={1} justifyContent="center">
+                                </CustomGrid>
+                            </CustomGrid>
+                        ))
+                    }
+                </ConditionalRender>
             </CustomGrid >
         </CustomPaper >
     );

@@ -26,7 +26,6 @@ import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
-import clsx from 'clsx';
 
 const currencySigns: { [key: string]: string } = {
     USD: '$',

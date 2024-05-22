@@ -4,6 +4,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsNumber,
   IsUrl,
   ValidateIf,
   ValidateNested,
@@ -81,4 +82,8 @@ export class UpdateProfileRequest implements IUpdateProfile {
   @Type(() => SocialsDTO)
   @ValidateNested()
   socials: SocialsDTO;
+
+  @IsOptional()
+  @IsNumber()
+  maxSeatNumForTeamMembers: number;
 }

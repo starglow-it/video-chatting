@@ -222,6 +222,15 @@ export const $paymentMeetingAudience = $meetingPaymentStore.map(
         } as PaymentItem),
 );
 
+export const $paymentAddNewTeamMember = {
+    enabled: true,
+    price: 5,
+    // type: PaymentType.Meeting,
+    type: 'seat',
+    meetingRole: MeetingRole.Host,
+    currency: DEFAULT_PAYMENT_CURRENCY,
+} as PaymentItem
+
 export const $paymentPaywallParticipant = $meetingPaymentStore.map(
     payments =>
         payments.find(

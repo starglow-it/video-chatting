@@ -28,8 +28,10 @@ import {
     $authStore,
     checkAuthFx,
     $productsStore,
+    $seatProductsStore,
     $subscriptionStore,
     getStripeProductsFx,
+    getStripeSeatProductsFx,
     getSubscriptionFx,
 } from '../src/store';
 
@@ -201,10 +203,12 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     }
 
     let products = [];
+    let seatProducts = [];
     let subscription = {};
 
     if (pathName.includes('dashboard')) {
         products = await getStripeProductsFx({ ctx: nextPageContext });
+        seatProducts = await getStripeSeatProductsFx({ ctx: nextPageContext });
         subscription = await getSubscriptionFx({
             subscriptionId: user?.stripeSubscriptionId,
             ctx: nextPageContext,
@@ -221,6 +225,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
             isWithoutAuthen,
         },
         [`${$productsStore.sid}`]: products,
+        [`${$seatProductsStore.sid}`]: seatProducts,
         [`${$subscriptionStore.sid}`]: subscription,
     };
 

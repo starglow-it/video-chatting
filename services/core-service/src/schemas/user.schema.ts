@@ -252,6 +252,12 @@ export class User {
     type: [TeamMemberSchema],
   })
   teamMembers: { email: string, status: string }[];
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 3,
+  })
+  maxSeatNumForTeamMembers: ICommonUser['maxSeatNumForTeamMembers'];
 }
 
 export type UserDocument = User & Document;

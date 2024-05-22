@@ -46,6 +46,11 @@ export const getProductsUrl = {
     method: HttpMethods.Get,
 };
 
+export const getSeatProductsUrl = {
+    url: `${serverUrl}/${paymentsScope}/seat-products`,
+    method: HttpMethods.Get,
+};
+
 export const getCustomerPortalSessionUrl = ({
     subscriptionId,
 }: {
