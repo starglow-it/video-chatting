@@ -212,6 +212,7 @@ export type AppDialogsState = {
     meetingEndDialog: boolean;
     hostDeviceRequireDialog: boolean;
     recordVideoDownloadDialog: boolean;
+    payToAddNewTeamMemberDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -247,6 +248,7 @@ export enum AppDialogsEnum {
     confirmBecomeAudienceDialog = 'confirmBecomeAudienceDialog',
     hostDeviceRequireDialog = 'hostDeviceRequireDialog',
     recordVideoDownloadDialog = 'recordVideoDownloadDialog',
+    payToAddNewTeamMemberDialog = 'payToAddNewTeamMemberDialog',
 }
 
 export type DialogActionPayload = {

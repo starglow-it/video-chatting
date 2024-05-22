@@ -8,6 +8,7 @@ export enum PaymentsBrokerPatterns {
   HandleWebHook = 'handle_webhook',
   HandleExpressWebHook = 'handle_express_webhook',
   GetStripeSubscriptionProducts = 'get_stripe_subscriptions_products',
+  GetStripeSeatSubscriptionProducts = 'get_stripe_seat_subscriptions_products',
   GetStripeTemplateProducts = 'get_stripe_templates_products',
   GetStripeCheckoutSession = 'get_stripe_checkout_session',
   GetStripePortalSession = 'get_stripe_portal_session',

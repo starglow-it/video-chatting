@@ -33,7 +33,8 @@ export const initialDialogsState: AppDialogsState = {
     confirmBecomeParticipantDialog: false,
     confirmBecomeAudienceDialog: false,
     hostDeviceRequireDialog: false,
-    recordVideoDownloadDialog: false
+    recordVideoDownloadDialog: false,
+    payToAddNewTeamMemberDialog: false,
 };
 
 export const $appDialogsStore =

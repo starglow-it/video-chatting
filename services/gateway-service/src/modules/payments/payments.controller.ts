@@ -269,6 +269,7 @@ export class PaymentsController {
       throw new BadRequestException(err);
     }
   }
+
   @Post('/createPaymentForRecordingVideo')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Payment Intent For Recording Video' })
@@ -439,6 +440,36 @@ export class PaymentsController {
       this.logger.error(
         {
           message: `An error occurs, while get stripe products`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthAnonymousGuard)
+  @Get('/seat-products')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Seat Products' })
+  @ApiOkResponse({
+    description: 'Get Seat Products',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getStripeSeatProducts(): Promise<ResponseSumType<any>> {
+    try {
+      const products = await this.paymentsService.getStripeSeatProducts();
+
+      return {
+        success: true,
+        result: products,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get stripe seat products`,
         },
         JSON.stringify(err),
       );

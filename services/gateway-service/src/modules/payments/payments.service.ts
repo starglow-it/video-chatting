@@ -65,6 +65,14 @@ export class PaymentsService {
     return this.client.send(pattern, payload || {}).toPromise();
   }
 
+  async getStripeSeatProducts(payload?: unknown) {
+    const pattern = {
+      cmd: PaymentsBrokerPatterns.GetStripeSeatSubscriptionProducts,
+    };
+
+    return this.client.send(pattern, payload || {}).toPromise();
+  }
+
   async getCheckoutSession(payload: GetStripeCheckoutSessionPayload) {
     const pattern = { cmd: PaymentsBrokerPatterns.GetStripeCheckoutSession };
 

@@ -6,6 +6,7 @@ import { MainInfo } from '@components/Profile/MainInfo/MainInfo';
 import { RecordingList } from '@components/Profile/RecordingList/RecordingList';
 import { SeatsTeamMembers } from '@components/Profile/SeatsTeamMembers/SeatsTeamMembers';
 import { SubscriptionInfo } from '@components/Profile/SubscriptionInfo/SubscriptionInfo';
+import { PayToAddNewTeamMemberDialog } from '@components/Dialogs/PayToAddNewTeamMemberDialog/PayToAddNewTeamMemberDialog';
 
 import styles from './ProfileContainer.module.scss';
 
@@ -17,6 +18,7 @@ const ProfileContainer = memo(() => {
             <SeatsTeamMembers />
             <RecordingList />
             <SubscriptionInfo />
+            <PayToAddNewTeamMemberDialog />
         </MainProfileWrapper>
     )
 });

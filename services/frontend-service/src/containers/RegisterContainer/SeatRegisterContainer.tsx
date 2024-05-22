@@ -105,13 +105,13 @@ const Component = () => {
         });
     });
 
-    useEffect(() => {
-        (async () => {
-            if (authState.isAuthenticated && !isVerifying) {
-                router.push(dashboardRoute);
-            }
-        })();
-    }, [authState.isAuthenticated, isVerifying]);
+    // useEffect(() => {
+    //     (async () => {
+    //         if (authState.isAuthenticated && !isVerifying) {
+    //             router.push(dashboardRoute);
+    //         }
+    //     })();
+    // }, [authState.isAuthenticated, isVerifying]);
 
     useEffect(() => {
         if (!showHints) {
@@ -153,16 +153,17 @@ const Component = () => {
             alignItems="center"
         >
             <CustomGrid className={styles.background}>
-                <CustomImage
-                    src="/images/background-register.png"
-                    className={styles.wrapperBackgroundMedia}
-                    layout="fill"
-                />
             </CustomGrid>
             <CustomGrid
                 flexDirection="column"
             >
                 <CenteredPaper className={styles.wrapper}>
+                    <CustomTypography
+                        variant="h3"
+                        className={styles.header}
+                        nameSpace="register"
+                        translation="getStarted.seatRegistrationHeader"
+                    />
                     <CustomGrid
                         container
                         alignItems="center"

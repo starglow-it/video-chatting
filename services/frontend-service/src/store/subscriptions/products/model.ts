@@ -13,7 +13,17 @@ export const $productsStore = subscriptionsDomain.createStore<ProductsStore>(
     [],
 );
 
+export const $seatProductsStore = subscriptionsDomain.createStore<ProductsStore>(
+    [],
+);
+
 export const getStripeProductsFx = subscriptionsDomain.createEffect<
+    Partial<INextPageContext>,
+    ProductsStore,
+    ErrorState
+>('getStripeProductsFx');
+
+export const getStripeSeatProductsFx = subscriptionsDomain.createEffect<
     Partial<INextPageContext>,
     ProductsStore,
     ErrorState

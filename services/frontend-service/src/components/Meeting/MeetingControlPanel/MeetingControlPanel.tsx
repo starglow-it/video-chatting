@@ -49,11 +49,9 @@ import {
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
     toggleSchedulePanelEvent,
-    toggleUsersPanelEvent,
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleEditRuumeSettingEvent,
-    setActiveTabPanelEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -112,12 +110,6 @@ const Component = () => {
     const toggleProfilePanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         toggleProfilePanelEvent(false);
-    }, []);
-
-    const toggleOutsideUserPanel = useCallback((e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        toggleUsersPanelEvent(false);
-        setActiveTabPanelEvent(0);
     }, []);
 
     const toggleOutsideSchedulePanel = useCallback(

@@ -12,7 +12,8 @@
       "linkedInMobile": "LinkedIn"
     },
     "createNewAcc": "or create new account",
-    "button": "Get started"
+    "button": "Get started",
+    "seatRegistrationHeader": "You’ve been invited as a team member"
   },
   "confirm": {
     "title": "Confirm Registration Process",

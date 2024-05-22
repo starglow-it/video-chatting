@@ -218,7 +218,7 @@ export class PaymentsService {
     name: string;
     priceInCents: number;
     description: string;
-    type: 'subscription' | 'template';
+    type: 'subscription' | 'template' | 'seatTeamMembership';
   }) {
     const environment = await this.configService.get('environment');
 
@@ -238,7 +238,7 @@ export class PaymentsService {
       product: product.id,
       currency: 'usd',
       unit_amount: productData.priceInCents,
-      ...(productData.type === 'subscription'
+      ...(productData.type === 'subscription' || productData.type === 'seatTeamMembership'
         ? {
           recurring: {
             interval: ['demo', 'production'].includes(environment)
@@ -309,6 +309,16 @@ export class PaymentsService {
 
     return allProducts.data.filter(
       (product) => product.metadata.type === 'subscription',
+    );
+  }
+
+  async getStripeSeatSubscriptions(): Promise<Stripe.Product[]> {
+    const allProducts = await this.stripeClient.products.list({
+      active: true,
+    });
+
+    return allProducts.data.filter(
+      (product) => product.metadata.type === 'seatTeamMembership',
     );
   }
 

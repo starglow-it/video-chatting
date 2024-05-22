@@ -18,6 +18,13 @@ export type PlanData = {
   testTrialPeriodDays?: number;
 };
 
+export type SeatPlanData = {
+  name: string;
+  key: string;
+  priceInCents: number;
+  description: string;
+};
+
 const houseSubscription: PlanData = {
   name: PlanKeys.House,
   key: 'house',
@@ -69,6 +76,15 @@ const businessSubscription: PlanData = {
     },
   },
 };
+
+export const seatTeamMembersSubscription: SeatPlanData[] = [
+  {
+    name: 'seatTeamMember',
+    key: 'seatTeamMember',
+    priceInCents: 500,
+    description: 'Seat for the team members',
+  }
+];
 
 export const plans: Record<PlanKeys, PlanData> = {
   Business: businessSubscription,

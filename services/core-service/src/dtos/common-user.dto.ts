@@ -138,4 +138,7 @@ export class CommonUserDTO implements ICommonUser {
 
   @Expose()
   teamMembers: ICommonUser['teamMembers'];
+
+  @Expose()
+  maxSeatNumForTeamMembers: ICommonUser['maxSeatNumForTeamMembers'];
 }
