@@ -60,6 +60,15 @@ export const getCustomerPortalSessionUrl = ({
     method: HttpMethods.Get,
 });
 
+export const getCustomerSeatPortalSessionUrl = ({
+    subscriptionId,
+}: {
+    subscriptionId: string;
+}) => ({
+    url: `${serverUrl}/${paymentsScope}/seat-portal/${subscriptionId}`,
+    method: HttpMethods.Get,
+});
+
 export const getSubscriptionUrl = ({
     subscriptionId,
 }: {

@@ -2731,7 +2731,7 @@ export class MeetingsGateway
         subscribeWsError(socket);
         const user = this.getUserFromSocket(socket);
 
-        const { script } = msg;
+        const { script, currentDate } = msg;
         let scriptString = "";
         if (script.length > 0) {
           script.forEach(item => {
@@ -2740,7 +2740,6 @@ export class MeetingsGateway
         }
 
         const frontendUrl = await this.configService.get('frontendUrl');
-        const openAiUrl = await this.configService.get('openaiUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
 
         const prompt = `Given the following meeting transcription: 
@@ -2764,18 +2763,18 @@ export class MeetingsGateway
         let messageContent = chatCompletion.choices[0].message.content;
 
         if (messageContent) {
-          const now = new Date();
-          const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-          const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          // const now = new Date();
+          // const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+          // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-          const date = now.getDate();
-          const month = months[now.getMonth()];
-          const year = now.getFullYear();
-          const hours = now.getHours();
-          const minutes = now.getMinutes();
-          const ampm = hours >= 12 ? 'pm' : 'am';
+          // const date = now.getDate();
+          // const month = months[now.getMonth()];
+          // const year = now.getFullYear();
+          // const hours = now.getHours();
+          // const minutes = now.getMinutes();
+          // const ampm = hours >= 12 ? 'pm' : 'am';
 
-          const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
+          // const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
 
           const userProfile = await this.coreService.findUserById({ userId: user.profileId });
 
@@ -2792,7 +2791,7 @@ export class MeetingsGateway
                 key: emailTemplates.aiSummary,
                 data: [
                   { name: 'NAME', content: user.username },
-                  { name: 'DATE', content: formattedDateTime },
+                  { name: 'DATE', content: currentDate },
                   { name: 'SUMMARY', content: summary },
                   { name: 'TRANSCRIPTION', content: transcription },
                   { name: 'PROFILEURL', content: `${frontendUrl}/dashboard/profile` },

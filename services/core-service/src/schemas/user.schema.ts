@@ -156,6 +156,11 @@ export class User {
   stripeSubscriptionId: ICommonUser['stripeSubscriptionId'];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  stripeSeatSubscriptionId: ICommonUser['stripeSeatSubscriptionId'];
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
   })
   isSubscriptionActive: ICommonUser['isSubscriptionActive'];

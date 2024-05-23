@@ -14,7 +14,7 @@ import {
     addNotificationEvent,
     updateProfileFx,
     startCheckoutSessionForSubscriptionFx,
-    getCustomerPortalSessionUrlFx,
+    getCustomerSeatPortalSessionUrlFx,
 } from 'src/store';
 import { NotificationType } from '../../../store/types';
 
@@ -77,7 +77,7 @@ export const PayToAddNewTeamMemberDialog = () => {
     }, [isConnectStripeAccountPending]);
 
     const handleChooseSubscription = async () => {
-        if (seatProducts.length && !profile.stripeSubscriptionId) {
+        if (seatProducts.length && !profile.stripeSeatSubscriptionId) {
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId: seatProducts[0].product.id,
                 baseUrl: profileRoute,
@@ -86,9 +86,9 @@ export const PayToAddNewTeamMemberDialog = () => {
             if (response?.url) {
                 return router.push(response.url);
             }
-        } else if (profile.stripeSubscriptionId) {
-            const response = await getCustomerPortalSessionUrlFx({
-                subscriptionId: profile.stripeSubscriptionId,
+        } else if (profile.stripeSeatSubscriptionId) {
+            const response = await getCustomerSeatPortalSessionUrlFx({
+                subscriptionId: profile.stripeSeatSubscriptionId,
             });
 
             if (response?.url) {

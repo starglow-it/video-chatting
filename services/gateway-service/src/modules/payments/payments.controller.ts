@@ -564,6 +564,42 @@ export class PaymentsController {
   }
 
   @UseGuards(JwtAuthAnonymousGuard)
+  @Get('/seat-portal/:subscriptionId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Portal Session Url' })
+  @ApiOkResponse({
+    description: 'Get Portal Session Url',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getSeatPortalSession(
+    @Param('subscriptionId') subscriptionId: string,
+  ): Promise<ResponseSumType<any>> {
+    try {
+      const portalSession = await this.paymentsService.getSeatPortalSession({
+        subscriptionId,
+      });
+
+      return {
+        success: true,
+        result: {
+          url: portalSession.url,
+        },
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get portal session url`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/subscriptions/:subscriptionId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Subscription' })

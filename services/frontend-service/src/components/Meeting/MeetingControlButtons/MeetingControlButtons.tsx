@@ -305,7 +305,19 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
-            sendAiTranscription({ script: transcriptionsStore });
+            const now = new Date();
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'pm' : 'am';
+            const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
+
+            sendAiTranscription({ script: transcriptionsStore, currentDate: formattedDateTime });
             setAITranscriptEvent(false);
         }
         disconnectFromVideoChatEvent();
@@ -332,9 +344,9 @@ const Component = () => {
 
         window.location.reload();
     }, [
-        isAiTranscriptEnabled, 
-        transcriptionList, 
-        isSubscriptionPlanBusiness, 
+        isAiTranscriptEnabled,
+        transcriptionList,
+        isSubscriptionPlanBusiness,
         isOwner,
         isRecording,
         meetingRecordingId,

@@ -42,6 +42,7 @@ export interface ICommonUser {
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
+  stripeSeatSubscriptionId?: string;
   subscriptionPlanKey?: PlanKeys;
   prevSubscriptionPlanKey?: PlanKeys;
   nextSubscriptionPlanKey?: PlanKeys;
@@ -79,6 +80,7 @@ export interface IUpdateProfile {
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
+  stripeSeatSubscriptionId?: string;
   subscriptionPlanKey?: PlanKeys;
   nextSubscriptionPlanKey?: PlanKeys;
   prevSubscriptionPlanKey?: PlanKeys;

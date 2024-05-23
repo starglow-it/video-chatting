@@ -25,6 +25,7 @@ export const initialProfileState = {
     stripeAccountId: '',
     stripeEmail: '',
     stripeSubscriptionId: '',
+    stripeSeatSubscriptionId: '',
     renewSubscriptionTimestampInSeconds: 0,
     isStripeEnabled: false,
     isSubscriptionActive: false,

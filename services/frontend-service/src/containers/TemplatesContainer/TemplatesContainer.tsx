@@ -187,7 +187,7 @@ const Component = () => {
                     result.template?.customLink || result?.template?.id,
                 );
 
-                window.open(newPageUrl, '_blank');
+                router.push(newPageUrl);
             }
         },
         [],

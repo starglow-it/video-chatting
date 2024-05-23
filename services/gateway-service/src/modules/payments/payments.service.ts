@@ -85,6 +85,12 @@ export class PaymentsService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async getSeatPortalSession(payload: GetStripePortalSessionPayload) {
+    const pattern = { cmd: PaymentsBrokerPatterns.GetStripeSeatPortalSession };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async getStripeSubscription(payload: GetStripeSubscriptionPayload) {
     const pattern = { cmd: PaymentsBrokerPatterns.GetStripeSubscription };
 

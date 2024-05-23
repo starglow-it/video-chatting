@@ -275,7 +275,8 @@ export type CheckPrePaymentCodePayload = {
 };
 
 export type sendAiTranscriptionPayload = {
-    script: string[]
+    script: string[],
+    currentDate: string
 };
 
 export type isAiTranscriptionTurnedOnPayload = {
