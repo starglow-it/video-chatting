@@ -5,7 +5,7 @@
   position: absolute;
   bottom: rem(140px);
   left: 50%;
-  z-index: 1000;
+  // z-index: 1000
   width: auto;
 
   &.mobile {
@@ -147,6 +147,7 @@
   opacity: 0;
   right: rem(260px);
   bottom: rem(0px);
+  z-index: 1000;
 
   &.mobile {
     left: 0%;
@@ -193,6 +194,7 @@
   opacity: 0;
   left: -170px;
   bottom: 0px;
+  z-index: 1000;
 
   &.mobile {
     left: 0%;
