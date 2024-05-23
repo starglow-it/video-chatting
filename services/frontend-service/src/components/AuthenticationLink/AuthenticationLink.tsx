@@ -50,7 +50,7 @@ const Component = () => {
                         if (!userWithoutLoginId) await initUserWithoutTokenFx({});
                         else {
                             const newPageUrl = await getClientMeetingUrl(userTemplateId);
-                            window.open(newPageUrl, '_blank');
+                            router.push(newPageUrl)
                         }
                     } catch (error) {
                         console.log(error);

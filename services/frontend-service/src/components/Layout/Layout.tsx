@@ -282,7 +282,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         else {
             const newPageUrl = await getClientMeetingUrl(userTemplateId);
 
-            window.open(newPageUrl, '_blank');
+            router.push(newPageUrl)
         }
     };
 

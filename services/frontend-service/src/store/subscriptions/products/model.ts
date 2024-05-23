@@ -42,6 +42,13 @@ export const startCheckoutSessionForSubscriptionFx =
         ErrorState
     >('startCheckoutSessionForSubscriptionFx');
 
+export const startCheckoutSessionForSeatSubscriptionFx =
+    subscriptionsDomain.createEffect<
+        GetCheckoutSessionUrlPayload,
+        GetCheckoutSessionUrlResponse,
+        ErrorState
+    >('startCheckoutSessionForSubscriptionFx');
+
 export const getCustomerPortalSessionUrlFx = subscriptionsDomain.createEffect<
     GetPortalSessionUrlPayload,
     GetPortalSessionUrlResponse,
