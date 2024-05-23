@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useEffect } from 'react';
+import { memo, useRef } from 'react';
 import { useStore } from 'effector-react';
 
 // icons

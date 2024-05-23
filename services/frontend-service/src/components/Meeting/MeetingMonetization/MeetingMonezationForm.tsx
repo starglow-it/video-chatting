@@ -1,5 +1,9 @@
-import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 
+import { createRoomRoute } from 'src/const/client-routes';
+
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { InputBase, MenuItem } from '@mui/material';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
@@ -44,7 +48,7 @@ type MonezationFormProps = {
     enableForm: boolean;
     activeValue: TabsValues;
     isCreate: boolean;
-    onSave: (event: any) => void
+    onSave: () => void
 };
 
 export const MeetingMonezationForm = forwardRef(
@@ -56,11 +60,13 @@ export const MeetingMonezationForm = forwardRef(
             enableForm,
             activeValue,
             isCreate = false,
-            onSave = () => {}
+            onSave = () => { }
         }: MonezationFormProps,
         ref: any,
     ) => {
         const isConnectedStripe = useStore($isConnectedStripe);
+        const router = useRouter();
+        const currentUrl = router.asPath;
 
         const resolver =
             useYupValidationResolver<FieldValues>(validationSchema);
@@ -146,9 +152,26 @@ export const MeetingMonezationForm = forwardRef(
             name: 'paywallCurrency',
         });
 
+        const isFirstRender = useRef(true);
+
+        useEffect(() => {
+            async function handleEnabledSwitcher() {
+                await onSave();
+            }
+            if (currentUrl.includes(createRoomRoute)) {
+                handleEnabledSwitcher();
+            } else {
+                if (!isFirstRender.current) {
+                    handleEnabledSwitcher();
+                } else {
+                    isFirstRender.current = false;
+                }
+            }
+        }, [enabledMeeting, enabledPaywall, templateCurrency, paywallCurrency, currentUrl]);
+
         const handleOnChange = async (event: any): Promise<void> => {
             if (onSave) {
-                await onSave(event);
+                await onSave();
             }
         };
 
@@ -206,11 +229,10 @@ export const MeetingMonezationForm = forwardRef(
                                     title={
                                         <Translation
                                             nameSpace="meeting"
-                                            translation={`features.${
-                                                isTabParticipant
-                                                    ? 'tooltipParticipantPaywall'
-                                                    : 'tooltipAudiencePaywall'
-                                            }`}
+                                            translation={`features.${isTabParticipant
+                                                ? 'tooltipParticipantPaywall'
+                                                : 'tooltipAudiencePaywall'
+                                                }`}
                                         />
                                     }
                                     tooltipClassName={styles.tooltipField}
@@ -327,11 +349,10 @@ export const MeetingMonezationForm = forwardRef(
                                     title={
                                         <Translation
                                             nameSpace="meeting"
-                                            translation={`features.${
-                                                isTabParticipant
-                                                    ? 'tooltipParticipantInMeeting'
-                                                    : 'tooltipAudienceInMeeting'
-                                            }`}
+                                            translation={`features.${isTabParticipant
+                                                ? 'tooltipParticipantInMeeting'
+                                                : 'tooltipAudienceInMeeting'
+                                                }`}
                                         />
                                     }
                                 >

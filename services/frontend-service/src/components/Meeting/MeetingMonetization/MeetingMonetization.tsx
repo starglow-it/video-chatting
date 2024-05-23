@@ -37,7 +37,7 @@ import {
     setCreateRoomPaymentDataEvent,
     createMeetingPaymentEvent
 } from '../../../store/roomStores';
-import { $isConnectedStripe, addNotificationEvent } from '../../../store';
+import { addNotificationEvent } from '../../../store';
 import styles from './MeetingMonetization.module.scss';
 import { MeetingMonezationForm } from './MeetingMonezationForm';
 import { FormDataPayment, TabsValues } from './type';
@@ -129,7 +129,7 @@ const tabs: ValuesSwitcherAlias[] = [
     },
 ];
 
-const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate: boolean, onUpdate: () => void }) => {
+const Component = ({ isRoomCreate = false, onUpdate = () => { } }: { isRoomCreate: boolean, onUpdate: () => void }) => {
     const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const formParticipantsRef = useRef<{ getValues: () => FormDataPayment }>(
         null,
@@ -140,7 +140,6 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
     const paymentPaywallParticipant = useStore($paymentPaywallParticipant);
     const paymentMeetingAudience = useStore($paymentMeetingAudience);
     const paymentPaywallAudience = useStore($paymentPaywallAudience);
-    const isConnectedStripe = useStore($isConnectedStripe);
 
     const { activeItem, onValueChange } = useValueSwitcher<
         TabsValues,
@@ -160,8 +159,8 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
         }
     }, []);
 
-    const onSubmit = useCallback(async (event: any) => {
-        event.preventDefault();
+    const onSubmit = useCallback(async () => {
+        // event.preventDefault();
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
         const payload = {
@@ -225,29 +224,21 @@ const Component = ({ isRoomCreate = false, onUpdate = () => {} }: { isRoomCreate
             const paymentItems: MeetingPayment = [];
 
             // Assuming PaymentType and MeetingRole enums are defined to match your use case
-            if (participant.enabled) {
-                paymentItems.push(createPaymentItem(participant.enabled, participant.price, participant.currency, PaymentType.Meeting, MeetingRole.Participant));
-            }
-            if (audience.enabled) {
-                paymentItems.push(createPaymentItem(audience.enabled, audience.price, audience.currency, PaymentType.Meeting, MeetingRole.Audience));
-            }
+            paymentItems.push(createPaymentItem(participant.enabled, participant.price, participant.currency, PaymentType.Meeting, MeetingRole.Participant));
+            paymentItems.push(createPaymentItem(audience.enabled, audience.price, audience.currency, PaymentType.Meeting, MeetingRole.Audience));
 
             // Repeat for the paywall part if needed, adjust type accordingly
             const { participant: paywallParticipant, audience: paywallAudience } = payload.paywall;
 
-            if (paywallParticipant.enabled) {
-                paymentItems.push(createPaymentItem(paywallParticipant.enabled, paywallParticipant.price, paywallParticipant.currency, PaymentType.Paywall, MeetingRole.Participant));
-            }
-            if (paywallAudience.enabled) {
-                paymentItems.push(createPaymentItem(paywallAudience.enabled, paywallAudience.price, paywallAudience.currency, PaymentType.Paywall, MeetingRole.Audience));
-            }
+            paymentItems.push(createPaymentItem(paywallParticipant.enabled, paywallParticipant.price, paywallParticipant.currency, PaymentType.Paywall, MeetingRole.Participant));
+            paymentItems.push(createPaymentItem(paywallAudience.enabled, paywallAudience.price, paywallAudience.currency, PaymentType.Paywall, MeetingRole.Audience));
 
             // Now paymentItems is an array of PaymentItem, matching the expected MeetingPayment type
             createMeetingPaymentEvent(paymentItems);
             setCreateRoomPaymentDataEvent({
                 ...payload
             });
-            
+
             addNotificationEvent({
                 type: NotificationType.PaymentSuccess,
                 message: 'meeting.monetization.saved',
