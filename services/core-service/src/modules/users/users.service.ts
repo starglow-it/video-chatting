@@ -215,6 +215,7 @@ export class UsersService {
       stripeSessionId: data.stripeSessionId,
       stripeCustomerId: data.stripeCustomerId,
       stripeSubscriptionId: data.stripeSubscriptionId,
+      stripeSeatSubscriptionId: data.stripeSeatSubscriptionId,
       subscriptionPlanKey: data.subscriptionPlanKey,
       nextSubscriptionPlanKey: data.nextSubscriptionPlanKey,
       prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,

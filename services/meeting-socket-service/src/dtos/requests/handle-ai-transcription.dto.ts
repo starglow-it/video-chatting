@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsArray } from 'class-validator';
+import { IsNotEmpty, IsArray, IsString } from 'class-validator';
 import { IHandleAiTranscription } from 'src/interfaces/handle-ai-transcriptioin.interface';
 export class handleAiTranscription implements IHandleAiTranscription {
   @IsNotEmpty()
@@ -12,4 +12,8 @@ export class handleAiTranscription implements IHandleAiTranscription {
       profileAvatar: string;
     };
   }[]
+
+  @IsNotEmpty()
+  @IsString()
+  currentDate: string
 }

@@ -573,6 +573,34 @@ export class PaymentsController {
     }
   }
 
+  @MessagePattern({ cmd: PaymentsBrokerPatterns.GetStripeSeatPortalSession })
+  async getStripeSeatPortalSession(
+    @Payload() payload: GetStripePortalSessionPayload,
+  ) {
+    try {
+      this.logger.log({
+        message: `getStripePortalSession input payload`,
+        ctx: payload,
+      });
+
+      const frontendUrl = await this.configService.get('frontendUrl');
+
+      const subscription = await this.paymentService.getSubscription(
+        payload.subscriptionId,
+      );
+
+      return this.paymentService.createSessionPortal(
+        subscription.customer,
+        `${frontendUrl}/dashboard/profile`,
+      );
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: PAYMENTS_SERVICE,
+      });
+    }
+  }
+
   @MessagePattern({ cmd: PaymentsBrokerPatterns.GetStripeSubscription })
   async getStripeSubscription(
     @Payload() payload: GetStripeSubscriptionPayload,
@@ -788,23 +816,29 @@ export class PaymentsController {
 
     const updateData: Partial<ICommonUser> = {};
 
-    if (!user.stripeSubscriptionId) {
-      Object.assign(updateData, {
-        stripeSubscriptionId: subscription.id,
-      });
-    }
-
     const productData = await this.paymentService.getStripeProduct(
       subscription['plan'].product,
     );
 
     if (productData.name === 'seatTeamMember') {
+      if (!user.stripeSeatSubscriptionId) {
+        Object.assign(updateData, {
+          stripeSeatSubscriptionId: subscription.id,
+        });
+      }
+
       Object.assign(updateData, {
         maxSeatNumForTeamMembers:
           subscription.items.data[0].quantity +
           user.maxSeatNumForTeamMembers,
       });
     } else {
+      if (!user.stripeSubscriptionId) {
+        Object.assign(updateData, {
+          stripeSubscriptionId: subscription.id,
+        });
+      }
+
       const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
       const nextPlan = plans[productData.name || PlanKeys.House];
 
@@ -863,15 +897,15 @@ export class PaymentsController {
 
     if (product.name === 'seatTeamMember') {
       const user = await this.coreService.findUser({
-        stripeSubscriptionId: subscription.id,
+        stripeSeatSubscriptionId: subscription.id,
       });
 
       if (user) {
         await this.coreService.updateUser({
-          query: { stripeSubscriptionId: subscription.id },
+          query: { stripeSeatSubscriptionId: subscription.id },
           data: {
             maxSeatNumForTeamMembers: user.maxSeatNumForTeamMembers - 1,
-            stripeSubscriptionId: null,
+            stripeSeatSubscriptionId: null,
           },
         });
       }
@@ -916,13 +950,26 @@ export class PaymentsController {
   }
 
   async handleSubscriptionCreated(subscription: Stripe.Subscription) {
-    await this.coreService.updateUser({
-      query: { stripeCustomerId: subscription.customer },
-      data: {
-        isSubscriptionActive: false,
-        stripeSubscriptionId: subscription.id,
-      },
-    });
+    const productData = await this.paymentService.getStripeProduct(
+      subscription['plan'].product,
+    );
+
+    if (productData.name === 'seatTeamMember') {
+      await this.coreService.updateUser({
+        query: { stripeCustomerId: subscription.customer },
+        data: {
+          stripeSeatSubscriptionId: subscription.id,
+        },
+      });
+    } else {
+      await this.coreService.updateUser({
+        query: { stripeCustomerId: subscription.customer },
+        data: {
+          isSubscriptionActive: false,
+          stripeSubscriptionId: subscription.id,
+        },
+      });
+    }
   }
 
   async createSubscriptionsIfNotExists() {
@@ -976,6 +1023,7 @@ export class PaymentsController {
             query: { stripeSessionId: session.id },
             data: {
               maxSeatNumForTeamMembers: user.maxSeatNumForTeamMembers + 1,
+              stripeSeatSubscriptionId: session.subscription as string
             },
           });
         }

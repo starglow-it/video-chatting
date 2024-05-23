@@ -47,3 +47,9 @@ export const getCustomerPortalSessionUrlFx = subscriptionsDomain.createEffect<
     GetPortalSessionUrlResponse,
     ErrorState
 >('getCustomerPortalSessionUrlFx');
+
+export const getCustomerSeatPortalSessionUrlFx = subscriptionsDomain.createEffect<
+    GetPortalSessionUrlPayload,
+    GetPortalSessionUrlResponse,
+    ErrorState
+>('getCustomerPortalSessionUrlFx');
