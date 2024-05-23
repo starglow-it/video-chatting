@@ -117,9 +117,9 @@ const Component = ({
     const renderTimezoneList = useMemo(
         () =>
             TIMEZONES.map(timezone => (
-                <MenuItem key={timezone.tzCode} value={timezone.tzCode}>
-                    {timezone.name}
-                </MenuItem>
+                    <MenuItem key={timezone.tzCode} value={timezone.tzCode}>
+                        {timezone.name}
+                    </MenuItem>
             )),
         [],
     );
