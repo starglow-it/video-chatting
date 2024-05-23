@@ -26,6 +26,7 @@ import { AppDialogsEnum } from 'src/store/types';
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { Translation } from '@library/common/Translation/Translation';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 //const
 import { profileRoute } from '../../../const/client-routes';
@@ -101,7 +102,7 @@ export const PayToAddNewTeamMemberDialog = () => {
                 open={payToAddNewTeamMemberDialog && !isMobile()}
                 className={styles.content}
             >
-                <CustomGrid container flexDirection="column" className={styles.main}>
+                <CustomGrid container flexDirection="column" className={styles.main} gap={2}>
                     <CustomGrid className={styles.buttonClose}>
                         <RoundCloseIcon
                             width="28px"
@@ -111,9 +112,17 @@ export const PayToAddNewTeamMemberDialog = () => {
                     </CustomGrid>
                     <CustomGrid className={styles.header}>
                         <CustomTypography
-                            variant="body2"
                             nameSpace="profile"
+                            className={styles.headerText}
                             translation="seatsTeamMembers.payToAddNewTeamMemberDialog.header"
+                        />
+                    </CustomGrid>
+                    <CustomGrid container justifyContent="center">
+                        <CustomImage
+                            width={40}
+                            height={40}
+                            src={'/images/hi-hand.webp'}
+                            alt="gategory-item"
                         />
                     </CustomGrid>
                     <CustomGrid container justifyContent="center" gap={2}>

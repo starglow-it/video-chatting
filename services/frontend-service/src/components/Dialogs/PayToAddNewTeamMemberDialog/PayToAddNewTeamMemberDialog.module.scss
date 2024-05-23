@@ -24,10 +24,6 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
-    span {
-        font-size: 18px;
-        font-weight: 500;
-    }
 }
 
 .actions {
@@ -120,6 +116,12 @@
         background-color: transparent;
         color: #ddb0f2;
     }
+}
+
+.headerText {
+    text-align: center;
+    font-size: 22px;
+    font-weight: normal;
 }
 
 .disableWelcomeMeeting {
