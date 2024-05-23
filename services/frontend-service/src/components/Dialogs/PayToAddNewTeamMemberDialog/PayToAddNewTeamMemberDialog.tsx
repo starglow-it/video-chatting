@@ -8,12 +8,11 @@ import {
     $isConnectedStripe,
     $profileStore,
     $seatProductsStore,
-    $productsStore,
     appDialogsApi,
     connectStripeAccountFx,
     addNotificationEvent,
     updateProfileFx,
-    startCheckoutSessionForSubscriptionFx,
+    startCheckoutSessionForSeatSubscriptionFx,
     getCustomerSeatPortalSessionUrlFx,
 } from 'src/store';
 import { NotificationType } from '../../../store/types';
@@ -49,7 +48,6 @@ export const PayToAddNewTeamMemberDialog = () => {
     const profile = useStore($profileStore);
     const router = useRouter();
     const seatProducts = useStore($seatProductsStore);
-    const products = useStore($productsStore);
 
     useEffect(() => {
         if (profile.isStripeEnabled && !profile.wasSuccessNotificationShown) {
@@ -78,7 +76,7 @@ export const PayToAddNewTeamMemberDialog = () => {
 
     const handleChooseSubscription = async () => {
         if (seatProducts.length && !profile.stripeSeatSubscriptionId) {
-            const response = await startCheckoutSessionForSubscriptionFx({
+            const response = await startCheckoutSessionForSeatSubscriptionFx({
                 productId: seatProducts[0].product.id,
                 baseUrl: profileRoute,
             });

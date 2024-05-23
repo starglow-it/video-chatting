@@ -87,6 +87,15 @@ export const startCheckoutSessionUrl = ({
     method: HttpMethods.Post,
 });
 
+export const startCheckoutSeatSessionUrl = ({
+    productId,
+}: {
+    productId: string;
+}) => ({
+    url: `${serverUrl}/${paymentsScope}/products/${productId}`,
+    method: HttpMethods.Post,
+});
+
 export const purchaseTemplateUrl = ({
     templateId,
 }: {
