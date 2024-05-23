@@ -25,9 +25,9 @@
     "inviteTeamMembers": "Invite team members",
     "upgratePlanToBusiness": "You need to upgrade subscription plan to invite team members",
     "payToAddNewTeamMemberDialog": {
-      "header": "pay to add more team members",
+      "header": "invite another team member for only US$5/mth",
       "stripeConenctionError": "Please, connect your account to continue.",
-      "pay": "pay"
+      "pay": "add a team member"
     }
   },
   "sharedRecordingVideo": {
