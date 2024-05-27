@@ -58,7 +58,7 @@ export class TemplatesGateway extends BaseGateway {
   @Roles([MeetingRole.Host])
   @WsEvent(MeetingSubscribeEvents.OnUpdateMeetingTemplate)
   async updateMeetingTemplate(
-    @MessageBody() data: UpdateMeetingTemplateRequestDto,
+    @MessageBody() data,
     @ConnectedSocket() socket: Socket,
   ) {
     return withTransaction(
@@ -69,13 +69,15 @@ export class TemplatesGateway extends BaseGateway {
         this.emitToRoom(
           `meeting:${user.meeting.toString()}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
-          { templateId: data.templateId },
+          // { templateId: data.templateId },
+          data
         );
 
         this.emitToRoom(
           `waitingRoom:${data.templateId}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
-          { templateId: data.templateId },
+          // { templateId: data.templateId },
+          data
         );
       },
       {

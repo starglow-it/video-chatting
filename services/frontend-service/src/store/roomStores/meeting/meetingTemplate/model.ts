@@ -120,6 +120,11 @@ export const getMeetingTemplateFx = meetingDomain.createEffect<
     ErrorState
 >('getMeetingTemplateFx');
 
+export const updateBackgroundFx = meetingDomain.createEffect<
+    Partial<IUserTemplate>,
+    void
+>('updateBackgroundFx');
+
 export const updateMeetingTemplateFx = meetingDomain.createEffect<
     UpdateTemplatePayload,
     SuccessResult<IUserTemplate> | FailedResult<ErrorState>,

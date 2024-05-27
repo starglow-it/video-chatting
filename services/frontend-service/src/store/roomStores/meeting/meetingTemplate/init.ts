@@ -6,6 +6,7 @@ import {
     updateMeetingTemplateFx,
     updateMeetingTemplateFxWithData,
     resetMeetingTemplateStoreEvent,
+    updateBackgroundFx,
 } from './model';
 import { resetRoomStores } from '../../../root';
 
@@ -19,6 +20,7 @@ import {
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
+updateBackgroundFx.use(data => data);
 
 $meetingTemplateStore
     .on(getMeetingTemplateFx.doneData, (state, data) => data)
@@ -29,6 +31,7 @@ $meetingTemplateStore
     .on(updateMeetingTemplateFx.doneData, (state, data) =>
         data.success ? data.result : state,
     )
+    .on(updateBackgroundFx.doneData, (state, data) => ({...state, ...data}))
     .reset([resetRoomStores, resetMeetingTemplateStoreEvent]);
 
 $isUserSendEnterRequest

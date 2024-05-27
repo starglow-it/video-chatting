@@ -317,9 +317,7 @@ export const sendUpdateMeetingTemplateSocketEvent = attach<
 >({
     effect: updateMeetingTemplateSocketEvent,
     source: combine({ template: $meetingTemplateStore }),
-    mapParams: (params, { template }) => ({
-        templateId: template.customLink || template.id,
-    }),
+    mapParams: (params, { template }) => (params),
 });
 
 sample({
