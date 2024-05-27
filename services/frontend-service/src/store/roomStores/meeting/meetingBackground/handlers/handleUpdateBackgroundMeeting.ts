@@ -5,6 +5,7 @@ import {
 } from 'src/controllers/WebStorageController';
 import sendRequestWithCredentials from '../../../../../helpers/http/sendRequestWithCredentials';
 import { updateUserTemplateUrl } from '../../../../../utils/urls';
+import { updateBackgroundFx } from '../../meetingTemplate/model';
 
 export const handleUpdateBackgroundMeeting = async ({
     templateId,
@@ -13,10 +14,12 @@ export const handleUpdateBackgroundMeeting = async ({
     templateId: string;
     data: Partial<IUserTemplate>;
 }): Promise<void> => {
-    await sendRequestWithCredentials<EntityList<IMediaCategory>, void>({
-        ...updateUserTemplateUrl({ templateId }),
-        data,
-    });
+    // await sendRequestWithCredentials<EntityList<IMediaCategory>, void>({
+    //     ...updateUserTemplateUrl({ templateId }),
+    //     data,
+    // });
+    updateBackgroundFx(data);
+
     WebStorage.save({
         key: StorageKeysEnum.bgLastCall,
         data: {
@@ -24,4 +27,6 @@ export const handleUpdateBackgroundMeeting = async ({
             templateType: data.templateType,
         },
     });
+
+    return data;
 };
