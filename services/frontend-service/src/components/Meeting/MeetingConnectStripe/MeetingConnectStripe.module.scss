@@ -38,6 +38,11 @@
   width: 140px;
   padding: 10px;
   border-radius: 8px;
+
+  &.mobile {
+    width: 100px;
+    padding: 5px
+  }
 }
 
 .email {
@@ -47,4 +52,8 @@
 .button {
   padding: 10px;
   border-radius: 8px;
+
+  &.mobile {
+    padding: 4px;
+  }
 }

@@ -8,12 +8,13 @@ import {
 import { useCallback, useEffect, useRef } from 'react';
 import { MeetingReactionKind } from 'shared-types';
 import {
+    $meetingPanelsVisibilityForMobileStore,
+    initialMeetingPanelsVisibilityData,
     sendMeetingReactionEvent,
     sendMeetingUnReactionEvent,
+    setMeetingPanelsVisibilityForMobileEvent
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { isMobile } from 'shared-utils';
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,6 +27,8 @@ export const MeetingChatList = () => {
     const isThereNewMessage = useStore($isThereNewMessage);
 
     const refScroll = useRef<any>(null);
+
+    const { isMobileChatPanelVisible } = useStore($meetingPanelsVisibilityForMobileStore);
 
     useEffect(() => {
         if (isThereNewMessage) {
@@ -60,9 +63,22 @@ export const MeetingChatList = () => {
         ));
     };
 
+    const handleCloseMeetingChatPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileChatPanelVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileChatPanelVisible: false
+                });
+            }
+        },
+        [isMobileChatPanelVisible],
+    );
+
     return (
         <CustomGrid flex={1} display="flex" flexDirection="column">
-            <IconButton className={styles.closeIconBtn} onClick={() => {}}>
+            <IconButton className={styles.closeIconBtn} onClick={handleCloseMeetingChatPanel}>
                 <CloseIcon className={styles.closeIcon} />
             </IconButton>
             <CustomGrid

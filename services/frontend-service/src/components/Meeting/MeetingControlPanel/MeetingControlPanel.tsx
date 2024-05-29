@@ -11,17 +11,22 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
-
-// icons
-import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // components
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
+import { MeetingInviteParticipantsForMobile } from '@components/Meeting/MeetingInviteParticipantsForMobile/MeetingInviteParticipants';
 import { MeetingAttendeesList } from '@components/Meeting/MeetingAttendeesList/MeetingAttendeesList';
+import { MeetingAttendeesListForMobile } from '@components/Meeting/MeetingAttendeesListForMobile/MeetingAttendeesList';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { EmojiList } from '@components/EmojiList/EmojiList';
+import { MoreListForMobile } from '../MoreListForMobile/MoreListForMobile';
+import { MeetingChat } from '../MeetingChatForMobile/MeetingChat';
+import { MeetingLinksForMobile } from '../MeetingLInksForMobile/MeetingLinksForMobile';
+import { MeetingQuestionAnswer } from '../MeetingQuestionAnswerForMobile/MeetingQuestionAnswer';
+import { MeetingNotesForMobile } from '../MeetingNotesForMobile/MeetingNotes'
 
 // stores
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
@@ -45,6 +50,8 @@ import {
     $isToggleEditRuumeSelectMenuOpenStore,
     $isParticipant,
     $isAudience,
+    $meetingPanelsVisibilityForMobileStore,
+    initialMeetingPanelsVisibilityData,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
     togglePaymentFormEvent,
@@ -52,6 +59,7 @@ import {
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleEditRuumeSettingEvent,
+    setMeetingPanelsVisibilityForMobileEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -65,6 +73,7 @@ import { MeetingEditRuumeSetting } from '../MeetingEditRuumeSetting/MeetingEditR
 import { MeetingMonetization } from '../MeetingMonetization/MeetingMonetization';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import Draggable from 'react-draggable';
+import { MeetingEditRuumeSettingForMobile } from '../MeetingEditRuumeSettingForMobile/MeetingEditRuumeSetting';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -89,6 +98,16 @@ const Component = () => {
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
     const isParticipant = useStore($isParticipant);
     const isAudience = useStore($isAudience);
+
+    const {
+        isMobileMoreListVisible,
+        isMobileChatPanelVisible,
+        isMobileAttendeeListVisible,
+        isMobileLinksPanleVisible,
+        isMobileQAPanleVisible,
+        isMobileStickyNotesVisible,
+        isMobileSettingPanelVisible
+    } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -156,6 +175,20 @@ const Component = () => {
         }
     }, [isToggleEditRuumeSelectMenuOpen]);
 
+    //For mobile
+    const toggleMoreListForMobile = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileMoreListVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileMoreListVisible: false
+                });
+            }
+        },
+        [isMobileMoreListVisible],
+    );
+
     const commonContent = useMemo(
         () => (
             <>
@@ -209,7 +242,7 @@ const Component = () => {
                 {/* <ClickAwayListener onClickAway={toggleOutsideUserPanel}> */}
                 <Draggable
                     axis="both"
-                    defaultPosition={{x: 0, y: 0}}
+                    defaultPosition={{ x: 0, y: 0 }}
                 >
                     <Fade in={isUsersOpen}>
                         <CustomPaper
@@ -309,6 +342,74 @@ const Component = () => {
                             </CustomPaper>
                         </Fade>
                     </ClickAwayListener>
+                    {/* reaction panel for mobile */}
+                    <ClickAwayListener
+                        onClickAway={toggleMoreListForMobile}
+                    >
+                        <Fade in={isMobileMoreListVisible}>
+                            {/* <Fade in={true}> */}
+                            <CustomPaper
+                                className={styles.emojiPanelForMobile}
+                                variant="black-glass"
+                            >
+                                <EmojiList />
+                                <MoreListForMobile />
+                            </CustomPaper>
+                        </Fade>
+                    </ClickAwayListener>
+                    <Fade in={isMobileChatPanelVisible}>
+                        {/* <Fade in={true}> */}
+                        <CustomPaper
+                            className={clsx(styles.chatPanelForMobile, { [styles.overlay]: isMobileChatPanelVisible })}
+                            variant="black-glass"
+                        >
+                            <MeetingChat />
+                        </CustomPaper>
+                    </Fade>
+                    <Fade in={isMobileLinksPanleVisible}>
+                        {/* <Fade in={true}> */}
+                        <CustomPaper
+                            className={styles.chatPanelForMobile}
+                            variant="black-glass"
+                        >
+                            <MeetingLinksForMobile />
+                        </CustomPaper>
+                    </Fade>
+                    <Fade in={isMobileAttendeeListVisible}>
+                        {/* <Fade in={true}> */}
+                        <CustomBox
+                            className={styles.attendeesListForMobile}
+                        >
+                            <MeetingInviteParticipantsForMobile />
+                            <MeetingAttendeesListForMobile isParticipantPanelShow={isParticipantsPanelShow} />
+                        </CustomBox>
+                    </Fade>
+                    <Fade in={isMobileQAPanleVisible}>
+                        {/* <Fade in={true}> */}
+                        <CustomPaper
+                            className={styles.qaPanelForMobile}
+                            variant="black-glass"
+                        >
+                            <MeetingQuestionAnswer />
+                        </CustomPaper>
+                    </Fade>
+                    <Fade in={isMobileStickyNotesVisible}>
+                        <CustomPaper
+                            className={styles.qaPanelForMobile}
+                            variant="black-glass"
+                        >
+                            <MeetingNotesForMobile />
+                        </CustomPaper>
+                    </Fade>
+                    <Fade in={isMobileSettingPanelVisible}>
+                        {/* <Fade in={true}> */}
+                        <CustomPaper
+                            className={styles.qaPanelForMobile}
+                            variant="black-glass"
+                        >
+                            <MeetingEditRuumeSettingForMobile />
+                        </CustomPaper>
+                    </Fade>
                 </ConditionalRender>
             </>
         ),
@@ -324,7 +425,14 @@ const Component = () => {
             isChangeBackgroundOpen,
             isEditRuumeOpen,
             isProfileOpen,
-            isEmojiListVisible
+            isEmojiListVisible,
+            isMobileMoreListVisible,
+            isMobileChatPanelVisible,
+            isMobileLinksPanleVisible,
+            isMobileAttendeeListVisible,
+            isMobileQAPanleVisible,
+            isMobileStickyNotesVisible,
+            isMobileSettingPanelVisible
         ],
     );
 
@@ -352,32 +460,16 @@ const Component = () => {
             container
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
-            <CustomPaper className={styles.controlPanelWrapper}>
-                {!isMobile ? (
-                    <> {commonContent}</>
-                ) : (
-                    <ConditionalRender
-                        condition={
-                            isUsersOpen ||
-                            isScheduleOpen ||
-                            isPaymentOpen ||
-                            isChangeBackgroundOpen
-                        }
-                    >
-                        <CustomGrid className={styles.mobilePanelsWrapper}>
-                            <CustomScroll>
-                                <CustomGrid
-                                    onClick={handleCloseMobilePanel}
-                                    className={styles.closeIcon}
-                                >
-                                    <CloseIcon width="40px" height="40px" />
-                                </CustomGrid>
-                                {commonContent}
-                            </CustomScroll>
-                        </CustomGrid>
-                    </ConditionalRender>
-                )}
-            </CustomPaper>
+            <ConditionalRender condition={!isMobile}>
+                <CustomPaper className={styles.controlPanelWrapper}>
+                    {commonContent}
+                </CustomPaper>
+            </ConditionalRender>
+            <ConditionalRender condition={isMobile}>
+                <CustomPaper className={clsx(styles.controlPanelWrapper, { [styles.mobile]: isMobile })}>
+                    {commonContent}
+                </CustomPaper>
+            </ConditionalRender>
             <ConditionalRender condition={isMobile && isScreenSharing}>
                 <CustomPaper
                     variant="black-glass"

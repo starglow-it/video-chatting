@@ -31,7 +31,9 @@ import {
     $localUserStore,
     $meetingTemplateStore,
     $meetingUsersStore,
-    $meetingStore,
+    $meetingPanelsVisibilityForMobileStore,
+    initialMeetingPanelsVisibilityData,
+    setMeetingPanelsVisibilityForMobileEvent
 } from '../../../store/roomStores';
 
 // types
@@ -58,6 +60,7 @@ const Component = ({
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const { isPublishAudience } = useStore($meetingTemplateStore)
+    const { isMobileAttendeeListVisible } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const participants = useStoreMap({
         store: $meetingUsersStore,
@@ -118,9 +121,22 @@ const Component = ({
         });
     };
 
+    const handleCloseMeetingNotesPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileAttendeeListVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileAttendeeListVisible: false
+                });
+            }
+        },
+        [isMobileAttendeeListVisible],
+    );
+
     return (
         <CustomBox className={styles.root}>
-            <IconButton className={styles.closeIconBtn} onClick={() => { }}>
+            <IconButton className={styles.closeIconBtn} onClick={handleCloseMeetingNotesPanel}>
                 <CloseIcon className={styles.closeIcon} />
             </IconButton>
             <CustomTypography color="common.white" className={styles.headerTitle}>

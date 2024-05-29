@@ -3,9 +3,13 @@
 
 .container {
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     width: 100%;
-    // background: #ffb6b6;
+    z-index: 9999;
+
+    &.hidden {
+        z-index: 0;
+    }
 }
 
 .main {
@@ -23,7 +27,9 @@
 }
 
 .deviceButton {
-    @extend %base-wrapper-icon-button;
+    // @extend %base-wrapper-icon-button;
+    width: rem(55px);
+    height: rem(55px);
 
     &.inactive {
         color: rgba($primary-white, 0.25);

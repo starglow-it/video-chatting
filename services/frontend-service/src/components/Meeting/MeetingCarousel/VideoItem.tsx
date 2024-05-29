@@ -13,6 +13,7 @@ import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 
 type VideoItemProps = {
+    key: string;
     id: string;
     isCameraEnabled: boolean;
     userName: string;
@@ -24,6 +25,7 @@ type VideoItemProps = {
 };
 
 export const VideoItem = ({
+    key,
     id,
     isCameraEnabled,
     userName,

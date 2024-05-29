@@ -18,7 +18,6 @@ import { MeetingUsersVideos } from '@components/Meeting/MeetingUsersVideos/Meeti
 import { MeetingGoodsLinks } from '@components/Meeting/MeetingGoodsLinks/MeetingGoodsLinks';
 import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
 import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
-import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
 import { MeetingSounds } from '@components/Meeting/MeetingSounds/MeetingSounds';
 import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
@@ -460,7 +459,7 @@ const Component = () => {
                         display="flex"
                         flexDirection="column"
                     >
-                        <MeetingHeader />
+                        {/* <MeetingHeader /> */}
                         <MeetingCarousel />
                         <MeetingBottomBarMobile />
                         <MeetingControlPanel />

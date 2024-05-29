@@ -230,6 +230,7 @@
 
 .actionBtn {
   cursor: pointer;
+  color: white;
 
   &:hover {
     background: transparent;
@@ -319,5 +320,15 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+.aiTranscript {
+  font-size: 30px;
+  color: white;
+  transition: all .2s;
+
+  &.activeText {
+    color: orange;
   }
 }

@@ -5,7 +5,6 @@ import { useStore, useStoreMap } from 'effector-react';
 import { $isAudience, $meetingUsersStore } from 'src/store/roomStores';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingVideosCarousel } from './MeetingVideosCarousel';
-import { MeetingSelfView } from '../MeetingSelfView/MeetingSelfView';
 import styles from './MeetingCarousel.module.scss';
 
 export const MeetingCarousel = () => {
@@ -24,12 +23,6 @@ export const MeetingCarousel = () => {
     const users2 = users.length < 6 ? [] : users.slice(5, 11);
 
     const elements: any = [];
-    if (!isAudience)
-        elements.push(
-            <CustomGrid width="100%" height="100%" bgcolor="#007A78" key="0">
-                <MeetingSelfView />
-            </CustomGrid>,
-        );
     if (users1.length)
         elements.push(
             <CustomGrid
@@ -62,7 +55,7 @@ export const MeetingCarousel = () => {
     return (
         <CustomGrid className={styles.container}>
             <Carousel
-                navButtonsAlwaysVisible={!isAudience}
+                navButtonsAlwaysVisible={!isAudience && users2.length}
                 autoPlay={false}
                 height="100%"
                 sx={{ height: '100%' }}

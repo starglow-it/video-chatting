@@ -69,6 +69,7 @@ import {
     $audioErrorStore,
     $isHaveNewMessage,
     $isAudience,
+    $isParticipant,
     $isMeetingHostStore,
     $isOwner,
     $isRecordingStore,
@@ -90,6 +91,8 @@ import {
     $paymentIntent,
     $isAITranscriptEnabledStore,
     $transcriptionsStore,
+    initialMeetingPanelsVisibilityData,
+    setMeetingPanelsVisibilityForMobileEvent,
     createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     requestSwitchRoleByAudienceEvent,
@@ -117,7 +120,8 @@ import {
     setAITranscriptEvent,
     sendAiTranscription,
     aiTranscriptionOnEvent,
-    setActiveTabPanelEvent
+    setActiveTabPanelEvent,
+    setDoNotDisturbEvent
 } from '../../../store/roomStores';
 import { $transcriptionQueue } from '../../../store/roomStores';
 
@@ -185,6 +189,7 @@ const Component = () => {
     const isNoteEmojiListPanelOpen = useStore($isToggleNoteEmojiListPanel);
     const isSchedulePannelOpen = useStore($isToggleSchedulePanel);
     const isAudience = useStore($isAudience);
+    const isParticipant = useStore($isParticipant);
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
     const meetingRecordingId = useStore($meetingRecordingIdStore);
@@ -621,18 +626,74 @@ const Component = () => {
         setValue('note', currentValue + data.emoji);
     };
 
+    const handleCloseMoreList = () => {
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false
+        });
+    };
+
+    const handleOpenChatPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileChatPanelVisible: true
+        });
+    }, []);
+
+    const handleOpenQAPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileQAPanleVisible: true
+        });
+    }, []);
+
+    const handleOpenNotesPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileStickyNotesVisible: true
+        });
+    }, []);
+
+    const handleOpenLinksPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileLinksPanleVisible: true
+        });
+    }, []);
+
+    const handleOpenSettingPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileSettingPanelVisible: true
+        });
+    }, []);
+
+    const handleDoNotDisturb = () => {
+        setDoNotDisturbEvent(!doNotDisturbStore);
+    };
+
     return (
         <CustomGrid
             id="menuBar"
             container
             alignItems="center"
-            justifyContent="space-around"
+            justifyContent={isOwner ? 'space-between' : 'center'}
             className={styles.devicesWrapper}
         >
-            <CustomGrid item xs={4}>
+            <CustomGrid item xs={isParticipant ? 3 : 4}>
                 <CustomGrid
                     className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
+                    onClick={handleOpenChatPanel}
                 >
                     <ActionButton
                         variant="transparentPure"
@@ -647,46 +708,50 @@ const Component = () => {
                     />
                 </CustomGrid>
             </CustomGrid>
-            <CustomGrid item xs={4}>
-                <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
-                >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<ScreenShareIcon sx={{ width: '30px', height: '30px' }} />}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.screenshare"
-                        color="white"
-                        fontSize={12}
-                    />
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleSharing}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<ScreenShareIcon sx={{ width: '30px', height: '30px' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.screenshare"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
-                <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
-                >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<HelpIcon sx={{ width: '30px', height: '30px' }} />}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.q&a"
-                        color="white"
-                        fontSize={12}
-                    />
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleOpenQAPanel}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<HelpIcon sx={{ width: '30px', height: '30px' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.q&a"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
                 </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
+            </ConditionalRender>
+            <CustomGrid item xs={isParticipant ? 3 : 4}>
                 <CustomGrid
                     className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
+                    onClick={handleOpenNotesPanel}
                 >
                     <ActionButton
                         variant="transparentPure"
@@ -701,85 +766,141 @@ const Component = () => {
                     />
                 </CustomGrid>
             </CustomGrid>
-            <CustomGrid item xs={4}>
+            <ConditionalRender condition={isParticipant || isAudience}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleOpenQAPanel}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<HelpIcon sx={{ width: '30px', height: '30px' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.q&a"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleRecordMeeting}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={
+                                (recordingStartPending || recordingStopPending || meetingRecordingStore.isStopRecordingPending)
+                                    ? <CircularProgress
+                                        size={30}
+                                        sx={{ color: 'white' }}
+                                    />
+                                    : isRecording
+                                        ? <FiberManualRecordIcon
+                                            sx={{ width: '30px', height: '30px' }}
+                                            color="error"
+                                            className={styles.recordingBtnAnimation}
+                                        />
+                                        : <FiberManualRecordIcon sx={{ width: '30px', height: '30px' }} />
+                            }
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.record"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleAiTranscript}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<CustomTypography
+                                className={clsx(styles.aiTranscript,
+                                    {
+                                        [styles.activeText]: isSubscriptionPlanBusiness
+                                            && isAITranscriptEnabled
+                                    })}
+                            >
+                                Ai
+                            </CustomTypography>}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.ai"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleOpenLinksPanel}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<LinkIcon sx={{ width: '30px', height: '30px' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.links"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={isOwner}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleDoNotDisturb}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={clsx(styles.actionBtn)}
+                            Icon={<DoNotDisturbIcon sx={{ width: '30px', height: '30px', color: doNotDisturbStore ? '#EF8E5B' : 'white' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.donotdisturb"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
+            <ConditionalRender condition={!isAudience}>
                 <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
+                    item
+                    xs={isParticipant ? 3 : 4}
+                    sx={{ marginTop: '-15px' }}
+                    onClick={handleOpenSettingPanel}
                 >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<FiberManualRecordIcon sx={{ width: '30px', height: '30px' }} />}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.record"
-                        color="white"
-                        fontSize={12}
+                    <ProfileAvatar
+                        src={profile?.profileAvatar?.url}
+                        userName={profile.fullName}
+                        className={clsx(styles.profileImage, styles.linkIcon)}
                     />
                 </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
-                <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
-                >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<CustomTypography sx={{ fontSize: '30px' }} >Ai</CustomTypography>}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.ai"
-                        color="white"
-                        fontSize={12}
-                    />
-                </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
-                <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
-                >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<LinkIcon sx={{ width: '30px', height: '30px' }} />}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.links"
-                        color="white"
-                        fontSize={12}
-                    />
-                </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
-                <CustomGrid
-                    className={styles.deviceButton}
-                    onClick={handleToggleEditRuumeSettingPanel}
-                >
-                    <ActionButton
-                        variant="transparentPure"
-                        className={styles.actionBtn}
-                        Icon={<DoNotDisturbIcon sx={{ width: '30px', height: '30px' }} />}
-                    />
-                    <CustomTypography
-                        nameSpace="meeting"
-                        translation="mobileMoreList.donotdisturb"
-                        color="white"
-                        fontSize={12}
-                    />
-                </CustomGrid>
-            </CustomGrid>
-            <CustomGrid item xs={4}>
-                <ProfileAvatar
-                    src={profile?.profileAvatar?.url}
-                    userName={profile.fullName}
-                    className={clsx(styles.profileImage, styles.linkIcon)}
-                />
-            </CustomGrid>
+            </ConditionalRender>
         </CustomGrid>
     );
 };

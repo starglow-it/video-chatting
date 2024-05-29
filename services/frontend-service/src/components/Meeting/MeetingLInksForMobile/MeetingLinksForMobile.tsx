@@ -13,9 +13,12 @@ import {
     $meetingStore,
     $isOwner,
     $meetingTemplateStore,
+    $meetingPanelsVisibilityForMobileStore,
+    initialMeetingPanelsVisibilityData,
     sendMeetingReactionEvent,
     sendMeetingUnReactionEvent,
-    clickMeetingLinkSocketEvent
+    clickMeetingLinkSocketEvent,
+    setMeetingPanelsVisibilityForMobileEvent
 } from 'src/store/roomStores';
 import { $isGoodsVisible } from '../../../store';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -35,6 +38,7 @@ export const MeetingLinksForMobile = () => {
     const localUserStore = useStore($localUserStore);
     const meetingStore = useStore($meetingStore);
     const isOwner = useStore($isOwner);
+    const { isMobileLinksPanleVisible } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const refScroll = useRef<any>(null);
 
@@ -101,9 +105,22 @@ export const MeetingLinksForMobile = () => {
         [meetingTemplate?.links, isGoodsVisible],
     );
 
+    const handleCloseMeetingNotesPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileLinksPanleVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileLinksPanleVisible: false
+                });
+            }
+        },
+        [isMobileLinksPanleVisible],
+    );
+
     return (
         <CustomGrid flex={1} display="flex" flexDirection="column">
-            <IconButton className={styles.closeIconBtn} onClick={() => { }}>
+            <IconButton className={styles.closeIconBtn} onClick={handleCloseMeetingNotesPanel}>
                 <CloseIcon className={styles.closeIcon} />
             </IconButton>
             <CustomGrid
