@@ -1,0 +1,51 @@
+@import '../../../../styles/variables.scss';
+@import '../../../../styles/rem.scss';
+
+
+.textField {
+    height: rem(10px);
+    font-size: rem(13px);
+    color: $primary-black;
+}
+
+.rootField {
+    padding: 8px 14px;
+    background: #c2bdbd;
+    border-radius: 7px;
+
+    fieldset:hover {
+        border: none;
+    }
+    fieldset:focus {
+        border: none;
+    }
+}
+
+.picker {
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+    top: 105px;
+    height: 250px;
+    width: 262px;
+}
+
+.icon {
+    cursor: pointer;
+
+    &:hover {
+        color: $primary-white;
+    }
+}
+
+.sendButton {
+    margin-left: 4px;
+    cursor: pointer;
+    height: 39px;
+    border-radius: 7px;
+    background: #c2bdbd;
+
+    &:hover {
+        color: $primary-white;
+    }
+}

@@ -1,0 +1,323 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+%base-wrapper-icon-button {
+  width: rem(34px);
+  border-radius: 22.5%;
+  margin-bottom: 20px;
+}
+
+%base-icon-button {
+  width: 100%;
+  height: 100%;
+  cursor: default;
+  border-radius: 22.5%;
+}
+
+.profileImage {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  margin-left: 30px;
+  transition: all 0.2s;
+
+  &.activeProfile {
+    border: rem(1px) solid $primary-orange;
+  }
+}
+
+.devicesWrapper {
+  z-index: 0;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.hangUpButton {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: 22.5%;
+}
+
+.noteEmojiListPanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  padding: rem(14px 16px);
+  background: transparent;
+  opacity: 0;
+  left: 100px;
+  bottom: 70px;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+}
+
+.sendNoteBtn, .stickyEmojiBtn {
+  cursor: pointer;
+
+  &:hover {
+    color: #EF8E5B;
+  }
+}
+
+.deviceButton {
+  @extend %base-wrapper-icon-button;
+
+  &.inactive {
+    color: rgba($primary-white, 0.25);
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: transparent;
+  width: auto;
+  color: black;
+  cursor: pointer;
+
+  &:hover {
+    .actionBtn {
+      color: #EF8E5B;
+    }
+  }
+}
+
+.deviceButton:after {
+  border-radius: 22.5%;
+  background: transparent;
+}
+
+.goodsButton {
+  @extend %base-icon-button;
+
+  &.disabled {
+    color: $normal-gray-scale;
+  }
+}
+
+.sharingButton {
+  @extend %base-icon-button;
+
+  &.noRights {
+    color: rgba($primary-white, 0.25);
+  }
+
+  &.active {
+    color: $primary-red;
+  }
+}
+
+.settingsButton {
+  @extend %base-icon-button;
+}
+
+.tooltip {
+  margin: rem(2px 0 0 0) !important;
+}
+
+.actionButton {
+  @extend %base-wrapper-icon-button;
+  background: transparent;
+
+  &:hover {
+    background: transparent;
+  }
+
+  &.active {
+    background: transparent;
+  }
+
+  &.withAction {
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &.mobile {
+    width: rem(32px);
+    height: rem(32px);
+  }
+
+  &.newRequests {
+    background: rgba($primary-orange, 0.1);
+
+    &:hover {
+      background: rgba($primary-orange, 0.25);
+    }
+
+    &:after {
+      content: "";
+      width: rem(11px);
+      height: rem(11px);
+      border-radius: 50%;
+      background: $primary-orange;
+      position: absolute;
+      top: -1px;
+      right: -1px;
+    }
+  }
+}
+
+.containerTooltip {
+  height: auto;
+  white-space: inherit;
+}
+
+.doNotDisturbButton {
+  transition: opacity .3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.disabled {
+    opacity: 0.4;
+  }
+}
+
+.grey {
+  width: rem(34px);
+  height: rem(34px);
+  min-height: rem(34px);
+  border-radius: 22.5%;
+  background-color: #6b6b6c;
+  color: $primary-white;
+
+  &:hover {
+    background-color: $primary-black;
+  }
+
+  &.disabled {
+    color: $normal-gray-scale;
+  }
+
+  &.active {
+    color: $primary-red;
+  }
+}
+
+.sideMenuWrapper {
+  position: absolute;
+  bottom: rem(46px);
+  width: fit-content;
+  right: 0;
+  z-index: 1000;
+  height: auto;
+}
+
+.recordLoading {
+  color: white;
+  width: 15px;
+  height: 15px;
+}
+
+.recordingBtnAnimation {
+  opacity: 1;
+  transition: all 1s;
+  animation: circular-transition 3s infinite;
+}
+
+.actionBtn {
+  cursor: pointer;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.form {
+  width: 100%;
+}
+
+.cancelNote {
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+  margin: rem(0 0 0 8px);
+  color: $primary-white;
+}
+
+.submitNote {
+  height: rem(29px);
+  width: rem(29px);
+  border-radius: rem(8px);
+  margin-right: 10px;
+}
+
+.textLength {
+  margin: rem(0 12px 0 auto);
+}
+
+.commonOpenPanel {
+  width: 315px;
+  height: fit-content;
+  border-radius: 6px;
+  padding: 5px;
+  background: rgba($color: #000000, $alpha: 0.6);
+  margin-right: 20px;
+
+  &.mobile {
+    display: none;
+  }
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.aiTranscript {
+  font-size: 25px;
+  color: grey;
+  transition: all .2s;
+
+  &.activeText {
+    color: orange;
+  }
+}
+
+.fieldNoLogin {
+  height: 35px;
+  border-radius: 8px;
+  border: 1px solid rgba($primary-white, 0.25);
+  padding-left: 10px;
+  font-size: 13px;
+
+  span {
+    color: rgba($primary-white, 0.25);
+  }
+
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: $primary-white;
+  }
+}
+
+.profileAvatar {
+  margin-right: 30px;
+}
+
+@keyframes circular-transition {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
