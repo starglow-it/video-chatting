@@ -405,8 +405,8 @@ const MeetingContainer = memo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
                 <CustomGrid className={styles.loadingWrapper}>
-                    <Typography className={styles.loadingText}>
-                        We&apos;re setting up your Room
+                    <Typography className={clsx(styles.loadingText, {[ styles.mobile ]: isMobile})}>
+                        we&apos;re setting up your ruume
                     </Typography>
                     <div className={styles.lds}>
                         <div />

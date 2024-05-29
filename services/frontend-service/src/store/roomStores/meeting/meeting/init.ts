@@ -42,8 +42,6 @@ import {
     $isCameraActiveStore,
     $isMicActiveStore,
 } from '../../videoChat/localMedia/model';
-import { $isPaywallPaid } from '../../users/localUser/model';
-import { updateUserSocketEvent } from '../../users/init';
 import {
     $isMeetingInstanceExists,
     $isOwnerDoNotDisturb,
@@ -119,6 +117,8 @@ $meetingRecordingStore
     })
     .on(deleteRecordingUrlEvent, (state, data) => {
         const removeIndex = state.videos.findIndex(video => video.id === data);
+        console.log('state: ----', state, data);
+        console.log('removeIndex: ----', removeIndex);
 
         return {
             ...state,

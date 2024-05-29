@@ -86,7 +86,11 @@
 
 .loadingText {
   font-size: rem(30px);
-  color: $primary-white
+  color: $primary-white;
+
+  &.mobile {
+    font-size: rem(20px);
+  }
 }
 
 .lds {

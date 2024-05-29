@@ -185,7 +185,7 @@ const ProfileTemplateItem = memo(
                         container
                         direction="column"
                         justifyContent="space-between"
-                        className={styles.templateMenu}
+                        className={clsx(styles.templateMenu, {[styles.mobile]: isMobile})}
                     >
                         <TemplateInfo
                             className={styles.avatar}
@@ -198,10 +198,10 @@ const ProfileTemplateItem = memo(
                                     : true
                             }
                         />
-                        <CustomGrid container wrap="nowrap" gap={1.5}>
+                        <CustomGrid container wrap="nowrap" className={styles.buttonGroup}>
                             <CustomButton
                                 onClick={handleCreateMeeting}
-                                className={styles.startMeetingBtn}
+                                className={clsx(styles.startMeetingBtn, {[styles.mobile]: isMobile})}
                                 label={
                                     <Translation
                                         nameSpace="templates"
@@ -209,13 +209,13 @@ const ProfileTemplateItem = memo(
                                     />
                                 }
                                 typographyProps={{
-                                    variant: 'body2',
+                                    variant: isMobile ? 'body3' : 'body2',
                                 }}
                             />
                             <CustomButton
                                 variant="custom-transparent"
                                 onClick={handleScheduleMeeting}
-                                className={styles.startMeetingBtn}
+                                className={clsx(styles.startMeetingBtn, {[styles.mobile]: isMobile})}
                                 label={
                                     <Translation
                                         nameSpace="templates"
@@ -223,7 +223,7 @@ const ProfileTemplateItem = memo(
                                     />
                                 }
                                 typographyProps={{
-                                    variant: 'body2',
+                                    variant: isMobile ? 'body3' : 'body2',
                                 }}
                             />
                         </CustomGrid>

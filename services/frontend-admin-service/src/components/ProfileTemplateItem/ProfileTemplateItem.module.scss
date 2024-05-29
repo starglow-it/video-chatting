@@ -37,6 +37,10 @@
       color: rgba($primary-white, 0.6);
     }
   }
+
+  &.mobile {
+    padding: 10px;
+  }
 }
 
 .avatar {
