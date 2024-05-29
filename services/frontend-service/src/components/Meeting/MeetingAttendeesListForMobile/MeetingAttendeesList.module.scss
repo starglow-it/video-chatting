@@ -1,0 +1,33 @@
+.root {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+}
+
+.tab {
+  text-transform: initial;
+  min-height: 40px;
+  font-weight: bold;
+  font-size: 13px;
+  min-width: 73px;
+}
+
+.tabs {
+  min-height: 40px;
+}
+
+.tabContainer {
+  overflow-x: scroll;
+}
+
+.indicator {
+  display: none;
+}
+
+.buttonScroll {
+  color: white;
+}
+
+.listPanelHidden {
+  display: none;
+}

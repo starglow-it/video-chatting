@@ -1,0 +1,46 @@
+.scroll {
+    height: 515px;
+    padding-right: 20px;
+}
+
+.imageEmpty {
+    width: 150px;
+}
+
+.textEmpty {
+    font-size: 13px;
+    color: #b6b6b6;
+}
+.transcribeScroll {
+    max-height: 340px;
+    height: 340px;
+    padding-right: 12px;
+}
+
+
+.newMessageToast{
+    position: absolute;
+    bottom: 50px;
+    left: 30%;
+    padding: 5px 10px;
+    background-color: #ddd;
+    z-index:2;
+    cursor: pointer;
+}
+
+.imageWrapper {
+    pointer-events: none;
+    height: 120px;
+}
+
+.chatTitle {
+    margin: 20px 0px;
+}
+
+.closeIconBtn {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px;
+  }
