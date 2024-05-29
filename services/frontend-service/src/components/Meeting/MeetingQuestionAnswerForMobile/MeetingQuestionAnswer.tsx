@@ -16,8 +16,7 @@ export const MeetingQuestionAnswer = () => {
             height="100%"
         >
             <MeetingQuestionAnswerList />
-            <ConditionalRender condition={isOwner}>
-            {/* <ConditionalRender condition={!isOwner}> */}
+            <ConditionalRender condition={!isOwner}>
                 <MeetingQuestionAnswerBar />
             </ConditionalRender>
         </CustomGrid>

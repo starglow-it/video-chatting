@@ -316,5 +316,29 @@
     "aiTranscriptOff": "AI transcript off",
     "on": "on",
     "off": "off",
-    "upgratePlan": "Upgrade to Business in your Profile for Ai summary"
+    "upgratePlan": "Upgrade to Business in your Profile for Ai summary",
+    "mobileMoreList": {
+        "chat": "chat",
+        "screenshare": "screenshare",
+        "q&a": "q&a",
+        "stickynotes": "sticky notes",
+        "record": "record",
+        "ai": "AI transcription",
+        "links": "links",
+        "donotdisturb": "do-not-disturb"
+    },
+    "emptyChatNoteForMobile": {
+        "title": "rumme chat",
+        "text": "chat bubbles will look the same as  it does on desktop"
+    },
+    "linksForMobile": {
+        "title": "links"
+    },
+    "qaForMobile": {
+        "title": "q&a",
+        "text": "the format of q&a will match the same as it does on desktop"
+    },
+    "stickyNotes": {
+        "title": "sticky notes"
+    }
 }

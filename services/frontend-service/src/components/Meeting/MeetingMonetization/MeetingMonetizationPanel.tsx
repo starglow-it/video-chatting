@@ -117,7 +117,7 @@ const Component = (
         formParticipantsRef,
         formAudienceRef,
         onUpdate = () => { },
-        onSave = () => {}
+        onSave = () => { }
     }: {
         formParticipantsRef: { getValues: () => FormDataPayment },
         formAudienceRef: { getValues: () => FormDataPayment },
@@ -166,8 +166,9 @@ const Component = (
                 >
                     <MonetizationIcon width="24px" height="24px" />
                     <CustomTypography
-                        translation="features.monetization"
                         nameSpace="meeting"
+                        translation="features.monetization"
+                        sx={{ fontSize: isMobile ? '10px' : '16px' }}
                     />
                 </CustomGrid>
                 <CustomBox>

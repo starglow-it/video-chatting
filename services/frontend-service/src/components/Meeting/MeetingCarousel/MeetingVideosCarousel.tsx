@@ -53,14 +53,15 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                 >
                     {users.map(item => (
                         <VideoItem
+                            key={item.id}
                             id={item.id}
                             userTracks={
                                 tracksStore[
-                                    `${getConnectionKey({
-                                        userId: item.id,
-                                        connectionType: ConnectionType.VIEW,
-                                        streamType: StreamType.VIDEO_CHAT,
-                                    })}`
+                                `${getConnectionKey({
+                                    userId: item.id,
+                                    connectionType: ConnectionType.VIEW,
+                                    streamType: StreamType.VIDEO_CHAT,
+                                })}`
                                 ]
                             }
                             isAuraActive={item.isAuraActive}

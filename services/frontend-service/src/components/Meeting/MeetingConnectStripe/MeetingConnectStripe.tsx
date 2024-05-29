@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // icons
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -9,6 +10,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // common
 import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // styles
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -45,6 +47,7 @@ export const MeetingConnectStripe = () => {
             await deleteStripeAccountFx();
         }
     }, []);
+    const { isMobile } = useBrowserDetect();
 
     const fontSize = useMemo(() => {
         if (isPortraitLayout) return 12;
@@ -53,7 +56,7 @@ export const MeetingConnectStripe = () => {
 
     return isConnectedStripe ? (
         <CustomButton
-            className={styles.buttonWrapper}
+            className={clsx(styles.buttonWrapper, {[styles.mobile]: isMobile})}
             onClick={handleDeletePaymentSetUp}
         >
             <CustomTypography
@@ -72,7 +75,7 @@ export const MeetingConnectStripe = () => {
         <CustomGrid container gap={2} direction="column">
             <CustomButton
                 onClick={handleSetUpPayments}
-                className={styles.button}
+                className={clsx(styles.button, { [styles.mobile]: isMobile })}
             >
                 {!isConnectStripeAccountPending ? (
                     <>

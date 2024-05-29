@@ -3,6 +3,26 @@ import { MeetingReaction } from '../../../types';
 import { MeetingSocketEmitters } from '../../../../const/socketEvents/emitters';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
 
+export type MeetingPanelsVisibilityForMobile = {
+    isMobileMoreListVisible: boolean;
+    isMobileChatPanelVisible: boolean;
+    isMobileAttendeeListVisible: boolean;
+    isMobileLinksPanleVisible: boolean;
+    isMobileQAPanleVisible: boolean;
+    isMobileStickyNotesVisible: boolean;
+    isMobileSettingPanelVisible: boolean;
+};
+
+export const initialMeetingPanelsVisibilityData = {
+    isMobileMoreListVisible: false,
+    isMobileChatPanelVisible: false,
+    isMobileAttendeeListVisible: false,
+    isMobileLinksPanleVisible: false,
+    isMobileQAPanleVisible: false,
+    isMobileStickyNotesVisible: false,
+    isMobileSettingPanelVisible: false,
+};
+
 const initialMeetingReactionsState: MeetingReaction[] = [];
 
 export const $meetingReactionsStore = meetingDomain.createStore<MeetingReaction[]>(
@@ -11,7 +31,11 @@ export const $meetingReactionsStore = meetingDomain.createStore<MeetingReaction[
 
 export const $meetingEmojiListVisibilityStore = meetingDomain.createStore<{ isEmojiListVisible: boolean }>({ isEmojiListVisible: false });
 
+//For mobile panels
+export const $meetingPanelsVisibilityForMobileStore = meetingDomain.createStore<MeetingPanelsVisibilityForMobile>(initialMeetingPanelsVisibilityData);
+
 export const setEmojiListVisibilityEvent = meetingDomain.createEvent<{ isEmojiListVisible: boolean }>('setEmojiListVisibilityEvent');
+export const setMeetingPanelsVisibilityForMobileEvent = meetingDomain.createEvent<MeetingPanelsVisibilityForMobile>('setMeetingPanelsVisibilityForMobileEvent');
 
 export const addMeetingReactionsEvent = meetingDomain.createEvent<MeetingReaction>(
     'addMeetingReactionsEvent',

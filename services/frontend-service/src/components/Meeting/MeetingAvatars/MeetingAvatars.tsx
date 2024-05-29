@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import clsx from 'clsx';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { useStore, useStoreMap } from 'effector-react';
 import {
@@ -23,6 +24,7 @@ import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import styles from './MeetingAvatars.module.scss';
 import { AvatarItem } from './AvatarItem';
 import config from '../../../const/config';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 export const MeetingAvatars = ({
     devicesSettingsDialog = false,
@@ -59,6 +61,7 @@ export const MeetingAvatars = ({
                 item.roles.includes(MeetingAvatarRole.NoLogin),
             ),
     });
+    const { isMobile } = useBrowserDetect();
 
     useEffect(() => {
         const handleUpdateUserSocketEvent = async () => {
@@ -160,7 +163,7 @@ export const MeetingAvatars = ({
     if (isLoading) return <CircularProgress variant="determinate" />;
 
     return (
-        <CustomGrid className={styles.container}>
+        <CustomGrid className={clsx(styles.container, {[styles.mobile]: isMobile})}>
             <CustomGrid className={styles.main}>
                 {!isAuthenticated ? renderAvatarsNoLogin() : renderAvatars()}
             </CustomGrid>

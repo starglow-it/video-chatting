@@ -10,8 +10,11 @@ import { useCallback, useEffect, useRef } from 'react';
 import { MeetingReactionKind } from 'shared-types';
 import {
     $isOwner,
+    $meetingPanelsVisibilityForMobileStore,
+    initialMeetingPanelsVisibilityData,
     sendMeetingQuestionReactionEvent,
     sendMeetingQuestionUnReactionEvent,
+    setMeetingPanelsVisibilityForMobileEvent
 } from 'src/store/roomStores';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
@@ -28,7 +31,7 @@ export const MeetingQuestionAnswerList = () => {
     const { list } = useStore($meetingQuestionAnswer);
     const isThereNewQuestion = useStore($isThereNewQuestion);
     const isOwner = useStore($isOwner);
-
+    const { isMobileQAPanleVisible } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const refScroll = useRef<any>(null);
 
@@ -65,9 +68,22 @@ export const MeetingQuestionAnswerList = () => {
         ));
     };
 
+    const handleCloseMeetingQAPanel = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileQAPanleVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileQAPanleVisible: false
+                });
+            }
+        },
+        [isMobileQAPanleVisible],
+    );
+
     return (
         <CustomGrid flex={1} display="flex" flexDirection="column">
-            <IconButton className={styles.closeIconBtn} onClick={() => { }}>
+            <IconButton className={styles.closeIconBtn} onClick={handleCloseMeetingQAPanel}>
                 <CloseIcon className={styles.closeIcon} />
             </IconButton>
             <CustomTypography

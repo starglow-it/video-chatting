@@ -1,0 +1,144 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.wrapper {
+    padding: 10px 0px;
+}
+
+.scrollWrapper {
+  width: 100%;
+  height: 90%;
+  
+  @media screen and (max-height: 740px) {
+    height: 625px;
+  }
+
+  @media screen and (max-height: 667px) {
+    height: 555px;
+  }
+}
+
+.accordionWrapper {
+  width: 100%;
+}
+
+.doNotDisturbBtn {
+    background: white;
+    color: black;
+    height: rem(50px);
+
+    &:hover {
+        background: rgba($color: #ffffff, $alpha: 0.8);
+    }
+}
+
+.audienceDonationPaper {
+  padding: 20px;
+}
+
+.saveBtn {
+    width: rem(130px);
+    height: rem(40px);
+}
+
+.selectDevicesWrapper {
+    // margin: rem(30px 0 0 0);
+    width: 100%;
+  }
+  
+  .advancedButton {
+    width: rem(131px);
+    color: $primary-white;
+    padding: rem(6px 4px);
+    background: #0F0F10;
+    border-radius: rem(8px);
+    cursor: pointer;
+    flex-wrap: nowrap;
+  }
+  
+  .arrowIcon {
+    cursor: pointer;
+    transform: rotate(180deg);
+  }
+  
+  .settingsWrapper {
+    position: relative;
+  
+    .settingPosition {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  
+    .advancedSettings {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  
+    .advancedSettings,
+    .settingPosition {
+      &.relative {
+        pointer-events: all;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+      }
+    }
+  }
+  
+  .switchWrapper {
+    padding: rem(13px 10px);
+    background: $light-gray-scale;
+    border: 1px solid rgba($normal-gray-scale, 0.6);
+    border-radius: rem(10px);
+  }
+  
+  .audioSettings {
+    background: $light-gray-scale;
+    border: 1px solid rgba($normal-gray-scale, 0.6);
+    border-radius: rem(10px);
+    height: rem(52px);
+  
+    overflow: hidden;
+  
+    transition: height 200ms linear;
+  
+    &.withVolume {
+      height: rem(113px);
+    }
+  
+    &.mobile {
+      height: rem(90px);
+    }
+  
+    .audioWrapper {
+      padding: rem(13px 10px);
+    }
+  
+    .audioRange {
+      // padding: rem(13px 22px 13px 10px);
+  
+      &.inactive {
+        color: $normal-gray-scale;
+      }
+    }
+  }
+  
+  .gapIcon {
+    margin-right: 12px;
+  }
+  
+  .switchWrapperMobile {
+    padding: rem(10px 8px) !important;
+  }
+
+  .closeIconBtn {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px;
+  }
