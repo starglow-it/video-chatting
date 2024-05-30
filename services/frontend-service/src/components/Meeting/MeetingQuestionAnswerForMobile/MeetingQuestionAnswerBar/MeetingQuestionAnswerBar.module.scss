@@ -10,7 +10,7 @@
 
 .rootField {
     padding: 8px 14px;
-    background: #c2bdbd;
+    background: white;
     border-radius: 7px;
 
     fieldset:hover {
@@ -43,7 +43,7 @@
     cursor: pointer;
     height: 39px;
     border-radius: 7px;
-    background: #c2bdbd;
+    background: white;
 
     &:hover {
         color: $primary-white;

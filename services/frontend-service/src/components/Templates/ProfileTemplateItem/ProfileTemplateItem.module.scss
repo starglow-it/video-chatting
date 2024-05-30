@@ -18,7 +18,7 @@
     height: 115px;
   }
 
-  
+
   @media only screen and (max-width: 280px) {
     width: 95% !important;
   }
@@ -54,6 +54,22 @@
       background: rgba($primary-orange, 0.6);
       color: rgba($primary-white, 0.6);
     }
+
+    &.mobile {
+      padding: 5px;
+    }
+  }
+
+  @media screen and (max-width: 430px) {
+    padding: 10px;
+  }
+
+  @media screen and (max-width: 390px) {
+    padding: 10px;
+  }
+
+  @media screen and (max-width: 360px) {
+    padding: 5px;
   }
 }
 
@@ -82,6 +98,7 @@
 .menu {
   width: rem(127px);
   border-radius: rem(6px);
+
   .item {
     height: rem(34px);
     padding: rem(6px 8px);
@@ -98,7 +115,19 @@
   height: auto;
   white-space: initial;
 }
+
 .popper {
   z-index: 1500;
 }
 
+.buttonGroup {
+  gap: 12px;
+
+  @media screen and (max-width: 375px) {
+    gap: 4px;
+  }
+
+  @media screen and (max-width: 360px) {
+    gap: 2px;
+  }
+}

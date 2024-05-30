@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-no-duplicate-props */
+import { useRef } from 'react';
+import clsx from 'clsx';
+
+//custom components
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-
-import { useRef } from 'react';
 import { sendMeetingChatEvent } from 'src/store/roomStores';
 import { CustomEmojiPicker } from '@library/custom/CustomEmojiPicker/CustomEmojiPicker';
 import { InputAdornment } from '@mui/material';
@@ -10,11 +12,17 @@ import { EmotionIcon } from 'shared-frontend/icons/OtherIcons/EmotionIcon';
 import { EmojiClickData } from 'emoji-picker-react';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { SendIcon } from 'shared-frontend/icons/OtherIcons/SendIcon';
+
+//hooks
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
+
+//styles
 import styles from './MeetingChatBar.module.scss';
 
 export const MeetingChatBar = () => {
     const refChatBar = useRef<any>(null);
     const refPicker = useRef<any>(null);
+    const { isMobile } = useBrowserDetect();
 
     const send = () => {
         if (refChatBar.current.value) {
@@ -43,7 +51,7 @@ export const MeetingChatBar = () => {
                 <CustomEmojiPicker
                     ref={refPicker}
                     width={262}
-                    className={styles.picker}
+                    className={clsx(styles.picker, { [styles.mobile]: isMobile })}
                     onEmojiClick={handleChooseEmoji}
                 />
                 <CustomInput

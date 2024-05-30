@@ -18,6 +18,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 import styles from './MeetingChatList.module.scss';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -96,13 +97,36 @@ export const MeetingChatList = () => {
                     color="white"
                     className={styles.chatTitle}
                 />
-                <CustomTypography
+                {/* <CustomTypography
                     variant='body1'
                     nameSpace="meeting"
                     translation="emptyChatNoteForMobile.text"
                     color="white"
-                />
+                /> */}
             </CustomGrid>
+            <ConditionalRender condition={!list.length}>
+                <CustomGrid
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexDirection="column"
+                    height="100%"
+                    className={styles.imageWrapper}
+                >
+                    <CustomImage
+                        src="/images/empty-chat.png"
+                        width={90}
+                        height={100}
+                        className={styles.imageEmpty}
+                        loading="eager"
+                        alt="media-item"
+                    />
+                    <span className={styles.textEmpty}>Chat is empty</span>
+                    <span className={styles.textEmpty}>
+                        Please type a message and send.
+                    </span>
+                </CustomGrid>
+            </ConditionalRender>
             <ConditionalRender condition={!!list.length}>
                 <CustomScroll
                     className={styles.scroll}

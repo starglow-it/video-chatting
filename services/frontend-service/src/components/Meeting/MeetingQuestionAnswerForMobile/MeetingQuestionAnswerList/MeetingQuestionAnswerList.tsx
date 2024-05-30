@@ -99,13 +99,34 @@ export const MeetingQuestionAnswerList = () => {
                     alignItems="center"
                     justifyContent="center"
                     flexDirection="column"
+                    height="100%"
                 >
-                    <CustomTypography
-                        variant="body1"
-                        nameSpace="meeting"
-                        translation="qaForMobile.text"
-                        color="white"
-                    />
+                    <CustomBox className={styles.imageBox}>
+                        <CustomImage
+                            src="/images/question-mark.png"
+                            width={45}
+                            height={75}
+                            className={styles.imageEmpty}
+                            loading="eager"
+                            alt="media-item"
+                        />
+                    </CustomBox>
+                    <ConditionalRender condition={isOwner}>
+                        <span className={styles.textEmpty}>
+                            engage with your audience to get
+                        </span>
+                        <span className={styles.textEmpty}>
+                            those questions flowing.
+                        </span>
+                    </ConditionalRender>
+                    <ConditionalRender condition={!isOwner}>
+                        <span className={styles.textEmpty}>
+                            submit your questions here.
+                        </span>
+                        <span className={styles.textEmpty}>
+                            you can ask up to three questions at a time.
+                        </span>
+                    </ConditionalRender>
                 </CustomGrid>
             </ConditionalRender>
             <ConditionalRender condition={!!list.length}>
