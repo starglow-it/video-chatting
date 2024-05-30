@@ -11,6 +11,7 @@ import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
+import { handleRemoveBackground } from 'src/helpers/media/transparentBackground';
 
 type VideoItemProps = {
     key: string;
@@ -50,6 +51,10 @@ export const VideoItem = ({
             }
 
             mediaStreamRef.current.addTrack(userTracks?.videoTrack);
+
+            handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                mediaStreamRef.current = stream;
+            });
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;

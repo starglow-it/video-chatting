@@ -10,7 +10,7 @@
 
 .rootField {
     padding: 8px 14px;
-    background: #c2bdbd;
+    background: white;
     border-radius: 7px;
 
     fieldset:hover {
@@ -27,6 +27,11 @@
     z-index: 10;
     top: 105px;
     height: 250px;
+
+    &.mobile {
+        top: unset;
+        bottom: 70px;
+    }
 }
 
 .icon {
@@ -42,7 +47,7 @@
     cursor: pointer;
     height: 39px;
     border-radius: 7px;
-    background: #c2bdbd;
+    background: white;
 
     &:hover {
         color: $primary-white;

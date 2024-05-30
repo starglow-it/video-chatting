@@ -41,7 +41,8 @@ import {
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
-    setMeetingPanelsVisibilityForMobileEvent
+    setMeetingPanelsVisibilityForMobileEvent,
+    updateUserSocketEvent
 } from 'src/store/roomStores';
 
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -144,27 +145,23 @@ export const MeetingBottomBarMobile = () => {
         toggleBackgroundManageEvent();
     }, []);
 
-    const handleToggleCam = useCallback(() => {
+    const handleToggleCam = useCallback(async () => {
         if (isMeetingConnected) {
-            updateLocalUserEvent({
-                cameraStatus: isCamActive ? 'inactive' : 'active',
-            });
-            setDevicesPermission({
-                isCamEnabled: !isCamActive,
-            });
             setIsCameraActiveEvent(!isCamActive);
+            await updateUserSocketEvent({
+                cameraStatus: !isCamActive ? 'active' : 'inactive',
+            });
         }
+
+
     }, [isMeetingConnected, isCamActive]);
 
-    const handleToggleMic = useCallback(() => {
+    const handleToggleMic = useCallback(async () => {
         if (isMeetingConnected) {
-            updateLocalUserEvent({
-                micStatus: isMicActive ? 'inactive' : 'active',
-            });
-            setDevicesPermission({
-                isMicEnabled: !isMicActive,
-            });
             setIsAudioActiveEvent(!isMicActive);
+            await updateUserSocketEvent({
+                micStatus: !isMicActive ? 'active' : 'inactive',
+            });
         }
     }, [isMeetingConnected, isMicActive]);
 
@@ -236,10 +233,10 @@ export const MeetingBottomBarMobile = () => {
                         variant="black-glass"
                         borderRadius={28}
                         className={styles.deviceButton}
+                        onClick={handleToggleCam}
                     >
                         <ActionButton
                             variant="transparentBlack"
-                            onAction={handleToggleCam}
                             className={clsx(styles.deviceButton)}
                             Icon={
                                 <CameraIcon
@@ -258,10 +255,10 @@ export const MeetingBottomBarMobile = () => {
                         variant="black-glass"
                         borderRadius={28}
                         className={styles.deviceButton}
+                        onClick={handleToggleMic}
                     >
                         <ActionButton
                             variant="transparentBlack"
-                            onAction={handleToggleMic}
                             className={clsx(styles.deviceButton)}
                             Icon={
                                 <MicIcon

@@ -13,7 +13,6 @@ import { Emoji } from 'emoji-picker-react';
 import { MeetingReactionKind } from 'shared-types';
 import { ChatItem } from '../type';
 import styles from './MeetingChatItem.module.scss';
-import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 const Emotions = [
     {
@@ -71,7 +70,6 @@ export const MeetingChatItem = memo(
         const [anchor, setAnchor] = useState(null);
 
         const isLocal = localUser.id === sender?.id;
-        const { isMobile } = useBrowserDetect();
 
         const handleShowPreview = () => {
             setShowPreview(true);
@@ -167,7 +165,7 @@ export const MeetingChatItem = memo(
                                     className={styles.avatar}
                                 />
                             </ConditionalRender>
-                            <CustomGrid className={clsx(styles.right, { [styles.mobile]: isMobile })}>
+                            <CustomGrid className={styles.right}>
                                 <ConditionalRender condition={!isLocal}>
                                     <span className={styles.userName}>
                                         {sender.username}

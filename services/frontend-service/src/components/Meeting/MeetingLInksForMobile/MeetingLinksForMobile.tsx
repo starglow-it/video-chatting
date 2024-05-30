@@ -49,20 +49,6 @@ export const MeetingLinksForMobile = () => {
         }
     }, [isThereNewMessage]);
 
-    const handleReaction = useCallback(
-        (chatId: string, kind: MeetingReactionKind) => {
-            sendMeetingReactionEvent({ meetingChatId: chatId, kind });
-        },
-        [],
-    );
-
-    const handleUnReaction = useCallback(
-        (chatId: string, kind: MeetingReactionKind) => {
-            sendMeetingUnReactionEvent({ meetingChatId: chatId, kind });
-        },
-        [],
-    );
-
     const renderItems = useMemo(
         () =>
             (meetingTemplate?.links || []).map((link, index) => {

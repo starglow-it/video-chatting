@@ -2,7 +2,6 @@
 @import "../../../styles/variables";
 
 .notesWrapper {
-  position: relative;
   padding-top: 10px;
   width: 100%;
   height: 100%;
@@ -27,8 +26,8 @@
 
 .addNoteWrapper {
   position: absolute;
-  bottom: 0px;
-  left: 0px;
+  bottom: 10px;
+  left: 20px;
 }
 
 .sendButton {
