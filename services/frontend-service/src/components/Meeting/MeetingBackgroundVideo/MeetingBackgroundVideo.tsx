@@ -35,6 +35,10 @@ const Component = ({
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
     const { volume, isMute } = useStore($meetingStore);
 
+    console.log('templateType: ', templateType)
+    console.log('mediaLink: ', mediaLink)
+    console.log('isMute: ', isMute)
+
     return (
         <ConditionalRender condition={!!src || !!mediaLink}>
             <CustomGrid
