@@ -61,6 +61,7 @@ export const MeetingYoutubeControl = () => {
                           platform: 'youtube',
                       }
                     : null) as any,
+                templateType: 'video'
             });
             if (newUrl) {
                 WebStorage.save({
