@@ -5,7 +5,7 @@ export enum MeetingEmitEvents {
   AcceptRequest = 'meeting:userAccepted',
   SendMeetingNote = 'meeting:notes:create',
   RemoveMeetingNote = 'meeting:notes:delete',
-  SendMeetingNotes = 'meeting:notes:get',
+  SendMeetingNotes = 'meeting:notes:get:response',
   SendMeetingReaction = 'meeting:reaction:create',
   RemoveMeetingReaction = 'meeting:reaction:delete',
   GetMeetingReaction = 'meeting:reaction:get',

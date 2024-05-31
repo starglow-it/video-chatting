@@ -292,9 +292,11 @@ const Component = () => {
     }, [isMeetingHost, isThereNewRequests]);
 
     useEffect(() => {
-        updateUserSocketEvent({
-            doNotDisturb: doNotDisturbStore,
-        });
+        if (doNotDisturbStore) {
+            updateUserSocketEvent({
+                doNotDisturb: doNotDisturbStore,
+            });
+        }
     }, [doNotDisturbStore]);
 
     useEffect(() => {

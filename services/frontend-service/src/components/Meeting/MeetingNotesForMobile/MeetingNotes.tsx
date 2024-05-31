@@ -104,9 +104,9 @@ const Component = () => {
     const [lastDraggedSet, setLastDraggedSet] = useState<string[]>([]);
     const [isExpand, setIsExpand] = useState<boolean>(true);
 
-    useEffect(() => {
-        getMeetingNotesSocketEvent();
-    }, []);
+    // useEffect(() => {
+    //     getMeetingNotesSocketEvent();
+    // }, []);
 
     const handleSetLastDraggedId = useCallback((id: string) => {
         setLastDraggedSet(prev => [...prev.filter(oldId => oldId !== id), id]);

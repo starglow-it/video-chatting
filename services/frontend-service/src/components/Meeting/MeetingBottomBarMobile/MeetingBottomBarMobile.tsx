@@ -152,8 +152,6 @@ export const MeetingBottomBarMobile = () => {
                 cameraStatus: !isCamActive ? 'active' : 'inactive',
             });
         }
-
-
     }, [isMeetingConnected, isCamActive]);
 
     const handleToggleMic = useCallback(async () => {
