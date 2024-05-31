@@ -19,6 +19,7 @@ import { useGSAP } from '@gsap/react';
 import styles from './EmojiPlayground.module.scss'
 
 import { MeetingReaction, MeetingUser } from 'src/store/types';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 gsap.registerPlugin(MotionPathPlugin);
 
@@ -26,6 +27,8 @@ const Component = ({ userId }: { userId: string }) => {
     const meetingReactions = useStore($meetingReactionsStore);
     const meeting = useStore($meetingStore);
     const meetingUsers = useStore($meetingUsersStore);
+
+    const {isMobile} = useBrowserDetect();
 
     const container = useRef(null);
 
@@ -68,11 +71,11 @@ const Component = ({ userId }: { userId: string }) => {
             });
         } else {
             gsap.set(`svg[data-key="${reaction.id}"]`, {
-                height: `500px`,
+                height: isMobile ? '300px': `500px`,
                 width: "100%",
                 position: "absolute",
                 bottom: "30px",
-                left: "0",
+                left: isMobile ? "30px": "0",
             });
             gsap.set(`path[data-key="${reaction.id}"]`, {
                 height: '100%'
