@@ -208,7 +208,7 @@ const Component = ({
     const meeting = useStore($meetingStore);
 
     useEffect(() => {
-        setScale(videoSize);
+        setScale(100);
     }, [size, width, isScreenSharing]);
 
     const childProps = {
