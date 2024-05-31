@@ -1,5 +1,4 @@
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-
 import clsx from 'clsx';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -45,7 +44,7 @@ export const VideoItem = ({
             const videoTracks = mediaStreamRef.current.getVideoTracks();
 
             if (videoTracks.length) {
-                videoTracks.forEach(track => {
+                videoTracks.forEach(track => { 
                     mediaStreamRef.current.removeTrack(track);
                 });
             }

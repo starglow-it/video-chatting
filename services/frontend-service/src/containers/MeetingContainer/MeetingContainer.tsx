@@ -182,7 +182,8 @@ const MeetingContainer = memo(() => {
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isOwnerDoNotDisturb = useStore($isOwnerDoNotDisturb);
     const meeting = useStore($meetingStore);
-    
+    const isFirstRender = useRef(true);
+
 
     useEffect(() => {
         if (roleUrl) {
@@ -200,7 +201,7 @@ const MeetingContainer = memo(() => {
         return () => {
             removeWindowListeners();
             removeLandscapeListener();
-            
+
         };
     }, []);
 
@@ -293,25 +294,31 @@ const MeetingContainer = memo(() => {
                 }
 
                 let meetingUserId: string = localStorage.getItem('meetingUserId') || '';
-                await sendJoinWaitingRoomSocketEvent({meetingUserId, isScheduled: Boolean(isMuteYb)});
+                await sendJoinWaitingRoomSocketEvent({ meetingUserId, isScheduled: Boolean(isMuteYb) });
 
                 if (isOwner) {
-                    if (isHasSettings) {
-                        joinMeetingEvent({
-                            isSettingsAudioBackgroundActive:
-                                savedSettings.backgroundAudioSetting,
-                            settingsBackgroundAudioVolume:
-                                savedSettings.backgroundAudioVolumeSetting,
-                            needToRememberSettings: false,
-                        });
-                    } else {
-                        joinMeetingEvent({
-                            isSettingsAudioBackgroundActive:
-                                isBackgroundAudioActive,
-                            settingsBackgroundAudioVolume:
-                                backgroundAudioVolume,
-                            needToRememberSettings: true,
-                        });
+                    if (isFirstRender.current) {
+                        if (isHasSettings) {
+                            console.log('joinmeetingevent in meeting container');
+                            joinMeetingEvent({
+                                isSettingsAudioBackgroundActive:
+                                    savedSettings.backgroundAudioSetting,
+                                settingsBackgroundAudioVolume:
+                                    savedSettings.backgroundAudioVolumeSetting,
+                                needToRememberSettings: false,
+                            });
+                        } else {
+                            console.log('joinmeetingevent in meeting container without setting');
+                            joinMeetingEvent({
+                                isSettingsAudioBackgroundActive:
+                                    isBackgroundAudioActive,
+                                settingsBackgroundAudioVolume:
+                                    backgroundAudioVolume,
+                                needToRememberSettings: true,
+                            });
+                        }
+
+                        isFirstRender.current = false;
                     }
                 }
             }
@@ -405,7 +412,7 @@ const MeetingContainer = memo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
                 <CustomGrid className={styles.loadingWrapper}>
-                    <Typography className={clsx(styles.loadingText, {[ styles.mobile ]: isMobile})}>
+                    <Typography className={clsx(styles.loadingText, { [styles.mobile]: isMobile })}>
                         we&apos;re setting up your ruume
                     </Typography>
                     <div className={styles.lds}>

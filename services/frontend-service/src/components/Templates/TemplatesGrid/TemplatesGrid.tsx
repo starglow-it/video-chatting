@@ -308,7 +308,7 @@ const Component = <TemplateType extends { id: string }>({
             className={outerClassName || styles.templatesWrapper}
         >
             <CustomBox className={innerClassName || styles.templatesContent}>
-                <CustomGrid container gap={3} justifyContent="flex-start">
+                <CustomGrid container gap={3} justifyContent="flex-start" flexDirection={isMobile ? "column" : "row"}>
                     {renderTemplates()}
                 </CustomGrid>
             </CustomBox>

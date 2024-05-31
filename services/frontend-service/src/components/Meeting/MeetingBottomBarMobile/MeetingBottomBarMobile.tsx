@@ -7,15 +7,10 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
-import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
-import { ChatIcon } from 'shared-frontend/icons/OtherIcons/ChatIcon';
-import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import LinkIcon from '@mui/icons-material/Link';
 
 import {
-    $enabledPaymentMeetingAudience,
-    $enabledPaymentMeetingParticipant,
     $isHaveNewMessage,
     $isAudience,
     $isParticipant,
@@ -24,30 +19,21 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
-    $meetingStore,
     $meetingUsersStore,
-    $paymentIntent,
     $meetingPanelsVisibilityForMobileStore,
     initialMeetingPanelsVisibilityData,
-    createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
-    requestSwitchRoleByAudienceEvent,
     sendLeaveMeetingSocketEvent,
-    setDevicesPermission,
     setIsAudioActiveEvent,
     setIsCameraActiveEvent,
-    toggleBackgroundManageEvent,
-    togglePaymentFormEvent,
-    toggleSchedulePanelEvent,
-    toggleUsersPanelEvent,
-    updateLocalUserEvent,
     setMeetingPanelsVisibilityForMobileEvent,
-    updateUserSocketEvent
+    updateUserSocketEvent,
+    updateLocalUserEvent,
+    setDevicesPermission
 } from 'src/store/roomStores';
 
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { $authStore, $isPortraitLayout, deleteDraftUsers } from 'src/store';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
@@ -56,8 +42,6 @@ import { useRouter } from 'next/router';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
-import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
-import { PaymentType } from 'shared-const';
 import styles from './MeetingBottomBarMobile.module.scss';
 import config from '../../../const/config';
 
@@ -86,17 +70,6 @@ export const MeetingBottomBarMobile = () => {
     const isAudience = useStore($isAudience);
     const isParticipant = useStore($isParticipant);
     const isOwner = useStore($isOwner);
-    const meeting = useStore($meetingStore);
-    const enabledPaymentMeetingParticipant = useStore(
-        $enabledPaymentMeetingParticipant,
-    );
-    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
-    const paymentIntent = useStore($paymentIntent);
-    const intentId = paymentIntent?.id;
-    const isCreatePaymentIntentPending = useStore(
-        createPaymentIntentWithData.pending,
-    );
-
     const { isMobile } = useBrowserDetect();
     const isPortraitLayout = useStore($isPortraitLayout);
 
@@ -115,36 +88,6 @@ export const MeetingBottomBarMobile = () => {
         isMobileSettingPanelVisible
     } = useStore($meetingPanelsVisibilityForMobileStore);
 
-    const handleToggleSchedulePanel = useCallback((e: SyntheticEvent) => {
-        e.stopPropagation();
-        toggleSchedulePanelEvent();
-    }, []);
-
-    const handleToggleUsersPanel = useCallback((e: SyntheticEvent) => {
-        e.stopPropagation();
-        toggleUsersPanelEvent();
-    }, []);
-
-    const handleTogglePaymentPanel = useCallback(
-        (e: SyntheticEvent) => {
-            e.stopPropagation();
-            togglePaymentFormEvent();
-            if (!isCreatePaymentIntentPending && !isOwner) {
-                if (!intentId) {
-                    createPaymentIntentWithData({
-                        paymentType: PaymentType.Meeting,
-                    });
-                }
-            }
-        },
-        [isCreatePaymentIntentPending, isOwner, intentId],
-    );
-
-    const handleToggleChangeBackground = useCallback((e: SyntheticEvent) => {
-        e.stopPropagation();
-        toggleBackgroundManageEvent();
-    }, []);
-
     const handleToggleCam = useCallback(async () => {
         if (isMeetingConnected) {
             setIsCameraActiveEvent(!isCamActive);
@@ -156,10 +99,16 @@ export const MeetingBottomBarMobile = () => {
 
     const handleToggleMic = useCallback(async () => {
         if (isMeetingConnected) {
-            setIsAudioActiveEvent(!isMicActive);
-            await updateUserSocketEvent({
-                micStatus: !isMicActive ? 'active' : 'inactive',
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
             });
+            updateUserSocketEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isMicEnabled: !isMicActive,
+            });
+            setIsAudioActiveEvent(!isMicActive);
         }
     }, [isMeetingConnected, isMicActive]);
 
@@ -180,10 +129,6 @@ export const MeetingBottomBarMobile = () => {
                     : clientRoutes.dashboardRoute
                 : clientRoutes.registerEndCallRoute,
         );
-    };
-
-    const handleRequestToBecomeParticipant = () => {
-        requestSwitchRoleByAudienceEvent({ meetingId: meeting.id });
     };
 
     const handleOpenMoreList = useCallback((e: SyntheticEvent) => {

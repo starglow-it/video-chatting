@@ -151,8 +151,8 @@ sample({
         meetingRole: $meetingRoleStore,
     }),
     fn: (store, params) => ({
-        ...store,
-        ...params,
+            ...store,
+            ...params,
     }),
     target: joinMeetingFx,
 });

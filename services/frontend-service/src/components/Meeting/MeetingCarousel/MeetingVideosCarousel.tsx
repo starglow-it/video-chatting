@@ -1,27 +1,59 @@
+import { useCallback } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MeetingUser } from 'src/store/types';
 import { useStore } from 'effector-react';
-import { $tracksStore } from 'src/store/roomStores';
-import { getConnectionKey } from 'src/helpers/media/getConnectionKey';
-import { ConnectionType, StreamType } from 'src/const/webrtc';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
-import { $isPortraitLayout, $windowSizeStore } from 'src/store';
-import { VideoItem } from './VideoItem';
+import { $isPortraitLayout } from 'src/store';
+import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItemForMobile/MeetingUserVideoItem';
+
+import {
+    $activeStreamStore,
+    $isOwner,
+    $isScreenSharingStore,
+    $localUserStore,
+    $meetingConnectedStore,
+    $meetingStore,
+    setDevicesPermission,
+    updateLocalUserEvent,
+    updateUserSocketEvent,
+} from '../../../store/roomStores';
+
 import styles from './MeetingCarousel.module.scss';
 
 export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
-    const tracksStore = useStore($tracksStore);
+    const isPortraitLayout = useStore($isPortraitLayout);
+    const activeStream = useStore($activeStreamStore);
+    const localUser = useStore($localUserStore);
+    const meeting = useStore($meetingStore);
+    const isMeetingConnected = useStore($meetingConnectedStore);
+    const isScreenSharing = useStore($isScreenSharingStore);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
 
-    const { width } = useStore($windowSizeStore);
-    const isPortraitLayout = useStore($isPortraitLayout);
-
-    const videoSize = Math.ceil((width - 36 - 120) / 2);
-
+    const isOwner = useStore($isOwner);
     if (!users.length) return null;
+    const isLocalMicActive = localUser.micStatus === 'active';
+    const isLocalCamActive = localUser.cameraStatus === 'active';
+
+    const handleToggleAudio = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                micStatus: isLocalMicActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isMicEnabled: !isLocalMicActive,
+            });
+        }
+    }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
+
+    const handleResizeVideo = (userSize: number, userId: string) => {
+        updateUserSocketEvent({
+            id: userId,
+            userSize,
+        });
+    };
 
     return (
         <CustomGrid
@@ -52,29 +84,31 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                     gap="14px"
                 >
                     {users.map(item => (
-                        <VideoItem
+                        <MeetingUserVideoItem
+                            userId={item.id}
                             key={item.id}
-                            id={item.id}
-                            userTracks={
-                                tracksStore[
-                                `${getConnectionKey({
-                                    userId: item.id,
-                                    connectionType: ConnectionType.VIEW,
-                                    streamType: StreamType.VIDEO_CHAT,
-                                })}`
-                                ]
-                            }
-                            isAuraActive={item.isAuraActive}
-                            isCameraEnabled={item.cameraStatus === 'active'}
-                            isMicEnabled={item.micStatus === 'active'}
-                            userName={item.username}
-                            userProfilePhoto={
+                            size={item.userSize || 0}
+                            userProfileAvatar={
                                 getAvatarUrlMeeting(
                                     item.meetingAvatarId ?? '',
                                     list,
                                 ) ?? item.profileAvatar
                             }
-                            videoSize={videoSize}
+                            userName={item.username}
+                            localStream={activeStream}
+                            isCameraEnabled={isLocalCamActive}
+                            isMicEnabled={isLocalMicActive}
+                            isScreenSharing={isScreenSharing}
+                            isScreenSharingUser={
+                                item.id === meeting?.sharingUserId
+                            }
+                            isLocal
+                            isAuraActive={item.isAuraActive}
+                            onToggleAudio={handleToggleAudio}
+                            bottom={item?.userPosition?.bottom}
+                            left={item?.userPosition?.left}
+                            onResizeVideo={handleResizeVideo}
+                            isOwner={isOwner}
                         />
                     ))}
                 </CustomGrid>

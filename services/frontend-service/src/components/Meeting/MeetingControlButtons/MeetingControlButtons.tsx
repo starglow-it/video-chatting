@@ -113,7 +113,7 @@ import {
     setAITranscriptEvent,
     sendAiTranscription,
     aiTranscriptionOnEvent,
-    setActiveTabPanelEvent
+    setActiveTabPanelEvent,
 } from '../../../store/roomStores';
 import { $transcriptionQueue } from '../../../store/roomStores';
 
@@ -366,6 +366,9 @@ const Component = () => {
         } else {
             if (isMeetingConnected) {
                 updateLocalUserEvent({
+                    micStatus: isMicActive ? 'inactive' : 'active',
+                });
+                updateUserSocketEvent({
                     micStatus: isMicActive ? 'inactive' : 'active',
                 });
                 setDevicesPermission({
