@@ -12,6 +12,8 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import styles from './MeetingCarousel.module.scss';
 import { MeetingUserAudioItem } from '../MeetingUserAudioItem/MeetingUserAudioItem';
 import { handleRemoveBackground } from 'src/helpers/media/transparentBackground';
+import { EmojiPlayground } from '../EmojiPlayground/EmojiPlayground';
+import { $meetingStore } from 'src/store/roomStores';
 
 type VideoItemProps = {
     key: string;
@@ -39,6 +41,7 @@ export const VideoItem = ({
     const container = useRef<HTMLVideoElement | null>(null);
     const mediaStreamRef = useRef(new MediaStream());
     const isPortraitLayout = useStore($isPortraitLayout);
+    const meeting = useStore($meetingStore);
 
     useEffect(() => {
         if (userTracks?.videoTrack) {
@@ -100,6 +103,7 @@ export const VideoItem = ({
                     {userName}
                 </CustomTypography>
             </CustomPaper>
+            {id !== meeting.hostUserId ? < EmojiPlayground userId={id} /> : null}
         </CustomGrid>
     );
 };
