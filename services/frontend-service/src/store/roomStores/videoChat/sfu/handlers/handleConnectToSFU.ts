@@ -318,20 +318,7 @@ export const handleConnectToSFU = async ({
         );
 
         const participantNameInQueue: string[] = [];
-        // const transcriptionQueue: string[] = [];
-        // socket.onmessage = function (event) {
-        //     pushOrReplaceWithPartialMatch(transcriptionQueue, event.data);
-
-        //     setTranscriptionQueue(transcriptionQueue);
-        // const transcriptionQueue: string[] = [];
-
-        // const transcriptionQueue = [{
-        //     sender: "65c3c30c4e06ea38ddf68572",
-        //     message: "Initial message"
-        // }];
-
         socket.onmessage = function (event) {
-
             const [sender, rawMessage] = event.data.split('@', 2); // Splitting sender and message
             const updatedQueue = pushOrReplaceWithPartialMatch($transcriptionQueue.getState(), sender, rawMessage);
             setTranscriptionQueue(updatedQueue);

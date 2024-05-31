@@ -595,7 +595,7 @@ export class MeetingsGateway
                 }
 
                 if (userData.meetingRole === MeetingRole.Audience && !isAudiencePaywallPaymentEnabled) {
-                  accessStatus = MeetingAccessStatusEnum.Settings;
+                  accessStatus = MeetingAccessStatusEnum.EnterName;
                 }
               }
 

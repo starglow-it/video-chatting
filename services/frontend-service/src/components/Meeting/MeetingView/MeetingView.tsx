@@ -444,7 +444,6 @@ const Component = () => {
                     <ConditionalRender condition={!isMobile}>
                         {/* <MeetingManageAudio /> */}
                     </ConditionalRender>
-
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}

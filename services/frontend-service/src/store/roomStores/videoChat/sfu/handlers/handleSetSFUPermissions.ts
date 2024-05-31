@@ -18,7 +18,7 @@ export const handleSetSFUPermissions = async (
     };
 
     if (data.room) {
-        const videoTrackPub = data.room.localParticipant.getTrack(
+        const videoTrackPub = data.room.localParticipant.getTrackPublication(
             Track.Source.Camera,
         );
 
@@ -30,7 +30,7 @@ export const handleSetSFUPermissions = async (
             }
         }
 
-        const audioTrackPub = data.room.localParticipant.getTrack(
+        const audioTrackPub = data.room.localParticipant.getTrackPublication(
             Track.Source.Microphone,
         );
 

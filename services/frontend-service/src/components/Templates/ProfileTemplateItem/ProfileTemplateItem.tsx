@@ -209,7 +209,7 @@ const ProfileTemplateItem = memo(
                                     />
                                 }
                                 typographyProps={{
-                                    variant: isMobile ? 'body3' : 'body2',
+                                    variant: isMobile ? 'caption' : 'body2',
                                 }}
                             />
                             <CustomButton
@@ -223,7 +223,7 @@ const ProfileTemplateItem = memo(
                                     />
                                 }
                                 typographyProps={{
-                                    variant: isMobile ? 'body3' : 'body2',
+                                    variant: isMobile ? 'caption' : 'body2',
                                 }}
                             />
                         </CustomGrid>

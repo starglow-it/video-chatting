@@ -228,10 +228,6 @@ const Component = () => {
         updateUserSocketEvent({
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
-
-        // const meetingUserId = localStorage.getItem('meetingUserId');
-
-        // await rejoinMeetingEvent(meetingUserId || '');
     }, [isUserSentEnterRequest]);
 
     const handlePaywallPayment = useCallback(() => {

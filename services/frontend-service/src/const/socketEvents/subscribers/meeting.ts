@@ -1,5 +1,5 @@
 export enum MeetingSubscribeEvents {
-    OnGetMeetingNotes = 'meeting:notes:get',
+    OnGetMeetingNotes = 'meeting:notes:get:response',
     OnGetMeetingReactions = 'meeting:reaction:get',
     OnUpdateMeeting = 'meeting:update',
     OnUserAccepted = 'meeting:userAccepted',

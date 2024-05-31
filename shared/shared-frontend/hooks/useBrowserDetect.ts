@@ -13,7 +13,7 @@ export const useBrowserDetect = () => {
 
     const isSafari = useMemo(() => browserData?.browser.name === 'Safari', [browserData]);
 
-    const isMobile = useMemo(() => browserData?.platform.type === 'mobile', [browserData]);
+    const isMobile = useMemo(() => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia("(max-width: 767px)").matches, [browserData]);
 
     return useMemo(
         () => ({
