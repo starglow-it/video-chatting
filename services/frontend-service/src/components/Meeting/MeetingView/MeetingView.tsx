@@ -119,6 +119,10 @@ const Component = () => {
     const transcriptionQueue = useStore($transcriptionQueue);
     const isThereNewMessage = useStore($isThereNewTranscriptionMessage);
 
+    console.log('meetingTemplate: ', meetingTemplate)
+    console.log('SRC: ', meetingTemplate.url);
+    console.log('Media Link: ', meetingTemplate.mediaLink)
+
     useEffect(() => {
         if (isThereNewMessage) {
             function deduplicateText(input: string) {
