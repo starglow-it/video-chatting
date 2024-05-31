@@ -23,6 +23,11 @@ export const CustomYoutubePlayer = ({
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);
     };
+
+    console.log('playerRef.current: ', playerRef.current);
+    console.log('URL: ', url);
+    console.log('yId: ', yId);
+
     useEffect(() => {
         isMute ? setVolume(0) : setVolume(volume);
     }, [isMute]);
