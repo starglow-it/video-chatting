@@ -195,10 +195,6 @@ export const MeetingEditRuumeSettingForMobile = () => {
         );
     }, []);
 
-    const handleDoNotDisturb = () => {
-        setDoNotDisturbEvent(!doNotDisturbStore);
-    };
-
     const handleCloseEditRuumePanel = () => {
         toggleEditRuumeSettingEvent(false);
     };
@@ -341,22 +337,17 @@ export const MeetingEditRuumeSettingForMobile = () => {
         ],
     );
 
-    const handleParticipantSubmit = async () => {
-        if (localUser.meetingAvatarId) {
-            await updateUserSocketEvent({
-                meetingAvatarId: localUser.meetingAvatarId,
-                cameraStatus: isCameraActive ? 'active' : 'inactive'
-            });
-        }
-    };
-
     const handleOnSave = async () => {
         if (isOwner) {
             await onSubmit();
         }
+    };
 
-        if (localUser.meetingRole === MeetingRole.Participant) {
-            await handleParticipantSubmit();
+    const handleSaveAvatar = async () => {
+        if (localUser.meetingAvatarId) {
+            await updateUserSocketEvent({
+                meetingAvatarId: localUser.meetingAvatarId,
+            });
         }
     };
 
@@ -573,7 +564,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                 <MeetingAvatars
                                     devicesSettingsDialog={false}
                                     onClose={() => { }}
-                                    onSave={handleOnSave}
+                                    onSave={handleSaveAvatar}
                                 />
                             </CustomAccordion>
                         </ConditionalRender>

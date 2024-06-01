@@ -83,10 +83,7 @@ const Component = (onSave: () => Promise<void>) => {
     const meetingLinkStart = `* /room/`;
 
     const customLinkError = errors.customLink?.message;
-    const handleOnChange = async () => {
-        await onSave();
-    };
-
+ 
     return (
         <CustomGrid container direction="column" gap={1}>
             <CustomGrid
@@ -95,9 +92,9 @@ const Component = (onSave: () => Promise<void>) => {
                     [styles.error]: Boolean(customLinkError),
                 })}
                 alignItems="center"
+                justifyContent="space-between"
                 gap={1}
                 wrap="nowrap"
-                flex="1 0 auto"
             >
                 <CustomLinkIcon width="24px" height="24px" />
                 <InputBase
@@ -108,7 +105,6 @@ const Component = (onSave: () => Promise<void>) => {
                         input: styles.input,
                     }}
                     {...registerData}
-                    // onChange={handleOnChange}
                 />
                 <CustomIconButton type="submit" size="small"><DoneIcon /></CustomIconButton>
             </CustomGrid>
