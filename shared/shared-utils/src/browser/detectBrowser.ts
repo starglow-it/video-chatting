@@ -8,4 +8,4 @@ export const isSafari = () =>
 
 export const isMobile = () =>
   // parse(window.navigator.userAgent).platform.type === 'mobile';
-  /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.matchMedia("(max-width: 767px)").matches;
+  /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);

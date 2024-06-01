@@ -228,21 +228,17 @@ const Component = () => {
                         justifyContent="center"
                     >
                         <CustomGrid flex={1}>
-                            <ConditionalRender
-                                condition={!!profile.id}
-                            >
-                                <CustomInput
-                                    placeholder="post a sticky note"
-                                    className={clsx(
-                                        materialStyles.textField,
-                                        styles.textField,
-                                        { [styles.expanded]: isExpand },
-                                    )}
-                                    onKeyDown={handleKeyDown}
-                                    {...restRegisterData}
-                                    onChange={handleChange}
-                                />
-                            </ConditionalRender>
+                            <CustomInput
+                                placeholder="post a sticky note"
+                                className={clsx(
+                                    materialStyles.textField,
+                                    styles.textField,
+                                    { [styles.expanded]: isExpand },
+                                )}
+                                onKeyDown={handleKeyDown}
+                                {...restRegisterData}
+                                onChange={handleChange}
+                            />
                         </CustomGrid>
                         <ActionButton
                             className={styles.sendButton}
