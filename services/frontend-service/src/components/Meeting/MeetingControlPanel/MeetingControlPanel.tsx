@@ -239,7 +239,6 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                {/* <ClickAwayListener onClickAway={toggleOutsideUserPanel}> */}
                 <Draggable
                     axis="both"
                     defaultPosition={{ x: 0, y: 0 }}
@@ -259,7 +258,6 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </Draggable>
-                {/* </ClickAwayListener> */}
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
                         <div className={styles.scheduleOpenPanelWrapper}>
