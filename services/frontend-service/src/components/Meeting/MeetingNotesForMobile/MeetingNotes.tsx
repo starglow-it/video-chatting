@@ -23,8 +23,8 @@ import createStyles from '@mui/styles/createStyles';
 import { makeStyles } from '@mui/styles';
 
 // stores
-import { MeetingNote, NotificationType } from 'src/store/types';
-import { $windowSizeStore, $profileStore, addNotificationEvent } from '../../../store';
+import { NotificationType } from 'src/store/types';
+import { $profileStore, addNotificationEvent } from '../../../store';
 import {
     $meetingNotesStore,
     $meetingPanelsVisibilityForMobileStore,
@@ -45,6 +45,9 @@ import { MAX_NOTE_CONTENT } from '../../../const/general';
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
 });
+
+//hooks
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // styles
 import styles from './MeetingNotes.module.scss';
@@ -96,17 +99,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Component = () => {
     const meetingNotes = useStore($meetingNotesStore);
-    const { height } = useStore($windowSizeStore);
     const profile = useStore($profileStore);
     const { isMobileStickyNotesVisible } = useStore($meetingPanelsVisibilityForMobileStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const [lastDraggedSet, setLastDraggedSet] = useState<string[]>([]);
     const [isExpand, setIsExpand] = useState<boolean>(true);
+    const { isMobile } = useBrowserDetect();
 
-    // useEffect(() => {
-    //     getMeetingNotesSocketEvent();
-    // }, []);
+    useEffect(() => {
+        if (isMobile) {
+            getMeetingNotesSocketEvent();
+        }
+    }, [isMobile]);
 
     const handleSetLastDraggedId = useCallback((id: string) => {
         setLastDraggedSet(prev => [...prev.filter(oldId => oldId !== id), id]);

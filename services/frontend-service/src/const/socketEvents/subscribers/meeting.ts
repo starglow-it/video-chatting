@@ -6,7 +6,7 @@ export enum MeetingSubscribeEvents {
     OnMeetingEnterRequest = 'meeting:accessRequest:receive',
     OnFinishMeeting = 'meeting:finished',
     OnUpdateMeetingTemplate = 'template:update',
-    OnSendMeetingNote = 'meeting:notes:create',
+    OnSendMeetingNote = 'meeting:notes:created',
     OnRemoveMeetingNote = 'meeting:notes:delete',
     OnSendMeetingReaction = 'meeting:reaction:create',
     OnRemoveMeetingReaction = 'meeting:reaction:delete',
