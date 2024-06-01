@@ -444,7 +444,7 @@ export const MeetingEditRuumeSetting = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    <ConditionalRender condition={!isSafari}>
+                                    {/* <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -461,7 +461,7 @@ export const MeetingEditRuumeSetting = () => {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender>
+                                    </ConditionalRender> */}
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >

@@ -94,7 +94,6 @@ import styles from './MeetingEditRuumeSetting.module.scss';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 export const MeetingEditRuumeSettingForMobile = () => {
-    const doNotDisturbStore = useStore($doNotDisturbStore);
     const changeStream = useStore($changeStreamStore);
     const isAuraActive = useStore($isAuraActive);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -104,7 +103,6 @@ export const MeetingEditRuumeSettingForMobile = () => {
     const isOwner = useStore($isOwner);
     const isParticipant = useStore($isParticipant);
     const localUser = useStore($localUserStore);
-    const isCameraActive = useStore($isCameraActiveStore);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
@@ -460,7 +458,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    <ConditionalRender condition={!isSafari}>
+                                    {/* <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -477,7 +475,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender>
+                                    </ConditionalRender> */}
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >
