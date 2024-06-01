@@ -94,7 +94,6 @@ import styles from './MeetingEditRuumeSetting.module.scss';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 export const MeetingEditRuumeSettingForMobile = () => {
-    const doNotDisturbStore = useStore($doNotDisturbStore);
     const changeStream = useStore($changeStreamStore);
     const isAuraActive = useStore($isAuraActive);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -104,7 +103,6 @@ export const MeetingEditRuumeSettingForMobile = () => {
     const isOwner = useStore($isOwner);
     const isParticipant = useStore($isParticipant);
     const localUser = useStore($localUserStore);
-    const isCameraActive = useStore($isCameraActiveStore);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
@@ -194,10 +192,6 @@ export const MeetingEditRuumeSettingForMobile = () => {
             prev === accordionId ? '' : accordionId,
         );
     }, []);
-
-    const handleDoNotDisturb = () => {
-        setDoNotDisturbEvent(!doNotDisturbStore);
-    };
 
     const handleCloseEditRuumePanel = () => {
         toggleEditRuumeSettingEvent(false);
@@ -341,22 +335,17 @@ export const MeetingEditRuumeSettingForMobile = () => {
         ],
     );
 
-    const handleParticipantSubmit = async () => {
-        if (localUser.meetingAvatarId) {
-            await updateUserSocketEvent({
-                meetingAvatarId: localUser.meetingAvatarId,
-                cameraStatus: isCameraActive ? 'active' : 'inactive'
-            });
-        }
-    };
-
     const handleOnSave = async () => {
         if (isOwner) {
             await onSubmit();
         }
+    };
 
-        if (localUser.meetingRole === MeetingRole.Participant) {
-            await handleParticipantSubmit();
+    const handleSaveAvatar = async () => {
+        if (localUser.meetingAvatarId) {
+            await updateUserSocketEvent({
+                meetingAvatarId: localUser.meetingAvatarId,
+            });
         }
     };
 
@@ -469,7 +458,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    <ConditionalRender condition={!isSafari}>
+                                    {/* <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -486,7 +475,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender>
+                                    </ConditionalRender> */}
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >
@@ -573,7 +562,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                 <MeetingAvatars
                                     devicesSettingsDialog={false}
                                     onClose={() => { }}
-                                    onSave={handleOnSave}
+                                    onSave={handleSaveAvatar}
                                 />
                             </CustomAccordion>
                         </ConditionalRender>

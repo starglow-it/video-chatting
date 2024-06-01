@@ -87,7 +87,6 @@ export const MeetingChatList = () => {
                 alignItems="flex-start"
                 justifyContent="flex-start"
                 flexDirection="column"
-                height="100%"
                 className={styles.imageWrapper}
             >
                 <CustomTypography
@@ -97,12 +96,6 @@ export const MeetingChatList = () => {
                     color="white"
                     className={styles.chatTitle}
                 />
-                {/* <CustomTypography
-                    variant='body1'
-                    nameSpace="meeting"
-                    translation="emptyChatNoteForMobile.text"
-                    color="white"
-                /> */}
             </CustomGrid>
             <ConditionalRender condition={!list.length}>
                 <CustomGrid
@@ -111,7 +104,7 @@ export const MeetingChatList = () => {
                     justifyContent="center"
                     flexDirection="column"
                     height="100%"
-                    className={styles.imageWrapper}
+                    className={styles.noContentImageWrapper}
                 >
                     <CustomImage
                         src="/images/empty-chat.png"

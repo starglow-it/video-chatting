@@ -434,15 +434,10 @@ const Component = () => {
                     </ConditionalRender>
                     <MeetingControlPanel />
                     <MeetingControlButtons />
-                    {/* <MeetingGeneralInfo /> */}
                     <MeetingNotes />
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
-                    </ConditionalRender>
-                    {/* <MeetingTranscription /> */}
-                    <ConditionalRender condition={!isMobile}>
-                        {/* <MeetingManageAudio /> */}
                     </ConditionalRender>
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
@@ -458,7 +453,6 @@ const Component = () => {
                         display="flex"
                         flexDirection="column"
                     >
-                        {/* <MeetingHeader /> */}
                         <MeetingCarousel />
                         <MeetingBottomBarMobile />
                         <MeetingControlPanel />

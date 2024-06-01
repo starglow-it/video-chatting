@@ -66,7 +66,6 @@ export const MeetingAvatars = ({
                 meetingAvatarId: id === localUser.meetingAvatarId ? '' : id,
                 cameraStatus: 'active',
             });
-            setIsCameraActiveEvent(false);
         }
 
         await onSave();

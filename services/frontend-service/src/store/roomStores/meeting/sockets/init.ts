@@ -507,26 +507,24 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ),
     );
 
-    if (!isMobile()) {
-        socketInstance?.on(
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnGetMeetingNotes,
+        getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnGetMeetingNotes,
-            getMeetingSocketSubscribeHandler(
-                MeetingSubscribeEvents.OnGetMeetingNotes,
-            ),
-        );
-        socketInstance?.on(
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnRemoveMeetingNote,
+        getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnRemoveMeetingNote,
-            getMeetingSocketSubscribeHandler(
-                MeetingSubscribeEvents.OnRemoveMeetingNote,
-            ),
-        );
-        socketInstance?.on(
+        ),
+    );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnSendMeetingNote,
+        getMeetingSocketSubscribeHandler(
             MeetingSubscribeEvents.OnSendMeetingNote,
-            getMeetingSocketSubscribeHandler(
-                MeetingSubscribeEvents.OnSendMeetingNote,
-            ),
-        );
-    }
+        ),
+    );
 
     socketInstance?.on(
         MeetingSubscribeEvents.OnGetMeetingReactions,

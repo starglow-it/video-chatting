@@ -82,8 +82,9 @@ export class UsersService {
   async findById({
     id,
     session = null,
+    populatePaths,
   }: GetModelByIdQuery<MeetingUserDocument>): Promise<MeetingUserDocument> {
-    return this.meetingUser.findById(id, {}, { session: session?.session });
+    return this.meetingUser.findById(id, {}, { session: session?.session, populate: populatePaths });
   }
 
   async findOneAndUpdate({
