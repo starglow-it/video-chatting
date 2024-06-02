@@ -1,13 +1,19 @@
-import Carousel from 'react-material-ui-carousel';
-
-import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { useStore, useStoreMap } from 'effector-react';
+
+import Carousel from 'react-material-ui-carousel';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+
 import { $isAudience, $meetingUsersStore } from 'src/store/roomStores';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingVideosCarousel } from './MeetingVideosCarousel';
+
+import { $localUserStore } from 'src/store/roomStores';
+
 import styles from './MeetingCarousel.module.scss';
 
 export const MeetingCarousel = () => {
+    const localUser = useStore($localUserStore);
+    
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -15,8 +21,9 @@ export const MeetingCarousel = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Audience &&
-                    user.meetingRole !== MeetingRole.Recorder,
+                    localUser.id !== user.id &&
+                    user.meetingRole !== MeetingRole.Recorder &&
+                    user.meetingRole !== MeetingRole.Audience,
             ),
     });
     const isAudience = useStore($isAudience);

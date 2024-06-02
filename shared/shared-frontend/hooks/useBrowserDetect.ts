@@ -13,7 +13,8 @@ export const useBrowserDetect = () => {
 
     const isSafari = useMemo(() => browserData?.browser.name === 'Safari', [browserData]);
 
-    const isMobile = useMemo(() => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), [browserData]);
+    // const isMobile = useMemo(() => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), [browserData]);
+    const isMobile = useMemo(() => browserData?.platform.type === 'mobile', [browserData]);
 
     return useMemo(
         () => ({
