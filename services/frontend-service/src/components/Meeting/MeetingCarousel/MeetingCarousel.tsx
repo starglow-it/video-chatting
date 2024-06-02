@@ -15,7 +15,8 @@ export const MeetingCarousel = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    user.meetingRole !== MeetingRole.Audience,
+                    user.meetingRole !== MeetingRole.Audience &&
+                    user.meetingRole !== MeetingRole.Recorder,
             ),
     });
     const isAudience = useStore($isAudience);

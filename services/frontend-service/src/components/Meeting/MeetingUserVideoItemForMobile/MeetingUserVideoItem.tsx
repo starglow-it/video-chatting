@@ -56,6 +56,7 @@ const MeetingUserVideoChildCom = ({
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
+    const trackStore = useStore($tracksStore);
     const userTracks = useStoreMap({
         store: $tracksStore,
         keys: [
@@ -76,7 +77,6 @@ const MeetingUserVideoChildCom = ({
     const videoError = useStore($videoErrorStore);
     const isVideoError = Boolean(videoError);
 
-
     const toggleSelfView = async () => {
         if (isVideoError) {
             addNotificationEvent({
@@ -95,7 +95,6 @@ const MeetingUserVideoChildCom = ({
         }
     };
 
-
     useEffect(() => {
         if (!isLocal) setVideoSelfView(isCameraEnabled);
     }, [isCameraEnabled]);
@@ -113,6 +112,7 @@ const MeetingUserVideoChildCom = ({
         } else {
             videoTrack = userTracks?.videoTrack;
         }
+        
 
         if (videoTrack) {
             const videoTracks = mediaStreamRef.current.getVideoTracks();
