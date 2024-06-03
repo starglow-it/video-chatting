@@ -112,6 +112,12 @@ export type LoginUserParams = {
     password: string;
 };
 
+export type SeatLoginUserParams = {
+    email: string;
+    password: string;
+    hostId: string;
+};
+
 export type GoogleVerfifyParams = {
     token: string;
 };
@@ -144,6 +150,7 @@ export type LoginUserResponse = { user: Profile } & TokenPair & {
     isFirstLogin: boolean;
 };
 export type LoginUserPayload = { email: string; password: string };
+export type SeatLoginUserPayload = { email: string; password: string; hostId: string; };
 
 export type JoinMeetingResult = {
     user?: MeetingUser;

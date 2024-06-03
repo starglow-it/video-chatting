@@ -4,6 +4,7 @@ import {
     AuthUserState,
     GoogleVerfifyParams,
     LoginUserParams,
+    SeatLoginUserParams,
     Profile,
 } from '../types';
 import { InitUserPayload } from './type';
@@ -20,6 +21,10 @@ export const loginUserFx = authDomain.createEffect<
     LoginUserParams,
     AuthUserState
 >('loginUserFx');
+export const seatLoginUserFx = authDomain.createEffect<
+    SeatLoginUserParams,
+    AuthUserState
+>('seatLoginUserFx');
 export const setUserCountryFx = authDomain.createEffect<void, void>(
     'setUserCountryFx',
 );

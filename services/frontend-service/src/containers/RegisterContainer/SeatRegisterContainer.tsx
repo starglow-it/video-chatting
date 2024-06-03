@@ -43,7 +43,7 @@ import {
 } from '../../controllers/WebStorageController';
 import { passwordSchema } from '../../validation/users/password';
 import { emailSchema } from '../../validation/users/email';
-import styles from './RegisterContainer.module.scss';
+import styles from './SeatRegisterContainer.module.scss';
 import {
     $authStore,
     $registerStore,
@@ -66,6 +66,8 @@ const Component = () => {
     const { profileId, hostId } = router.query as any;
 
     const [showHints, setHints] = useState<boolean>(false);
+    const currentUrl = router.asPath;
+    const loginUrl = currentUrl.replace("register", "login");
 
     const resolver = useYupValidationResolver<{
         email: string;
@@ -265,7 +267,25 @@ const Component = () => {
                                     {...register('terms')}
                                 />
                             </CustomGrid>
-
+                            <CustomGrid
+                                container
+                                flexWrap="nowrap"
+                                justifyContent="flex-start"
+                                alignItems="center"
+                                className={styles.alreadyLogInAskText}
+                            >
+                                <CustomTypography
+                                    variant="body2"
+                                    nameSpace="common"
+                                    translation="seatRegister.alreadyLoginAsk"
+                                />
+                                <CustomLink
+                                    href={loginUrl}
+                                    nameSpace="common"
+                                    translation="seatRegister.link"
+                                    className={styles.loginLink}
+                                />
+                            </CustomGrid>
                             <CustomButton
                                 className={styles.registerButton}
                                 disabled={!isTermsAccepted}

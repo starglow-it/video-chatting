@@ -190,17 +190,43 @@ const Component = () => {
 
     return (
         <CustomPaper className={styles.personalInfoWrapper}>
-            <CustomGrid container marginBottom={2}>
-                <PersonAddAlt1Icon
-                    className={styles.favoriteIcon}
-                    width="24px"
-                    height="24px"
-                />
-                <CustomTypography
-                    variant="body1"
-                    fontWeight="600"
-                    nameSpace="profile"
-                    translation="seatsTeamMembers.title"
+            <CustomGrid container marginBottom={2} justifyContent="space-between">
+                <CustomGrid
+                    item
+                >
+                    <CustomGrid item>
+                        <PersonAddAlt1Icon
+                            className={styles.favoriteIcon}
+                            width="24px"
+                            height="24px"
+                        />
+                        <CustomTypography
+                            variant="body1"
+                            fontWeight="600"
+                            nameSpace="profile"
+                            translation="seatsTeamMembers.title"
+                        />
+                    </CustomGrid>
+                    <CustomTypography
+                        variant="body2"
+                        color='#D9D9D9'
+                        component="div"
+                    >
+                        {profile.companyName || ''}
+                    </CustomTypography>
+                </CustomGrid>
+
+                <CustomButton
+                    onClick={handleAddMember}
+                    disabled={!isSubscriptionBusiness}
+                    variant="custom-primary"
+                    label={
+                        <Translation
+                            nameSpace="profile"
+                            translation="seatsTeamMembers.inviteTeamMembers"
+                        />
+                    }
+                    sx={{ width: '110px', marginBottom: '10px', padding: "10px" }}
                 />
             </CustomGrid>
             <CustomGrid
@@ -209,23 +235,7 @@ const Component = () => {
                 className={styles.recordingListInnerWrapper}
                 gap={1.5}
             >
-                <CustomGrid
-                    container
-                    gap={0.5}
-                >
-                    <CustomButton
-                        onClick={handleAddMember}
-                        disabled={!isSubscriptionBusiness}
-                        variant="custom-primary"
-                        label={
-                            <Translation
-                                nameSpace="profile"
-                                translation="seatsTeamMembers.inviteTeamMembers"
-                            />
-                        }
-                        sx={{ width: '206px', marginBottom: '10px' }}
-                    />
-                </CustomGrid>
+
                 <ConditionalRender condition={!isSubscriptionBusiness}>
                     <CustomTypography
                         variant="body1"

@@ -1,0 +1,70 @@
+@import "../../styles/rem.scss";
+@import "../../styles/variables.scss";
+
+.wrapper {
+  width: rem(472px);
+  max-width: 100%;
+  max-height: 100%;
+  padding: rem(24px 40px 24px 40px);
+}
+
+.image {
+  width: rem(28px);
+  height: rem(28px);
+  margin: 0 rem(12px);
+}
+
+.text {
+  max-height: rem(40px);
+}
+
+.socialsWrapper {
+  margin: rem(20px) 0 0 0;
+  .googleLogin {
+    margin: 0 0 rem(12px) 0;
+  }
+}
+
+.signInSeparator {
+  margin: rem(36px) 0;
+}
+
+.input {
+  width: 100%;
+
+  &:first-child {
+    margin: 0 0 rem(24px) 0;
+  }
+}
+
+.signInBtn {
+  margin: rem(18px) 0 0 0;
+  padding: rem(16px) 0;
+}
+.btnGoogle{
+  cursor: pointer;
+  transition: box-shadow 200ms linear;
+  padding: rem(8px 16px);
+  height: rem(56px);
+  display: flex;
+  align-items: center;
+  gap: rem(8px);
+  margin-top: rem(16px);
+}
+
+.forgotPass {
+  margin: rem(8px) 0 0 0;
+}
+
+.errorContainer {
+  margin: rem(8px 0 8px 0);
+  align-self: flex-start;
+}
+
+.bgContainer {
+  z-index: -1;
+}
+
+.textOr {
+  color: $normal-gray-scale;
+}

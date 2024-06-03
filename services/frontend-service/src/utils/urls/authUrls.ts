@@ -3,6 +3,7 @@ import { authScope, serverUrl } from './baseData';
 
 export const REFRESH_URL = `${authScope}/refresh`;
 export const LOGIN_USER_URL = `${authScope}/login`;
+export const SEAT_LOGIN_USER_URL = `${authScope}/seat-login`;
 export const ME_URL = `${authScope}/me`;
 export const LOGOUT_URL = `${authScope}/logout`;
 export const GOOGLE_VERIFY_URL = `${authScope}/google-verify`;
@@ -11,6 +12,10 @@ export const DELETE_DRAFT_USERS_URL = `${authScope}/delete-free-user`;
 
 export const loginUserUrl = {
     url: `${serverUrl}/${LOGIN_USER_URL}`,
+    method: HttpMethods.Post,
+};
+export const seatLoginUserUrl = {
+    url: `${serverUrl}/${SEAT_LOGIN_USER_URL}`,
     method: HttpMethods.Post,
 };
 

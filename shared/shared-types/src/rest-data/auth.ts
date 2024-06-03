@@ -13,4 +13,5 @@ export interface IUserCredentials {
   state?: ICommonUser['state'];
   registerType?: RegisterType;
   loginType?: ICommonUser['loginType'];
+  hostId?: string;
 }
