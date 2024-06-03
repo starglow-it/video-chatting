@@ -55,6 +55,7 @@ const MeetingUserVideoChildCom = ({
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
+    const trackStore = useStore($tracksStore);
     const userTracks = useStoreMap({
         store: $tracksStore,
         keys: [
@@ -92,7 +93,6 @@ const MeetingUserVideoChildCom = ({
             });
         }
     };
-
 
     useEffect(() => {
         if (!isLocal) setVideoSelfView(isCameraEnabled);
