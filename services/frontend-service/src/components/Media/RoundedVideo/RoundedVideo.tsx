@@ -17,6 +17,7 @@ import styles from './RoundedVideo.module.scss';
 
 // types
 import { RoundedVideoProps } from './types';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 const Component = ({
     userName,
@@ -33,6 +34,8 @@ const Component = ({
     isVideoSelfView = false,
 }: RoundedVideoProps) => {
     const [isVideoActive, setIsVideoActive] = useState(false);
+
+    const {isMobile} = useBrowserDetect();
 
     const handleVideoLoaded = useCallback(() => {
         setIsVideoActive(true);
@@ -111,8 +114,8 @@ const Component = ({
                 <video
                     onLoadedData={handleVideoLoaded}
                     ref={videoRef}
-                    className={clsx(styles.video, { [styles.mirror]: isLocal })}
-                    style={style}
+                    className={clsx(styles.video, { [styles.mirror]: isLocal  })}
+                    style={{...style, transform: isMobile? 'scale(1.4)' : 'scale(1)'}}
                     playsInline
                     muted={true}
                     autoPlay

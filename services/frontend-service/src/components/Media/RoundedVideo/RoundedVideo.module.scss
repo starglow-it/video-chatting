@@ -16,6 +16,7 @@
 
     .video {
         height: 100%;
+        transform-origin: center center;
 
         &.mirror {
             transform: rotateY(180deg);
