@@ -117,13 +117,11 @@ $meetingRecordingStore
     })
     .on(deleteRecordingUrlEvent, (state, data) => {
         const removeIndex = state.videos.findIndex(video => video.id === data);
-        console.log('state: ----', state, data);
-        console.log('removeIndex: ----', removeIndex);
-
-        return {
+        const updatedState = {
             ...state,
             videos: removeIndex !== -1 ? [...state.videos.filter((item, index) => index !== removeIndex)] : state.videos
         };
+        return updatedState;
     })
     .reset(resetMeetingRecordingStore);
 
