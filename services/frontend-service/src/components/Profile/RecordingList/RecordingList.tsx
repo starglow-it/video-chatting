@@ -105,10 +105,8 @@ const Component = () => {
     }, [isMeetingSocketConnected, profile]);
 
     useEffect(() => {
-        if (meetingRecordingStore.videos.length > 0) {
-            setVideos(formatRecordingUrls(meetingRecordingStore.videos));
-        }
-    }, [meetingRecordingStore]);
+        setVideos(formatRecordingUrls(meetingRecordingStore.videos));
+    }, [meetingRecordingStore.videos]);
 
     useEffect(() => {
         if (profile && profile.subscriptionPlanKey && profile.subscriptionPlanKey !== PlanKeys.House) {

@@ -167,7 +167,7 @@ export const MeetingMonezationForm = forwardRef(
                     isFirstRender.current = false;
                 }
             }
-        }, [enabledMeeting, enabledPaywall, templateCurrency, paywallCurrency, currentUrl]);
+        }, [enabledMeeting, enabledPaywall, templateCurrency, paywallCurrency]);
 
         const handleOnChange = async (event: any): Promise<void> => {
             if (onSave) {

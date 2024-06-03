@@ -71,6 +71,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { Request as Req } from 'express';
 import { LoginRequest } from '../../dtos/requests/login.request.dto';
+import { SeatLoginRequest } from 'src/dtos/requests/seat-login.request.dto';
 
 @ApiTags('Auth')
 @Controller(AUTH_SCOPE)
@@ -454,6 +455,59 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
     if (user.isBlocked) {
       throw new DataValidationException(USER_IS_BLOCKED);
+    }
+
+    const result = await this.authService.loginUser(body);
+
+    return {
+      success: true,
+      result,
+    };
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('/seat-login')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User logged in',
+  })
+  async seatLogin(
+    @Request() req: Req,
+    @Body() body: SeatLoginRequest,
+  ): Promise<ResponseSumType<TokenPairWithUserType>> {
+    await this.delGlobalUser(req);
+    const isUserExists = await this.coreService.checkIfUserExists({
+      email: body.email,
+    });
+
+    if (!isUserExists) {
+      throw new DataValidationException(USER_NOT_FOUND);
+    }
+
+    const user = await this.coreService.findUserByEmail({
+      email: body.email,
+    });
+
+    if (!user.isConfirmed || user.isResetPasswordActive) {
+      throw new DataValidationException(USER_NOT_CONFIRMED);
+    }
+
+    if (user.isBlocked) {
+      throw new DataValidationException(USER_IS_BLOCKED);
+    }
+
+    const host = await this.coreService.findUserById({ userId: body.hostId });
+    if (host && host.teamMembers && host.teamMembers.length > 0) {
+      const teamMembers = host.teamMembers.map(tm => {
+        if (tm.email === body.email && tm.status === 'pending') {
+          tm.status = 'confirmed';
+        }
+
+        return tm;
+      });
+
+      await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
     }
 
     const result = await this.authService.loginUser(body);

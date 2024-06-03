@@ -6,6 +6,11 @@
   "register": {
     "text": "Register"
   },
+  "seatRegister": {
+    "text": "Register",
+    "alreadyLoginAsk": "Already have an account? Login",
+    "link": "here"
+  },
   "reset": {
     "title": "Reset password",
     "text": "Enter the email associated with your account\nand we'll send a link to reset your password",

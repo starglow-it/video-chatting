@@ -9,6 +9,7 @@ import {
     initUserWithoutTokenFx,
     googleVerifyFx,
     loginUserFx,
+    seatLoginUserFx,
     logoutUserFx,
     refreshAuthFx,
     resetAuthErrorEvent,
@@ -21,6 +22,7 @@ import { appDialogsApi } from '../dialogs/init';
 
 // handlers
 import { handleLoginUser } from './handlers/handleLoginUser';
+import { handleSeatLoginUser } from './handlers/handleSeatLoginUser';
 import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';
 import { handleRefreshUserAuthentication } from './handlers/handleRefreshUserAuthentication';
 import { handleLogoutUser } from './handlers/handleLogoutUser';
@@ -39,6 +41,7 @@ import frontendConfig from '../../const/config';
 import { handleDeleteDraftUsers } from './handlers/handleDraftUsers';
 
 loginUserFx.use(handleLoginUser);
+seatLoginUserFx.use(handleSeatLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
 refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
@@ -48,7 +51,7 @@ initUserWithoutTokenFx.use(handleInitUserWithoutToken);
 deleteDraftUsers.use(handleDeleteDraftUsers);
 
 sample({
-    clock: loginUserFx.doneData,
+    clock: [loginUserFx.doneData, seatLoginUserFx.doneData],
     filter: payload => payload.isAuthenticated,
     target: setProfileEvent,
 });
@@ -59,12 +62,21 @@ forward({
 });
 
 sample({
-    clock: loginUserFx.doneData,
+    clock: [loginUserFx.doneData, seatLoginUserFx.doneData],
     filter: payload => payload.isAuthenticated && !payload?.user?.country,
     target: setUserCountryFx,
 });
 
 loginUserFx.doneData.watch(payload => {
+    if (payload?.error?.message === USER_IS_BLOCKED.message) {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.userBlockedDialog,
+        });
+    }
+    deleteUserAnonymousCookies();
+});
+
+seatLoginUserFx.doneData.watch(payload => {
     if (payload?.error?.message === USER_IS_BLOCKED.message) {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.userBlockedDialog,
@@ -101,6 +113,7 @@ $authStore
     .on(
         [
             loginUserFx.doneData,
+            seatLoginUserFx.doneData,
             checkAuthFx.doneData,
             logoutUserFx.doneData,
             googleVerifyFx.doneData,

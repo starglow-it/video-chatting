@@ -35,7 +35,7 @@ import {
 } from '../profile/profileTemplates/model';
 import { appDialogsApi } from '../dialogs/init';
 import { AppDialogsEnum } from '../types';
-import { googleVerifyFx, loginUserFx } from '../auth/model';
+import { googleVerifyFx, loginUserFx, seatLoginUserFx } from '../auth/model';
 import { clearProfileEvent } from '../profile/profile/model';
 
 
@@ -201,7 +201,7 @@ export const $templatesStore = templatesDomain.createStore<
                 ...data.list.filter(item => !item.isAcceptNoLogin),
             ],
     }))
-    .reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
+    .reset([clearProfileEvent, loginUserFx.doneData, seatLoginUserFx.doneData, googleVerifyFx.doneData]);
 
 export const $setUpTemplateStore =
     templatesDomain.createStore<ICommonTemplate | null>(null)
@@ -285,6 +285,7 @@ export const $queryTemplatesStore =
         .reset([
             setQueryProfileTemplatesEvent,
             loginUserFx.doneData,
+            seatLoginUserFx.doneData,
             googleVerifyFx.doneData,
         ]);
 
