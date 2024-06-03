@@ -37,6 +37,8 @@ const Component = ({
 
     const {isMobile} = useBrowserDetect();
 
+    console.log('ISMOBILE', isMobile)
+
     const handleVideoLoaded = useCallback(() => {
         setIsVideoActive(true);
     }, []);
