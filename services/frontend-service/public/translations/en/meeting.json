@@ -176,7 +176,7 @@
         "monetizationButtonText": "Save"
     },
     "features": {
-        "blurBackground": "Background blur",
+        "transparencyBackground": "Background transparency",
         "faceTracking": "Face detection",
         "audioBackground": "Background audio",
         "monetization": "Monetization",

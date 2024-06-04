@@ -264,6 +264,12 @@ export const MeetingEditRuumeSetting = () => {
         }
     };
 
+    const handleToggleIsAuraActive = () => {
+        updateUserSocketEvent({
+            isAuraActive: !localUser.isAuraActive
+        });
+    };
+
     const handleCloseForm = () => {
         setCurrentAccordionId('');
         if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
@@ -376,7 +382,7 @@ export const MeetingEditRuumeSetting = () => {
                     >
                         <ConditionalRender condition={isOwner}>
                             <form id="customLinkForm" onSubmit={onSubmit}>
-                                <EditMeetingLink onSave={handleOnSave}/>
+                                <EditMeetingLink onSave={handleOnSave} />
                             </form>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
@@ -444,7 +450,7 @@ export const MeetingEditRuumeSetting = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    {/* <ConditionalRender condition={!isSafari}>
+                                    <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -454,14 +460,14 @@ export const MeetingEditRuumeSetting = () => {
                                                 />
                                             }
                                             nameSpace="meeting"
-                                            translation="features.blurBackground"
-                                            checked={isAuraActive}
-                                            onChange={toggleIsAuraActive}
+                                            translation="features.transparencyBackground"
+                                            checked={localUser.isAuraActive}
+                                            onChange={handleToggleIsAuraActive}
                                             className={clsx(styles.switchWrapper, {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender> */}
+                                    </ConditionalRender>
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >
