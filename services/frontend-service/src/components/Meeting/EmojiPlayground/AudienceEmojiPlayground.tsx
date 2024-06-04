@@ -5,6 +5,7 @@ import { clsx } from 'clsx';
 //custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // common
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -61,7 +62,7 @@ const Component = () => {
             y: '-1500px',
             width: `50px`,
             height: `60px`,
-            duration: 10,
+            duration: 5,
             delay: 0,
             ease: "power1.out",
             onComplete: () => {
@@ -167,7 +168,7 @@ const Component = () => {
                 <svg viewBox="0 0 22 110" fill="none" xmlns="http://www.w3.org/2000/svg" data-key={reaction.id} style={{ width: 0, height: 0 }}>
                     <path d="M14.6485 109C10.099 108.037 1 102.763 1 89.3636C1 72.615 22.6101 61.6417 20.904 40.8503C19.198 20.0588 15.7859 9.6631 1 1" data-key={reaction.id}></path>
                 </svg>
-                <div data-key={reaction.id}>
+                <CustomBox data-key={reaction.id} className={styles.emojiElement}>
                     <img src={availableReactionArr.find(obj => obj.text === reaction.emojiName)?.icon} data-key={reaction.id} style={{ width: '100%', height: '100%' }}></img>
                     <CustomPaper
                         className={styles.usernameWrapper}
@@ -181,7 +182,7 @@ const Component = () => {
                             {meetingUsers.find(user => user?.id === reaction.user)?.username}
                         </CustomTypography>
                     </CustomPaper>
-                </div>
+                </CustomBox>
             </>
             ))}
         </div>

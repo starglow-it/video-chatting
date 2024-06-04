@@ -21,6 +21,12 @@
         &.mirror {
             --transform-mirror: rotateY(180deg);
         }
+        &.zoomIn {
+            --transform-zoom: scale(1.4);
+            --transform-mirror: rotateY(180deg);
+        }
+
+        transform: var(--transform-mirror) var(--transform-zoom);
     
         &.zoomIn {
             --transform-zoom: scale(1.4);
