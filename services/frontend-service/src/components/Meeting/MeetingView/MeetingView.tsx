@@ -151,13 +151,13 @@ const Component = () => {
         }
     }, [isThereNewMessage, transcriptionQueue]);
 
-    // useEffect(() => {
-    //     if (!localUser.isAuraActive) {
-    //         updateUserSocketEvent({
-    //             isAuraActive: true
-    //         });
-    //     }
-    // }, [localUser.isAuraActive]);
+    useEffect(() => {
+        if (!localUser.isAuraActive) {
+            updateUserSocketEvent({
+                isAuraActive: true
+            });
+        }
+    }, []);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
