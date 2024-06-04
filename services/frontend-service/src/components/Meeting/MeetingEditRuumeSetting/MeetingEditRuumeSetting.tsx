@@ -462,7 +462,7 @@ export const MeetingEditRuumeSetting = () => {
                                             })}
                                         />
                                     </ConditionalRender> */}
-                                    <ConditionalRender
+                                    {/* <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >
                                         <CustomGrid
@@ -528,7 +528,7 @@ export const MeetingEditRuumeSetting = () => {
                                                 />
                                             </CustomFade>
                                         </CustomGrid>
-                                    </ConditionalRender>
+                                    </ConditionalRender> */}
                                 </CustomGrid>
                             </CustomAccordion>
                         </ConditionalRender>
