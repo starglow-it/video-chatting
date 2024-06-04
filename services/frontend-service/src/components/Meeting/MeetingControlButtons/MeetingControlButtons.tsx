@@ -306,45 +306,49 @@ const Component = () => {
     }, [isAudioError]);
 
     const handleEndVideoChat = useCallback(async () => {
-        if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
-            const now = new Date();
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        try {
+            if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
+                const now = new Date();
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            const date = now.getDate();
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'pm' : 'am';
-            const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
+                const date = now.getDate();
+                const month = months[now.getMonth()];
+                const year = now.getFullYear();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const ampm = hours >= 12 ? 'pm' : 'am';
+                const formattedDateTime = `${month} ${date}, ${year}, ${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${ampm} (${timeZone})`;
 
-            sendAiTranscription({ script: transcriptionsStore, currentDate: formattedDateTime });
-            setAITranscriptEvent(false);
+                sendAiTranscription({ script: transcriptionsStore, currentDate: formattedDateTime });
+                setAITranscriptEvent(false);
+            }
+            disconnectFromVideoChatEvent();
+            if (isSubdomain()) {
+                await deleteDraftUsers();
+                deleteUserAnonymousCookies();
+                sendLeaveMeetingSocketEvent();
+                window.location.href =
+                    config.frontendUrl + clientRoutes.registerEndCallRoute;
+                return;
+            }
+
+            if (isRecording && meetingRecordingId) {
+                stopRecordMeeting({ id: meetingRecordingId, url: fullUrl, byRequest: true, meetingId: meeting.id });
+            }
+
+            await router.push(
+                !isWithoutAuthen
+                    ? localUser.isGenerated
+                        ? clientRoutes.welcomeRoute
+                        : clientRoutes.dashboardRoute
+                    : clientRoutes.registerEndCallRoute,
+            );
+
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
         }
-        disconnectFromVideoChatEvent();
-        if (isSubdomain()) {
-            await deleteDraftUsers();
-            deleteUserAnonymousCookies();
-            sendLeaveMeetingSocketEvent();
-            window.location.href =
-                config.frontendUrl + clientRoutes.registerEndCallRoute;
-            return;
-        }
-
-        if (isRecording && meetingRecordingId) {
-            stopRecordMeeting({ id: meetingRecordingId, url: fullUrl, byRequest: true, meetingId: meeting.id });
-        }
-
-        await router.push(
-            !isWithoutAuthen
-                ? localUser.isGenerated
-                    ? clientRoutes.welcomeRoute
-                    : clientRoutes.dashboardRoute
-                : clientRoutes.registerEndCallRoute,
-        );
-
-        window.location.reload();
     }, [
         isAiTranscriptEnabled,
         transcriptionList,
