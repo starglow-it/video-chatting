@@ -61,3 +61,4 @@ export const getMeetingReactionsSocketEvent = createMeetingSocketEvent<
     void,
     { meetingReactions: MeetingReaction[] }
 >(MeetingSocketEmitters.GetMeetingReaction);
+export const resetMeetingReactionsStore = meetingDomain.createEvent('resetMeetingReactionsStore')
