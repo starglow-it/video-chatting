@@ -1,6 +1,8 @@
-import { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
+import { BackgroundBlur } from '@livekit/track-processors';
+import { LocalVideoTrack } from 'livekit-client';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -18,12 +20,12 @@ import { MeetingUserAudioItem } from '@components/Meeting/MeetingUserAudioItem/M
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
-import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore, addNotificationEvent } from 'src/store';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { $isCameraActiveStore, $isOwner, $meetingStore, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
 import { $isPortraitLayout } from 'src/store';
+
+//hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -76,6 +78,7 @@ const MeetingUserVideoChildCom = ({
     const isCameraActive = useStore($isCameraActiveStore);
     const videoError = useStore($videoErrorStore);
     const isVideoError = Boolean(videoError);
+    const { isSafari } = useBrowserDetect();
 
     const toggleSelfView = async () => {
         if (isVideoError) {
@@ -100,39 +103,50 @@ const MeetingUserVideoChildCom = ({
     }, [isCameraEnabled]);
 
     useEffect(() => {
-        let videoTrack;
+        const handleTrack = async () => {
+            let videoTrack;
 
-        if (isLocal) {
-            const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
-            if (localStreamTrack) {
-                const cloneLocalStream = localStreamTrack.clone();
-                cloneLocalStream.enabled = isVideoSelfView;
-                videoTrack = cloneLocalStream;
-            }
-        } else {
-            videoTrack = userTracks?.videoTrack;
-        }
-        
-
-        if (videoTrack) {
-            const videoTracks = mediaStreamRef.current.getVideoTracks();
-
-            if (videoTracks.length) {
-                videoTracks.forEach(track => {
-                    mediaStreamRef.current.removeTrack(track);
-                });
+            if (isLocal) {
+                const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
+                if (localStreamTrack) {
+                    const cloneLocalStream = localStreamTrack.clone();
+                    cloneLocalStream.enabled = isVideoSelfView;
+                    videoTrack = cloneLocalStream;
+                }
+            } else {
+                videoTrack = userTracks?.videoTrack;
             }
 
-            mediaStreamRef.current.addTrack(videoTrack);
+            if (videoTrack) {
+                const videoTracks = mediaStreamRef.current.getVideoTracks();
 
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                mediaStreamRef.current = stream;
-            });
+                if (videoTracks.length) {
+                    videoTracks.forEach(track => {
+                        mediaStreamRef.current.removeTrack(track);
+                    });
+                }
 
-            if (container.current)
-                container.current.srcObject = mediaStreamRef.current;
-        }
-    }, [localStream, userTracks, isVideoSelfView]);
+                mediaStreamRef.current.addTrack(videoTrack);
+
+                if (isAuraActive && !isSafari) {
+                    handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                        mediaStreamRef.current = stream;
+                    });
+                } else {
+                    const localVideoTrack = new LocalVideoTrack(videoTrack);
+                    const blurProcessor = BackgroundBlur(10);
+                    await localVideoTrack.setProcessor(blurProcessor);
+                    mediaStreamRef.current.removeTrack(videoTrack);
+                    mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
+                }
+
+                if (container.current)
+                    container.current.srcObject = mediaStreamRef.current;
+            }
+        };
+
+        handleTrack();
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
 
     return (
         <CustomBox

@@ -22,11 +22,14 @@ import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable
 import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore, addNotificationEvent } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isCameraActiveStore, $isOwner, $meetingStore, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
+import { $isCameraActiveStore, $isOwner, $meetingStore, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent, publishTracksEvent } from '../../../store/roomStores';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
 import { ConnectionType, StreamType } from '../../../const/webrtc';
+
+import { LocalVideoTrack } from 'livekit-client';
+import { BackgroundBlur } from '@livekit/track-processors';
 
 // styles
 import styles from './MeetingUserVideoItem.module.scss';
@@ -35,7 +38,7 @@ import { NotificationType } from 'src/store/types';
 import { EmojiPlayground } from '../EmojiPlayground/EmojiPlayground';
 
 // utils
-import { handleRemoveBackground } from '../../../helpers/media/transparentBackground'
+import { handleRemoveBackground } from '../../../helpers/media/transparentBackground';
 
 const MeetingUserVideoChildCom = ({
     isLocal,
@@ -55,7 +58,6 @@ const MeetingUserVideoChildCom = ({
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
-    const trackStore = useStore($tracksStore);
     const userTracks = useStoreMap({
         store: $tracksStore,
         keys: [
@@ -67,14 +69,17 @@ const MeetingUserVideoChildCom = ({
         ],
         fn: (tracks, [connectionId]) => tracks[connectionId],
     });
+
+    const trackStore = useStore($tracksStore);
+
     const isOwner = useStore($isOwner);
+    const { isSafari } = useBrowserDetect();
 
     const [isVideoSelfView, setVideoSelfView] =
         useState<boolean>(isCameraEnabled);
     const isCameraActive = useStore($isCameraActiveStore);
     const videoError = useStore($videoErrorStore);
     const isVideoError = Boolean(videoError);
-
 
     const toggleSelfView = async () => {
         if (isVideoError) {
@@ -99,38 +104,67 @@ const MeetingUserVideoChildCom = ({
     }, [isCameraEnabled]);
 
     useEffect(() => {
-        let videoTrack;
+        const handleStream = async () => {
+            try {
+                let videoTrack;
 
-        if (isLocal) {
-            const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
-            if (localStreamTrack) {
-                const cloneLocalStream = localStreamTrack.clone();
-                cloneLocalStream.enabled = isVideoSelfView;
-                videoTrack = cloneLocalStream;
+                if (isLocal) {
+                    const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
+                    if (localStreamTrack) {
+                        const cloneLocalStream = localStreamTrack.clone();
+                        cloneLocalStream.enabled = isVideoSelfView;
+                        videoTrack = cloneLocalStream;
+                    }
+                } else {
+                    videoTrack = userTracks?.videoTrack;
+                }
+
+                if (videoTrack) {
+                    const videoTracks = mediaStreamRef.current.getVideoTracks();
+
+                    if (videoTracks.length) {
+                        videoTracks.forEach(track => {
+                            mediaStreamRef.current.removeTrack(track);
+                        });
+                    }
+
+                    mediaStreamRef.current.addTrack(videoTrack);
+
+                    if (isAuraActive && !isSafari) {
+                        handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                            mediaStreamRef.current = stream;
+                        });
+                    } else {
+                        const blurProcessor = BackgroundBlur(10, { delegate: 'GPU' });
+                        if (isLocal) {
+                            const localVideoTrack = new LocalVideoTrack(videoTrack);
+                            await localVideoTrack.setProcessor(blurProcessor);
+                            mediaStreamRef.current.removeTrack(videoTrack);
+                            mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
+                        } else {
+                            if (container.current)
+                                container.current.srcObject = mediaStreamRef.current;
+
+                            const setBackgroundToBlurForRemoteVideo = async () => {
+                                const localVideoTrack = new LocalVideoTrack(videoTrack);
+                                await localVideoTrack.setProcessor(blurProcessor);
+                                mediaStreamRef.current.removeTrack(videoTrack);
+                                mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
+                            };
+
+                            setTimeout(setBackgroundToBlurForRemoteVideo, 500);
+                        }
+                    }
+
+                    if (container.current)
+                        container.current.srcObject = mediaStreamRef.current;
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } else {
-            videoTrack = userTracks?.videoTrack;
-        }
-
-        if (videoTrack) {
-            const videoTracks = mediaStreamRef.current.getVideoTracks();
-
-            if (videoTracks.length) {
-                videoTracks.forEach(track => {
-                    mediaStreamRef.current.removeTrack(track);
-                });
-            }
-
-            mediaStreamRef.current.addTrack(videoTrack);
-
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                mediaStreamRef.current = stream;
-            });
-
-            if (container.current)
-                container.current.srcObject = mediaStreamRef.current;
-        }
-    }, [localStream, userTracks, isVideoSelfView]);
+        };
+        handleStream();
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari, isLocal]);
 
     const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
         setScale(data.size.width);

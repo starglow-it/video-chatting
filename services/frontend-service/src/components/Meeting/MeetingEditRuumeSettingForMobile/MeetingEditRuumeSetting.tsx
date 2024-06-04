@@ -214,6 +214,12 @@ export const MeetingEditRuumeSettingForMobile = () => {
         }
     }, []);
 
+    const handleToggleIsAuraActive = () => {
+        updateUserSocketEvent({
+            isAuraActive: !localUser.isAuraActive
+        });
+    };
+
     const handleMonetizationSubmit = async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
         const paymentAudience = formAudienceRef.current?.getValues();
@@ -458,7 +464,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    {/* <ConditionalRender condition={!isSafari}>
+                                    <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -468,14 +474,14 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                                 />
                                             }
                                             nameSpace="meeting"
-                                            translation="features.blurBackground"
-                                            checked={isAuraActive}
-                                            onChange={toggleIsAuraActive}
+                                            translation="features.transparencyBackground"
+                                            checked={localUser.isAuraActive}
+                                            onChange={handleToggleIsAuraActive}
                                             className={clsx(styles.switchWrapper, {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender> */}
+                                    </ConditionalRender>
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >
