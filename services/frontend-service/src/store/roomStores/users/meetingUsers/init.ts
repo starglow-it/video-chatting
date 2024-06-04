@@ -44,7 +44,7 @@ $meetingUsersStore
             const oldUsers = state.filter(
                 _user =>
                     !newUsers.find(user => user.id === _user.id) &&
-                    users?.find(_newUser => _newUser.id === _user.id),
+                    data.users?.find(_newUser => _newUser.id === _user.id),
             );
 
             // Format reactions for the role-switched user.
@@ -52,7 +52,7 @@ $meetingUsersStore
                 resetMeetingReactionsStore();
             }
 
-            return [...newUsers];
+            return [...oldUsers, ...newUsers];
         }
 
         return [];
