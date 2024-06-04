@@ -146,6 +146,38 @@
   }
 }
 
+.notesPanel {
+  position: absolute;
+  max-width: rem(350px);
+  min-width: rem(310px);
+  // padding: rem(20px);
+  opacity: 0;
+  left: -100px;
+  bottom: 0px;
+  z-index: 9999;
+
+  &.mobile {
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+
+  &.isParticipant {
+    left: -60px;
+  }
+
+  &.isAudience {
+    left: -160px;
+  }
+}
+
 .profilePanel {
   position: absolute;
   max-width: rem(350px);

@@ -239,25 +239,27 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <Draggable
-                    axis="both"
-                    defaultPosition={{ x: 0, y: 0 }}
-                >
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.isParticipant]: isParticipant,
-                                [styles.isAudience]: isAudience,
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                                [styles.landscape]:
-                                    isMobile && !isPortraitLayout,
-                            })}
+                <Fade in={isUsersOpen}>
+                    <CustomBox
+                        className={clsx(styles.notesPanel, {
+                            [styles.isParticipant]: isParticipant,
+                            [styles.isAudience]: isAudience,
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                            [styles.landscape]:
+                            isMobile && !isPortraitLayout,
+                        })}
                         >
-                            <MeetingPeople />
-                        </CustomPaper>
-                    </Fade>
-                </Draggable>
+                        <Draggable
+                            axis="both"
+                            defaultPosition={{ x: 0, y: 0 }}
+                            >                                    
+                            <CustomPaper
+                                variant="black-glass">
+                                <MeetingPeople />
+                            </CustomPaper>
+                        </Draggable>
+                    </CustomBox>
+                </Fade>
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
                         <div className={styles.scheduleOpenPanelWrapper}>
