@@ -62,7 +62,7 @@ const Component = () => {
             y: '-1500px',
             width: `50px`,
             height: `60px`,
-            duration: 10,
+            duration: 5,
             delay: 0,
             ease: "power1.out",
             onComplete: () => {
@@ -158,6 +158,10 @@ const Component = () => {
 
         if (length > 0 && meetingUsers.find(user => user.id === meetingReactions[length - 1].user)?.meetingRole === 'audience') {
             startReactionBubbling(meetingReactions[length - 1]);
+
+            const audienceReactions = meetingReactions.filter(reaction => meetingUsers.find(user => user.id === reaction.user)?.meetingRole === 'audience');
+
+            setTimeout(() => {removeMeetingReactionEvent(audienceReactions[0].id); }, 5000)
         }
     }, [meetingReactions])
 
