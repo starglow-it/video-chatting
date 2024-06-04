@@ -299,7 +299,6 @@ const MeetingContainer = memo(() => {
                 if (isOwner) {
                     if (isFirstRender.current) {
                         if (isHasSettings) {
-                            console.log('joinmeetingevent in meeting container');
                             joinMeetingEvent({
                                 isSettingsAudioBackgroundActive:
                                     savedSettings.backgroundAudioSetting,
@@ -308,7 +307,6 @@ const MeetingContainer = memo(() => {
                                 needToRememberSettings: false,
                             });
                         } else {
-                            console.log('joinmeetingevent in meeting container without setting');
                             joinMeetingEvent({
                                 isSettingsAudioBackgroundActive:
                                     isBackgroundAudioActive,

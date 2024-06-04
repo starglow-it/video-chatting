@@ -103,50 +103,38 @@ const MeetingUserVideoChildCom = ({
     }, [isCameraEnabled]);
 
     useEffect(() => {
-        const handleTrack = async () => {
-            let videoTrack;
+        let videoTrack;
 
-            if (isLocal) {
-                const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
-                if (localStreamTrack) {
-                    const cloneLocalStream = localStreamTrack.clone();
-                    cloneLocalStream.enabled = isVideoSelfView;
-                    videoTrack = cloneLocalStream;
-                }
-            } else {
-                videoTrack = userTracks?.videoTrack;
+        if (isLocal) {
+            const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
+            if (localStreamTrack) {
+                const cloneLocalStream = localStreamTrack.clone();
+                cloneLocalStream.enabled = isVideoSelfView;
+                videoTrack = cloneLocalStream;
+            }
+        } else {
+            videoTrack = userTracks?.videoTrack;
+        }
+
+        if (videoTrack) {
+            const videoTracks = mediaStreamRef.current.getVideoTracks();
+
+            if (videoTracks.length) {
+                videoTracks.forEach(track => {
+                    mediaStreamRef.current.removeTrack(track);
+                });
             }
 
-            if (videoTrack) {
-                const videoTracks = mediaStreamRef.current.getVideoTracks();
+            mediaStreamRef.current.addTrack(videoTrack);
 
-                if (videoTracks.length) {
-                    videoTracks.forEach(track => {
-                        mediaStreamRef.current.removeTrack(track);
-                    });
-                }
+            handleRemoveBackground(mediaStreamRef.current, isAuraActive, stream => {
+                mediaStreamRef.current = stream;
+            });
 
-                mediaStreamRef.current.addTrack(videoTrack);
-
-                if (isAuraActive && !isSafari) {
-                    handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                        mediaStreamRef.current = stream;
-                    });
-                } else {
-                    const localVideoTrack = new LocalVideoTrack(videoTrack);
-                    const blurProcessor = BackgroundBlur(10);
-                    await localVideoTrack.setProcessor(blurProcessor);
-                    mediaStreamRef.current.removeTrack(videoTrack);
-                    mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
-                }
-
-                if (container.current)
-                    container.current.srcObject = mediaStreamRef.current;
-            }
-        };
-
-        handleTrack();
-    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
+            if (container.current)
+                container.current.srcObject = mediaStreamRef.current;
+        }
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive]);
 
     return (
         <CustomBox
@@ -163,7 +151,7 @@ const MeetingUserVideoChildCom = ({
                     userTracks?.audioTrack
                 }
                 isMicEnabled={isMicEnabled}
-                isAuraActive={isAuraActive}
+                isAuraActive={false}
             />
             <RoundedVideo
                 isLocal={isLocal}
