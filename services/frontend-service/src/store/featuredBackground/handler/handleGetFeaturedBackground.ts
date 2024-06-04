@@ -12,6 +12,8 @@ export const handleGetFeaturedBackground = async (
         ...getTemplatesUrl(payload),
     });
 
+    console.log('payload, success, result: ', payload, success, result);
+
     if (success) return { list: result?.list || [], count: result?.count || 0 };
     return { list: [], count: 0 };
 };
