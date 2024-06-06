@@ -164,7 +164,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           return tm;
         });
 
-        await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers, subscriptionPlanKey: PlanKeys.Business } });
+        await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
 
         if (user) {
           await this.coreService.deleteGlobalUser({ id: user.id });
@@ -176,7 +176,8 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           registerType: body.registerType,
           country: body.country,
           state: body.state,
-          teamOrganization: host.companyName
+          teamOrganization: host.companyName,
+          subscriptionPlanKey: PlanKeys.Business
         };
 
         await this.authService.register(updateData);
@@ -499,7 +500,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         return tm;
       });
 
-      await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers, subscriptionPlanKey: PlanKeys.Business } });
+      await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
 
       const user = await this.coreService.findUserByEmail({
         email: body.email,
@@ -513,7 +514,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         throw new DataValidationException(USER_IS_BLOCKED);
       }
 
-      await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamOrganization: host.companyName } });
+      await this.coreService.findUserAndUpdate({ userId: user.id, data: { teamOrganization: host.companyName, subscriptionPlanKey: PlanKeys.Business } });
     } else {
       throw new DataValidationException(USER_NOT_FOUND);
     }

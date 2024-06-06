@@ -9,6 +9,11 @@ export const postProfileUrl = {
     method: HttpMethods.Post,
 };
 
+export const delteSeatTeamMemberUrl = {
+    url: `${baseProfileUrl}/delete-seat-team-member`,
+    method: HttpMethods.Post,
+};
+
 export const getProfileUrl = {
     url: baseProfileUrl,
     method: HttpMethods.Get,

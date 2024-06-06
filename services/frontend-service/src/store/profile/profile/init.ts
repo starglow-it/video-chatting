@@ -13,6 +13,7 @@ import {
     checkResetPasswordLinkFx,
     resetPasswordFx,
     deleteProfileFx,
+    deleteSeatTeamMemberFx
 } from './model';
 import { initialProfileState } from './const';
 import { refreshAuthFx, resetAuthStateEvent } from '../../auth/model';
@@ -21,6 +22,7 @@ import { deleteStripeAccountFx } from '../../payments/model';
 // handlers
 import { handleGetProfile } from '../handlers/handleGetProfile';
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
+import { handleDeleteTeamMember } from '../handlers/handleDeleteTeamMember';
 import { handleUpdateProfilePhoto } from '../handlers/handleUpdateProfilePhoto';
 import { handleDeleteProfilePhoto } from '../handlers/handleDeleteProfilePhoto';
 import { handleUpdateProfileEmail } from '../handlers/handleUpdateProfileEmail';
@@ -32,6 +34,7 @@ import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
 
 getProfileFx.use(handleGetProfile);
 updateProfileFx.use(handleUpdateProfileInfo);
+deleteSeatTeamMemberFx.use(handleDeleteTeamMember)
 updateProfilePhotoFx.use(handleUpdateProfilePhoto);
 deleteProfilePhotoFx.use(handleDeleteProfilePhoto);
 updateProfileEmailFx.use(handleUpdateProfileEmail);
