@@ -2742,12 +2742,6 @@ export class MeetingsGateway
         const frontendUrl = await this.configService.get('frontendUrl');
         const openAiApiKey = await this.configService.get('openaiApiKey');
 
-        console.log('--------------------------')
-
-        console.log(scriptString);
-
-        console.log('---------------------------')
-
         const prompt = `Given the following meeting transcription: 
         ** \n ${scriptString} \n**
         - From this meeting transcription, provide me the json object that contains the following fields:
@@ -2767,8 +2761,6 @@ export class MeetingsGateway
         };
         const chatCompletion: OpenAI.Chat.ChatCompletion = await openai.chat.completions.create(params);
         let messageContent = chatCompletion.choices[0].message.content;
-
-        console.log(messageContent);
 
         if (messageContent) {
           // const now = new Date();
@@ -2793,15 +2785,13 @@ export class MeetingsGateway
 
           let attachmentContent = "";
 
-          if (transcription.length > 100) {
+          if (transcription.length > 1000) {
             attachmentContent = 'Summary\n\n\n' +  summary + '\n\n\nTranscript\n\n\n' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
 
-            transcription = transcription.slice(0, transcription.slice(0,100).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
+            transcription = transcription.slice(0, transcription.slice(0,1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
           }
 
           transcription = transcription.replace(/-/g, ": ").replace(/ \|/g, "<br>").trim();
-
-          console.log('attachmentContent: ', attachmentContent);
 
           if (messageContent && userProfile) {
             await this.notificationService.sendEmail({
