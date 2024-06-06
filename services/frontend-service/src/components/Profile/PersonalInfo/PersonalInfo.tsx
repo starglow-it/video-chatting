@@ -55,6 +55,16 @@ const PersonalInfo = memo(() => {
                     nameSpace="profile"
                     translation="personalInfo.languages"
                 />
+                {
+                    profile.teamOrganization && (
+                        <CustomTypography
+                            gridArea="4/1/4/1"
+                            color="text.secondary"
+                            nameSpace="profile"
+                            translation="personalInfo.team"
+                        />
+                    )
+                }
                 <CustomBox
                     gridArea="1/2/1/4"
                     className={styles.fullNameWrapper}
@@ -80,6 +90,21 @@ const PersonalInfo = memo(() => {
                 <CustomTypography gridArea="3/2/3/4" color="text.primary">
                     {profile.languages.map(lang => lang.value).join(', ')}
                 </CustomTypography>
+                {
+                    profile.teamOrganization && (
+                        <CustomBox
+                            gridArea="4/2/4/4"
+                            className={styles.positionWrapper}
+                        >
+                            <CustomTypography
+                                className={styles.positionText}
+                                color="text.primary"
+                            >
+                                Chatruume
+                            </CustomTypography>
+                        </CustomBox>
+                    )
+                }
             </CustomBox>
         </CustomGrid>
     );
