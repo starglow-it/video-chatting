@@ -1,0 +1,19 @@
+@import "../../../styles/rem";
+
+.errorContainer {
+  position: absolute;
+  top: 100%;
+  margin: rem(8px 0 0 0);
+}
+
+.inputWrapper {
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #F4F6F9;
+}
+
+.inputBase {
+  width: 100%;
+}
