@@ -2747,7 +2747,7 @@ export class MeetingsGateway
         - From this meeting transcription, provide me the json object that contains the following fields:
         - JSON object format:
         {
-          summary: Create a detailed summary of the meeting transcription and notes, focusing on key takeaways and action items assigned to specific individuals or departments. Use professional language and organize the summary in a logical manner using headings, subheadings, and bullet points. The summary should provide a comprehensive overview of the meeting's content, clearly indicating who is responsible for each action item. Please ensure the summary is: * Easy to understand * Succinct in length * Organized using headings and subheadings * Uses bullet points to highlight key actions * Clearly indicates who is responsible for each action item The summary should cover the essential information discussed during the meeting, including the main topics, decisions made, and tasks assigned to specific individuals or departments. ,
+          summary: Create a detailed summary(less than 2000 characters) of the meeting transcription and notes, focusing on key takeaways and action items assigned to specific individuals or departments. Use professional language and organize the summary in a logical manner using headings, subheadings, and bullet points. The summary should provide a comprehensive overview of the meeting's content, clearly indicating who is responsible for each action item. Please ensure the summary is: * Easy to understand * Succinct in length * Organized using headings and subheadings * Uses bullet points to highlight key actions * Clearly indicates who is responsible for each action item The summary should cover the essential information discussed during the meeting, including the main topics, decisions made, and tasks assigned to specific individuals or departments. ,
           transcription: write the whole transcription of the meeting here
         }
         - If there is no given transcription, return { summary: 'No transcription', transcription: '' }.
@@ -2785,10 +2785,10 @@ export class MeetingsGateway
 
           let attachmentContent = "";
 
-          if (transcription.length > 1000) {
+          if (transcription.length > 200) {
             attachmentContent = 'Summary\n\n\n' +  summary + '\n\n\nTranscript\n\n\n' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
 
-            transcription = transcription.slice(0, transcription.slice(0,1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
+            transcription = transcription.slice(0, transcription.slice(0,200).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
           }
 
           transcription = transcription.replace(/-/g, ": ").replace(/ \|/g, "<br>").trim();
