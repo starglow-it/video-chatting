@@ -339,7 +339,7 @@ const Component = () => {
                     </CustomGrid>
                     {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
                         <CustomGrid container item spacing={2} key={tindex} alignItems="center">
-                            <CustomGrid item xs={3}>
+                            <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
                                 <CustomTypography
                                     sx={{ fontSize: '12px' }}
                                     color='#D9D9D9'
@@ -393,7 +393,7 @@ const Component = () => {
                                     )
                                     : (
                                         <>
-                                            <CustomGrid item container xs={1} justifyContent="center">
+                                            <CustomGrid item container xs={2} justifyContent="center">
                                                 <CustomTypography
                                                     sx={{ fontSize: '12px' }}
                                                     nameSpace="profile"
