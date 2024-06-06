@@ -105,6 +105,7 @@ export interface IUpdateProfile {
   };
   teamMembers?: ITeamMember[];
   maxSeatNumForTeamMembers: number;
+  teamOrganization?: string;
 }
 
 export interface IUpdateProfileAvatar {

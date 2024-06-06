@@ -107,14 +107,6 @@ const Component = () => {
         });
     });
 
-    // useEffect(() => {
-    //     (async () => {
-    //         if (authState.isAuthenticated && !isVerifying) {
-    //             router.push(dashboardRoute);
-    //         }
-    //     })();
-    // }, [authState.isAuthenticated, isVerifying]);
-
     useEffect(() => {
         if (!showHints) {
             reset({}, { keepValues: true });

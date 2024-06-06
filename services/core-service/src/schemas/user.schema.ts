@@ -260,6 +260,7 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+    default: ''
   })
   teamOrganization: ICommonUser['teamOrganization'];
 

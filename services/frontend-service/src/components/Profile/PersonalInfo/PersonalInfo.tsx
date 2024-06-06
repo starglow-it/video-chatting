@@ -100,7 +100,7 @@ const PersonalInfo = memo(() => {
                                 className={styles.positionText}
                                 color="text.primary"
                             >
-                                Chatruume
+                                { profile.teamOrganization }
                             </CustomTypography>
                         </CustomBox>
                     )
