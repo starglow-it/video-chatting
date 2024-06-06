@@ -28,13 +28,10 @@ gsap.registerPlugin(MotionPathPlugin);
 
 const Component = () => {
     const meetingReactions = useStore($meetingReactionsStore);
-    const meeting = useStore($meetingStore);
-    const localUser = useStore($localUserStore);
+    
     const meetingUsers = useStore($meetingUsersStore);
 
     const container = useRef(null);
-
-    const [emojiOwner, setEmojiOwner] = useState(null);
 
     const { contextSafe } = useGSAP({ scope: container });
 
@@ -51,18 +48,22 @@ const Component = () => {
         });
 
         gsap.set(`div[data-key="${reaction.id}"]`, {
-            width: "50px",
-            height: "60px",
+            width: "100px",
+            height: "115px",
             position: "absolute",
             bottom: 0,
             left: "50%",
         })
 
         gsap.to(`div[data-key="${reaction.id}"]`, {
-            y: '-1500px',
-            width: `50px`,
-            height: `60px`,
-            duration: 5,
+            motionPath: {
+                path: `path[data-key="${reaction.id}"]`,
+                align: `path[data-key="${reaction.id}"]`,
+                alignOrigin: [0.5, 0.5],
+            },
+            width: `150px`,
+            height: `165px`,
+            duration: 10,
             delay: 0,
             ease: "power1.out",
             onComplete: () => {

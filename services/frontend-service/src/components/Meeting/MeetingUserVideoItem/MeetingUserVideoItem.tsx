@@ -285,7 +285,7 @@ const Component = ({
                     </CustomPaper>
                 </ConditionalRender>
             </CustomGrid>
-            {userId !== meeting.hostUserId ? < EmojiPlayground userId={userId} /> : null}
+            <EmojiPlayground userId={userId} />
         </MeetingUserVideoPositionWrapper>
     );
 };
