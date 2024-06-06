@@ -105,12 +105,6 @@ const Component = () => {
         });
     }, []);
 
-    useEffect(() => {
-        if (authState.isAuthenticated) {
-            router.push(dashboardRoute);
-        }
-    }, [authState.isAuthenticated]);
-
     const onSubmit = useCallback(
         handleSubmit((data: LoginUserParams) => {
             const trimmedEmail = data.email.trim().toLowerCase();
