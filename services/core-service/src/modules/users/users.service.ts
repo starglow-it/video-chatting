@@ -234,6 +234,7 @@ export class UsersService {
       country: data.country,
       registerTemplate: data.registerTemplate,
       teamMembers: data.teamMembers,
+      teamOrganization: data.teamOrganization,
       maxSeatNumForTeamMembers: data.maxSeatNumForTeamMembers
     };
   }

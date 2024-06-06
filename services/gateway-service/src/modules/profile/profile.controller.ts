@@ -22,7 +22,7 @@ import { generateVerificationCode } from '../../utils/generateVerificationCode';
 
 // shared
 import { emailTemplates, SAME_PASSWORD, USER_EXISTS } from 'shared-const';
-import { ResponseSumType, ICommonUser } from 'shared-types';
+import { ResponseSumType, ICommonUser, PlanKeys } from 'shared-types';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -46,7 +46,7 @@ export class ProfileController {
     private notificationService: NotificationsService,
     private coreService: CoreService,
     private paymentsService: PaymentsService,
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -92,6 +92,41 @@ export class ProfileController {
       success: true,
       result: user,
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/delete-seat-team-member')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Seat Team Member' })
+  @ApiOkResponse({
+    description: 'Seat team member is deleted successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async DeleteSeatTeamMember(
+    @Body() data: { email: string },
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonUser> | null> {
+    const user = await this.coreService.findUserByEmail({ email: data.email });
+    if (user) {
+      const updatedUser = await this.coreService.findUserAndUpdate({
+        userId: user.id, data: {
+          subscriptionPlanKey: PlanKeys.House
+        }
+      });
+
+      return {
+        success: true,
+        result: updatedUser,
+      };
+    }
+
+    return {
+      success: true,
+      result: null,
+    };
+
   }
 
   @UseGuards(JwtAuthGuard)

@@ -39,6 +39,7 @@ import {
   LoginTypes,
   HttpMethods,
   ICommonTemplate,
+  PlanKeys
 } from 'shared-types';
 
 // dtos
@@ -153,20 +154,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         email: body.email,
       });
 
-      if (user) {
-        await this.coreService.deleteGlobalUser({ id: user.id });
-      }
-
-      const updateData = {
-        email: body.email,
-        password: body.password,
-        registerType: body.registerType,
-        country: body.country,
-        state: body.state
-      };
-
-      await this.authService.register(updateData);
-
       const host = await this.coreService.findUserById({ userId: body.hostId });
       if (host && host.teamMembers && host.teamMembers.length > 0) {
         const teamMembers = host.teamMembers.map(tm => {
@@ -178,6 +165,24 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
 
         await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
+
+        if (user) {
+          await this.coreService.deleteGlobalUser({ id: user.id });
+        }
+
+        const updateData = {
+          email: body.email,
+          password: body.password,
+          registerType: body.registerType,
+          country: body.country,
+          state: body.state,
+          teamOrganization: host.companyName,
+          subscriptionPlanKey: PlanKeys.Business
+        };
+
+        await this.authService.register(updateData);
+      } else {
+        throw new DataValidationException(USER_NOT_FOUND);
       }
 
       return {
@@ -465,7 +470,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     };
   }
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post('/seat-login')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
@@ -485,18 +490,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       throw new DataValidationException(USER_NOT_FOUND);
     }
 
-    const user = await this.coreService.findUserByEmail({
-      email: body.email,
-    });
-
-    if (!user.isConfirmed || user.isResetPasswordActive) {
-      throw new DataValidationException(USER_NOT_CONFIRMED);
-    }
-
-    if (user.isBlocked) {
-      throw new DataValidationException(USER_IS_BLOCKED);
-    }
-
     const host = await this.coreService.findUserById({ userId: body.hostId });
     if (host && host.teamMembers && host.teamMembers.length > 0) {
       const teamMembers = host.teamMembers.map(tm => {
@@ -508,6 +501,22 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       });
 
       await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
+
+      const user = await this.coreService.findUserByEmail({
+        email: body.email,
+      });
+  
+      if (!user.isConfirmed || user.isResetPasswordActive) {
+        throw new DataValidationException(USER_NOT_CONFIRMED);
+      }
+  
+      if (user.isBlocked) {
+        throw new DataValidationException(USER_IS_BLOCKED);
+      }
+
+      await this.coreService.findUserAndUpdate({ userId: user.id, data: { teamOrganization: host.companyName, subscriptionPlanKey: PlanKeys.Business } });
+    } else {
+      throw new DataValidationException(USER_NOT_FOUND);
     }
 
     const result = await this.authService.loginUser(body);

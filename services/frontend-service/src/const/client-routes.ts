@@ -3,6 +3,7 @@ export const loginRoute = '/login';
 export const welcomeRoute = '/welcome';
 export const resetPasswordRoute = '/reset-password';
 export const registerRoute = '/register';
+export const seatUrl = '/seat';
 export const confirmRegistrationRoute = '/confirm-registration';
 export const roomRoute = '/room';
 export const recordingRoute = '/recording';
@@ -37,4 +38,5 @@ export const clientRoutes = {
     agreementsRoute,
     analyticsRoute,
     NotFoundRoute,
+    seatUrl
 };

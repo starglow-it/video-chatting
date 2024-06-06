@@ -348,6 +348,8 @@ export enum NotificationType {
     HostIsAwayForAudiencePaywallPayment = 'host_is_away_for_audience_paywall_payment',
     IsAiTranscriptionTurnedOnByHost = 'is_ai_transcription_turned_on_by_host',
     IsRecordingStarted = 'is_recording_started',
+    SendTeamMemberInvitationError = 'send_team_member_invitation_error',
+    TeamMemberRemoved = 'team_member_removed',
 }
 
 export type Notification = {

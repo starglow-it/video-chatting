@@ -61,6 +61,7 @@ export interface ICommonUser {
   isDowngradeMessageShown: boolean;
   loginType: LoginTypes;
   teamMembers?: { email: string, status: string }[];
+  teamOrganization?: string;
   maxSeatNumForTeamMembers?: number;
 }
 
@@ -104,6 +105,7 @@ export interface IUpdateProfile {
   };
   teamMembers?: ITeamMember[];
   maxSeatNumForTeamMembers: number;
+  teamOrganization?: string;
 }
 
 export interface IUpdateProfileAvatar {
