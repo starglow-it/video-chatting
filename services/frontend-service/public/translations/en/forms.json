@@ -4,7 +4,7 @@
   "yourName": "Your name",
   "companyName": "Company Name",
   "contactEmail": "Contact Email",
-  "businessDescription": "Describe what you like to do",
+  "teamOrganization": "Team Organization",
   "businessCategories": "Business categories",
   "position": "Position",
   "fullName": "Full name",
@@ -19,5 +19,5 @@
     "dragAndDrop": "Tap or drag here"
   },
   "addUserEmail": "Add user email",
-  "nameOfYourLive": "Name of your Ruume"
+  "nameOfYourLive": "Name of your Organization"
 }

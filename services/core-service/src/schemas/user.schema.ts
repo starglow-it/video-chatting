@@ -259,6 +259,11 @@ export class User {
   teamMembers: { email: string, status: string }[];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  teamOrganization: ICommonUser['teamOrganization'];
+
+  @Prop({
     type: mongoose.Schema.Types.Number,
     default: 3,
   })
