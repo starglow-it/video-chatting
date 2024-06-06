@@ -28,6 +28,7 @@ export const sendEmail = async ({
     html,
     template,
     icalEventContent,
+    attachmentContent
 }: SendEmailRequest): Promise<any> => {
     const emailClient = await getOrCreateClient();
 
@@ -49,6 +50,8 @@ export const sendEmail = async ({
 
         let buff = Buffer.from(icalEventContent ?? '');
         let content = buff.toString('base64');
+
+        console.log('attachmentContent: ---------', attachmentContent)
 
         const sendTemplateData: MessagesSendTemplateRequest = {
             template_name: targetTemplate.slug,
@@ -82,7 +85,15 @@ export const sendEmail = async ({
                               content,
                           },
                       ]
-                    : [],
+                    : (attachmentContent
+                        ? [
+                            {
+                                type: 'text/plain',
+                                name: 'Meeting Summary and Transcript.txt',
+                                content: Buffer.from(attachmentContent).toString('base64')
+                            }
+                        ]
+                        : [] ),
             },
         };
 
