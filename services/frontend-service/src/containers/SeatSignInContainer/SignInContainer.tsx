@@ -4,6 +4,7 @@ import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
 import * as yup from 'yup';
 import { useMediaQuery } from '@mui/material';
+import { deleteAuthCookies } from '../../helpers/http/destroyCookies';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -104,6 +105,12 @@ const Component = () => {
             key: StorageKeysEnum.bgLastCall,
         });
     }, []);
+
+    useEffect(() => {
+        if (authState.isAuthenticated) {
+            router.push(dashboardRoute);
+        }
+    }, [authState.isAuthenticated]);
 
     const onSubmit = useCallback(
         handleSubmit((data: LoginUserParams) => {

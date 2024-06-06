@@ -34,7 +34,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 //store
-import { $profileStore, updateProfileFx, setProfileEvent, addNotificationEvent } from '../../../store';
+import { $profileStore, updateProfileFx, setProfileEvent, addNotificationEvent, deleteSeatTeamMemberFx } from '../../../store';
 import { NotificationType } from '../../../store/types';
 import {
     $meetingRecordingStore,
@@ -155,7 +155,16 @@ const Component = () => {
 
     const handleRemoveMemberFromProfile = async (email) => {
         profile.teamMembers = profile.teamMembers.filter(member => member.email !== email);
-        await updateProfileFx({ teamMembers: profile.teamMembers, subscriptionPlanKey: PlanKeys.Free });
+        const result = await deleteSeatTeamMemberFx({ email });
+
+        if (result) {
+            await updateProfileFx({ teamMembers: profile.teamMembers });
+
+            addNotificationEvent({
+                type: NotificationType.TeamMemberRemoved,
+                message: 'successfully removed',
+            });
+        }
     };
 
     const handleRemovePendingMember = async email => {
