@@ -220,7 +220,11 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
 
         await getUserName();
 
-        titleField.value = `${userName}'s Ruume Meeting`;
+        // Only when the title is empty
+        if (!titleField.value) {
+          console.log(titleField.value)
+          titleField.value = `${userName}'s Ruume Meeting`;
+        }
       }
     } else {
       /**
@@ -504,7 +508,9 @@ async function fillTitleField() {
 
   await getUserName();
 
-  titleField.value = `${userName}'s Ruume Meeting`;
+  if (!titleField.value) {
+    titleField.value = `${userName}'s Ruume Meeting`;
+  }
 }
 
 // This function autofills the meeting details

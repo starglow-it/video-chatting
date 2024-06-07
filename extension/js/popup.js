@@ -31,14 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setCurrentDate();
 
-  // $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
-  //   "selected"
-  // );
-
-
-  // $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
   // Get the user's timezone offset in hours
-  var userTimezoneOffsetHours = new Date().getTimezoneOffset() / 60; // Convert to hours
+  var userTimezoneOffsetHours = -new Date().getTimezoneOffset() / 60; // Convert to hours
 
   // Find the corresponding option in the HTML
   var $selectedOption = $('#timezone').find('[data-value="' + userTimezoneOffsetHours + '"]');

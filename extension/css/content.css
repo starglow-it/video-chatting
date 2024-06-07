@@ -179,14 +179,17 @@
 .custom-option.selected {
   background-color: rgb(232 239 253);
 }
-div[jsname="fxaXHe"] {
+/* div[jsname="fxaXHe"] {
   overflow: visible;
-}
+} */
+/* div[jsname="ssXDle"] {
+  overflow: visible;
+} */
+/* div[jsname="ssXDle"] div {
+  overflow: visible;
+} */
 div[jsname="ssXDle"] {
-  overflow: visible;
-}
-div[jsname="ssXDle"] div {
-  overflow: visible;
+  overflow: auto;
 }
 .reselect {
   background-color: #9243b7;
