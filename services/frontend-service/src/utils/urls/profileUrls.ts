@@ -14,6 +14,11 @@ export const delteSeatTeamMemberUrl = {
     method: HttpMethods.Post,
 };
 
+export const removeTeamMemberFromHost = {
+    url: `${baseProfileUrl}/remove-seat-team-member-from-host`,
+    method: HttpMethods.Post,
+};
+
 export const getProfileUrl = {
     url: baseProfileUrl,
     method: HttpMethods.Get,

@@ -65,7 +65,6 @@ const validationSchema = yup.object({
 
 const Component = () => {
     const router = useRouter();
-
     const authState = useStore($authStore);
     const isLoginPending = useStore(
         seatLoginUserFx.pending || googleVerifyFx.pending,
@@ -106,14 +105,8 @@ const Component = () => {
         });
     }, []);
 
-    useEffect(() => {
-        if (authState.isAuthenticated) {
-            router.push(dashboardRoute);
-        }
-    }, [authState.isAuthenticated]);
-
     const onSubmit = useCallback(
-        handleSubmit((data: LoginUserParams) => {
+        handleSubmit(async (data: LoginUserParams) => {
             const trimmedEmail = data.email.trim().toLowerCase();
             const prevUser = localStorage.getItem('loginedUser');
 
@@ -126,11 +119,15 @@ const Component = () => {
                 localStorage.setItem('loginedUser', trimmedEmail);
             }
 
-            seatLoginUserFx({
+            const { isAuthenticated } = await seatLoginUserFx({
                 email: trimmedEmail,
                 password: data.password,
                 hostId
             });
+
+            if (isAuthenticated) {
+                router.push(dashboardRoute);
+            }
         }),
         [],
     );

@@ -28,8 +28,6 @@ const EditCompanyInfo = memo(() => {
         errors?.contactEmail?.message?.toString() || '';
     const currentCompanyNameErrorMessage: string =
         errors?.companyName?.message?.toString() || '';
-    const currentDescriptionErrorMessage: string =
-        errors?.description?.message?.toString() || '';
     const currentFullNameErrorMessage: string =
         errors?.fullName?.message?.toString() || '';
 
@@ -100,6 +98,7 @@ const EditCompanyInfo = memo(() => {
                             <CustomInput
                                 nameSpace="forms"
                                 translation="nameOfYourLive"
+                                disabled={Boolean(profile.teamOrganization?.name)}
                                 error={currentCompanyNameErrorMessage}
                                 {...register('companyName')}
                             />
@@ -109,15 +108,6 @@ const EditCompanyInfo = memo(() => {
                                 disabled
                                 error={currentEmailErrorMessage}
                                 {...register('contactEmail')}
-                            />
-
-                            <CustomInput
-                                nameSpace="forms"
-                                translation="teamOrganization"
-                                placeholder={profile.teamOrganization}
-                                disabled
-                                error={currentDescriptionErrorMessage}
-                                {...register('description')}
                             />
                         </CustomGrid>
                     </CustomGrid>

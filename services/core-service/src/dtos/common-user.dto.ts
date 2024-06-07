@@ -5,12 +5,35 @@ import {
   ILanguage,
   ICommonUser,
   ISocialLink,
+  SeatTypes
 } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { CommonLanguageDTO } from './common-language.dto';
 import { CommonSocialLinkDTO } from './common-social-link.dto';
 import { ProfileAvatarDTO } from './profile-avatar.dto';
+
+class TeamOrganizationDTO {
+  @Expose()
+  name: string;
+
+  @Expose()
+  seat: SeatTypes;
+}
+
+class TeamMemberDTO {
+  @Expose()
+  email: string;
+
+  @Expose()
+  role: string; // Assuming role is a string, update if it's an enum
+
+  @Expose()
+  seat: string; // Assuming seat is a string, update if it's an enum
+
+  @Expose()
+  status: string;
+}
 
 export class CommonUserDTO implements ICommonUser {
   @Expose()
@@ -140,9 +163,14 @@ export class CommonUserDTO implements ICommonUser {
   loginType: ICommonUser['loginType'];
 
   @Expose()
+  organizationName: ICommonUser['organizationName'];
+
+  @Expose()
+  @Type(() => TeamMemberDTO)
   teamMembers: ICommonUser['teamMembers'];
 
   @Expose()
+  @Type(() => TeamOrganizationDTO)
   teamOrganization: ICommonUser['teamOrganization'];
 
   @Expose()

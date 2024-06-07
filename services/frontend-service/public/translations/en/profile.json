@@ -4,7 +4,7 @@
     "name": "Name",
     "position": "Position",
     "languages": "Languages",
-    "team": "Team",
+    "team": "Organization",
     "your": "Your",
     "logo": "Logo"
   },
@@ -27,9 +27,11 @@
     "subscriptionType": "subcription type",
     "removeUser": "remove user",
     "free": "free",
+    "subscription": "$25/mo",
     "business": "business",
     "active": "active",
     "inviteTeamMembers": "add members",
+    "leaveTeam": "leave team",
     "upgratePlanToBusiness": "You need to upgrade subscription plan to invite team members",
     "payToAddNewTeamMemberDialog": {
       "header": "invite another team member for only US$5/mth",

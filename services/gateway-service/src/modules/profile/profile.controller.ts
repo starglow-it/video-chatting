@@ -112,6 +112,8 @@ export class ProfileController {
     if (user) {
       const updatedUser = await this.coreService.findUserAndUpdate({
         userId: user.id, data: {
+          teamMembers: [],
+          teamOrganization: null,
           subscriptionPlanKey: PlanKeys.House
         }
       });
@@ -120,6 +122,42 @@ export class ProfileController {
         success: true,
         result: updatedUser,
       };
+    }
+
+    return {
+      success: true,
+      result: null,
+    };
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/remove-seat-team-member-from-host')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove Team Member From Host' })
+  @ApiOkResponse({
+    description: 'Seat team member is removed successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async RemoveTeamMemberFromHost(
+    @Body() data: { orgEmails: string[], memberEmail: string },
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonUser> | null> {
+    if (data.orgEmails.length > 0) {
+      for (const orgEmail of data.orgEmails) {
+        const user = await this.coreService.findUserByEmail({ email: orgEmail });
+        if (user) {
+          let newTeamMembers = user.teamMembers.filter(tm => tm.email !== data.memberEmail);
+          await this.coreService.findUserAndUpdate({
+            userId: user.id,
+            data: {
+              teamMembers: newTeamMembers
+            }
+          });
+        }
+      }
     }
 
     return {

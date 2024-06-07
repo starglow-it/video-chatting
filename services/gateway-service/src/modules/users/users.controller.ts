@@ -32,6 +32,7 @@ import {
   MeetingRole,
   ResponseSumType,
   UserRoles,
+  SeatRoleTypes
 } from 'shared-types';
 
 // services
@@ -719,15 +720,14 @@ export class UsersController {
       let profileId = '';
 
       if (user) {
-        console.log(user.subscriptionPlanKey);
         if (user.subscriptionPlanKey === PlanKeys.Business) {
           return {
             success: false,
             message: 'you can not invite a user with business plan',
           }
         }
-        if (user.teamOrganization) {
-          if (user.teamOrganization === host.companyName) {
+        if (user.teamOrganization && user.teamOrganization.name) {
+          if (user.teamOrganization.name === host.companyName) {
             return {
               success: false,
               message: 'this user is already a part of your team',
@@ -745,9 +745,20 @@ export class UsersController {
 
       if (host) {
         if (host.teamMembers && host.teamMembers.length < 3) {
+          const isEmailExist = host.teamMembers.find(
+            (member) => member.email === body.userEmail,
+          );
+
+          if (isEmailExist) {
+            return {
+              success: false,
+              message: 'this user is already a part of your team',
+            }
+          }
+
           await this.coreService.findUserAndUpdate({
             userId: host.id,
-            data: { teamMembers: [...host.teamMembers, { email: body.userEmail, status: 'pending' }] }
+            data: { teamMembers: [...host.teamMembers, { email: body.userEmail, role: SeatRoleTypes.TeamMember, seat: body.seat, status: 'pending' }] }
           });
         }
 
