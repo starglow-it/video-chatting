@@ -88,17 +88,24 @@ export class ProfileController {
       data,
     });
 
-    if (data.hasOwnProperty("companyName") && Array.isArray(user.teamMembers) && user.teamMembers?.length > 0) {
+    if (
+      data.hasOwnProperty("companyName") &&
+      !Boolean(user.teamOrganization) &&
+      Array.isArray(user.teamMembers) &&
+      user.teamMembers?.length > 0
+    ) {
       for (const teamMember of user.teamMembers) {
-        const teamMemberUser = await this.coreService.findUserByEmail({
-          email: teamMember.email,
-        });
-
-        if (teamMemberUser && Boolean(teamMemberUser.teamOrganization)) {
-          await this.coreService.findUserAndUpdate({
-            userId: teamMemberUser.id,
-            data: { teamOrganization: { name: data.companyName, seat: teamMemberUser.teamOrganization?.seat } }
+        if (teamMember.status === 'confirmed') {
+          const teamMemberUser = await this.coreService.findUserByEmail({
+            email: teamMember.email,
           });
+
+          if (teamMemberUser && Boolean(teamMemberUser.teamOrganization)) {
+            await this.coreService.findUserAndUpdate({
+              userId: teamMemberUser.id,
+              data: { teamOrganization: { name: data.companyName, seat: teamMemberUser.teamOrganization?.seat } }
+            });
+          }
         }
       }
     }
