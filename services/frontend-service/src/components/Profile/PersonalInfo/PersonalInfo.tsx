@@ -55,17 +55,12 @@ const PersonalInfo = memo(() => {
                     nameSpace="profile"
                     translation="personalInfo.languages"
                 />
-                {
-                    profile.teamOrganization?.name && (
-                        <CustomTypography
-                            gridArea="4/1/4/1"
-                            color="text.secondary"
-                            nameSpace="profile"
-                            translation="personalInfo.team"
-                        />
-                    )
-                }
-
+                <CustomTypography
+                    gridArea="4/1/4/1"
+                    color="text.secondary"
+                    nameSpace="profile"
+                    translation="personalInfo.team"
+                />
                 <CustomBox
                     gridArea="1/2/1/4"
                     className={styles.fullNameWrapper}
@@ -91,21 +86,17 @@ const PersonalInfo = memo(() => {
                 <CustomTypography gridArea="3/2/3/4" color="text.primary">
                     {profile.languages?.length > 0 && profile.languages?.map(lang => lang.value).join(', ')}
                 </CustomTypography>
-                {
-                    profile.teamOrganization?.name && (
-                        <CustomBox
-                            gridArea="4/2/4/4"
-                            className={styles.positionWrapper}
-                        >
-                            <CustomTypography
-                                className={styles.positionText}
-                                color="text.primary"
-                            >
-                                {profile.teamOrganization?.name}
-                            </CustomTypography>
-                        </CustomBox>
-                    )
-                }
+                <CustomBox
+                    gridArea="4/2/4/4"
+                    className={styles.positionWrapper}
+                >
+                    <CustomTypography
+                        className={styles.positionText}
+                        color="text.primary"
+                    >
+                        {profile?.teamOrganization?.name || profile.companyName || "no name"}
+                    </CustomTypography>
+                </CustomBox>
             </CustomBox>
         </CustomGrid>
     );

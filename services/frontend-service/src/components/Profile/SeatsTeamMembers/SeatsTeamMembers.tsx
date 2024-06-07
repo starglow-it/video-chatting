@@ -336,7 +336,7 @@ const Component = () => {
                         }
                     </CustomGrid>
                     {
-                        !profile.TeamOrganization?.name && (
+                        !profile.teamOrganization?.name && (
                             <CustomGrid container item spacing={2} alignItems="center">
                                 <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
                                     <CustomTypography
@@ -494,7 +494,7 @@ const Component = () => {
                                                 />
                                             </CustomGrid>
                                             {
-                                                (!profile.teamOrganization?.name || tm.role === 'admin') && (
+                                                !(!profile.teamOrganization?.name || tm.role === 'admin') && (
                                                     <CustomGrid item container xs={2} justifyContent="center">
                                                         <CustomPaper
                                                             variant="black-glass"
