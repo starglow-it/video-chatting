@@ -51,6 +51,12 @@ export const deleteSeatTeamMemberFx = profileDomain.createEffect<
     void
 >('deleteSeatTeamMemberFx');
 
+export const removeTeamMemberFromHostFx = profileDomain.createEffect<
+    { orgEmails: string[], memberEmail: string },
+    boolean,
+    void
+>('removeTeamMemberFromHostFx');
+
 export const deleteProfileFx = profileDomain.createEffect<void, void, void>(
     'deleteProfileFx',
 );

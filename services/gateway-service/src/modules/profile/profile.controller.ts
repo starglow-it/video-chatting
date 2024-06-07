@@ -88,6 +88,28 @@ export class ProfileController {
       data,
     });
 
+    if (
+      data.hasOwnProperty("companyName") &&
+      !Boolean(user.teamOrganization) &&
+      Array.isArray(user.teamMembers) &&
+      user.teamMembers?.length > 0
+    ) {
+      for (const teamMember of user.teamMembers) {
+        if (teamMember.status === 'confirmed') {
+          const teamMemberUser = await this.coreService.findUserByEmail({
+            email: teamMember.email,
+          });
+
+          if (teamMemberUser && Boolean(teamMemberUser.teamOrganization)) {
+            await this.coreService.findUserAndUpdate({
+              userId: teamMemberUser.id,
+              data: { teamOrganization: { name: data.companyName, seat: teamMemberUser.teamOrganization?.seat } }
+            });
+          }
+        }
+      }
+    }
+
     return {
       success: true,
       result: user,
@@ -112,6 +134,8 @@ export class ProfileController {
     if (user) {
       const updatedUser = await this.coreService.findUserAndUpdate({
         userId: user.id, data: {
+          teamMembers: [],
+          teamOrganization: null,
           subscriptionPlanKey: PlanKeys.House
         }
       });
@@ -120,6 +144,42 @@ export class ProfileController {
         success: true,
         result: updatedUser,
       };
+    }
+
+    return {
+      success: true,
+      result: null,
+    };
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/remove-seat-team-member-from-host')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove Team Member From Host' })
+  @ApiOkResponse({
+    description: 'Seat team member is removed successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async RemoveTeamMemberFromHost(
+    @Body() data: { orgEmails: string[], memberEmail: string },
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonUser> | null> {
+    if (data.orgEmails.length > 0) {
+      for (const orgEmail of data.orgEmails) {
+        const user = await this.coreService.findUserByEmail({ email: orgEmail });
+        if (user) {
+          let newTeamMembers = user.teamMembers.filter(tm => tm.email !== data.memberEmail);
+          await this.coreService.findUserAndUpdate({
+            userId: user.id,
+            data: {
+              teamMembers: newTeamMembers
+            }
+          });
+        }
+      }
     }
 
     return {

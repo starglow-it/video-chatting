@@ -56,7 +56,6 @@ const validationSchema = yup.object({
     contactEmail: emailSchema(),
     fullName: fullNameSchema().required('required'),
     position: simpleStringSchema(),
-    description: simpleStringSchemaWithLength(300),
     businessCategories: businessCategoriesSchema(),
     languages: languagesSchema(),
     socials: yup.array().of(validateSocialLink()),
@@ -72,7 +71,6 @@ const EditProfileContainer = memo(() => {
     const resolver = useYupValidationResolver<{
         companyName: string;
         contactEmail: string;
-        description: string;
         businessCategories: IBusinessCategory['key'][];
         languages: ILanguage['key'][];
         fullName: string;
@@ -93,12 +91,11 @@ const EditProfileContainer = memo(() => {
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            companyName: profile.companyName,
+            companyName: profile.teamOrganization?.name || profile.companyName || 'no name',
             contactEmail: profile.contactEmail,
             businessCategories: profile?.businessCategories?.map(
                 category => category.key,
             ),
-            description: profile.description,
             languages: profile.languages
                 .map(category => category.key)
                 .filter(key => key),
@@ -139,7 +136,6 @@ const EditProfileContainer = memo(() => {
                 businessCategories: newProfile?.businessCategories?.map(
                     category => category.key,
                 ),
-                description: newProfile.description,
                 languages: newProfile.languages
                     .map(category => category.key)
                     .filter(key => key),

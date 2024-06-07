@@ -113,6 +113,14 @@ const Component = () => {
         }
     }, [showHints]);
 
+    useEffect(() => {
+        (async () => {
+            if (authState.isAuthenticated && !isVerifying) {
+                router.push(dashboardRoute);
+            }
+        })();
+    }, [authState.isAuthenticated, isVerifying]);
+
     const handleResetEmailField = useCallback(() => {
         reset({
             email: '',

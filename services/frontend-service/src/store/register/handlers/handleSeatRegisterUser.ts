@@ -25,10 +25,6 @@ export const handleSeatRegisterUser = async (params: SeatRegisterUserParams) => 
         };
     }
 
-    if (!response.success) {
-        throw new Error(response?.error?.message);
-    }
-
     return {
         isUserRegistered: false,
         error: null,
