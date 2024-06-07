@@ -233,6 +233,7 @@ export class UsersService {
       isDowngradeMessageShown: data.isDowngradeMessageShown,
       country: data.country,
       registerTemplate: data.registerTemplate,
+      organizationName: data.organizationName,
       teamMembers: data.teamMembers,
       teamOrganization: data.teamOrganization,
       maxSeatNumForTeamMembers: data.maxSeatNumForTeamMembers

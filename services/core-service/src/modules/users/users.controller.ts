@@ -95,7 +95,7 @@ export class UsersController {
     private countryStatisticsService: CountryStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     @InjectConnection() private connection: Connection,
-  ) {}
+  ) { }
 
   startCheckSubscriptions() {
     this.tasksService.addInterval({
@@ -304,8 +304,6 @@ export class UsersController {
         enableImplicitConversion: true,
       });
 
-      plainUser.teamMembers = user.teamMembers;
-
       return plainUser;
     });
   }
@@ -326,13 +324,10 @@ export class UsersController {
             throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
           }
 
-          const plainUser = plainToInstance(CommonUserDTO, user, {
+          return plainToInstance(CommonUserDTO, user, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
-
-          plainUser.teamMembers = user.teamMembers;
-          return plainUser;
         }
       });
     } catch (e) {
@@ -423,12 +418,12 @@ export class UsersController {
         ...query,
         ...(options?.search
           ? {
-              $or: [
-                { companyName: queryRegex },
-                { fullName: queryRegex },
-                { email: queryRegex },
-              ],
-            }
+            $or: [
+              { companyName: queryRegex },
+              { fullName: queryRegex },
+              { email: queryRegex },
+            ],
+          }
           : {}),
       };
 

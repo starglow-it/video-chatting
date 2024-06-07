@@ -181,7 +181,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
                 !user.fullName &&
                 !user.companyName
             ) {
-                console.log(host);
                 redirectTo(
                     nextPageContext,
                     `${setUpTemplateRoute}/${registerTemplate || ''}`,

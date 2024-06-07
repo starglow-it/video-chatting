@@ -34,7 +34,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 //store
-import { $profileStore, updateProfileFx, setProfileEvent, addNotificationEvent, deleteSeatTeamMemberFx } from '../../../store';
+import {
+    $profileStore,
+    updateProfileFx,
+    setProfileEvent,
+    addNotificationEvent,
+    deleteSeatTeamMemberFx,
+    removeTeamMemberFromHostFx
+} from '../../../store';
 import { NotificationType } from '../../../store/types';
 import {
     $meetingRecordingStore,
@@ -91,10 +98,8 @@ const Component = () => {
     } = methods;
 
     useEffect(() => {
-        if (profile.teamMembers) {
-            setReminTeamMemberNum(prev => prev - profile.teamMembers.length);
-            setProfileTeamMembers(profile.teamMembers);
-        }
+        setReminTeamMemberNum(prev => prev - profile.teamMembers.length);
+        setProfileTeamMembers(profile.teamMembers);
     }, [profile.teamMembers]);
 
     useEffect(() => {
@@ -116,6 +121,7 @@ const Component = () => {
     }, [meetingRecordingStore]);
 
     useEffect(() => {
+        console.log(profile);
         if (profile && profile.subscriptionPlanKey && profile.subscriptionPlanKey !== PlanKeys.House) {
             setIsShow(true);
         }
@@ -132,7 +138,7 @@ const Component = () => {
     }, [errors]);
 
     const handleAddMember = useCallback(() => {
-        if (isSubscriptionBusiness && !profile.teamOrganization) {
+        if (isSubscriptionBusiness && !profile.teamOrganization?.name) {
             if (teamMembers.length + profile.teamMembers.length < profile.maxSeatNumForTeamMembers) {
                 setTeamMembers([...teamMembers, { email: '', valid: false }]);
             } else {
@@ -147,6 +153,23 @@ const Component = () => {
         teamMembers
     ]);
 
+    const handleLeaveTeam = async () => {
+        try {
+            const orgEmails = profile.teamMembers.map(tm => tm.email);
+            const result = await updateProfileFx({
+                teamMembers: [],
+                teamOrganization: null,
+                subscriptionPlanKey: PlanKeys.House,
+            });
+
+            if (!Boolean(result?.error) && orgEmails.length) {
+                await removeTeamMemberFromHostFx({ orgEmails, memberEmail: result?.profile?.email });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const handleRemoveMember = (index) => {
         const updatedMembers = [...teamMembers];
         updatedMembers.splice(index, 1);
@@ -154,27 +177,35 @@ const Component = () => {
     };
 
     const handleRemoveMemberFromProfile = async (email) => {
-        profile.teamMembers = profile.teamMembers.filter(member => member.email !== email);
-        const result = await deleteSeatTeamMemberFx({ email });
+        try {
+            profile.teamMembers = profile.teamMembers.filter(member => member.email !== email);
+            const result = await deleteSeatTeamMemberFx({ email });
 
-        if (result) {
-            await updateProfileFx({ teamMembers: profile.teamMembers });
+            if (result) {
+                await updateProfileFx({ teamMembers: profile.teamMembers });
 
-            addNotificationEvent({
-                type: NotificationType.TeamMemberRemoved,
-                message: 'successfully removed',
-            });
+                addNotificationEvent({
+                    type: NotificationType.TeamMemberRemoved,
+                    message: 'successfully removed',
+                });
+            }
+        } catch (error) {
+            console.error(error);
         }
     };
 
     const handleRemovePendingMember = async email => {
-        const updatedMembers = profile.teamMembers.filter(member => member.email !== email);
-        setProfileEvent({
-            user: {
-                teamMembers: updatedMembers
-            }
-        });
-        await updateProfileFx({ teamMembers: updatedMembers });
+        try {
+            const updatedMembers = profile.teamMembers.filter(member => member.email !== email);
+            setProfileEvent({
+                user: {
+                    teamMembers: updatedMembers
+                }
+            });
+            await updateProfileFx({ teamMembers: updatedMembers });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleEmailChange = (index, value) => {
@@ -185,23 +216,39 @@ const Component = () => {
     };
 
     const handleSendInvitation = async (index) => {
-        if (teamMembers[index].email) {
-            const result = await handleSendEmailToInviteNewTeamMember({ email: teamMembers[index].email, hostEmail: profile.email });
-            if (result.success) {
-                handleRemoveMember(index);
-                setProfileEvent({
-                    user: {
-                        teamMembers: [...profile.teamMembers, { email: teamMembers[index].email, status: 'pending' }]
-                    }
-                });
-            } else {
-                if (result.message) {
-                    addNotificationEvent({
-                        type: NotificationType.SendTeamMemberInvitationError,
-                        message: result.message,
+        try {
+            if (teamMembers[index].email) {
+                const result = await handleSendEmailToInviteNewTeamMember(
+                    {
+                        email: teamMembers[index].email,
+                        hostEmail: profile.email,
+                        seat: profile.teamMembers.length >= 3 ? 'subscription' : 'free'
                     });
+                if (result.success) {
+                    handleRemoveMember(index);
+                    setProfileEvent({
+                        user: {
+                            teamMembers: [...profile.teamMembers,
+                            {
+                                email: teamMembers[index].email,
+                                seat: profile.teamMembers.length >= 3 ? 'subscription' : 'free',
+                                role: 'team member',
+                                status: 'pending'
+                            }
+                            ]
+                        }
+                    });
+                } else {
+                    if (result.message) {
+                        addNotificationEvent({
+                            type: NotificationType.SendTeamMemberInvitationError,
+                            message: result.message,
+                        });
+                    }
                 }
             }
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -229,25 +276,41 @@ const Component = () => {
                         color='#D9D9D9'
                         component="div"
                     >
-                        {profile.companyName || ''}
+                        {
+                            profile.teamOrganization?.name || profile.companyName || 'no name'
+                        }
                     </CustomTypography>
                 </CustomGrid>
 
                 {
-                    !profile.teamOrganization && (
-                        <CustomButton
-                            onClick={handleAddMember}
-                            disabled={!isSubscriptionBusiness}
-                            variant="custom-primary"
-                            label={
-                                <Translation
-                                    nameSpace="profile"
-                                    translation="seatsTeamMembers.inviteTeamMembers"
-                                />
-                            }
-                            sx={{ width: '160px', marginBottom: '10px', padding: "10px" }}
-                        />
-                    )
+                    !profile.teamOrganization?.name
+                        ? (
+                            <CustomButton
+                                onClick={handleAddMember}
+                                disabled={!isSubscriptionBusiness}
+                                variant="custom-primary"
+                                label={
+                                    <Translation
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.inviteTeamMembers"
+                                    />
+                                }
+                                sx={{ width: '160px', marginBottom: '10px', padding: "10px" }}
+                            />
+                        )
+                        : (
+                            <CustomButton
+                                onClick={handleLeaveTeam}
+                                variant="custom-primary"
+                                label={
+                                    <Translation
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.leaveTeam"
+                                    />
+                                }
+                                sx={{ width: '160px', marginBottom: '10px', padding: "10px" }}
+                            />
+                        )
                 }
             </CustomGrid>
             <CustomGrid
@@ -269,7 +332,6 @@ const Component = () => {
                     <CustomGrid
                         container
                         flexDirection="row"
-                        justifyContent="space-between"
                         align-items="center"
                     >
 
@@ -297,30 +359,35 @@ const Component = () => {
                                 translation="seatsTeamMembers.role"
                             />
                         </CustomGrid>
-                        <CustomGrid
-                            item
-                            xs={2}
-                            sx={{ textAlign: 'center' }}
-                        >
-                            <CustomTypography
-                                sx={{ fontSize: '12px' }}
-                                fontWeight="600"
-                                nameSpace="profile"
-                                translation="seatsTeamMembers.status"
-                            />
-                        </CustomGrid>
-                        <CustomGrid
-                            item
-                            xs={1}
-                            sx={{ textAlign: 'center' }}
-                        >
-                            <CustomTypography
-                                sx={{ fontSize: '12px' }}
-                                fontWeight="600"
-                                nameSpace="profile"
-                                translation="seatsTeamMembers.seat"
-                            />
-                        </CustomGrid>
+                        {
+                            !profile.teamOrganization?.name && (
+                                <>
+                                    <CustomGrid
+                                        item
+                                        xs={2}
+                                        sx={{ textAlign: 'center' }}
+                                    >
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            fontWeight="600"
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.status"
+                                        />
+                                    </CustomGrid>
+                                    <CustomGrid
+                                        item
+                                        xs={1}
+                                        sx={{ textAlign: 'center' }}
+                                    >
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            fontWeight="600"
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.seat"
+                                        />
+                                    </CustomGrid></>
+                            )
+                        }
                         <CustomGrid
                             item
                             xs={2}
@@ -333,18 +400,22 @@ const Component = () => {
                                 translation="seatsTeamMembers.subscriptionType"
                             />
                         </CustomGrid>
-                        <CustomGrid
-                            item
-                            xs={2}
-                            sx={{ textAlign: 'center' }}
-                        >
-                            <CustomTypography
-                                sx={{ fontSize: '12px' }}
-                                fontWeight="600"
-                                nameSpace="profile"
-                                translation="seatsTeamMembers.removeUser"
-                            />
-                        </CustomGrid>
+                        {
+                            !profile.teamOrganization?.name && (
+                                <CustomGrid
+                                    item
+                                    xs={2}
+                                    sx={{ textAlign: 'center' }}
+                                >
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+                                        fontWeight="600"
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.removeUser"
+                                    />
+                                </CustomGrid>
+                            )
+                        }
                     </CustomGrid>
                     {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
                         <CustomGrid container item spacing={2} key={tindex} alignItems="center">
@@ -357,10 +428,11 @@ const Component = () => {
                             <CustomGrid item xs={2} container justifyContent="center">
                                 <CustomTypography
                                     sx={{ fontSize: '12px' }}
-                                    nameSpace="profile"
-                                    translation="seatsTeamMembers.teamMember"
+
                                     color='#D9D9D9'
-                                />
+                                >
+                                    {tm.role}
+                                </CustomTypography>
                             </CustomGrid>
                             {
                                 tm.status === 'pending'
@@ -375,12 +447,25 @@ const Component = () => {
                                                 </CustomTypography>
                                             </CustomGrid>
                                             <CustomGrid item container xs={1} justifyContent="center">
-                                                <CustomTypography
-                                                    sx={{ fontSize: '12px' }}
-                                                    nameSpace="profile"
-                                                    translation="seatsTeamMembers.free"
-                                                    color='#D9D9D9'
-                                                />
+                                                {
+                                                    tm.seat === 'free'
+                                                        ? (
+                                                            <CustomTypography
+                                                                sx={{ fontSize: '12px' }}
+                                                                nameSpace="profile"
+                                                                translation="seatsTeamMembers.free"
+                                                                color='#D9D9D9'
+                                                            />
+                                                        )
+                                                        : (
+                                                            <CustomTypography
+                                                                sx={{ fontSize: '12px' }}
+                                                                nameSpace="profile"
+                                                                translation="seatsTeamMembers.subscription"
+                                                                color='#D9D9D9'
+                                                            />
+                                                        )
+                                                }
                                             </CustomGrid>
                                             <CustomGrid item container xs={2} justifyContent="center">
                                                 <CustomTypography
@@ -402,22 +487,40 @@ const Component = () => {
                                     )
                                     : (
                                         <>
-                                            <CustomGrid item container xs={2} justifyContent="center">
-                                                <CustomTypography
-                                                    sx={{ fontSize: '12px' }}
-                                                    nameSpace="profile"
-                                                    translation="seatsTeamMembers.active"
-                                                    color='#D9D9D9'
-                                                />
-                                            </CustomGrid>
-                                            <CustomGrid item container xs={1} justifyContent="center">
-                                                <CustomTypography
-                                                    sx={{ fontSize: '12px' }}
-                                                    nameSpace="profile"
-                                                    translation="seatsTeamMembers.free"
-                                                    color='#D9D9D9'
-                                                />
-                                            </CustomGrid>
+                                            {
+                                                !profile.teamOrganization?.name && (
+                                                    <>
+                                                        <CustomGrid item container xs={2} justifyContent="center">
+                                                            <CustomTypography
+                                                                sx={{ fontSize: '12px' }}
+                                                                nameSpace="profile"
+                                                                translation="seatsTeamMembers.active"
+                                                                color="#D9D9D9"
+                                                            />
+                                                        </CustomGrid>
+                                                        {tm.seat === 'free' ? (
+                                                            <CustomGrid item container xs={1} justifyContent="center">
+                                                                <CustomTypography
+                                                                    sx={{ fontSize: '12px' }}
+                                                                    nameSpace="profile"
+                                                                    translation="seatsTeamMembers.free"
+                                                                    color="#D9D9D9"
+                                                                />
+                                                            </CustomGrid>
+                                                        ) : (
+                                                            <CustomGrid item container xs={1} justifyContent="center">
+                                                                <CustomTypography
+                                                                    sx={{ fontSize: '12px' }}
+                                                                    nameSpace="profile"
+                                                                    translation="seatsTeamMembers.subscription"
+                                                                    color="#D9D9D9"
+                                                                />
+                                                            </CustomGrid>
+                                                        )}
+                                                    </>
+                                                )
+                                            }
+
                                             <CustomGrid item container xs={2} justifyContent="center">
                                                 <CustomTypography
                                                     sx={{ fontSize: '12px' }}
@@ -426,19 +529,23 @@ const Component = () => {
                                                     color='#D9D9D9'
                                                 />
                                             </CustomGrid>
-                                            <CustomGrid item container xs={2} justifyContent="center">
-                                                <CustomPaper
-                                                    variant="black-glass"
-                                                    className={styles.deviceButton}
-                                                >
-                                                    <ActionButton
-                                                        variant="black"
-                                                        onAction={() => handleRemoveMemberFromProfile(tm.email)}
-                                                        className={styles.deviceButton}
-                                                        Icon={<FontAwesomeIcon icon={faTrashCan} />}
-                                                    />
-                                                </CustomPaper>
-                                            </CustomGrid>
+                                            {
+                                                !profile.teamOrganization?.name && (
+                                                    <CustomGrid item container xs={2} justifyContent="center">
+                                                        <CustomPaper
+                                                            variant="black-glass"
+                                                            className={styles.deviceButton}
+                                                        >
+                                                            <ActionButton
+                                                                variant="black"
+                                                                onAction={() => handleRemoveMemberFromProfile(tm.email)}
+                                                                className={styles.deviceButton}
+                                                                Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                                            />
+                                                        </CustomPaper>
+                                                    </CustomGrid>
+                                                )
+                                            }
                                         </>
                                     )
                             }
@@ -493,21 +600,17 @@ const Component = () => {
                                     />
                                 </CustomGrid>
                                 <CustomGrid item container xs={2} justifyContent="center">
-                                    {
-                                        !member.valid && (
-                                            <CustomPaper
-                                                variant="black-glass"
-                                                className={styles.deviceButton}
-                                            >
-                                                <ActionButton
-                                                    variant="black"
-                                                    onAction={() => handleRemoveMember(index)}
-                                                    className={styles.deviceButton}
-                                                    Icon={<FontAwesomeIcon icon={faTrashCan} />}
-                                                />
-                                            </CustomPaper>
-                                        )
-                                    }
+                                    <CustomPaper
+                                        variant="black-glass"
+                                        className={styles.deviceButton}
+                                    >
+                                        <ActionButton
+                                            variant="black"
+                                            onAction={() => handleRemoveMember(index)}
+                                            className={styles.deviceButton}
+                                            Icon={<FontAwesomeIcon icon={faTrashCan} />}
+                                        />
+                                    </CustomPaper>
                                 </CustomGrid>
                             </CustomGrid>
                         ))
