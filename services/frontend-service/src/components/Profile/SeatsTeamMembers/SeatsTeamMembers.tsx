@@ -1,16 +1,5 @@
 import { memo, useEffect, useState, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import {
-    FieldValues,
-    useForm,
-} from 'react-hook-form';
-import * as yup from 'yup';
-
-//hooks
-import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-
-//types
-import { FormDataPayment } from './types';
 
 import {
     appDialogsApi,
@@ -43,12 +32,6 @@ import {
     removeTeamMemberFromHostFx
 } from '../../../store';
 import { NotificationType } from '../../../store/types';
-import {
-    $meetingRecordingStore,
-    $isMeetingSocketConnected,
-    initiateMeetingSocketConnectionFx,
-    getRecordingUrls,
-} from '../../../store/roomStores';
 
 import { handleSendEmailToInviteNewTeamMember } from 'src/store/templates/handlers/handleSendEmailToInviteNewTeamMember';
 
@@ -58,84 +41,19 @@ import { PlanKeys } from 'shared-types';
 // @mui
 import { InputBase } from '@mui/material';
 
-//helpers
-import formatRecordingUrls from '../../../helpers/formatRecordingUrl';
-
 //styles
 import styles from './SeatsTeamMembers.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const Component = () => {
-    const meetingRecordingStore = useStore($meetingRecordingStore);
     const profile = useStore($profileStore);
-    const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
-    const [isShow, setIsShow] = useState(false);
-    const [videos, setVideos] = useState({});
-    const [priceErrorMessage, setPriceErrorMessage] = useState('');
     const [teamMembers, setTeamMembers] = useState([]);
     const [profileTeamMembers, setProfileTeamMembers] = useState([]);
-    const [remindTeamMemberNum, setReminTeamMemberNum] = useState(3);
-
     const isSubscriptionBusiness = profile.subscriptionPlanKey === PlanKeys.Business;
 
-    const validationSchema = yup.object({
-        price: yup.number().min(0, 'not allowed to negative value.'),
-    });
-
-    const resolver =
-        useYupValidationResolver<FieldValues>(validationSchema);
-
-    const methods = useForm({
-        criteriaMode: 'all',
-        resolver,
-        defaultValues: {
-            price: 0
-        } as FormDataPayment,
-    });
-
-    const {
-        formState: { errors },
-    } = methods;
-
     useEffect(() => {
-        setReminTeamMemberNum(prev => prev - profile.teamMembers.length);
         setProfileTeamMembers(profile.teamMembers);
     }, [profile.teamMembers]);
-
-    useEffect(() => {
-        (async () => {
-            await initiateMeetingSocketConnectionFx({ isStatistics: true });
-        })();
-    }, []);
-
-    useEffect(() => {
-        if (isMeetingSocketConnected && profile.id) {
-            getRecordingUrls({ profileId: profile.id });
-        }
-    }, [isMeetingSocketConnected, profile]);
-
-    useEffect(() => {
-        if (meetingRecordingStore.videos.length > 0) {
-            setVideos(formatRecordingUrls(meetingRecordingStore.videos));
-        }
-    }, [meetingRecordingStore]);
-
-    useEffect(() => {
-        console.log(profile);
-        if (profile && profile.subscriptionPlanKey && profile.subscriptionPlanKey !== PlanKeys.House) {
-            setIsShow(true);
-        }
-    }, [profile]);
-
-    useEffect(() => {
-        if (errors.price && Array.isArray(errors.price)) {
-            if (['min', 'max'].includes(errors.price[0].type.toString() ?? '')) {
-                setPriceErrorMessage(errors.price[0].message.toString() ?? '');
-            }
-        } else {
-            setPriceErrorMessage('');
-        }
-    }, [errors]);
 
     const handleAddMember = useCallback(() => {
         if (isSubscriptionBusiness && !profile.teamOrganization?.name) {
@@ -417,6 +335,52 @@ const Component = () => {
                             )
                         }
                     </CustomGrid>
+                    {
+                        !profile.TeamOrganization?.name && (
+                            <CustomGrid container item spacing={2} alignItems="center">
+                                <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+                                        color='#D9D9D9'
+                                    >{profile.email}</CustomTypography>
+                                </CustomGrid>
+                                <CustomGrid item xs={2} container justifyContent="center">
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+
+                                        color='#D9D9D9'
+                                    >
+                                        admin
+                                    </CustomTypography>
+                                </CustomGrid>
+                                <CustomGrid item container xs={2} justifyContent="center">
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.active"
+                                        color="#D9D9D9"
+                                    />
+                                </CustomGrid>
+                                <CustomGrid item container xs={1} justifyContent="center">
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.subscription"
+                                        color="#D9D9D9"
+                                    />
+                                </CustomGrid>
+
+                                <CustomGrid item container xs={2} justifyContent="center">
+                                    <CustomTypography
+                                        sx={{ fontSize: '12px' }}
+                                        nameSpace="profile"
+                                        translation="seatsTeamMembers.business"
+                                        color='#D9D9D9'
+                                    />
+                                </CustomGrid>
+                            </CustomGrid>
+                        )
+                    }
                     {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
                         <CustomGrid container item spacing={2} key={tindex} alignItems="center">
                             <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
@@ -530,7 +494,7 @@ const Component = () => {
                                                 />
                                             </CustomGrid>
                                             {
-                                                !profile.teamOrganization?.name && (
+                                                (!profile.teamOrganization?.name || tm.role === 'admin') && (
                                                     <CustomGrid item container xs={2} justifyContent="center">
                                                         <CustomPaper
                                                             variant="black-glass"
