@@ -139,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     selectedDay = $(".calendar li.active").text() || selectedDay;
     selectedStartTime = $("#start-time .selected").attr("data-value");
     selectedEndTime = $("#end-time .selected").attr("data-value");
+    selectedMeridiem = $("#meridiem .selected").attr("data-value");
 
     const start = formatTimeString(
       selectedYear,

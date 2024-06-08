@@ -29,6 +29,11 @@
       "js": ["js/content.js"]
     },
     {
+      "matches": ["*://mail.google.com/mail/u/1/*"],
+      "css": ["css/content.css"],
+      "js": ["js/gmail_content.js"]
+    },
+    {
       "matches": ["https://my.chatruume.com/login?google-signin"],
       "js": ["js/google_signin.js"]
     },
