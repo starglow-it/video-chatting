@@ -11,16 +11,16 @@ import { ICommonUser, LoginTypes, PlanKeys, UserRoles, SeatTypes, SeatRoleTypes 
 
 @Schema()
 export class TeamMember {
-  @Prop({ required: true })
+  @Prop({ type: String})
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String})
   status: string;
 
-  @Prop({ required: true })
+  @Prop()
   seat: SeatTypes;
 
-  @Prop({ required: true })
+  @Prop()
   role: SeatRoleTypes;
 }
 
@@ -28,10 +28,10 @@ const TeamMemberSchema = SchemaFactory.createForClass(TeamMember);
 
 @Schema()
 export class TeamOrganization {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String})
   name: string;
 
-  @Prop({ required: true })
+  @Prop()
   seat: SeatTypes;
 }
 
