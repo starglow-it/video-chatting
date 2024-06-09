@@ -278,7 +278,7 @@
         "public": "Public Meeting. Add an Audience"
     },
     "hostWaitingNotify": {
-        "title": "The host has another ruume in progress.",
+        "title": "The host will be here soon.",
         "text": "Please wait or leave a message"
     },
     "controlButtonsLabel": {

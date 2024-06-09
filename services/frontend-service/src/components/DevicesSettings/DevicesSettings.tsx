@@ -315,17 +315,16 @@ const Component = () => {
                             nameSpace="meeting"
                             translation="hostWaitingNotify.title"
                         />
-                        <CustomTypography
-                            variant="body1"
-                            color="text.secondary"
-                            nameSpace="meeting"
-                            translation="hostWaitingNotify.text"
-                        />
                     </CustomGrid>
                 </ConditionalRender>
-                <CustomGrid className={styles.titleLeaveMessage}>
-                    <span>Leave a Message</span>
-                </CustomGrid>
+                {/* <CustomGrid className={styles.titleLeaveMessage}>
+                    <CustomTypography
+                        variant="body1"
+                        color="text.secondary"
+                        nameSpace="meeting"
+                        translation="hostWaitingNotify.text"
+                    />
+                </CustomGrid> */}
                 <CustomGrid className={styles.actions} gap={2}>
                     <CustomGrid
                         className={styles.actionItem}
@@ -367,16 +366,11 @@ const Component = () => {
                         nameSpace="meeting"
                         translation="hostWaitingNotify.title"
                     />
-                    <CustomTypography
-                        variant="body1"
-                        color="text.secondary"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.text"
-                    />
                 </CustomGrid>
 
                 <CustomGrid className={styles.titleLeaveMessage}>
-                    <span>Leave a Message</span>
+                    <span>please wait </span>
+                    <span>or leave a Message</span>
                 </CustomGrid>
                 <CustomGrid className={styles.actions} gap={2}>
                     <CustomGrid
