@@ -10,7 +10,9 @@ var iconURL = chrome.runtime.getURL("icons/logo_1000.svg");
 
 const observer = new MutationObserver(async (mutationsList, observer) => {
   if (document.body.innerHTML.includes("Join with Google Meet")) {
-    await injectButton();
+    if (!document.querySelector(".chatruume-meeting")) {
+        await injectButton();
+    } 
   }
 });
 
@@ -31,7 +33,7 @@ async function injectButton() {
     const locationContainer = findClosestParentDiv("View map");
     const chatruumeMeetingLinkElem = locationContainer.querySelector('a');
 
-    if (!document.querySelector(".chatruume-meeting") && chatruumeMeetingLinkElem) {
+    if (chatruumeMeetingLinkElem && chatruumeMeetingLinkElem.getAttribute('href').startsWith('https://my.chatruume.com/')) {
       // Create the container div for the ChatRuume button
       const chatRuumeContainer = document.createElement("div");
       chatRuumeContainer.className = "chatruume-meeting";
@@ -88,8 +90,6 @@ window.addEventListener("load", async () => {
   if (!window.hasLoadedContentScript) {
     window.hasLoadedContentScript = true;
 
-    observer.observe(document.body, { attributes: true, childList: true });
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
   }
-
-  console.log('3');
 });
