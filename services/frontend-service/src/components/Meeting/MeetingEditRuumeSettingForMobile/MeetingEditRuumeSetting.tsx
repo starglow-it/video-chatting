@@ -149,6 +149,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
         formState: { dirtyFields, errors },
         reset,
         setError,
+
         setFocus,
     } = methods;
 
@@ -397,7 +398,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                 <EditMeetingLink onSave={handleOnSave} />
                             </form>
                         </ConditionalRender>
-                        <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
+                        <ConditionalRender condition={isOwner}>
                             <CustomAccordion
                                 currentAccordionId={currentAccordionId}
                                 accordionId="monetization"
@@ -420,21 +421,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                         onSave={handleOnSave}
                                     />
                                 </ConditionalRender>
-                                <ConditionalRender condition={enabledPaymentMeetingParticipant}>
-                                    <PaymentForm
-                                        onClose={handleCloseForm}
-                                        payment={paymentMeetingParticipant}
-                                    />
-                                </ConditionalRender>
                             </CustomAccordion>
-                        </ConditionalRender>
-                        <ConditionalRender condition={enabledPaymentMeetingAudience}>
-                            <CustomPaper className={styles.audienceDonationPaper}>
-                                <PaymentForm
-                                    onClose={handleCloseForm}
-                                    payment={paymentMeetingAudience}
-                                />
-                            </CustomPaper>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || isParticipant}>
                             <CustomAccordion
