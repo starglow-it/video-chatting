@@ -133,11 +133,12 @@ const Component = ({ isAllowBack = true, isShow = true }: { isAllowBack: Boolean
                             <CustomGrid
                                 item
                                 container
-                                direction="column"
+                                direction="row"
                                 alignItems="center"
                                 justifyContent="center"
                                 className={styles.textWrapper}
                                 flex="1 1 auto"
+                                gap={1}
                             >
                                 <CustomTypography
                                     variant="h3bold"
@@ -166,8 +167,7 @@ const Component = ({ isAllowBack = true, isShow = true }: { isAllowBack: Boolean
                                     fontSize={isMobile ? 12 : 16}
                                     lineHeight={isMobile ? '18px' : '24px'}
                                 >
-                                    {meetingTemplate.shortDescription ||
-                                        meetingTemplate.description}
+                                    join
                                 </CustomTypography>
                             </CustomGrid>
                             <UsersAvatarsCounter<MeetingUser>
