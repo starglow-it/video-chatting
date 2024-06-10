@@ -2,6 +2,9 @@ import { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 
+import { LocalVideoTrack } from 'livekit-client';
+import { BackgroundBlur } from '@livekit/track-processors';
+
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -52,6 +55,7 @@ const MeetingUserVideoChildCom = ({
     setScale,
     resizeCoeff,
     onResizeVideo,
+    isSafari
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
@@ -123,14 +127,27 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            handleRemoveBackground(mediaStreamRef.current, isAuraActive, stream => {
-                mediaStreamRef.current = stream;
-            });
+            if (isAuraActive && !isSafari) {
+                handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                    mediaStreamRef.current = stream;
+                });
+            } else {
+                const handleBlurBg = async () => {
+                    const blurProcessor = BackgroundBlur();
+                    const localVideoTrack = new LocalVideoTrack(videoTrack);
+                    await localVideoTrack.setProcessor(blurProcessor);
+                    mediaStreamRef.current.removeTrack(videoTrack);
+                    mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
+                };
 
-            if (container.current)
+                handleBlurBg();
+            }
+
+            if (container.current) {
                 container.current.srcObject = mediaStreamRef.current;
+            }
         }
-    }, [localStream, userTracks, isVideoSelfView, isAuraActive]);
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
 
     const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
         setScale(data.size.width);
@@ -217,7 +234,7 @@ const Component = ({
     isOwner,
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
-    const { isMobile } = useBrowserDetect();
+    const { isMobile, isSafari } = useBrowserDetect();
     const resizeCoeff = width / window.screen.width;
     const baseSize = size || (isMobile ? 75 : 150);
     const coefValue = baseSize * resizeCoeff;
@@ -249,6 +266,7 @@ const Component = ({
         setScale,
         resizeCoeff,
         onResizeVideo,
+        isSafari
     };
 
     return (

@@ -114,7 +114,8 @@ const Component = ({
                 <video
                     onLoadedData={handleVideoLoaded}
                     ref={videoRef}
-                    className={clsx(styles.video, { [styles.mirror]: isLocal, [styles.zoomIn]: isMobile })}
+                    // className={clsx(styles.video, { [styles.mirror]: isLocal, [styles.zoomIn]: isMobile })}
+                    className={clsx(styles.video, { [styles.mirror]: isLocal })}
                     style={style}
                     playsInline
                     muted={true}
