@@ -230,7 +230,7 @@ const Component = ({
                                         />
                                     }
                                     nameSpace="meeting"
-                                    translation="features.blurBackground"
+                                    translation="features.transparencyBackground"
                                     checked={isAuraActive}
                                     onChange={onToggleAura}
                                     className={clsx(styles.switchWrapper, {
