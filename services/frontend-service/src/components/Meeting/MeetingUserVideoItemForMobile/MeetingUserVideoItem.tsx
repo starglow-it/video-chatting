@@ -2,6 +2,9 @@ import { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 
+import { LocalVideoTrack } from 'livekit-client';
+import { BackgroundBlur } from '@livekit/track-processors';
+
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -124,11 +127,15 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            console.log('before remove background');
-            console.log(mediaStreamRef.current);
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                mediaStreamRef.current = stream;
-            });
+            const handleBlurBg = async () => {
+                const blurProcessor = BackgroundBlur(10, { delegate: 'GPU' });
+                const localVideoTrack = new LocalVideoTrack(videoTrack);
+                await localVideoTrack.setProcessor(blurProcessor);
+                mediaStreamRef.current.removeTrack(videoTrack);
+                mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
+            };
+
+            handleBlurBg();
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;

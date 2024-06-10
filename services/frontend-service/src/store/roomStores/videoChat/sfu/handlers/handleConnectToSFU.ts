@@ -9,6 +9,8 @@ import {
     Track,
     VideoPresets,
 } from 'livekit-client';
+import { BackgroundBlur } from '@livekit/track-processors';
+import { KrispNoiseFilter } from '@livekit/krisp-noise-filter';
 
 import { EgressClient } from 'livekit-server-sdk';
 
@@ -41,7 +43,7 @@ import {
 import { awsTranscribeServiceUrl } from 'src/const/urls/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mic = require('microphone-stream').default;
-  
+
 let myRoomName = '';
 let userName = '';
 let socket: WebSocket;
@@ -272,8 +274,12 @@ export const handleConnectToSFU = async ({
         const room = new Room({
             dynacast: true,
             videoCaptureDefaults: {
-                resolution: VideoPresets.h360.resolution,
+                resolution: VideoPresets.h720.resolution,
+                // processor: BackgroundBlur()
             },
+            // audioCaptureDefaults: {
+            //     processor: KrispNoiseFilter(),
+            // },
             stopLocalTrackOnUnpublish: false,
             publishDefaults: {
                 videoCodec: 'vp8',
