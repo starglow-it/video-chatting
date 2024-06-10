@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 import Carousel from 'react-material-ui-carousel';
@@ -21,11 +22,12 @@ export const MeetingCarousel = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    localUser.id !== user.id &&
+                    // localUser.id !== user.id &&
                     user.meetingRole !== MeetingRole.Recorder &&
                     user.meetingRole !== MeetingRole.Audience,
             ),
     });
+
     const isAudience = useStore($isAudience);
     const users1 = users.length < 6 ? users : users.slice(0, 5);
     const users2 = users.length < 6 ? [] : users.slice(5, 11);
@@ -42,7 +44,7 @@ export const MeetingCarousel = () => {
                 position="relative"
                 key="1"
             >
-                <MeetingVideosCarousel users={users1} />
+                <MeetingVideosCarousel isSecond={false} users={users1} />
             </CustomGrid>,
         );
     if (users2.length)
@@ -56,7 +58,7 @@ export const MeetingCarousel = () => {
                 position="relative"
                 key="2"
             >
-                <MeetingVideosCarousel users={users2} />
+                <MeetingVideosCarousel isSecond={true} users={users2} />
             </CustomGrid>,
         );
 
