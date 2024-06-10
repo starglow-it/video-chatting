@@ -6,4 +6,5 @@ export type PaymentFormProps = {
     subLabel: string;
     setMeetingPreviewShow: () => void;
     onClose: () => void;
+    isMobileForDonation: boolean;
 };
