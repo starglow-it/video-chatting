@@ -532,6 +532,26 @@ const Component = () => {
                     </CustomGrid>
                 </CustomGrid>
             </ConditionalRender>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+                <CustomGrid item xs={isParticipant ? 3 : 4}>
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleOpenLinksPanel}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<LinkIcon sx={{ width: '30px', height: '30px' }} />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="mobileMoreList.links"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </ConditionalRender>
             <ConditionalRender condition={isOwner}>
                 <CustomGrid item xs={isParticipant ? 3 : 4}>
                     <CustomGrid

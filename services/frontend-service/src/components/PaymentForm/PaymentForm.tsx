@@ -1,6 +1,9 @@
 import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
+//hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
@@ -41,6 +44,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
+    const { isMobile } = useBrowserDetect();
 
     const handleSubmit = useCallback(async () => {
         await onClose?.();
@@ -65,7 +69,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
         });
     }, []);
 
-    const colorMain = 'black';
+    const colorMain = isMobile ? 'white' : 'black';
 
     return (
         <CustomGrid container direction="column">

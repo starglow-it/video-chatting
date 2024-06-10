@@ -106,7 +106,8 @@ const Component = () => {
         isMobileLinksPanleVisible,
         isMobileQAPanleVisible,
         isMobileStickyNotesVisible,
-        isMobileSettingPanelVisible
+        isMobileSettingPanelVisible,
+        isMobileDonationPanleVisible
     } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const { isMobile } = useBrowserDetect();
@@ -189,6 +190,19 @@ const Component = () => {
         [isMobileMoreListVisible],
     );
 
+    const toggleDonationPanleForMobile = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileDonationPanleVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileDonationPanleVisible: false
+                });
+            }
+        },
+        [isMobileDonationPanleVisible],
+    );
+
     const commonContent = useMemo(
         () => (
             <>
@@ -246,13 +260,13 @@ const Component = () => {
                             [styles.isAudience]: isAudience,
                             [styles.mobile]: isMobile && isPortraitLayout,
                             [styles.landscape]:
-                            isMobile && !isPortraitLayout,
+                                isMobile && !isPortraitLayout,
                         })}
-                        >
+                    >
                         <Draggable
                             axis="both"
                             defaultPosition={{ x: 0, y: 0 }}
-                            >                                    
+                        >
                             <CustomPaper
                                 variant="black-glass">
                                 <MeetingPeople />
@@ -290,8 +304,8 @@ const Component = () => {
                     </Fade>
                 </ClickAwayListener>
                 <ConditionalRender condition={isMobile}>
-                    <ClickAwayListener onClickAway={toggleOutsidePaymentPanel}>
-                        <Fade in={isPaymentOpen}>
+                    <ClickAwayListener onClickAway={toggleDonationPanleForMobile}>
+                        <Fade in={isMobileDonationPanleVisible}>
                             <CustomPaper
                                 variant="black-glass"
                                 className={clsx(styles.monetizationPanel, {
@@ -301,11 +315,6 @@ const Component = () => {
                                         isMobile && !isPortraitLayout,
                                 })}
                             >
-                                <ConditionalRender condition={isOwner}>
-                                    <MeetingMonetization
-                                        onUpdate={handleUpdateMonetization}
-                                    />
-                                </ConditionalRender>
                                 <ConditionalRender
                                     condition={enabledPaymentMeetingParticipant}
                                 >
@@ -432,7 +441,8 @@ const Component = () => {
             isMobileAttendeeListVisible,
             isMobileQAPanleVisible,
             isMobileStickyNotesVisible,
-            isMobileSettingPanelVisible
+            isMobileSettingPanelVisible,
+            isMobileDonationPanleVisible
         ],
     );
 

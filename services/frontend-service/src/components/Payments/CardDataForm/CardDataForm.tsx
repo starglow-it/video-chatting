@@ -137,7 +137,7 @@ const Component = ({
                 >
                     {
                         !isPreEvent &&
-                        <CustomTypography className={styles.textField}>
+                        <CustomTypography className={clsx(styles.textField, { [styles.mobile]: isMobile })}>
                             Card number
                         </CustomTypography>
                     }
@@ -162,7 +162,7 @@ const Component = ({
                     <CustomGrid display="flex" flexDirection="column" flex={1}>
                         {
                             !isPreEvent &&
-                            <CustomTypography className={styles.textField}>
+                            <CustomTypography className={clsx(styles.textField, { [styles.mobile]: isMobile })}>
                                 Expired date
                             </CustomTypography>
                         }
@@ -181,7 +181,7 @@ const Component = ({
                     </CustomGrid>
                     <CustomGrid flex={1} display="flex" flexDirection="column">
                         {!isPreEvent &&
-                            <CustomTypography className={styles.textField}>
+                            <CustomTypography className={clsx(styles.textField, { [styles.mobile]: isMobile })}>
                                 CVC
                             </CustomTypography>
                         }
