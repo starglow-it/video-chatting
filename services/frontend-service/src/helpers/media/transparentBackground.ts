@@ -14,7 +14,7 @@ export const handleRemoveBackground = async (
             BROWSER_NAMES.chrome,
             BROWSER_NAMES.chromium,
             BROWSER_NAMES.edge,
-            // BROWSER_NAMES.safari,
+            BROWSER_NAMES.safari,
         ];
         let effectBackground = new Module.EffectBackground();
         let videoEffects = new Module.VideoEffects();

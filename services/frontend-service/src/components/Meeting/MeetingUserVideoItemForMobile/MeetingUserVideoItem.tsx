@@ -1,8 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
-import { BackgroundBlur } from '@livekit/track-processors';
-import { LocalVideoTrack } from 'livekit-client';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -104,7 +102,6 @@ const MeetingUserVideoChildCom = ({
 
     useEffect(() => {
         let videoTrack;
-
         if (isLocal) {
             const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
             if (localStreamTrack) {
@@ -127,7 +124,9 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            handleRemoveBackground(mediaStreamRef.current, isAuraActive, stream => {
+            console.log('before remove background');
+            console.log(mediaStreamRef.current);
+            handleRemoveBackground(mediaStreamRef.current, true, stream => {
                 mediaStreamRef.current = stream;
             });
 
