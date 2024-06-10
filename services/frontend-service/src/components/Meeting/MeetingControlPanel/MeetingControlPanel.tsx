@@ -319,6 +319,7 @@ const Component = () => {
                                     condition={enabledPaymentMeetingParticipant}
                                 >
                                     <PaymentForm
+                                        isMobileForDonation={true}
                                         onClose={handleCloseForm}
                                         payment={paymentMeetingParticipant}
                                     />
@@ -327,6 +328,7 @@ const Component = () => {
                                     condition={enabledPaymentMeetingAudience}
                                 >
                                     <PaymentForm
+                                        isMobileForDonation={true}
                                         onClose={handleCloseForm}
                                         payment={paymentMeetingAudience}
                                     />

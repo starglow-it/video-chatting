@@ -39,7 +39,7 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
+const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow, isMobileForDonation = false }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
@@ -69,7 +69,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
         });
     }, []);
 
-    const colorMain = isMobile ? 'white' : 'black';
+    const colorMain = isMobileForDonation ? 'white' : 'black';
 
     return (
         <CustomGrid container direction="column">
