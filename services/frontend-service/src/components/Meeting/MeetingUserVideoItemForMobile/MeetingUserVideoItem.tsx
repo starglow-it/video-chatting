@@ -1,6 +1,9 @@
-import { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
+
+import { LocalVideoTrack } from 'livekit-client';
+import { BackgroundBlur } from '@livekit/track-processors';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -18,12 +21,12 @@ import { MeetingUserAudioItem } from '@components/Meeting/MeetingUserAudioItem/M
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
-import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore, addNotificationEvent } from 'src/store';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { $isCameraActiveStore, $isOwner, $meetingStore, $tracksStore, $videoErrorStore, setIsCameraActiveEvent, updateUserSocketEvent } from '../../../store/roomStores';
 import { $isPortraitLayout } from 'src/store';
+
+//hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -76,6 +79,7 @@ const MeetingUserVideoChildCom = ({
     const isCameraActive = useStore($isCameraActiveStore);
     const videoError = useStore($videoErrorStore);
     const isVideoError = Boolean(videoError);
+    const { isSafari } = useBrowserDetect();
 
     const toggleSelfView = async () => {
         if (isVideoError) {
@@ -101,7 +105,6 @@ const MeetingUserVideoChildCom = ({
 
     useEffect(() => {
         let videoTrack;
-
         if (isLocal) {
             const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
             if (localStreamTrack) {
@@ -112,7 +115,6 @@ const MeetingUserVideoChildCom = ({
         } else {
             videoTrack = userTracks?.videoTrack;
         }
-        
 
         if (videoTrack) {
             const videoTracks = mediaStreamRef.current.getVideoTracks();
@@ -125,14 +127,17 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                mediaStreamRef.current = stream;
-            });
+            console.log(isSafari);
+            if (isAuraActive && !isSafari) {
+                handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                    mediaStreamRef.current = stream;
+                });
+            }
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }
-    }, [localStream, userTracks, isVideoSelfView]);
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
 
     return (
         <CustomBox
@@ -149,7 +154,7 @@ const MeetingUserVideoChildCom = ({
                     userTracks?.audioTrack
                 }
                 isMicEnabled={isMicEnabled}
-                isAuraActive={isAuraActive}
+                isAuraActive={false}
             />
             <RoundedVideo
                 isLocal={isLocal}

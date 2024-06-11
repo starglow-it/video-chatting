@@ -35,5 +35,7 @@ export const initialProfileState = {
     country: '',
     isProfessionalTrialAvailable: false,
     shouldShowTrialExpiredNotification: false,
-    teamMembers: []
+    organizationName: '',
+    teamMembers: [],
+    teamOrganization: { name: '', seat:'' }
 } as Profile;

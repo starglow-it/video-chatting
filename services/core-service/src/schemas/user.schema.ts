@@ -7,18 +7,35 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import { ICommonUser, LoginTypes, PlanKeys, UserRoles } from 'shared-types';
+import { ICommonUser, LoginTypes, PlanKeys, UserRoles, SeatTypes, SeatRoleTypes } from 'shared-types';
 
 @Schema()
 export class TeamMember {
-  @Prop({ required: true })
+  @Prop({ type: String})
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String})
   status: string;
+
+  @Prop()
+  seat: SeatTypes;
+
+  @Prop()
+  role: SeatRoleTypes;
 }
 
 const TeamMemberSchema = SchemaFactory.createForClass(TeamMember);
+
+@Schema()
+export class TeamOrganization {
+  @Prop({ type: String})
+  name: string;
+
+  @Prop()
+  seat: SeatTypes;
+}
+
+const TeamOrganizationSchema = SchemaFactory.createForClass(TeamOrganization);
 
 @Schema({
   timestamps: true,
@@ -254,9 +271,20 @@ export class User {
   loginType: ICommonUser['loginType'];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  organizationName: ICommonUser['organizationName'];
+
+  @Prop({
     type: [TeamMemberSchema],
   })
-  teamMembers: { email: string, status: string }[];
+  teamMembers: ICommonUser['teamMembers'];
+
+  @Prop({
+    type: TeamOrganizationSchema,
+  })
+  teamOrganization: ICommonUser['teamOrganization'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,

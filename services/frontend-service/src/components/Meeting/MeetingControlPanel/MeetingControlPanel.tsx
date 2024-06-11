@@ -106,7 +106,8 @@ const Component = () => {
         isMobileLinksPanleVisible,
         isMobileQAPanleVisible,
         isMobileStickyNotesVisible,
-        isMobileSettingPanelVisible
+        isMobileSettingPanelVisible,
+        isMobileDonationPanleVisible
     } = useStore($meetingPanelsVisibilityForMobileStore);
 
     const { isMobile } = useBrowserDetect();
@@ -189,6 +190,19 @@ const Component = () => {
         [isMobileMoreListVisible],
     );
 
+    const toggleDonationPanleForMobile = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            e.stopPropagation();
+            if (isMobileDonationPanleVisible) {
+                setMeetingPanelsVisibilityForMobileEvent({
+                    ...initialMeetingPanelsVisibilityData,
+                    isMobileDonationPanleVisible: false
+                });
+            }
+        },
+        [isMobileDonationPanleVisible],
+    );
+
     const commonContent = useMemo(
         () => (
             <>
@@ -239,25 +253,27 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <Draggable
-                    axis="both"
-                    defaultPosition={{ x: 0, y: 0 }}
-                >
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.isParticipant]: isParticipant,
-                                [styles.isAudience]: isAudience,
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                                [styles.landscape]:
-                                    isMobile && !isPortraitLayout,
-                            })}
+                <Fade in={isUsersOpen}>
+                    <CustomBox
+                        className={clsx(styles.notesPanel, {
+                            [styles.isParticipant]: isParticipant,
+                            [styles.isAudience]: isAudience,
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                            [styles.landscape]:
+                                isMobile && !isPortraitLayout,
+                        })}
+                    >
+                        <Draggable
+                            axis="both"
+                            defaultPosition={{ x: 0, y: 0 }}
                         >
-                            <MeetingPeople />
-                        </CustomPaper>
-                    </Fade>
-                </Draggable>
+                            <CustomPaper
+                                variant="black-glass">
+                                <MeetingPeople />
+                            </CustomPaper>
+                        </Draggable>
+                    </CustomBox>
+                </Fade>
                 <ClickAwayListener onClickAway={toggleOutsideSchedulePanel}>
                     <Fade in={isScheduleOpen}>
                         <div className={styles.scheduleOpenPanelWrapper}>
@@ -288,8 +304,8 @@ const Component = () => {
                     </Fade>
                 </ClickAwayListener>
                 <ConditionalRender condition={isMobile}>
-                    <ClickAwayListener onClickAway={toggleOutsidePaymentPanel}>
-                        <Fade in={isPaymentOpen}>
+                    <ClickAwayListener onClickAway={toggleDonationPanleForMobile}>
+                        <Fade in={isMobileDonationPanleVisible}>
                             <CustomPaper
                                 variant="black-glass"
                                 className={clsx(styles.monetizationPanel, {
@@ -299,15 +315,11 @@ const Component = () => {
                                         isMobile && !isPortraitLayout,
                                 })}
                             >
-                                <ConditionalRender condition={isOwner}>
-                                    <MeetingMonetization
-                                        onUpdate={handleUpdateMonetization}
-                                    />
-                                </ConditionalRender>
                                 <ConditionalRender
                                     condition={enabledPaymentMeetingParticipant}
                                 >
                                     <PaymentForm
+                                        isMobileForDonation={true}
                                         onClose={handleCloseForm}
                                         payment={paymentMeetingParticipant}
                                     />
@@ -316,6 +328,7 @@ const Component = () => {
                                     condition={enabledPaymentMeetingAudience}
                                 >
                                     <PaymentForm
+                                        isMobileForDonation={true}
                                         onClose={handleCloseForm}
                                         payment={paymentMeetingAudience}
                                     />
@@ -430,7 +443,8 @@ const Component = () => {
             isMobileAttendeeListVisible,
             isMobileQAPanleVisible,
             isMobileStickyNotesVisible,
-            isMobileSettingPanelVisible
+            isMobileSettingPanelVisible,
+            isMobileDonationPanleVisible
         ],
     );
 

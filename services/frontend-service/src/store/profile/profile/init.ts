@@ -13,6 +13,8 @@ import {
     checkResetPasswordLinkFx,
     resetPasswordFx,
     deleteProfileFx,
+    deleteSeatTeamMemberFx,
+    removeTeamMemberFromHostFx
 } from './model';
 import { initialProfileState } from './const';
 import { refreshAuthFx, resetAuthStateEvent } from '../../auth/model';
@@ -21,6 +23,8 @@ import { deleteStripeAccountFx } from '../../payments/model';
 // handlers
 import { handleGetProfile } from '../handlers/handleGetProfile';
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
+import { handleDeleteTeamMember } from '../handlers/handleDeleteTeamMember';
+import { handleRemoveTeamMemberFromHost } from '../handlers/handleRemoveTeamMemberFromHost';
 import { handleUpdateProfilePhoto } from '../handlers/handleUpdateProfilePhoto';
 import { handleDeleteProfilePhoto } from '../handlers/handleDeleteProfilePhoto';
 import { handleUpdateProfileEmail } from '../handlers/handleUpdateProfileEmail';
@@ -32,6 +36,8 @@ import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
 
 getProfileFx.use(handleGetProfile);
 updateProfileFx.use(handleUpdateProfileInfo);
+deleteSeatTeamMemberFx.use(handleDeleteTeamMember);
+removeTeamMemberFromHostFx.use(handleRemoveTeamMemberFromHost);
 updateProfilePhotoFx.use(handleUpdateProfilePhoto);
 deleteProfilePhotoFx.use(handleDeleteProfilePhoto);
 updateProfileEmailFx.use(handleUpdateProfileEmail);
@@ -64,15 +70,22 @@ $profileStore
         [
             getProfileFx.doneData,
             updateProfilePhotoFx.doneData,
-            updateProfileFx.doneData,
             deleteProfilePhotoFx.doneData,
             updateProfileEmailFx.doneData,
         ],
-        (state, data) => ({
-            ...state,
-            ...data,
-        }),
+        (state, data) => {
+            const newProfile = {
+                ...state,
+                ...data,
+            };
+
+            return newProfile
+        },
     )
+    .on(updateProfileFx.doneData, (state, { profile }) => ({
+        ...state,
+        ...profile
+    }))
     .on(deleteStripeAccountFx.doneData, state => ({
         ...state,
         stripeEmail: '',

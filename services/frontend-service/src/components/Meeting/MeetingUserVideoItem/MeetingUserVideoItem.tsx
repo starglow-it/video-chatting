@@ -52,10 +52,10 @@ const MeetingUserVideoChildCom = ({
     setScale,
     resizeCoeff,
     onResizeVideo,
+    isSafari
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
-    const trackStore = useStore($tracksStore);
     const userTracks = useStoreMap({
         store: $tracksStore,
         keys: [
@@ -94,6 +94,7 @@ const MeetingUserVideoChildCom = ({
         }
     };
 
+
     useEffect(() => {
         if (!isLocal) setVideoSelfView(isCameraEnabled);
     }, [isCameraEnabled]);
@@ -123,14 +124,17 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            handleRemoveBackground(mediaStreamRef.current, true, stream => {
-                mediaStreamRef.current = stream;
-            });
+            if (isAuraActive && !isSafari) {
+                handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                    mediaStreamRef.current = stream;
+                });
+            }
 
-            if (container.current)
+            if (container.current) {
                 container.current.srcObject = mediaStreamRef.current;
+            }
         }
-    }, [localStream, userTracks, isVideoSelfView]);
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
 
     const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
         setScale(data.size.width);
@@ -168,7 +172,7 @@ const MeetingUserVideoChildCom = ({
                         userTracks?.audioTrack
                     }
                     isMicEnabled={isMicEnabled}
-                    isAuraActive={isAuraActive}
+                    isAuraActive={false}
                 />
                 <RoundedVideo
                     isLocal={isLocal}
@@ -217,7 +221,7 @@ const Component = ({
     isOwner,
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
-    const { isMobile } = useBrowserDetect();
+    const { isMobile, isSafari } = useBrowserDetect();
     const resizeCoeff = width / window.screen.width;
     const baseSize = size || (isMobile ? 75 : 150);
     const coefValue = baseSize * resizeCoeff;
@@ -249,6 +253,7 @@ const Component = ({
         setScale,
         resizeCoeff,
         onResizeVideo,
+        isSafari
     };
 
     return (
@@ -285,7 +290,7 @@ const Component = ({
                     </CustomPaper>
                 </ConditionalRender>
             </CustomGrid>
-            {userId !== meeting.hostUserId ? < EmojiPlayground userId={userId} /> : null}
+            <EmojiPlayground userId={userId} />
         </MeetingUserVideoPositionWrapper>
     );
 };

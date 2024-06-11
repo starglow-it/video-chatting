@@ -23,11 +23,12 @@ import {
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
+import { resetMeetingReactionsStore } from '../../meeting/meetingReactions/model';
 
 $meetingUsersStore
-    .on(updateMeetingUsersEvent, (state, { users }) => {
-        if (users?.length) {
-            const newUsers = (users || []).map(newUser => {
+    .on(updateMeetingUsersEvent, (state, data) => {
+        if (data.users?.length) {
+            const newUsers = (data.users || []).map(newUser => {
                 const oldUserData = state.find(
                     oldUser => oldUser.id === newUser.id,
                 );
@@ -43,18 +44,25 @@ $meetingUsersStore
             const oldUsers = state.filter(
                 _user =>
                     !newUsers.find(user => user.id === _user.id) &&
-                    users?.find(_newUser => _newUser.id === _user.id),
+                    data.users?.find(_newUser => _newUser.id === _user.id),
             );
+
+            // Format reactions for the role-switched user.
+            if (state.length === newUsers.length && state.filter(user => user.meetingRole==="audience").length !== newUsers.filter(user => user.meetingRole==="audience").length) {
+                resetMeetingReactionsStore();
+            }
 
             return [...oldUsers, ...newUsers];
         }
 
         return [];
     })
-    .on(updateMeetingUserEvent, (state, { user }) =>
-        state.map(_user =>
-            _user.id === user?.id ? { ..._user, ...user } : _user,
-        ),
+    .on(updateMeetingUserEvent, (state, { user }) =>{
+            resetMeetingReactionsStore();
+            return state.map(_user =>
+                _user.id === user?.id ? { ..._user, ...user } : _user,
+            );
+        }
     )
     .on(removeMeetingUsersEvent, (state, { users }) =>
         !users ? state : state.filter(_user => !users?.includes(_user.id)),

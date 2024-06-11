@@ -13,5 +13,8 @@ export interface IUserCredentials {
   state?: ICommonUser['state'];
   registerType?: RegisterType;
   loginType?: ICommonUser['loginType'];
+  teamMembers?: ICommonUser['teamMembers'];
+  teamOrganization?: ICommonUser['teamOrganization'];
+  subscriptionPlanKey?: ICommonUser['subscriptionPlanKey'];
   hostId?: string;
 }

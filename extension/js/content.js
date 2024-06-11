@@ -62,7 +62,7 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
           const chatRuumeButton = document.createElement("button");
           chatRuumeButton.id = "chatruume-btn";
           chatRuumeButton.className = "page-calendar-chatruume-btn";
-          chatRuumeButton.textContent = "Make it a Ruume Meeting";
+          chatRuumeButton.textContent = "Save it as a Ruume Meeting";
 
           chatRuumeButton.addEventListener("click", function () {
             let isFeatured = false;
@@ -85,7 +85,7 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
               'div[class="custom-select-wrapper"]'
             );
 
-            if (this.textContent === "Make it a Ruume Meeting") {
+            if (this.textContent === "Save it as a Ruume Meeting") {
               chrome.runtime.sendMessage({
                 action: "createMeeting",
                 templateId: tempRoomId,
@@ -220,7 +220,10 @@ const observer = new MutationObserver(async (mutationsList, observer) => {
 
         await getUserName();
 
-        titleField.value = `${userName}'s Ruume Meeting`;
+        // Only when the title is empty
+        if (!titleField.value) {
+          simulateKeyboardInput(titleField, `${userName}'s Ruume Meeting`)
+        }
       }
     } else {
       /**
@@ -313,7 +316,7 @@ async function injectButton() {
       const chatRuumeButton = document.createElement("button");
       chatRuumeButton.id = "chatruume-btn";
       chatRuumeButton.className = "chatruume-btn";
-      chatRuumeButton.textContent = "Make it a Ruume Meeting";
+      chatRuumeButton.textContent = "Save it as a Ruume Meeting";
 
       chatRuumeButton.addEventListener("click", function () {
         roomId = document
@@ -336,7 +339,7 @@ async function injectButton() {
           'div[class="custom-select-wrapper"]'
         );
 
-        if (this.textContent === "Make it a Ruume Meeting") {
+        if (this.textContent === "Save it as a Ruume Meeting") {
           chrome.runtime.sendMessage({
             action: "createMeeting",
             templateId: roomId,
@@ -493,7 +496,7 @@ async function injectRoomReselectBtn() {
 
     simulateKeyboardInput(locationField, "");
     descriptionField.innerHTML = "";
-    chatruumeBtn.textContent = "Make it a Ruume Meeting";
+    chatruumeBtn.textContent = "Save it as a Ruume Meeting";
   });
 }
 
@@ -504,7 +507,9 @@ async function fillTitleField() {
 
   await getUserName();
 
-  titleField.value = `${userName}'s Ruume Meeting`;
+  if (!titleField.value) {
+    titleField.value = `${userName}'s Ruume Meeting`;
+  }
 }
 
 // This function autofills the meeting details

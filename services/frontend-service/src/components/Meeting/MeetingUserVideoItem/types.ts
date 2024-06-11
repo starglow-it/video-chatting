@@ -40,4 +40,5 @@ export type MeetingUserVideoComProps = {
     setScale: (size: number) => void;
     resizeCoeff: number;
     onResizeVideo?: (size: number, userId: string) => void;
+    isSafari: boolean;
 };

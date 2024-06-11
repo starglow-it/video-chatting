@@ -1,23 +1,24 @@
 import { memo, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useStore } from 'effector-react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-
-// library
-import { EmailInput } from '@library/common/EmailInput/EmailInput';
+import { CustomInput } from '@library/custom/CustomInputBase/CustomInput';
+import { EmailInput } from '@library/common/EmailInputBase/EmailInput';
 
 // store
 import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
-import { getBusinessCategoriesFx } from '../../../store';
+import { $profileStore, getBusinessCategoriesFx } from '../../../store';
 
 // styles
 import styles from './EditCompanyInfo.module.scss';
 
 const EditCompanyInfo = memo(() => {
+    const profile = useStore($profileStore);
+
     const {
         formState: { errors },
         register,
@@ -27,8 +28,6 @@ const EditCompanyInfo = memo(() => {
         errors?.contactEmail?.message?.toString() || '';
     const currentCompanyNameErrorMessage: string =
         errors?.companyName?.message?.toString() || '';
-    const currentDescriptionErrorMessage: string =
-        errors?.description?.message?.toString() || '';
     const currentFullNameErrorMessage: string =
         errors?.fullName?.message?.toString() || '';
 
@@ -82,6 +81,7 @@ const EditCompanyInfo = memo(() => {
                         alignItems="center"
                     >
                         <CustomGrid
+                            item
                             container
                             direction="column"
                             justifyContent="center"
@@ -91,30 +91,23 @@ const EditCompanyInfo = memo(() => {
                             <CustomInput
                                 nameSpace="forms"
                                 translation="fullName"
+                                fullWidth
                                 error={currentFullNameErrorMessage}
                                 {...register('fullName')}
                             />
                             <CustomInput
                                 nameSpace="forms"
                                 translation="nameOfYourLive"
+                                disabled={Boolean(profile.teamOrganization?.name)}
                                 error={currentCompanyNameErrorMessage}
                                 {...register('companyName')}
                             />
 
                             <EmailInput
-                                nameSpace="forms"
-                                translation="contactEmail"
+                                placeholder={profile.email}
+                                disabled
                                 error={currentEmailErrorMessage}
                                 {...register('contactEmail')}
-                            />
-
-                            <CustomInput
-                                nameSpace="forms"
-                                translation="businessDescription"
-                                multiline
-                                maxRows={4}
-                                error={currentDescriptionErrorMessage}
-                                {...register('description')}
                             />
                         </CustomGrid>
                     </CustomGrid>

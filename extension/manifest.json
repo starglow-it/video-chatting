@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ruume Virtual Meetings",
   "description": "Instantly start ruume meetings or schedule them from GoogleCalendar, invite guests to your branded immersive ruume in 1-click.",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -27,6 +27,11 @@
       "matches": ["*://calendar.google.com/calendar/u/0/r*"],
       "css": ["css/content.css"],
       "js": ["js/content.js"]
+    },
+    {
+      "matches": ["*://mail.google.com/mail/u/1/*"],
+      "css": ["css/content.css"],
+      "js": ["js/gmail_content.js"]
     },
     {
       "matches": ["https://my.chatruume.com/login?google-signin"],

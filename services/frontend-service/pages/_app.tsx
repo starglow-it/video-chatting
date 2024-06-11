@@ -58,6 +58,7 @@ import {
     welcomeRoute,
     indexRoute,
     analyticsRoute,
+    seatUrl
 } from '../src/const/client-routes';
 
 const { publicRuntimeConfig } = getConfig();
@@ -165,6 +166,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
         new RegExp(route).test(pathName),
     );
     const isBaseRoute = pathName === indexRoute;
+    const isSeatUrl = pathName.includes(seatUrl);
 
     const { host } = context?.ctx?.req?.headers || window?.location || {};
 

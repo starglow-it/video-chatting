@@ -16,10 +16,16 @@
 
     .video {
         height: 100%;
+        transform-origin: center center;
 
         &.mirror {
-            transform: rotateY(180deg);
+            --transform-mirror: rotateY(180deg);
         }
+        &.zoomIn {
+            --transform-zoom: scale(1.4);
+        }
+
+        // transform: var(--transform-mirror) var(--transform-zoom);
     }
 
     .avatarOverlay {

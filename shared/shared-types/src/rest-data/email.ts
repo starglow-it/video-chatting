@@ -4,6 +4,7 @@ export type SendEmailRequest = {
   html?: string;
   icalEventLink?: string;
   icalEventContent?: string;
+  attachmentContent?: string;
   template?: {
     key: string;
     data: { name: string; content: string }[];

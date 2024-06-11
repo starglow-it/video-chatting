@@ -39,6 +39,9 @@ import {
   LoginTypes,
   HttpMethods,
   ICommonTemplate,
+  PlanKeys,
+  SeatRoleTypes,
+  SeatTypes
 } from 'shared-types';
 
 // dtos
@@ -153,31 +156,53 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         email: body.email,
       });
 
-      if (user) {
-        await this.coreService.deleteGlobalUser({ id: user.id });
-      }
-
-      const updateData = {
-        email: body.email,
-        password: body.password,
-        registerType: body.registerType,
-        country: body.country,
-        state: body.state
-      };
-
-      await this.authService.register(updateData);
-
       const host = await this.coreService.findUserById({ userId: body.hostId });
       if (host && host.teamMembers && host.teamMembers.length > 0) {
+        let seat = SeatTypes.Subscription;
         const teamMembers = host.teamMembers.map(tm => {
           if (tm.email === body.email && tm.status === 'pending') {
             tm.status = 'confirmed';
+            seat = tm.seat;
           }
 
           return tm;
         });
 
-        await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
+        await this.coreService.findUserAndUpdate(
+          {
+            userId: body.hostId,
+            data: {
+              teamMembers: teamMembers
+            }
+          }
+        );
+
+        if (user) {
+          await this.coreService.deleteGlobalUser({ id: user.id });
+        }
+
+        const teamMembersForInvitedUser = teamMembers.filter(teamMember => {
+          return teamMember.email!== body.email && teamMember.status === 'confirmed';
+        });
+        teamMembersForInvitedUser.push({ email: host.email, role: SeatRoleTypes.Admin, seat: SeatTypes.Subscription, status: 'confirmed' });
+
+        const updateData = {
+          email: body.email,
+          password: body.password,
+          registerType: body.registerType,
+          country: body.country,
+          state: body.state,
+          teamMembers: teamMembersForInvitedUser,
+          teamOrganization: {
+            name: host.companyName || 'no name',
+            seat
+          },
+          subscriptionPlanKey: PlanKeys.Business
+        };
+
+        await this.authService.register(updateData);
+      } else {
+        throw new DataValidationException(USER_NOT_FOUND);
       }
 
       return {
@@ -465,12 +490,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     };
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('/seat-login')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
     type: CommonResponseDto,
-    description: 'User logged in',
+    description: 'User logged in for seat',
   })
   async seatLogin(
     @Request() req: Req,
@@ -484,30 +508,49 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     if (!isUserExists) {
       throw new DataValidationException(USER_NOT_FOUND);
     }
-
-    const user = await this.coreService.findUserByEmail({
-      email: body.email,
-    });
-
-    if (!user.isConfirmed || user.isResetPasswordActive) {
-      throw new DataValidationException(USER_NOT_CONFIRMED);
-    }
-
-    if (user.isBlocked) {
-      throw new DataValidationException(USER_IS_BLOCKED);
-    }
-
     const host = await this.coreService.findUserById({ userId: body.hostId });
     if (host && host.teamMembers && host.teamMembers.length > 0) {
+      let seat = SeatTypes.Subscription;
       const teamMembers = host.teamMembers.map(tm => {
         if (tm.email === body.email && tm.status === 'pending') {
           tm.status = 'confirmed';
+          seat = tm.seat;
         }
 
         return tm;
       });
 
       await this.coreService.findUserAndUpdate({ userId: body.hostId, data: { teamMembers: teamMembers } });
+
+      const user = await this.coreService.findUserByEmail({
+        email: body.email,
+      });
+
+      if (!user.isConfirmed || user.isResetPasswordActive) {
+        throw new DataValidationException(USER_NOT_CONFIRMED);
+      }
+
+      if (user.isBlocked) {
+        throw new DataValidationException(USER_IS_BLOCKED);
+      }
+
+      const teamMembersForInvitedUser = teamMembers.filter(teamMember => {
+        return teamMember.email!== body.email && teamMember.status === 'confirmed';
+      });
+
+      teamMembersForInvitedUser.push({ email: host.email, role: SeatRoleTypes.Admin, seat: SeatTypes.Subscription, status: 'confirmed' });
+      await this.coreService.findUserAndUpdate(
+        {
+          userId: user.id,
+          data: {
+            teamMembers: teamMembersForInvitedUser,
+            teamOrganization: { name: host.companyName || 'no name', seat },
+            subscriptionPlanKey: PlanKeys.Business
+          }
+        }
+      );
+    } else {
+      throw new DataValidationException(USER_NOT_FOUND);
     }
 
     const result = await this.authService.loginUser(body);

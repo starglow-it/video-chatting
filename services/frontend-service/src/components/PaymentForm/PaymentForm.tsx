@@ -1,6 +1,9 @@
 import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
+//hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
@@ -36,11 +39,12 @@ const currencySigns: { [key: string]: string } = {
     AUS: 'A$',
 };
 
-const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: PaymentFormProps) => {
+const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow, isMobileForDonation = false }: PaymentFormProps) => {
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
+    const { isMobile } = useBrowserDetect();
 
     const handleSubmit = useCallback(async () => {
         await onClose?.();
@@ -65,7 +69,7 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow }: Paymen
         });
     }, []);
 
-    const colorMain = 'black';
+    const colorMain = isMobileForDonation ? 'white' : 'black';
 
     return (
         <CustomGrid container direction="column">

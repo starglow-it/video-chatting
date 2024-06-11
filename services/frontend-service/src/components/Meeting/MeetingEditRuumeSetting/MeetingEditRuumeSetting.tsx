@@ -264,6 +264,12 @@ export const MeetingEditRuumeSetting = () => {
         }
     };
 
+    const handleToggleIsAuraActive = () => {
+        updateUserSocketEvent({
+            isAuraActive: !localUser.isAuraActive
+        });
+    };
+
     const handleCloseForm = () => {
         setCurrentAccordionId('');
         if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
@@ -376,7 +382,7 @@ export const MeetingEditRuumeSetting = () => {
                     >
                         <ConditionalRender condition={isOwner}>
                             <form id="customLinkForm" onSubmit={onSubmit}>
-                                <EditMeetingLink onSave={handleOnSave}/>
+                                <EditMeetingLink onSave={handleOnSave} />
                             </form>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
@@ -444,7 +450,7 @@ export const MeetingEditRuumeSetting = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    {/* <ConditionalRender condition={!isSafari}>
+                                    <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -454,80 +460,13 @@ export const MeetingEditRuumeSetting = () => {
                                                 />
                                             }
                                             nameSpace="meeting"
-                                            translation="features.blurBackground"
-                                            checked={isAuraActive}
-                                            onChange={toggleIsAuraActive}
+                                            translation="features.transparencyBackground"
+                                            checked={localUser.isAuraActive}
+                                            onChange={handleToggleIsAuraActive}
                                             className={clsx(styles.switchWrapper, {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender> */}
-                                    <ConditionalRender
-                                        condition={meetingTemplate.isAudioAvailable && !isMobile}
-                                    >
-                                        <CustomGrid
-                                            container
-                                            direction="column"
-                                            wrap="nowrap"
-                                            className={clsx(styles.audioSettings, {
-                                                [styles.withVolume]:
-                                                    isSettingsAudioBackgroundActive && !isMobile,
-                                                [styles.mobile]: isMobile,
-                                            })}
-                                        >
-                                            <LabeledSwitch
-                                                Icon={
-                                                    <MusicIcon
-                                                        width="24px"
-                                                        height="24px"
-                                                    />
-                                                }
-                                                nameSpace="meeting"
-                                                translation="features.audioBackground"
-                                                checked={isSettingsAudioBackgroundActive}
-                                                onChange={handleToggleBackgroundAudio}
-                                                className={clsx(styles.audioWrapper, {
-                                                    [styles.switchWrapperMobile]:
-                                                        isMobile,
-                                                })}
-                                            />
-                                            <CustomFade open={isSettingsAudioBackgroundActive}>
-                                                <CustomDivider />
-                                                <CustomRange
-                                                    color={
-                                                        settingsBackgroundAudioVolume
-                                                            ? 'primary'
-                                                            : 'disabled'
-                                                    }
-                                                    value={settingsBackgroundAudioVolume}
-                                                    onChange={handleChangeVolume}
-                                                    sx={{
-                                                        padding: {
-                                                            xs: '0px 11px 6px 10px',
-                                                            sm: '0px 11px 6px 10px',
-                                                            xl: '13px 22px 13px 10px',
-                                                            md: '13px 22px 13px 10px',
-                                                        },
-                                                    }}
-                                                    className={clsx(styles.audioRange, {
-                                                        [styles.inactive]:
-                                                            !settingsBackgroundAudioVolume,
-                                                    })}
-                                                    Icon={
-                                                        <SpeakerIcon
-                                                            isActive={Boolean(
-                                                                settingsBackgroundAudioVolume,
-                                                            )}
-                                                            isHalfVolume={
-                                                                settingsBackgroundAudioVolume < 50
-                                                            }
-                                                            width="24px"
-                                                            height="24px"
-                                                        />
-                                                    }
-                                                />
-                                            </CustomFade>
-                                        </CustomGrid>
                                     </ConditionalRender>
                                 </CustomGrid>
                             </CustomAccordion>

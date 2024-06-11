@@ -22,7 +22,7 @@ import { generateVerificationCode } from '../../utils/generateVerificationCode';
 
 // shared
 import { emailTemplates, SAME_PASSWORD, USER_EXISTS } from 'shared-const';
-import { ResponseSumType, ICommonUser } from 'shared-types';
+import { ResponseSumType, ICommonUser, PlanKeys } from 'shared-types';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -46,7 +46,7 @@ export class ProfileController {
     private notificationService: NotificationsService,
     private coreService: CoreService,
     private paymentsService: PaymentsService,
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -88,10 +88,105 @@ export class ProfileController {
       data,
     });
 
+    if (
+      data.hasOwnProperty("companyName") &&
+      !Boolean(user.teamOrganization) &&
+      Array.isArray(user.teamMembers) &&
+      user.teamMembers?.length > 0
+    ) {
+      for (const teamMember of user.teamMembers) {
+        if (teamMember.status === 'confirmed') {
+          const teamMemberUser = await this.coreService.findUserByEmail({
+            email: teamMember.email,
+          });
+
+          if (teamMemberUser && Boolean(teamMemberUser.teamOrganization)) {
+            await this.coreService.findUserAndUpdate({
+              userId: teamMemberUser.id,
+              data: { teamOrganization: { name: data.companyName, seat: teamMemberUser.teamOrganization?.seat } }
+            });
+          }
+        }
+      }
+    }
+
     return {
       success: true,
       result: user,
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/delete-seat-team-member')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Seat Team Member' })
+  @ApiOkResponse({
+    description: 'Seat team member is deleted successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async DeleteSeatTeamMember(
+    @Body() data: { email: string },
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonUser> | null> {
+    const user = await this.coreService.findUserByEmail({ email: data.email });
+    if (user) {
+      const updatedUser = await this.coreService.findUserAndUpdate({
+        userId: user.id, data: {
+          teamMembers: [],
+          teamOrganization: null,
+          subscriptionPlanKey: PlanKeys.House
+        }
+      });
+
+      return {
+        success: true,
+        result: updatedUser,
+      };
+    }
+
+    return {
+      success: true,
+      result: null,
+    };
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/remove-seat-team-member-from-host')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove Team Member From Host' })
+  @ApiOkResponse({
+    description: 'Seat team member is removed successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async RemoveTeamMemberFromHost(
+    @Body() data: { orgEmails: string[], memberEmail: string },
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonUser> | null> {
+    if (data.orgEmails.length > 0) {
+      for (const orgEmail of data.orgEmails) {
+        const user = await this.coreService.findUserByEmail({ email: orgEmail });
+        if (user) {
+          let newTeamMembers = user.teamMembers.filter(tm => tm.email !== data.memberEmail);
+          await this.coreService.findUserAndUpdate({
+            userId: user.id,
+            data: {
+              teamMembers: newTeamMembers
+            }
+          });
+        }
+      }
+    }
+
+    return {
+      success: true,
+      result: null,
+    };
+
   }
 
   @UseGuards(JwtAuthGuard)

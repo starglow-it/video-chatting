@@ -9,11 +9,13 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon';
 import LinkIcon from '@mui/icons-material/Link';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 import {
     $isHaveNewMessage,
     $isAudience,
     $isParticipant,
+    $enabledPaymentMeetingParticipant,
     $isMeetingHostStore,
     $isOwner,
     $isToggleUsersPanel,
@@ -21,6 +23,7 @@ import {
     $meetingConnectedStore,
     $meetingUsersStore,
     $meetingPanelsVisibilityForMobileStore,
+    $enabledPaymentMeetingAudience,
     initialMeetingPanelsVisibilityData,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
@@ -72,6 +75,8 @@ export const MeetingBottomBarMobile = () => {
     const isOwner = useStore($isOwner);
     const { isMobile } = useBrowserDetect();
     const isPortraitLayout = useStore($isPortraitLayout);
+    const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
+    const enabledPaymentMeetingParticipant = useStore($enabledPaymentMeetingParticipant);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -156,6 +161,15 @@ export const MeetingBottomBarMobile = () => {
         });
     }, []);
 
+    const handleOpenDonationPanel = useCallback((e: SyntheticEvent) => {
+        e.stopPropagation();
+        setMeetingPanelsVisibilityForMobileEvent({
+            ...initialMeetingPanelsVisibilityData,
+            isMobileMoreListVisible: false,
+            isMobileDonationPanleVisible: true
+        });
+    }, []);
+
     return (
         <CustomGrid className={
             clsx(styles.container,
@@ -227,7 +241,49 @@ export const MeetingBottomBarMobile = () => {
                         />
                     </CustomPaper>
                 </ConditionalRender>
-                <ConditionalRender condition={isParticipant}>
+                <ConditionalRender condition={isParticipant && !enabledPaymentMeetingParticipant}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleOpenLinksPanel}
+                            className={clsx(styles.deviceButton)}
+                            Icon={<LinkIcon width="30px" height="30px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+                <ConditionalRender condition={isParticipant && enabledPaymentMeetingParticipant}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleOpenDonationPanel}
+                            className={clsx(styles.deviceButton)}
+                            Icon={<AttachMoneyIcon width="30px" height="30px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+                <ConditionalRender condition={enabledPaymentMeetingAudience}>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={28}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleOpenDonationPanel}
+                            className={clsx(styles.deviceButton)}
+                            Icon={<AttachMoneyIcon width="30px" height="30px" />}
+                        />
+                    </CustomPaper>
+                </ConditionalRender>
+                <ConditionalRender condition={isAudience}>
                     <CustomPaper
                         variant="black-glass"
                         borderRadius={28}
@@ -253,20 +309,6 @@ export const MeetingBottomBarMobile = () => {
                         Icon={<CallEndIcon sx={{ color: 'red', width: "30px", height: "30px" }} />}
                     />
                 </CustomPaper>
-                <ConditionalRender condition={isAudience}>
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={28}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleOpenLinksPanel}
-                            className={clsx(styles.deviceButton)}
-                            Icon={<LinkIcon width="30px" height="30px" />}
-                        />
-                    </CustomPaper>
-                </ConditionalRender>
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={28}

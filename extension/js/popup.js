@@ -31,14 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setCurrentDate();
 
-  // $(`#timezone [data-value=\"${convertUTCOffset(timezoneOffset)}\"]`).addClass(
-  //   "selected"
-  // );
-
-
-  // $("#timezone_value").text("GMT" + convertUTCOffset(timezoneOffset));
   // Get the user's timezone offset in hours
-  var userTimezoneOffsetHours = new Date().getTimezoneOffset() / 60; // Convert to hours
+  var userTimezoneOffsetHours = -new Date().getTimezoneOffset() / 60; // Convert to hours
 
   // Find the corresponding option in the HTML
   var $selectedOption = $('#timezone').find('[data-value="' + userTimezoneOffsetHours + '"]');
@@ -145,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     selectedDay = $(".calendar li.active").text() || selectedDay;
     selectedStartTime = $("#start-time .selected").attr("data-value");
     selectedEndTime = $("#end-time .selected").attr("data-value");
+    selectedMeridiem = $("#meridiem .selected").attr("data-value");
 
     const start = formatTimeString(
       selectedYear,

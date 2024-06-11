@@ -32,6 +32,7 @@ import {
   MeetingRole,
   ResponseSumType,
   UserRoles,
+  SeatRoleTypes
 } from 'shared-types';
 
 // services
@@ -64,6 +65,7 @@ import { MeetingsService } from '../meetings/meetings.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { ScheduleRequestDto, DownloadIcsFileRequestDto } from '../../dtos/requests/schedule.dto';
 import { InviteNewTeamMemberDTO } from 'src/dtos/requests/inviteNewTeamMember.dto';
+import { PlanKeys } from 'shared-types';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -713,22 +715,56 @@ export class UsersController {
     @Req() req, @Body() body: InviteNewTeamMemberDTO
   ) {
     try {
-
       const host = await this.coreService.findUserByEmail({ email: body.hostEmail });
       const user = await this.coreService.findUserByEmail({ email: body.userEmail });
       let profileId = '';
 
       if (user) {
+        if (user.subscriptionPlanKey === PlanKeys.Business) {
+          return {
+            success: false,
+            message: 'you can not invite a user with business plan',
+          }
+        }
+        if (user.teamOrganization && user.teamOrganization.name) {
+          if (user.teamOrganization.name === host.companyName) {
+            return {
+              success: false,
+              message: 'this user is already a part of your team',
+            }
+          }
+
+          return {
+            success: false,
+            message: 'this user is already a part of a team',
+          }
+        }
+
         profileId = user.id;
       }
 
       if (host) {
         if (host.teamMembers && host.teamMembers.length < 3) {
+          const isEmailExist = host.teamMembers.find(
+            (member) => member.email === body.userEmail,
+          );
+
+          if (isEmailExist) {
+            return {
+              success: false,
+              message: 'this user is already a part of your team',
+            }
+          }
+
           await this.coreService.findUserAndUpdate({
             userId: host.id,
-            data: { teamMembers: [...host.teamMembers, { email: body.userEmail, status: 'pending' }] }
+            data: { teamMembers: [...host.teamMembers, { email: body.userEmail, role: SeatRoleTypes.TeamMember, seat: body.seat, status: 'pending' }] }
           });
         }
+
+        const frontendUrl = profileId
+          ? `${this.frontendUrl}/seat-login?profileId=${profileId}&hostId=${host.id}`
+          : `${this.frontendUrl}/seat-register?profileId=${profileId}&hostId=${host.id}`;
 
         await this.notificationService.sendEmail({
           to: [{ email: body.userEmail }],
@@ -737,7 +773,7 @@ export class UsersController {
             data: [
               { name: 'NAME', content: 'Hi there,' },
               { name: 'SENDER', content: host.fullName },
-              { name: 'CONFIRMLINK', content: `${this.frontendUrl}/seat-register?profileId=${profileId}&hostId=${host.id}` },
+              { name: 'CONFIRMLINK', content: frontendUrl },
             ],
           },
         });
@@ -745,10 +781,12 @@ export class UsersController {
         return {
           success: true,
         };
-      } else
+      } else {
         return {
           success: false,
+          message: 'User not found'
         };
+      }
     } catch (err) {
       console.log(err);
       this.logger.error(

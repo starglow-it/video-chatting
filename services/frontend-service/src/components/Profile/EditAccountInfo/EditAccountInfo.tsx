@@ -51,6 +51,7 @@ const EditAccountInfo = memo(() => {
                     condition={profile.loginType === LoginTypes.Local}
                 >
                     <CustomGrid
+                        item
                         container
                         gap={1}
                         className={styles.buttonsWrapper}

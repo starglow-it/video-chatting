@@ -11,6 +11,8 @@ export const handleGetFeaturedTemplates = async (
         ErrorState
     >(getTemplatesUrl(payload));
 
+    console.log('PAYLOAD', 'ROOM RESPONSE', payload, response);
+
     if (response.success && response.result) {
         return {
             error: null,

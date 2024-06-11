@@ -15,9 +15,26 @@ export interface IBusinessCategory {
   icon: string;
 }
 
+export enum SeatTypes {
+  Free = 'free',
+  Subscription = 'subscription',
+}
+
+export enum SeatRoleTypes {
+  Admin = 'admin',
+  TeamMember = 'team member',
+}
+
 export interface ITeamMember {
   email: string;
+  role: SeatRoleTypes;
+  seat: SeatTypes;
   status: string;
+}
+
+export interface ITeamOrganization {
+  name: string;
+  seat: SeatTypes;
 }
 
 export interface IMediaCategory {

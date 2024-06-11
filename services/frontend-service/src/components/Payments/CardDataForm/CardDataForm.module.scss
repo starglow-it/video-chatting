@@ -80,6 +80,10 @@
 .textField {
   font-size: 12px;
   color: black;
+
+  &.mobile {
+    color: white;
+  }
 }
 
 .emailInput {

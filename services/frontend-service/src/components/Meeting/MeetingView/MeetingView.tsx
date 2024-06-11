@@ -151,6 +151,14 @@ const Component = () => {
         }
     }, [isThereNewMessage, transcriptionQueue]);
 
+    useEffect(() => {
+        if (!localUser.isAuraActive) {
+            updateUserSocketEvent({
+                isAuraActive: true
+            });
+        }
+    }, []);
+
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
         keys: [meeting.hostUserId],
@@ -460,8 +468,6 @@ const Component = () => {
                     </CustomGrid>
                 </MeetingSettingsPanel>
             )}
-
-            <EmojiPlayground userId={meeting.hostUserId} />
 
             <AudienceEmojiPlayground />
             <DevicesSettingsDialog />

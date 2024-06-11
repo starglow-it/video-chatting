@@ -26,7 +26,7 @@ import { MeetingRole } from 'shared-types';
 
 import styles from './MeetingCarousel.module.scss';
 
-export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
+export const MeetingVideosCarousel = ({ users, isSecond = false }: { users: MeetingUser[], isSecond: boolean }) => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const activeStream = useStore($activeStreamStore);
     const localUser = useStore($localUserStore);
@@ -64,32 +64,38 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
 
     const renderUsers = useMemo(
         () =>
-            users.map(user => (
-                <MeetingUserVideoItem
-                    userId={user.id}
-                    key={user.id}
-                    size={user.userSize || 0}
-                    userName={user.username}
-                    isCameraEnabled={user.cameraStatus === 'active'}
-                    isMicEnabled={user.micStatus === 'active'}
-                    userProfileAvatar={
-                        getAvatarUrlMeeting(user.meetingAvatarId ?? '', list) ??
-                        user.profileAvatar
-                    }
-                    isAuraActive={user.isAuraActive}
-                    isScreenSharingUser={meeting.sharingUserId === user.id}
-                    isScreenSharing={isScreenSharing}
-                    bottom={user?.userPosition?.bottom}
-                    left={user?.userPosition?.left}
-                    isSelfView={false}
-                    onResizeVideo={handleResizeVideo}
-                    isOwner={isOwner}
-                />
-            )),
+            users.map(user => {
+                const isLocalUser = user.id === localUser.id;
+                if (!isLocalUser) {
+                    return (
+                        <MeetingUserVideoItem
+                            userId={user.id}
+                            key={user.id}
+                            size={user.userSize || 0}
+                            userName={user.username}
+                            isCameraEnabled={user.cameraStatus === 'active'}
+                            isMicEnabled={user.micStatus === 'active'}
+                            userProfileAvatar={
+                                getAvatarUrlMeeting(user.meetingAvatarId ?? '', list) ??
+                                user.profileAvatar
+                            }
+                            isAuraActive={user.isAuraActive}
+                            isScreenSharingUser={meeting.sharingUserId === user.id}
+                            isScreenSharing={isScreenSharing}
+                            bottom={user?.userPosition?.bottom}
+                            left={user?.userPosition?.left}
+                            isSelfView={false}
+                            onResizeVideo={handleResizeVideo}
+                            isOwner={isOwner}
+                        />
+                    );
+                } else return null;
+            }),
         [
             users,
             meeting.sharingUserId,
             isScreenSharing,
+            localUser
         ],
     );
 
@@ -122,7 +128,7 @@ export const MeetingVideosCarousel = ({ users }: { users: MeetingUser[] }) => {
                     gap="14px"
                 >
                     {renderUsers}
-                    <ConditionalRender condition={!isAudience && localUser.meetingRole !== MeetingRole.Recorder}>
+                    <ConditionalRender condition={!isAudience && localUser.meetingRole !== MeetingRole.Recorder && !isSecond}>
                         <MeetingUserVideoItem
                             key={localUser.id}
                             userId={localUser.id}

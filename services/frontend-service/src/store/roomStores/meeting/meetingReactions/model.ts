@@ -11,6 +11,7 @@ export type MeetingPanelsVisibilityForMobile = {
     isMobileQAPanleVisible: boolean;
     isMobileStickyNotesVisible: boolean;
     isMobileSettingPanelVisible: boolean;
+    isMobileDonationPanleVisible: boolean;
 };
 
 export const initialMeetingPanelsVisibilityData = {
@@ -21,6 +22,7 @@ export const initialMeetingPanelsVisibilityData = {
     isMobileQAPanleVisible: false,
     isMobileStickyNotesVisible: false,
     isMobileSettingPanelVisible: false,
+    isMobileDonationPanleVisible: false
 };
 
 const initialMeetingReactionsState: MeetingReaction[] = [];
@@ -61,3 +63,4 @@ export const getMeetingReactionsSocketEvent = createMeetingSocketEvent<
     void,
     { meetingReactions: MeetingReaction[] }
 >(MeetingSocketEmitters.GetMeetingReaction);
+export const resetMeetingReactionsStore = meetingDomain.createEvent('resetMeetingReactionsStore')

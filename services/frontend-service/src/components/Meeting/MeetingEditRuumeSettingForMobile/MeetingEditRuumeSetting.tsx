@@ -149,6 +149,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
         formState: { dirtyFields, errors },
         reset,
         setError,
+
         setFocus,
     } = methods;
 
@@ -213,6 +214,12 @@ export const MeetingEditRuumeSettingForMobile = () => {
             await updateMeetingTemplateFxWithData(updateData.data);
         }
     }, []);
+
+    const handleToggleIsAuraActive = () => {
+        updateUserSocketEvent({
+            isAuraActive: !localUser.isAuraActive
+        });
+    };
 
     const handleMonetizationSubmit = async () => {
         const paymentParticipant = formParticipantsRef.current?.getValues();
@@ -391,7 +398,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                 <EditMeetingLink onSave={handleOnSave} />
                             </form>
                         </ConditionalRender>
-                        <ConditionalRender condition={isOwner || enabledPaymentMeetingParticipant}>
+                        <ConditionalRender condition={isOwner}>
                             <CustomAccordion
                                 currentAccordionId={currentAccordionId}
                                 accordionId="monetization"
@@ -414,21 +421,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                         onSave={handleOnSave}
                                     />
                                 </ConditionalRender>
-                                <ConditionalRender condition={enabledPaymentMeetingParticipant}>
-                                    <PaymentForm
-                                        onClose={handleCloseForm}
-                                        payment={paymentMeetingParticipant}
-                                    />
-                                </ConditionalRender>
                             </CustomAccordion>
-                        </ConditionalRender>
-                        <ConditionalRender condition={enabledPaymentMeetingAudience}>
-                            <CustomPaper className={styles.audienceDonationPaper}>
-                                <PaymentForm
-                                    onClose={handleCloseForm}
-                                    payment={paymentMeetingAudience}
-                                />
-                            </CustomPaper>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || isParticipant}>
                             <CustomAccordion
@@ -458,7 +451,7 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                     }}
                                 >
                                     <SelectDevices key={changeStream?.id} />
-                                    {/* <ConditionalRender condition={!isSafari}>
+                                    <ConditionalRender condition={!isSafari}>
                                         <LabeledSwitch
                                             Icon={
                                                 <BackgroundBlurIcon
@@ -468,14 +461,14 @@ export const MeetingEditRuumeSettingForMobile = () => {
                                                 />
                                             }
                                             nameSpace="meeting"
-                                            translation="features.blurBackground"
-                                            checked={isAuraActive}
-                                            onChange={toggleIsAuraActive}
+                                            translation="features.transparencyBackground"
+                                            checked={localUser.isAuraActive}
+                                            onChange={handleToggleIsAuraActive}
                                             className={clsx(styles.switchWrapper, {
                                                 [styles.switchWrapperMobile]: isMobile,
                                             })}
                                         />
-                                    </ConditionalRender> */}
+                                    </ConditionalRender>
                                     <ConditionalRender
                                         condition={meetingTemplate.isAudioAvailable && !isMobile}
                                     >

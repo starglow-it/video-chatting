@@ -176,7 +176,7 @@
         "monetizationButtonText": "Save"
     },
     "features": {
-        "blurBackground": "Background blur",
+        "transparencyBackground": "Background transparency",
         "faceTracking": "Face detection",
         "audioBackground": "Background audio",
         "monetization": "Monetization",
@@ -210,7 +210,7 @@
         "prePayAndRegister": "Pre-pay & register:",
         "registrationSubTitle": "Thank you for registering!",
         "yourEntryCode": "Your entry Code is: ",
-        "codeNotify": "Save this code, you’ll need it to enter",
+        "codeNotify": "Save this code, you'll need it to enter",
         "byEmail": "An entry code has also been emailed to",
         "codeError": "code is invalid"
     },
@@ -278,7 +278,7 @@
         "public": "Public Meeting. Add an Audience"
     },
     "hostWaitingNotify": {
-        "title": "The host has another ruume in progress.",
+        "title": "The host will be here soon.",
         "text": "Please wait or leave a message"
     },
     "controlButtonsLabel": {

@@ -4,7 +4,9 @@ import {
   ISocialLink,
   IProfileAvatar,
   PlanKeys,
-  ITeamMember
+  ITeamMember,
+  ITeamOrganization,
+  SeatTypes
 } from './common';
 
 export enum UserRoles {
@@ -60,7 +62,9 @@ export interface ICommonUser {
   isSubscriptionActive?: boolean;
   isDowngradeMessageShown: boolean;
   loginType: LoginTypes;
-  teamMembers?: { email: string, status: string }[];
+  organizationName?: string;
+  teamMembers?: ITeamMember[];
+  teamOrganization?: ITeamOrganization;
   maxSeatNumForTeamMembers?: number;
 }
 
@@ -102,8 +106,10 @@ export interface IUpdateProfile {
     twitter?: string;
     custom?: string;
   };
+  organizationName?: string;
   teamMembers?: ITeamMember[];
   maxSeatNumForTeamMembers: number;
+  teamOrganization?: ITeamOrganization;
 }
 
 export interface IUpdateProfileAvatar {

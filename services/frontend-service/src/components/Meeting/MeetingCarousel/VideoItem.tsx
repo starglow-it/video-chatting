@@ -102,7 +102,6 @@ export const VideoItem = ({
                     {userName}
                 </CustomTypography>
             </CustomPaper>
-            {id !== meeting.hostUserId ? < EmojiPlayground userId={id} /> : null}
         </CustomGrid>
     );
 };
