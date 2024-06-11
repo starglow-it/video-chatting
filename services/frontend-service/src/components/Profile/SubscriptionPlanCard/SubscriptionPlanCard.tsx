@@ -129,7 +129,7 @@ const Component = ({
                     </CustomTypography>
                     <ConditionalRender condition={!isFree}>
                         <CustomTypography>
-                            / {price?.recurring?.interval}
+                            USD/ {price?.recurring?.interval}
                         </CustomTypography>
                     </ConditionalRender>
                 </CustomGrid>
