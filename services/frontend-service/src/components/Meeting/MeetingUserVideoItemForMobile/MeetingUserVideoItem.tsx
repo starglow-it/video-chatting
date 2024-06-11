@@ -127,20 +127,17 @@ const MeetingUserVideoChildCom = ({
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            const handleBlurBg = async () => {
-                const blurProcessor = BackgroundBlur(10, { delegate: 'GPU' });
-                const localVideoTrack = new LocalVideoTrack(videoTrack);
-                await localVideoTrack.setProcessor(blurProcessor);
-                mediaStreamRef.current.removeTrack(videoTrack);
-                mediaStreamRef.current.addTrack(localVideoTrack.mediaStreamTrack);
-            };
-
-            handleBlurBg();
+            console.log(isSafari);
+            if (isAuraActive && !isSafari) {
+                handleRemoveBackground(mediaStreamRef.current, true, stream => {
+                    mediaStreamRef.current = stream;
+                });
+            }
 
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }
-    }, [localStream, userTracks, isVideoSelfView, isAuraActive]);
+    }, [localStream, userTracks, isVideoSelfView, isAuraActive, isSafari]);
 
     return (
         <CustomBox
