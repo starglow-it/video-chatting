@@ -35,6 +35,7 @@ export const initialDialogsState: AppDialogsState = {
     hostDeviceRequireDialog: false,
     recordVideoDownloadDialog: false,
     payToAddNewTeamMemberDialog: false,
+    mobilePopUpDialog: false
 };
 
 export const $appDialogsStore =

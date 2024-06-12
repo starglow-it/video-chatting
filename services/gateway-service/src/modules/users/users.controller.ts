@@ -765,7 +765,6 @@ export class UsersController {
         const frontendUrl = profileId
           ? `${this.frontendUrl}/seat-login?profileId=${profileId}&hostId=${host.id}`
           : `${this.frontendUrl}/seat-register?profileId=${profileId}&hostId=${host.id}`;
-
         await this.notificationService.sendEmail({
           to: [{ email: body.userEmail }],
           template: {

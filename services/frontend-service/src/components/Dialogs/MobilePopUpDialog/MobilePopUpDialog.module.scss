@@ -1,0 +1,107 @@
+@import "../../../styles/rem";
+
+.downloadIcsEvent {
+  width: rem(373px);
+  position: fixed;
+  bottom: rem(20px);
+  right: rem(20px);
+
+  padding: rem(16px);
+}
+
+.headerText {
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+  padding: 0px 10px;
+}
+
+.imageText {
+  font-size: 40px;
+}
+
+.bodyText {
+  font-size: 13px;
+  opacity: 0.9;
+  text-align: center;
+  padding: 0px 25px;
+}
+
+.footerImageText {
+  font-size: 40px;
+  margin-top: 12px;
+}
+
+.footerText {
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.image {
+  flex: 0 0 rem(24px);
+}
+
+.text {
+  flex: 1 0 auto;
+}
+
+.downloadButton {
+  width: rem(63px);
+  height: rem(36px);
+}
+
+.cancelButton {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: rem(6px);
+}
+
+.closeBtn {
+  color: white;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  transition: all 0.3;
+
+  &:hover {
+      background-color: transparent;
+      color: #ddb0f2;
+  }
+
+  &:focus {
+      background-color: transparent;
+      color: #ddb0f2;
+  }
+}
+
+.wrapper {
+  background: #9243B7;
+  color: white;
+  position: relative;
+}
+.content {
+  padding: 8px;
+}
+
+.contentNoMobile {
+  padding: rem(40px);
+  max-width: 700px;
+  padding: 78px;
+}
+
+.contentMobile {
+  padding: rem(40px 15px);
+  max-width: rem(400px);
+}
+
+.actionBtn {
+  background-color: #9243B7;
+  color: white;
+  padding-left: 44px;
+  padding-right: 44px;
+}
+
+.actionBtnWrapper {
+  width: auto;
+}
