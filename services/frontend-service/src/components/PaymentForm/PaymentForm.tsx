@@ -44,8 +44,6 @@ const Component = ({ onClose, subLabel, payment, setMeetingPreviewShow, isMobile
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
-    const { isMobile } = useBrowserDetect();
-
     const handleSubmit = useCallback(async () => {
         await onClose?.();
         addNotificationEvent({
