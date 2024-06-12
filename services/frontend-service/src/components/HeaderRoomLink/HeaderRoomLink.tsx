@@ -47,13 +47,13 @@ const Component = () => {
                     key={item.id}
                     className={clsx(styles.button)}
                     onClick={item.onAction}
-                    // sx={{
-                    //     display: {
-                    //         xs: 'none',
-                    //         md: 'flex',
-                    //         sm: 'flex',
-                    //     },
-                    // }}
+                // sx={{
+                //     display: {
+                //         xs: 'none',
+                //         md: 'flex',
+                //         sm: 'flex',
+                //     },
+                // }}
                 >
                     {item.name}
                 </CustomGrid>
