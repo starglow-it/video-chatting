@@ -178,10 +178,6 @@ export const MeetingEditRuumeSetting = () => {
         }
     }, [errors]);
 
-    const handleChangeVolume = useCallback((event: any) => {
-        setSettingsBackgroundAudioVolume(event.target.value);
-    }, []);
-
     const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
             prev === accordionId ? '' : accordionId,

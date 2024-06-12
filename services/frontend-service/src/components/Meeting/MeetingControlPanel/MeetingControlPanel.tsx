@@ -194,6 +194,7 @@ const Component = () => {
         (e: MouseEvent | TouchEvent) => {
             e.stopPropagation();
             if (isMobileDonationPanleVisible) {
+                cancelPaymentIntentWithData();
                 setMeetingPanelsVisibilityForMobileEvent({
                     ...initialMeetingPanelsVisibilityData,
                     isMobileDonationPanleVisible: false
