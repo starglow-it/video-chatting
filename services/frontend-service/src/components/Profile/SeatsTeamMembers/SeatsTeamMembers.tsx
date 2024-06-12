@@ -523,7 +523,7 @@ const Component = () => {
                                                 />
                                             </CustomGrid>
                                             {
-                                                tm.role !== 'admin' && (
+                                                (tm.role !== 'admin' && !profile?.teamOrganization?.name) && (
                                                     <CustomGrid item container xs={2} justifyContent="center">
                                                         <CustomPaper
                                                             variant="black-glass"
