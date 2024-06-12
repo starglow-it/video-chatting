@@ -95,6 +95,10 @@ seatLoginUserFx.doneData.watch(payload => {
 
 googleVerifyFx.doneData.watch(() => {
     deleteUserAnonymousCookies();
+
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.mobilePopUpDialog,
+    });
 });
 
 logoutUserFx.doneData.watch(() => {
