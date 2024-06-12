@@ -79,6 +79,7 @@ import {
     NotFoundRoute,
     registerEndCallRoute,
     registerRoute,
+    loginRoute,
     roomRoute,
     recordingRoute,
     welcomeRoute,
@@ -171,9 +172,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isRegisterRoute = new RegExp(`${registerRoute}`).test(
         router.pathname,
     );
+    const isLoginRoute = new RegExp(`${loginRoute}`).test(
+        router.pathname,
+    );
     const isRegisterEndCallRoute = new RegExp(`${registerEndCallRoute}`).test(
         router.pathname,
     );
+    const [isAuthRoute, setIsAuthRoute] = useState(false);
 
     const shouldShowFooter = useMemo(
         () =>
@@ -206,6 +211,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 initiateSocketConnectionEvent();
             }
         })();
+
+        setIsAuthRoute(isLoginRoute || isRegisterRoute || isRegisterEndCallRoute);
 
         return () => {
             router.events.off('routeChangeComplete', handleRouteChange);
@@ -408,7 +415,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         alignItems="center"
                                         flex={1}
                                     >
-                                        <CustomGrid flex={1}>
+                                        <CustomGrid flex={1} sx={{ paddingTop: isAuthRoute ? '5px' : '0px' }}>
                                             <Link
                                                 href={
                                                     isAuthenticated
@@ -421,10 +428,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                         src="/images/Ruume.svg"
                                                         width={
                                                             isMobile
-                                                                ? '120px'
+                                                                ? '80px'
                                                                 : '210px'
                                                         }
-                                                        height="44px"
+                                                        height={ isMobile ? "28px" : "40px" }
                                                         className={clsx(
                                                             isAuthenticated,
                                                             {
@@ -437,7 +444,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                             </Link>
                                         </CustomGrid>
                                         <ConditionalRender
-                                            condition={!isAuthenticated}
+                                            condition={!isAuthenticated && !isAuthRoute}
                                         >
                                             <CustomGrid
                                                 className={clsx(
@@ -461,7 +468,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                     <CustomGrid
                                         sx={{
                                             marginTop: {
-                                                xs: '10px',
+                                                xs: !isMobile ? '10px' : '0px',
                                                 md: '0px',
                                                 sm: '0px',
                                                 xl: '0px',
@@ -471,7 +478,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                         <ConditionalRender
                                             condition={!isAuthenticated}
                                         >
-                                            <AuthenticationLink />
+                                            <AuthenticationLink isAuthRoute={isAuthRoute} />
                                         </ConditionalRender>
                                         <ConditionalRender
                                             condition={

@@ -13,7 +13,7 @@ import {
 } from '../../const/client-routes';
 import styles from './AuthenticationLink.module.scss';
 
-const Component = () => {
+const Component = ({ isAuthRoute }: { isAuthRoute: boolean }) => {
     const router = useRouter();
 
     const isNotLoginPage = !router.pathname.includes(clientRoutes.loginRoute);
@@ -76,6 +76,7 @@ const Component = () => {
                     key={item.id}
                     className={clsx(styles.button, {
                         [styles.bgBlack]: item.id === 4,
+                        [styles.mobile]: isAuthRoute
                     })}
                     onClick={item.onAction}
                     sx={{
