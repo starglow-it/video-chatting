@@ -272,14 +272,6 @@ export const MeetingEditRuumeSettingForMobile = () => {
         }
     };
 
-    const handleCloseForm = () => {
-        setCurrentAccordionId('');
-        if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
-            handleCloseEditRuumePanel();
-        }
-        cancelPaymentIntentWithData();
-    };
-
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (!dirtyFieldsCount) {

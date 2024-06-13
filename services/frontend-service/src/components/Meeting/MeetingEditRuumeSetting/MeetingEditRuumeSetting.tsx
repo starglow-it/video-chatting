@@ -184,7 +184,8 @@ export const MeetingEditRuumeSetting = () => {
         );
     }, []);
 
-    const handleDoNotDisturb = () => {
+    const handleDoNotDisturb = (e) => {
+        e.preventDefault();
         setDoNotDisturbEvent(!doNotDisturbStore);
     };
 
@@ -264,14 +265,6 @@ export const MeetingEditRuumeSetting = () => {
         updateUserSocketEvent({
             isAuraActive: !localUser.isAuraActive
         });
-    };
-
-    const handleCloseForm = () => {
-        setCurrentAccordionId('');
-        if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
-            handleCloseEditRuumePanel();
-        }
-        cancelPaymentIntentWithData();
     };
 
     const onSubmit = useCallback(

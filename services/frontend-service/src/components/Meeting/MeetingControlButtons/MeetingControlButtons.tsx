@@ -247,6 +247,8 @@ const Component = () => {
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const transcriptionQueue = useStore($transcriptionQueue);
 
+    useEffect(() => { console.log(profile); }, [profile]);
+
     function deduplicateText(input: string) {
         const tokens = input.split(/\W+/);
         const seen = new Set();
@@ -298,11 +300,9 @@ const Component = () => {
     }, [isMeetingHost, isThereNewRequests]);
 
     useEffect(() => {
-        if (doNotDisturbStore) {
-            updateUserSocketEvent({
-                doNotDisturb: doNotDisturbStore,
-            });
-        }
+        updateUserSocketEvent({
+            doNotDisturb: doNotDisturbStore,
+        });
     }, [doNotDisturbStore]);
 
     useEffect(() => {

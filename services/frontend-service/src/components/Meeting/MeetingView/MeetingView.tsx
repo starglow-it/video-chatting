@@ -165,6 +165,7 @@ const Component = () => {
         fn: (state, [hostUserId]) =>
             state.find(user => user.id === hostUserId) || null,
     });
+    useEffect(() => { console.log(hostUser); }, [hostUser]);
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
 
