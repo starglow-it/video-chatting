@@ -53,7 +53,6 @@ const Component = () => {
 
     useEffect(() => {
         setProfileTeamMembers(profile.teamMembers);
-        console.log(profile);
     }, [profile.teamMembers]);
 
     const handleAddMember = useCallback(() => {
