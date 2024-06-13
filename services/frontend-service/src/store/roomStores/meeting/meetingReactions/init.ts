@@ -2,13 +2,17 @@ import {
     $meetingReactionsStore,
     $meetingEmojiListVisibilityStore,
     $meetingPanelsVisibilityForMobileStore,
+    $meetingDonationPanelForParticipantVisibilityStore,
+    $meetingDonationPanelForAudienceVisibilityStore,
     setEmojiListVisibilityEvent,
     getMeetingReactionsSocketEvent,
     setMeetingReactionsEvent,
     addMeetingReactionsEvent,
     removeMeetingReactionEvent,
     setMeetingPanelsVisibilityForMobileEvent,
-    resetMeetingReactionsStore
+    resetMeetingReactionsStore,
+    setDonationPanelForParticipantVisibilityEvent,
+    setDonationPanelForAudienceVisibilityEvent
 } from './model';
 import { resetRoomStores } from '../../../root';
 import { MeetingPanelsVisibilityForMobile } from './model';
@@ -28,6 +32,9 @@ $meetingReactionsStore
     .reset(resetRoomStores);
 
 $meetingEmojiListVisibilityStore.on(setEmojiListVisibilityEvent, (state, data) => data);
+$meetingDonationPanelForParticipantVisibilityStore.on(setDonationPanelForParticipantVisibilityEvent, (state, data) => data);
+$meetingDonationPanelForAudienceVisibilityStore.on(setDonationPanelForAudienceVisibilityEvent, (state, data) => data);
 $meetingPanelsVisibilityForMobileStore.on(setMeetingPanelsVisibilityForMobileEvent, (
     _: MeetingPanelsVisibilityForMobile, data: MeetingPanelsVisibilityForMobile
 ) => data);
+
