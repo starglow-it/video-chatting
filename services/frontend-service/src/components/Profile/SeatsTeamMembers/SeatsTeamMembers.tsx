@@ -53,6 +53,7 @@ const Component = () => {
 
     useEffect(() => {
         setProfileTeamMembers(profile.teamMembers);
+        console.log(profile);
     }, [profile.teamMembers]);
 
     const handleAddMember = useCallback(() => {
@@ -336,50 +337,78 @@ const Component = () => {
                         }
                     </CustomGrid>
                     {
-                        !profile.teamOrganization?.name && (
-                            <CustomGrid container item spacing={2} alignItems="center">
-                                <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
-                                    <CustomTypography
-                                        sx={{ fontSize: '12px' }}
-                                        color='#D9D9D9'
-                                    >{profile.email}</CustomTypography>
-                                </CustomGrid>
-                                <CustomGrid item xs={2} container justifyContent="center">
-                                    <CustomTypography
-                                        sx={{ fontSize: '12px' }}
+                        !profile.teamOrganization?.name
+                            ? (
+                                <CustomGrid container item spacing={2} alignItems="center">
+                                    <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            color='#D9D9D9'
+                                        >{profile.email}</CustomTypography>
+                                    </CustomGrid>
+                                    <CustomGrid item xs={2} container justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
 
-                                        color='#D9D9D9'
-                                    >
-                                        admin
-                                    </CustomTypography>
-                                </CustomGrid>
-                                <CustomGrid item container xs={2} justifyContent="center">
-                                    <CustomTypography
-                                        sx={{ fontSize: '12px' }}
-                                        nameSpace="profile"
-                                        translation="seatsTeamMembers.active"
-                                        color="#D9D9D9"
-                                    />
-                                </CustomGrid>
-                                <CustomGrid item container xs={1} justifyContent="center">
-                                    <CustomTypography
-                                        sx={{ fontSize: '12px' }}
-                                        nameSpace="profile"
-                                        translation="seatsTeamMembers.subscription"
-                                        color="#D9D9D9"
-                                    />
-                                </CustomGrid>
+                                            color='#D9D9D9'
+                                        >
+                                            admin
+                                        </CustomTypography>
+                                    </CustomGrid>
+                                    <CustomGrid item container xs={2} justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.active"
+                                            color="#D9D9D9"
+                                        />
+                                    </CustomGrid>
+                                    <CustomGrid item container xs={1} justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.subscription"
+                                            color="#D9D9D9"
+                                        />
+                                    </CustomGrid>
 
-                                <CustomGrid item container xs={2} justifyContent="center">
-                                    <CustomTypography
-                                        sx={{ fontSize: '12px' }}
-                                        nameSpace="profile"
-                                        translation="seatsTeamMembers.business"
-                                        color='#D9D9D9'
-                                    />
+                                    <CustomGrid item container xs={2} justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.business"
+                                            color='#D9D9D9'
+                                        />
+                                    </CustomGrid>
                                 </CustomGrid>
-                            </CustomGrid>
-                        )
+                            )
+                            : (
+                                <CustomGrid container item spacing={2} alignItems="center">
+                                    <CustomGrid item xs={3} className={styles.activeEmailWrapper}>
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            color='#D9D9D9'
+                                        >{profile.email}</CustomTypography>
+                                    </CustomGrid>
+                                    <CustomGrid item xs={2} container justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+
+                                            color='#D9D9D9'
+                                        >
+                                            team member
+                                        </CustomTypography>
+                                    </CustomGrid>
+                                    <CustomGrid item container xs={2} justifyContent="center">
+                                        <CustomTypography
+                                            sx={{ fontSize: '12px' }}
+                                            nameSpace="profile"
+                                            translation="seatsTeamMembers.business"
+                                            color='#D9D9D9'
+                                        />
+                                    </CustomGrid>
+                                </CustomGrid>
+                            )
                     }
                     {profileTeamMembers.length > 0 && profileTeamMembers.map((tm, tindex) => (
                         <CustomGrid container item spacing={2} key={tindex} alignItems="center">
@@ -494,7 +523,7 @@ const Component = () => {
                                                 />
                                             </CustomGrid>
                                             {
-                                                !(!profile.teamOrganization?.name || tm.role === 'admin') && (
+                                                (tm.role !== 'admin' && !profile?.teamOrganization?.name) && (
                                                     <CustomGrid item container xs={2} justifyContent="center">
                                                         <CustomPaper
                                                             variant="black-glass"

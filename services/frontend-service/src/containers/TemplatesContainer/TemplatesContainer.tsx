@@ -16,6 +16,7 @@ import { DeleteTemplateDialog } from '@components/Dialogs/DeleteTemplateDialog/D
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import { WelcomeTourDialog } from '@components/Dialogs/WelcomeTourDialog/WelcomeTourDialog';
+import { MobilePopUpDialog } from '@components/Dialogs/MobilePopUpDialog/MobilePopUpDialog';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import {
@@ -32,6 +33,7 @@ import {
     $profileTemplatesStore,
     $templatesStore,
     $joyrideStore,
+    $authStore,
     emitDashboardJoyrideEvent,
     addTemplateToUserFx,
     clearTemplateDraft,
@@ -65,10 +67,10 @@ const Component = () => {
     const createContentWithLineBreaks = text => {
         return text.split('\n').map((line, index, array) => (
             <span key={index}>
-              {line}
-              {index !== array.length - 1 && <br />}
+                {line}
+                {index !== array.length - 1 && <br />}
             </span>
-          ));
+        ));
     };
 
     const joyrideStyleOptions = {
@@ -329,6 +331,7 @@ const Component = () => {
                 onChooseTemplate={handleChooseCommonTemplate}
             />
             <WelcomeTourDialog isFirstDashboardVisit={isFirstDashboardVisit} handleSetVisitedDashboard={handleSetVisitedDashboard} />
+            <MobilePopUpDialog />
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog isScheduleDash />
             <DownloadIcsEventDialog />

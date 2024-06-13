@@ -220,6 +220,7 @@ export type AppDialogsState = {
     hostDeviceRequireDialog: boolean;
     recordVideoDownloadDialog: boolean;
     payToAddNewTeamMemberDialog: boolean;
+    mobilePopUpDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -256,6 +257,7 @@ export enum AppDialogsEnum {
     hostDeviceRequireDialog = 'hostDeviceRequireDialog',
     recordVideoDownloadDialog = 'recordVideoDownloadDialog',
     payToAddNewTeamMemberDialog = 'payToAddNewTeamMemberDialog',
+    mobilePopUpDialog = 'mobilePopUpDialog',
 }
 
 export type DialogActionPayload = {

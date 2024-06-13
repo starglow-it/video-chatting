@@ -26,7 +26,7 @@ import { MoreListForMobile } from '../MoreListForMobile/MoreListForMobile';
 import { MeetingChat } from '../MeetingChatForMobile/MeetingChat';
 import { MeetingLinksForMobile } from '../MeetingLInksForMobile/MeetingLinksForMobile';
 import { MeetingQuestionAnswer } from '../MeetingQuestionAnswerForMobile/MeetingQuestionAnswer';
-import { MeetingNotesForMobile } from '../MeetingNotesForMobile/MeetingNotes'
+import { MeetingNotesForMobile } from '../MeetingNotesForMobile/MeetingNotes';
 
 // stores
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
@@ -48,9 +48,12 @@ import {
     $isToggleEditRuumePanel,
     $meetingEmojiListVisibilityStore,
     $isToggleEditRuumeSelectMenuOpenStore,
+    $isPaymentCurrencyDropdownOpenStore,
     $isParticipant,
     $isAudience,
     $meetingPanelsVisibilityForMobileStore,
+    $meetingDonationPanelForParticipantVisibilityStore,
+    $meetingDonationPanelForAudienceVisibilityStore,
     initialMeetingPanelsVisibilityData,
     cancelPaymentIntentWithData,
     toggleBackgroundManageEvent,
@@ -59,7 +62,9 @@ import {
     toggleProfilePanelEvent,
     setEmojiListVisibilityEvent,
     toggleEditRuumeSettingEvent,
-    setMeetingPanelsVisibilityForMobileEvent
+    setMeetingPanelsVisibilityForMobileEvent,
+    setDonationPanelForParticipantVisibilityEvent,
+    setDonationPanelForAudienceVisibilityEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -98,6 +103,9 @@ const Component = () => {
     const [isParticipantsPanelShow, setIsParticipantPanelShow] = useState(true);
     const isParticipant = useStore($isParticipant);
     const isAudience = useStore($isAudience);
+    const isPaymentCurrencyDropdownOpenStore = useStore($isPaymentCurrencyDropdownOpenStore);
+    const { isDonationPanelForParticipantVisible } = useStore($meetingDonationPanelForParticipantVisibilityStore);
+    const { isDonationPanelForAudienceVisible } = useStore($meetingDonationPanelForAudienceVisibilityStore);
 
     const {
         isMobileMoreListVisible,
@@ -156,25 +164,40 @@ const Component = () => {
         [],
     );
 
-    const handleCloseForm = useCallback(() => {
-        togglePaymentFormEvent(false);
-        if (!isOwner) {
-            cancelPaymentIntentWithData();
-        }
-    }, [isOwner]);
-
     const handleCloseEmojiListPanel = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
         setEmojiListVisibilityEvent({ isEmojiListVisible: false })
     }, []);
 
-    const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
-
+    const handleCloseDonationPanelForParticipant = useCallback((e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
-        if (!isToggleEditRuumeSelectMenuOpen) {
-            toggleEditRuumeSettingEvent(false);
+        cancelPaymentIntentWithData();
+        setDonationPanelForParticipantVisibilityEvent({ isDonationPanelForParticipantVisible: false });
+    }, []);
+
+    const handleCloseDonationPanelForAudience = useCallback((e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        cancelPaymentIntentWithData();
+        setDonationPanelForAudienceVisibilityEvent({ isDonationPanelForAudienceVisible: false });
+    }, []);
+
+    const handleCloseForm = useCallback(() => {
+        togglePaymentFormEvent(false);
+        if (!isOwner) {
+            cancelPaymentIntentWithData();
+            setDonationPanelForParticipantVisibilityEvent({ isDonationPanelForParticipantVisible: false });
+            setDonationPanelForAudienceVisibilityEvent({ isDonationPanelForAudienceVisible: false });
         }
-    }, [isToggleEditRuumeSelectMenuOpen]);
+    }, [isOwner]);
+
+    const handleCloseEditRuumePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        if (!isPaymentCurrencyDropdownOpenStore) {
+            e.stopPropagation();
+            if (!isToggleEditRuumeSelectMenuOpen) {
+                toggleEditRuumeSettingEvent(false);
+            }
+        }
+    }, [isToggleEditRuumeSelectMenuOpen, isPaymentCurrencyDropdownOpenStore]);
 
     //For mobile
     const toggleMoreListForMobile = useCallback(
@@ -194,6 +217,7 @@ const Component = () => {
         (e: MouseEvent | TouchEvent) => {
             e.stopPropagation();
             if (isMobileDonationPanleVisible) {
+                cancelPaymentIntentWithData();
                 setMeetingPanelsVisibilityForMobileEvent({
                     ...initialMeetingPanelsVisibilityData,
                     isMobileDonationPanleVisible: false
@@ -206,16 +230,49 @@ const Component = () => {
     const commonContent = useMemo(
         () => (
             <>
-                <ClickAwayListener onClickAway={handleCloseEditRuumePanel} >
-                    <Fade in={isEditRuumeOpen}>
+                <ClickAwayListener onClickAway={handleCloseDonationPanelForParticipant}>
+                    <Fade in={isDonationPanelForParticipantVisible}>
                         <CustomPaper
                             variant="black-glass"
-                            className={clsx(styles.editRuumePanel, {
+                            className={clsx(styles.donationPanel, {
                                 [styles.isAudience]: isAudience,
                                 [styles.mobile]: isMobile && isPortraitLayout,
                                 [styles.landscape]:
                                     isMobile && !isPortraitLayout,
                             })}
+                        >
+                            <PaymentForm
+                                isMobileForDonation={true}
+                                onClose={handleCloseForm}
+                                payment={paymentMeetingParticipant}
+                            />
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={handleCloseDonationPanelForAudience}>
+                    <Fade in={isDonationPanelForAudienceVisible}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.donationPanel, {
+                                [styles.isAudience]: isAudience,
+                                [styles.mobile]: isMobile && isPortraitLayout,
+                                [styles.landscape]:
+                                    isMobile && !isPortraitLayout,
+                            })}
+                        >
+                            <PaymentForm
+                                isMobileForDonation={true}
+                                onClose={handleCloseForm}
+                                payment={paymentMeetingAudience}
+                            />
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={handleCloseEditRuumePanel}>
+                    <Fade in={isEditRuumeOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.editRuumePanel)}
                         >
                             <CustomScroll className={styles.editRuumeScrollBar}>
                                 <MeetingEditRuumeSetting />

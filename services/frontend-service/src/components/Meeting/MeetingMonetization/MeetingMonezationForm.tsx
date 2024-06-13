@@ -28,6 +28,7 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import { StripeCurrency } from 'shared-const';
 import { currencyValues } from 'src/const/profile/subscriptions';
 import { $isConnectedStripe } from 'src/store';
+import { togglePaymentCurrencyPanelEvent } from 'src/store/roomStores';
 import { useStore } from 'effector-react';
 import { PaymentItem } from 'src/store/roomStores/meeting/meetingPayment/type';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
@@ -308,6 +309,8 @@ export const MeetingMonezationForm = forwardRef(
                                                     'paywallCurrency',
                                                 )
                                             }
+                                            onOpen={() => togglePaymentCurrencyPanelEvent(true)}
+                                            onClose={() => togglePaymentCurrencyPanelEvent(false)}
                                         />
                                     </CustomGrid>
                                 </CustomGrid>
@@ -426,6 +429,8 @@ export const MeetingMonezationForm = forwardRef(
                                                     'templateCurrency',
                                                 )
                                             }
+                                            onOpen={() => togglePaymentCurrencyPanelEvent(true)}
+                                            onClose={() => togglePaymentCurrencyPanelEvent(false)}
                                         />
                                     </CustomGrid>
                                 </CustomGrid>

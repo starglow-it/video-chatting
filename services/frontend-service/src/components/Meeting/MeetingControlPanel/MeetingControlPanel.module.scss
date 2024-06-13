@@ -285,6 +285,28 @@
   }
 }
 
+.donationPanel {
+  position: absolute;
+  max-width: rem(425px);
+  min-width: rem(310px);
+  padding: rem(14px 16px 14px 16px);
+  opacity: 0;
+  left: rem(160px);
+  bottom: rem(0px);
+  z-index: 0;
+
+  &.landscape {
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    right: 40px;
+  }
+
+  &.isAudience {
+    left: rem(-10px);
+  }
+}
+
 .monetizationPanel {
   position: absolute;
   max-width: rem(350px);

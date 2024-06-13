@@ -31,6 +31,9 @@ export const $isRecordingUrlsListPanel =
 export const $isToggleEditRuumeSelectMenuOpenStore =
     meetingUsersDomain.createStore<boolean>(false);
 
+export const $isPaymentCurrencyDropdownOpenStore =
+    meetingUsersDomain.createStore<boolean>(false);
+
 export const toggleEditRuumeSelectMenu = meetingUsersDomain.createEvent<
     boolean | undefined
 >('toggleEditRuumeSelectMenu');
@@ -67,5 +70,9 @@ export const toggleSchedulePanelEvent = meetingUsersDomain.createEvent<
 >('toggleSchedulePanelEvent');
 
 export const toggleRecordingUrlsListPanel = meetingUsersDomain.createEvent<
+    boolean | undefined
+>('toggleRecordingUrlsListPanel');
+
+export const togglePaymentCurrencyPanelEvent = meetingUsersDomain.createEvent<
     boolean | undefined
 >('toggleRecordingUrlsListPanel');

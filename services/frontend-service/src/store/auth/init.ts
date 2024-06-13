@@ -74,6 +74,10 @@ loginUserFx.doneData.watch(payload => {
         });
     }
     deleteUserAnonymousCookies();
+
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.mobilePopUpDialog,
+    });
 });
 
 seatLoginUserFx.doneData.watch(payload => {
@@ -83,10 +87,18 @@ seatLoginUserFx.doneData.watch(payload => {
         });
     }
     deleteUserAnonymousCookies();
+
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.mobilePopUpDialog,
+    });
 });
 
 googleVerifyFx.doneData.watch(() => {
     deleteUserAnonymousCookies();
+
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.mobilePopUpDialog,
+    });
 });
 
 logoutUserFx.doneData.watch(() => {
