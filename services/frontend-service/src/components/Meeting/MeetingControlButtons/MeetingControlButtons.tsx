@@ -247,8 +247,6 @@ const Component = () => {
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const transcriptionQueue = useStore($transcriptionQueue);
 
-    useEffect(() => { console.log(profile); }, [profile]);
-
     function deduplicateText(input: string) {
         const tokens = input.split(/\W+/);
         const seen = new Set();

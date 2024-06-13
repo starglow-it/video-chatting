@@ -27,6 +27,8 @@ import { NotificationType } from 'src/store/types';
 import { $profileStore, addNotificationEvent } from '../../../store';
 import {
     $meetingNotesStore,
+    $isOwner,
+    $isParticipant,
     $meetingPanelsVisibilityForMobileStore,
     initialMeetingPanelsVisibilityData,
     getMeetingNotesSocketEvent,
@@ -99,7 +101,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Component = () => {
     const meetingNotes = useStore($meetingNotesStore);
-    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
+    const isParticipant = useStore($isParticipant);
     const { isMobileStickyNotesVisible } = useStore($meetingPanelsVisibilityForMobileStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
@@ -219,35 +222,37 @@ const Component = () => {
             >
                 {renderMeetingNotes}
             </CustomGrid>
-            <CustomBox className={styles.addNoteWrapper}>
-                <FormProvider {...methods}>
-                    <CustomGrid
-                        container
-                        alignItems="center"
-                        flexDirection="row"
-                        justifyContent="center"
-                    >
-                        <CustomGrid flex={1}>
-                            <CustomInput
-                                placeholder="post a sticky note"
-                                className={clsx(
-                                    materialStyles.textField,
-                                    styles.textField,
-                                    { [styles.expanded]: isExpand },
-                                )}
-                                onKeyDown={handleKeyDown}
-                                {...restRegisterData}
-                                onChange={handleChange}
+            <ConditionalRender condition={isOwner || isParticipant}>
+                <CustomBox className={styles.addNoteWrapper}>
+                    <FormProvider {...methods}>
+                        <CustomGrid
+                            container
+                            alignItems="center"
+                            flexDirection="row"
+                            justifyContent="center"
+                        >
+                            <CustomGrid flex={1}>
+                                <CustomInput
+                                    placeholder="post a sticky note"
+                                    className={clsx(
+                                        materialStyles.textField,
+                                        styles.textField,
+                                        { [styles.expanded]: isExpand },
+                                    )}
+                                    onKeyDown={handleKeyDown}
+                                    {...restRegisterData}
+                                    onChange={handleChange}
+                                />
+                            </CustomGrid>
+                            <ActionButton
+                                className={styles.sendButton}
+                                Icon={<SendIcon width='22px' height='22px' />}
+                                onClick={sendNote}
                             />
                         </CustomGrid>
-                        <ActionButton
-                            className={styles.sendButton}
-                            Icon={<SendIcon width='22px' height='22px' />}
-                            onClick={sendNote}
-                        />
-                    </CustomGrid>
-                </FormProvider>
-            </CustomBox>
+                    </FormProvider>
+                </CustomBox>
+            </ConditionalRender>
         </CustomGrid>
     );
 };
