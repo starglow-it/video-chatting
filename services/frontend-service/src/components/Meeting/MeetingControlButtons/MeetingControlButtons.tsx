@@ -74,6 +74,8 @@ import {
     $meetingUsersStore,
     $doNotDisturbStore,
     $meetingEmojiListVisibilityStore,
+    $meetingDonationPanelForParticipantVisibilityStore,
+    $meetingDonationPanelForAudienceVisibilityStore,
     setEmojiListVisibilityEvent,
     $meetingStore,
     $meetingRecordingStore,
@@ -114,6 +116,9 @@ import {
     sendAiTranscription,
     aiTranscriptionOnEvent,
     setActiveTabPanelEvent,
+    setDonationPanelForParticipantVisibilityEvent,
+    setDonationPanelForAudienceVisibilityEvent,
+    cancelPaymentIntentWithData
 } from '../../../store/roomStores';
 import { $transcriptionQueue } from '../../../store/roomStores';
 
@@ -190,6 +195,9 @@ const Component = () => {
     const isEditRuumeSettingPanelOpen = useStore($isToggleEditRuumePanel);
     const isProfileOpen = useStore($isTogglProfilePanel);
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
+    const enabledPaymentMeetingParticipant = useStore($enabledPaymentMeetingParticipant);
+    const { isDonationPanelForParticipantVisible } = useStore($meetingDonationPanelForParticipantVisibilityStore);
+    const { isDonationPanelForAudienceVisible } = useStore($meetingDonationPanelForAudienceVisibilityStore);
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -225,9 +233,7 @@ const Component = () => {
     );
     const paymentIntent = useStore($paymentIntent);
     const intentId = paymentIntent?.id;
-    const enabledPaymentMeetingParticipant = useStore(
-        $enabledPaymentMeetingParticipant,
-    );
+
     const isNoteEmojiListOpen = useStore($isToggleNoteEmojiListPanel);
     const isPortraitLayout = useStore($isPortraitLayout);
 
@@ -323,7 +329,7 @@ const Component = () => {
 
     const handleEndVideoChat = useCallback(async () => {
         try {
-            if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {                
+            if (isOwner && isSubscriptionPlanBusiness && isAiTranscriptEnabled) {
                 sendAiTranscription({ script: transcriptionsStore, currentDate: getFormattedDataTime() });
                 setAITranscriptEvent(false);
             }
@@ -428,6 +434,14 @@ const Component = () => {
         if (isNoteEmojiListOpen) {
             toggleNoteEmojiListPanelEvent(false);
         }
+
+        if (isDonationPanelForParticipantVisible) {
+            setDonationPanelForParticipantVisibilityEvent(false);
+        }
+
+        if (isDonationPanelForAudienceVisible) {
+            setDonationPanelForAudienceVisibilityEvent(false);
+        }
     };
 
     const handleToggleSchedulePanel = (e: SyntheticEvent) => {
@@ -452,6 +466,14 @@ const Component = () => {
         if (isNoteEmojiListOpen) {
             toggleNoteEmojiListPanelEvent(false);
         }
+
+        if (isDonationPanelForParticipantVisible) {
+            setDonationPanelForParticipantVisibilityEvent(false);
+        }
+
+        if (isDonationPanelForAudienceVisible) {
+            setDonationPanelForAudienceVisibilityEvent(false);
+        }
     };
 
     const handleToggleEditRuumeSettingPanel = (e: SyntheticEvent) => {
@@ -474,12 +496,16 @@ const Component = () => {
             toggleSchedulePanelEvent(false);
         }
 
-        if (enabledPaymentMeetingAudience) {
-            handleTogglePayment();
-        }
-
         if (isNoteEmojiListOpen) {
             toggleNoteEmojiListPanelEvent(false);
+        }
+
+        if (isDonationPanelForParticipantVisible) {
+            setDonationPanelForParticipantVisibilityEvent(false);
+        }
+
+        if (isDonationPanelForAudienceVisible) {
+            setDonationPanelForAudienceVisibilityEvent(false);
         }
     };
 
@@ -506,6 +532,14 @@ const Component = () => {
         if (isSchedulePannelOpen) {
             toggleSchedulePanelEvent(false);
         }
+
+        if (isDonationPanelForParticipantVisible) {
+            setDonationPanelForParticipantVisibilityEvent(false);
+        }
+
+        if (isDonationPanelForAudienceVisible) {
+            setDonationPanelForAudienceVisibilityEvent(false);
+        }
     }
 
     const handleEmojiListToggle = (e: SyntheticEvent) => {
@@ -530,6 +564,98 @@ const Component = () => {
 
         if (isNoteEmojiListOpen) {
             toggleNoteEmojiListPanelEvent(false);
+        }
+
+        if (isDonationPanelForParticipantVisible) {
+            setDonationPanelForParticipantVisibilityEvent(false);
+        }
+
+        if (isDonationPanelForAudienceVisible) {
+            setDonationPanelForAudienceVisibilityEvent(false);
+        }
+    }
+
+    const handleDonationPanelForParticipant = (e: SyntheticEvent) => {
+        e.stopPropagation();
+
+        if (!isDonationPanelForParticipantVisible) {
+            if (!isCreatePaymentIntentPending) {
+                if (!intentId) {
+                    createPaymentIntentWithData({
+                        paymentType: PaymentType.Meeting,
+                    });
+                }
+            }
+        } else {
+            cancelPaymentIntentWithData();
+        }
+
+        setDonationPanelForParticipantVisibilityEvent({ isDonationPanelForParticipantVisible: !isDonationPanelForParticipantVisible });
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
+        }
+    }
+
+    const handleDonationPanelForAudience = (e: SyntheticEvent) => {
+        e.stopPropagation();
+
+        if (!isDonationPanelForParticipantVisible) {
+            if (!isCreatePaymentIntentPending) {
+                if (!intentId) {
+                    createPaymentIntentWithData({
+                        paymentType: PaymentType.Meeting,
+                    });
+                }
+            }
+        } else {
+            cancelPaymentIntentWithData();
+        }
+
+        setDonationPanelForAudienceVisibilityEvent({ isDonationPanelForAudienceVisible: !isDonationPanelForAudienceVisible });
+
+        if (isProfileOpen) {
+            toggleProfilePanelEvent(false);
+        }
+
+        if (isEditRuumeSettingPanelOpen) {
+            toggleEditRuumeSettingEvent(false);
+        }
+
+        if (isUsersOpen) {
+            toggleUsersPanelEvent(false);
+        }
+
+        if (isSchedulePannelOpen) {
+            toggleSchedulePanelEvent(false);
+        }
+
+        if (isNoteEmojiListOpen) {
+            toggleNoteEmojiListPanelEvent(false);
+        }
+
+        if (isEmojiListVisible) {
+            setEmojiListVisibilityEvent({ isEmojiListVisible: false });
         }
     }
 
@@ -996,6 +1122,34 @@ const Component = () => {
                     </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
+            <ConditionalRender condition={enabledPaymentMeetingParticipant}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="buttons.more"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomGrid
+                        className={styles.deviceButton}
+                        onClick={handleDonationPanelForParticipant}
+                    >
+                        <ActionButton
+                            variant="transparentPure"
+                            className={styles.actionBtn}
+                            Icon={<AttachMoneyIcon width="25px" height="25px" />}
+                        />
+                        <CustomTypography
+                            nameSpace="meeting"
+                            translation="buttons.payDonate"
+                            color="white"
+                            fontSize={12}
+                        />
+                    </CustomGrid>
+                </CustomTooltip>
+            </ConditionalRender>
             <CustomTooltip
                 title={
                     <Translation
@@ -1051,7 +1205,8 @@ const Component = () => {
                     </CustomGrid>
                 </CustomTooltip>
             </ConditionalRender>
-            <ConditionalRender condition={(isAudience && enabledPaymentMeetingAudience)}>
+
+            <ConditionalRender condition={enabledPaymentMeetingAudience}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -1063,7 +1218,7 @@ const Component = () => {
                 >
                     <CustomGrid
                         className={styles.deviceButton}
-                        onClick={handleToggleEditRuumeSettingPanel}
+                        onClick={handleDonationPanelForAudience}
                     >
                         <ActionButton
                             variant="transparentPure"

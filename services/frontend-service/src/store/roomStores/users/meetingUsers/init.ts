@@ -19,7 +19,9 @@ import {
     toggleProfilePanelEvent,
     toggleEditRuumeSettingEvent,
     toggleNoteEmojiListPanelEvent,
-    $isToggleEditRuumeSelectMenuOpenStore
+    togglePaymentCurrencyPanelEvent,
+    $isToggleEditRuumeSelectMenuOpenStore,
+    $isPaymentCurrencyDropdownOpenStore
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
@@ -78,6 +80,10 @@ $isTogglProfilePanel.on(toggleProfilePanelEvent, (toggle, newToggle) =>
 );
 
 $isToggleEditRuumePanel.on(toggleEditRuumeSettingEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isPaymentCurrencyDropdownOpenStore.on(togglePaymentCurrencyPanelEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 

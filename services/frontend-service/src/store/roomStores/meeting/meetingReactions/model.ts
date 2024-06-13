@@ -32,25 +32,25 @@ export const $meetingReactionsStore = meetingDomain.createStore<MeetingReaction[
 );
 
 export const $meetingEmojiListVisibilityStore = meetingDomain.createStore<{ isEmojiListVisible: boolean }>({ isEmojiListVisible: false });
+export const $meetingDonationPanelForParticipantVisibilityStore = meetingDomain.createStore<{ isDonationPanelForParticipantVisible: boolean }>({ isDonationPanelForParticipantVisible: false });
+export const $meetingDonationPanelForAudienceVisibilityStore = meetingDomain.createStore<{ isDonationPanelForAudienceVisible: boolean }>({ isDonationPanelForAudienceVisible: false });
 
 //For mobile panels
 export const $meetingPanelsVisibilityForMobileStore = meetingDomain.createStore<MeetingPanelsVisibilityForMobile>(initialMeetingPanelsVisibilityData);
 
 export const setEmojiListVisibilityEvent = meetingDomain.createEvent<{ isEmojiListVisible: boolean }>('setEmojiListVisibilityEvent');
+export const setDonationPanelForParticipantVisibilityEvent = meetingDomain.createEvent<{ isDonationPanelForParticipantVisible: boolean }>('setDonationPanelForParticipantVisibilityEvent');
+export const setDonationPanelForAudienceVisibilityEvent = meetingDomain.createEvent<{ isDonationPanelForAudienceVisible: boolean }>('setDonationPanelForAudienceVisibilityEvent');
 export const setMeetingPanelsVisibilityForMobileEvent = meetingDomain.createEvent<MeetingPanelsVisibilityForMobile>('setMeetingPanelsVisibilityForMobileEvent');
-
 export const addMeetingReactionsEvent = meetingDomain.createEvent<MeetingReaction>(
     'addMeetingReactionsEvent',
 );
-
 export const setMeetingReactionsEvent = meetingDomain.createEvent<MeetingReaction[]>(
     'setMeetingReactionsEvent',
 );
-
 export const removeMeetingReactionEvent = meetingDomain.createEvent<
     MeetingReaction['id']
 >('removeMeetingReactionEvent');
-
 export const sendMeetingReactionSocketEvent = createMeetingSocketEvent<
     { emojiName: string },
     void

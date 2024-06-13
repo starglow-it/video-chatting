@@ -69,40 +69,44 @@ const Component = ({
 
     const handleSubmitForm = useCallback(
         async (event: { preventDefault: () => void }) => {
-            event.preventDefault();
+            try {
+                event.preventDefault();
 
-            if (isPaywallPaid) {
-                addNotificationEvent({
-                    type: NotificationType.RequestRecordingMeeting,
-                    message: "alreadyPaid",
-                    withSuccessIcon: true
-                });
-            } else {
-                if (stripe && elements && !errors.email) {
-                    setIsLoading(true);
+                if (isPaywallPaid) {
+                    addNotificationEvent({
+                        type: NotificationType.RequestRecordingMeeting,
+                        message: "alreadyPaid",
+                        withSuccessIcon: true
+                    });
+                } else {
+                    if (stripe && elements && !errors.email) {
+                        setIsLoading(true);
 
-                    const result = await stripe.confirmCardPayment(
-                        paymentIntentSecret,
-                        {
-                            payment_method: {
-                                card: elements.getElement(CardNumberElement) ?? {
-                                    token: '',
+                        const result = await stripe.confirmCardPayment(
+                            paymentIntentSecret,
+                            {
+                                payment_method: {
+                                    card: elements.getElement(CardNumberElement) ?? {
+                                        token: '',
+                                    },
                                 },
                             },
-                        },
-                    );
+                        );
 
-                    if (result?.error) {
-                        onError();
-                        setIsLoading(false);
-                    } else {
-                        setIsLoading(false);
-                        if (isPreEvent) {
-                            await handleSubmit(onSubmitCodeByEmail)();
+                        if (result?.error) {
+                            onError();
+                            setIsLoading(false);
+                        } else {
+                            setIsLoading(false);
+                            if (isPreEvent) {
+                                await handleSubmit(onSubmitCodeByEmail)();
+                            }
+                            onSubmit();
                         }
-                        onSubmit();
                     }
                 }
+            } catch (error) {
+                console.error(error);
             }
         },
         [stripe, elements, errors],
