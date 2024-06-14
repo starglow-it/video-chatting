@@ -3,7 +3,13 @@ import { PropsWithClassName } from 'shared-frontend/types';
 import YouTube from 'react-youtube';
 
 import { getYoutubeId } from 'shared-utils';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
+
 import styles from './CustomYoutubePlayer.module.scss';
+
+const getThumbnailUrl = (videoId: string) => {
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+};
 
 export const CustomYoutubePlayer = ({
     url,
@@ -18,6 +24,7 @@ export const CustomYoutubePlayer = ({
 }>) => {
     const playerRef = useRef<any>(null);
     const yId = getYoutubeId(url);
+    const { isMobile } = useBrowserDetect();
 
     const setVolume = (volumeData: number) => {
         if (playerRef.current) playerRef.current?.setVolume?.(volumeData);
@@ -60,31 +67,44 @@ export const CustomYoutubePlayer = ({
     };
 
     return (
-        <YouTube
-            videoId={yId}
-            iframeClassName={styles.fullPlayer}
-            className={className}
-            opts={{
-                width: '630',
-                height: '340',
-                playerVars: {
-                    autoplay: 1,
-                    playsinline: 1,
-                    controls: 0,
-                    origin: '*',
-                    loop: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    modestbranding: 1,
-                    fs: 0,
-                    allowfullscreen: 1,
-                    mute: 1,
-                },
-            }}
-            onPlay={onPlay}
-            onReady={onReady}
-            onError={onError}
-            onPause={onPause}
-        />
+        <>
+            {
+                isMobile
+                    ? (
+                        <img
+                            src={getThumbnailUrl(yId)}
+                            alt="Video Thumbnail"
+                        />
+                    )
+                    : (
+                        <YouTube
+                            videoId={yId}
+                            iframeClassName={styles.fullPlayer}
+                            className={className}
+                            opts={{
+                                width: '630',
+                                height: '340',
+                                playerVars: {
+                                    autoplay: 1,
+                                    playsinline: 1,
+                                    controls: 0,
+                                    origin: '*',
+                                    loop: 1,
+                                    rel: 0,
+                                    showinfo: 0,
+                                    modestbranding: 1,
+                                    fs: 0,
+                                    allowfullscreen: 1,
+                                    mute: 1,
+                                },
+                            }}
+                            onPlay={onPlay}
+                            onReady={onReady}
+                            onError={onError}
+                            onPause={onPause}
+                        />
+                    )}
+
+        </>
     );
 };
