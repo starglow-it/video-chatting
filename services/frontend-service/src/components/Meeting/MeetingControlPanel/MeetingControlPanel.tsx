@@ -170,15 +170,25 @@ const Component = () => {
     }, []);
 
     const handleCloseDonationPanelForParticipant = useCallback((e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        cancelPaymentIntentWithData();
-        setDonationPanelForParticipantVisibilityEvent({ isDonationPanelForParticipantVisible: false });
+        if (enabledPaymentMeetingParticipant) {
+            e.stopPropagation();
+            if (isDonationPanelForParticipantVisible) {
+                cancelPaymentIntentWithData();
+            }
+            setDonationPanelForParticipantVisibilityEvent({ isDonationPanelForParticipantVisible: false });
+        }
     }, []);
 
     const handleCloseDonationPanelForAudience = useCallback((e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        cancelPaymentIntentWithData();
-        setDonationPanelForAudienceVisibilityEvent({ isDonationPanelForAudienceVisible: false });
+        if (enabledPaymentMeetingAudience) {
+            e.stopPropagation();
+
+            if (isDonationPanelForAudienceVisible) {
+                cancelPaymentIntentWithData();
+            }
+            setDonationPanelForAudienceVisibilityEvent({ isDonationPanelForAudienceVisible: false });
+        }
+
     }, []);
 
     const handleCloseForm = useCallback(() => {

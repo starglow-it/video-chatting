@@ -247,31 +247,31 @@ const Component = () => {
     const isAiTranscriptEnabled = useStore($isAITranscriptEnabledStore);
     const transcriptionQueue = useStore($transcriptionQueue);
 
-    function deduplicateText(input: string) {
-        const tokens = input.split(/\W+/);
-        const seen = new Set();
-        const result: any = [];
+    // function deduplicateText(input: string) {
+    //     const tokens = input.split(/\W+/);
+    //     const seen = new Set();
+    //     const result: any = [];
 
-        tokens.forEach(token => {
-            const phrase = token.toLowerCase();
-            if (!seen.has(phrase) && phrase.trim() !== "") {
-                seen.add(phrase);
-                result.push(token);
-            }
-        });
+    //     tokens.forEach(token => {
+    //         const phrase = token.toLowerCase();
+    //         if (!seen.has(phrase) && phrase.trim() !== "") {
+    //             seen.add(phrase);
+    //             result.push(token);
+    //         }
+    //     });
 
-        return result.join(" ");
-    }
+    //     return result.join(" ");
+    // }
 
-    const transcriptionList = transcriptionQueue.map((element: any) => ({
-        body: deduplicateText(element.message),
-        id: element.sender + new Date().getTime(),
-        sender: {
-            id: element.sender,
-            username: element.sender,
-            profileAvatar: '',
-        },
-    }));
+    // const transcriptionList = transcriptionQueue.map((element: any) => ({
+    //     body: deduplicateText(element.message),
+    //     id: element.sender + new Date().getTime(),
+    //     sender: {
+    //         id: element.sender,
+    //         username: element.sender,
+    //         profileAvatar: '',
+    //     },
+    // }));
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -298,11 +298,9 @@ const Component = () => {
     }, [isMeetingHost, isThereNewRequests]);
 
     useEffect(() => {
-        if (doNotDisturbStore) {
-            updateUserSocketEvent({
-                doNotDisturb: doNotDisturbStore,
-            });
-        }
+        updateUserSocketEvent({
+            doNotDisturb: doNotDisturbStore,
+        });
     }, [doNotDisturbStore]);
 
     useEffect(() => {
@@ -361,7 +359,7 @@ const Component = () => {
         }
     }, [
         isAiTranscriptEnabled,
-        transcriptionList,
+        // transcriptionList,
         isSubscriptionPlanBusiness,
         isOwner,
         isRecording,

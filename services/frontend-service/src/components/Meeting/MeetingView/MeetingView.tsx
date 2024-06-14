@@ -165,7 +165,7 @@ const Component = () => {
         fn: (state, [hostUserId]) =>
             state.find(user => user.id === hostUserId) || null,
     });
-
+    
     const prevHostUserId = useRef<string>(meeting.hostUserId);
 
     const createContentWithLineBreaks = text => {
