@@ -99,10 +99,9 @@ const Component = ({
     }, [meetingTemplate.id, enabledPaymentPaywallParticipant, enabledPaymentPaywallAudience, meetingRole]);
 
     const handleEnterMeeting = () => {
-        if ((
-            (meetingRole === MeetingRole.Participant && enabledPaymentPaywallParticipant) ||
-            (meetingRole === MeetingRole.Audience && enabledPaymentPaywallAudience)
-        ) && (!isOwnerInMeeting || doNotDisturb || localUserStore.isPaywallPaid)
+        if (
+            (enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience) &&
+            (!isOwnerInMeeting || doNotDisturb || localUserStore.isPaywallPaid)
         ) {
             setIsPreviewShow(false);
         } else {
@@ -116,7 +115,7 @@ const Component = ({
         }
         if (preEventPaymentCodeCheck === 'success') {
             handleSetMeetingPreviewShow();
-        } 
+        }
 
         let meetingUserIds = localStorage.getItem('meetingUserIds');
         let parsedMeetingUserIds = meetingUserIds && Array.isArray(JSON.parse(meetingUserIds)) ? [...JSON.parse(meetingUserIds)] : [];
@@ -252,7 +251,7 @@ const Component = ({
                                 gap={4}
                                 flexWrap="nowrap"
                                 justifyContent="center"
-                                className={clsx(styles.buttonsGroup, { [styles.enterBtn]:  isOwnerInMeeting && !doNotDisturb})}
+                                className={clsx(styles.buttonsGroup, { [styles.enterBtn]: isOwnerInMeeting && !doNotDisturb })}
                             >
                                 <CustomGrid
                                     item
@@ -269,16 +268,17 @@ const Component = ({
                                 </CustomGrid>
                                 <CustomGrid item xs>
                                     {
-                                        !isOwnerInMeeting || doNotDisturb
+                                        // !isOwnerInMeeting || doNotDisturb || enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience
+                                        enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience
                                             ? <ActionButton
-                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Pre-pay" }
+                                                label={isJoinWaitingRoomPending ? <CustomLoader /> : "Pre-pay"}
                                                 disabled={isJoinWaitingRoomPending}
                                                 className={clsx(styles.actionButton, styles.prePayBtn)}
                                                 onAction={handleEnterMeeting}
                                             />
                                             : <ActionButton
                                                 variant="accept"
-                                                label={ isJoinWaitingRoomPending ? <CustomLoader /> : "Enter" }
+                                                label={isJoinWaitingRoomPending ? <CustomLoader /> : "Enter"}
                                                 disabled={isJoinWaitingRoomPending}
                                                 className={clsx(styles.actionButton)}
                                                 onAction={handleEnterMeeting}
