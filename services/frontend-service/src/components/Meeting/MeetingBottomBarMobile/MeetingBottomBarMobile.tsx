@@ -11,6 +11,8 @@ import { PersonPlusIcon } from 'shared-frontend/icons/OtherIcons/PersonPlusIcon'
 import LinkIcon from '@mui/icons-material/Link';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
+import { PaymentType } from 'shared-const';
+
 import {
     $isHaveNewMessage,
     $isAudience,
@@ -24,6 +26,7 @@ import {
     $meetingUsersStore,
     $meetingPanelsVisibilityForMobileStore,
     $enabledPaymentMeetingAudience,
+    $paymentIntent,
     initialMeetingPanelsVisibilityData,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
@@ -32,7 +35,9 @@ import {
     setMeetingPanelsVisibilityForMobileEvent,
     updateUserSocketEvent,
     updateLocalUserEvent,
-    setDevicesPermission
+    setDevicesPermission,
+    createPaymentIntentWithData,
+    cancelPaymentIntentWithData
 } from 'src/store/roomStores';
 
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -77,11 +82,14 @@ export const MeetingBottomBarMobile = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
     const enabledPaymentMeetingAudience = useStore($enabledPaymentMeetingAudience);
     const enabledPaymentMeetingParticipant = useStore($enabledPaymentMeetingParticipant);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const paymentIntent = useStore($paymentIntent);
+    const intentId = paymentIntent?.id;
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
-
-    const router = useRouter();
 
     const {
         isMobileMoreListVisible,
@@ -90,8 +98,11 @@ export const MeetingBottomBarMobile = () => {
         isMobileLinksPanleVisible,
         isMobileQAPanleVisible,
         isMobileStickyNotesVisible,
-        isMobileSettingPanelVisible
+        isMobileSettingPanelVisible,
+        isMobileDonationPanleVisible
     } = useStore($meetingPanelsVisibilityForMobileStore);
+
+    const router = useRouter();
 
     const handleToggleCam = useCallback(async () => {
         if (isMeetingConnected) {
@@ -163,10 +174,23 @@ export const MeetingBottomBarMobile = () => {
 
     const handleOpenDonationPanel = useCallback((e: SyntheticEvent) => {
         e.stopPropagation();
+
+        if(!isMobileDonationPanleVisible) {
+            if (!isCreatePaymentIntentPending) {
+                if (!intentId) {
+                    createPaymentIntentWithData({
+                        paymentType: PaymentType.Meeting,
+                    });
+                }
+            }
+        } else {
+            cancelPaymentIntentWithData();
+        }
+
         setMeetingPanelsVisibilityForMobileEvent({
             ...initialMeetingPanelsVisibilityData,
             isMobileMoreListVisible: false,
-            isMobileDonationPanleVisible: true
+            isMobileDonationPanleVisible: !isMobileDonationPanleVisible
         });
     }, []);
 

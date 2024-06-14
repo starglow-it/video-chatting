@@ -178,17 +178,14 @@ export const MeetingEditRuumeSetting = () => {
         }
     }, [errors]);
 
-    const handleChangeVolume = useCallback((event: any) => {
-        setSettingsBackgroundAudioVolume(event.target.value);
-    }, []);
-
     const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
             prev === accordionId ? '' : accordionId,
         );
     }, []);
 
-    const handleDoNotDisturb = () => {
+    const handleDoNotDisturb = (e) => {
+        e.preventDefault();
         setDoNotDisturbEvent(!doNotDisturbStore);
     };
 
@@ -268,14 +265,6 @@ export const MeetingEditRuumeSetting = () => {
         updateUserSocketEvent({
             isAuraActive: !localUser.isAuraActive
         });
-    };
-
-    const handleCloseForm = () => {
-        setCurrentAccordionId('');
-        if (enabledPaymentMeetingParticipant || enabledPaymentMeetingAudience) {
-            handleCloseEditRuumePanel();
-        }
-        cancelPaymentIntentWithData();
     };
 
     const onSubmit = useCallback(
@@ -407,21 +396,7 @@ export const MeetingEditRuumeSetting = () => {
                                         onSave={handleOnSave}
                                     />
                                 </ConditionalRender>
-                                <ConditionalRender condition={enabledPaymentMeetingParticipant}>
-                                    <PaymentForm
-                                        onClose={handleCloseForm}
-                                        payment={paymentMeetingParticipant}
-                                    />
-                                </ConditionalRender>
                             </CustomAccordion>
-                        </ConditionalRender>
-                        <ConditionalRender condition={enabledPaymentMeetingAudience}>
-                            <CustomPaper className={styles.audienceDonationPaper}>
-                                <PaymentForm
-                                    onClose={handleCloseForm}
-                                    payment={paymentMeetingAudience}
-                                />
-                            </CustomPaper>
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner || isParticipant}>
                             <CustomAccordion
@@ -515,43 +490,6 @@ export const MeetingEditRuumeSetting = () => {
                         </ConditionalRender>
                     </CustomGrid>
                 </CustomScroll>
-                {/* <ConditionalRender condition={isOwner}>
-                    <CustomGrid
-                        item
-                        container
-                        justifyContent="center"
-                    >
-                        <CustomButton
-                            className={styles.saveBtn}
-                            form="customLinkForm"
-                            type="submit"
-                            label={
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation="profileSettingPanel.saveBtn"
-                                />
-                            }
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender condition={localUser.meetingRole === MeetingRole.Participant}>
-                    <CustomGrid
-                        item
-                        container
-                        justifyContent="center"
-                    >
-                        <CustomButton
-                            className={styles.saveBtn}
-                            onClick={handleParticipantSubmit}
-                            label={
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation="profileSettingPanel.saveBtn"
-                                />
-                            }
-                        />
-                    </CustomGrid>
-                </ConditionalRender> */}
             </CustomGrid>
         </FormProvider>
     );

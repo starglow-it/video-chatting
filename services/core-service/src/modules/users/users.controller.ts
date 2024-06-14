@@ -638,8 +638,7 @@ export class UsersController {
           companyName: 'Your company',
           position: '',
           contactEmail: '',
-          maxMeetingTime: 10,
-          teamMembers: []
+          maxMeetingTime: 10
         },
         session,
       );
