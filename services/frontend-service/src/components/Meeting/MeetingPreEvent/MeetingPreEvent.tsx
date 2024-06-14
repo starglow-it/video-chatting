@@ -101,7 +101,7 @@ const Component = ({
     const handleEnterMeeting = () => {
         if (
             (enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience) &&
-            (!isOwnerInMeeting || doNotDisturb || localUserStore.isPaywallPaid)
+            (!isOwnerInMeeting || doNotDisturb || !localUserStore.isPaywallPaid)
         ) {
             setIsPreviewShow(false);
         } else {
