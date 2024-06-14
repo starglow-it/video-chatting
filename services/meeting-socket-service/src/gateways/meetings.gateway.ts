@@ -514,6 +514,7 @@ export class MeetingsGateway
           query: {
             templateId: userData.templateId,
           },
+          populatePaths: 'users',
           session,
         });
 
@@ -524,18 +525,35 @@ export class MeetingsGateway
           }))
           : null;
 
-        if (userData.meetingRole == MeetingRole.Host && !meeting) {
-          meeting = await this.meetingsService.createMeeting({
-            data: {
-              isMonetizationEnabled: false,
-              mode: 'together',
-              ownerProfileId: userData.profileId,
-              maxParticipants: userData.maxParticipants,
-              templateId: userData.templateId,
-              links
-            },
-            session,
-          });
+        if (userData.meetingRole == MeetingRole.Host) {
+          if (
+            meeting &&
+            meeting.users?.length > 0 &&
+            meeting.users?.findIndex(meetingUser => meetingUser.accessStatus === MeetingAccessStatusEnum.InMeeting) === -1
+          ) {
+            await this.meetingsCommonService.handleClearMeetingData({
+              userId: meeting.ownerProfileId,
+              templateId: template?.id,
+              instanceId: template?.meetingInstance?.instanceId,
+              meetingId: meeting?.id,
+              session,
+            });
+            meeting = null;
+          }
+
+          if (!meeting) {
+            meeting = await this.meetingsService.createMeeting({
+              data: {
+                isMonetizationEnabled: false,
+                mode: 'together',
+                ownerProfileId: userData.profileId,
+                maxParticipants: userData.maxParticipants,
+                templateId: userData.templateId,
+                links
+              },
+              session,
+            });
+          }
         }
 
         if (!meeting) {
