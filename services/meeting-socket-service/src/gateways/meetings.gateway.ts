@@ -2801,13 +2801,11 @@ export class MeetingsGateway
           let summary = parsedContent.summary || 'No summary';
           // let transcription = parsedContent.transcription || 'No transcription';
           let transcription = scriptString || 'No transcription';
-
-          let attachmentContent = "";
+          
+          const attachmentContent = 'Summary\n\n\n' +  summary + '\n\n\nTranscript\n\n\n ' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
 
           if (transcription.length > 1000) {
-            attachmentContent = 'Summary\n\n\n' + summary + '\n\n\nTranscript\n\n\n' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
-
-            transcription = transcription.slice(0, transcription.slice(0, 1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
+            transcription = transcription.slice(0, transcription.slice(0,1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
           }
 
           transcription = transcription.replace(/-/g, ": ").replace(/ \|/g, "<br>").trim();

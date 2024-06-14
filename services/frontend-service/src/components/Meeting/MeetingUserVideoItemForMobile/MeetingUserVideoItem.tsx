@@ -236,7 +236,7 @@ const Component = ({
     };
 
     return (
-        <CustomGrid container key={userId} direction="column" alignItems="center" gap="6px">
+        <CustomGrid container key={userId} direction="column" alignItems="center" gap="6px" style={{position: "relative"}}>
             <MeetingUserVideoChildCom {...childProps} />
             <ConditionalRender condition={!isScreenSharing}>
                 <CustomPaper
@@ -254,7 +254,7 @@ const Component = ({
                     </CustomTypography>
                 </CustomPaper>
             </ConditionalRender>
-            {userId !== meeting.hostUserId ? < EmojiPlayground userId={userId} /> : null}
+            <EmojiPlayground userId={userId} /> 
         </CustomGrid>
     );
 };
