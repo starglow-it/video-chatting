@@ -287,37 +287,35 @@ const MeetingContainer = memo(() => {
                 setCurrentAudioDeviceEvent(savedSettings.savedAudioDeviceId);
                 setCurrentVideoDeviceEvent(savedSettings.savedVideoDeviceId);
             }
-
+            
             if (isMeetingSocketConnected) {
                 if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
 
                 let meetingUserId: string = localStorage.getItem('meetingUserId') || '';
+                
                 await sendJoinWaitingRoomSocketEvent({ meetingUserId, isScheduled: Boolean(isMuteYb) });
 
                 if (isOwner) {
-                    if (isFirstRender.current) {
-                        if (isHasSettings) {
-                            joinMeetingEvent({
-                                isSettingsAudioBackgroundActive:
-                                    savedSettings.backgroundAudioSetting,
-                                settingsBackgroundAudioVolume:
-                                    savedSettings.backgroundAudioVolumeSetting,
-                                needToRememberSettings: false,
-                            });
-                        } else {
-                            joinMeetingEvent({
-                                isSettingsAudioBackgroundActive:
-                                    isBackgroundAudioActive,
-                                settingsBackgroundAudioVolume:
-                                    backgroundAudioVolume,
-                                needToRememberSettings: true,
-                            });
-                        }
-
-                        isFirstRender.current = false;
+                    if (isHasSettings) {
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                savedSettings.backgroundAudioSetting,
+                            settingsBackgroundAudioVolume:
+                                savedSettings.backgroundAudioVolumeSetting,
+                            needToRememberSettings: false,
+                        });
+                    } else {
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                isBackgroundAudioActive,
+                            settingsBackgroundAudioVolume:
+                                backgroundAudioVolume,
+                            needToRememberSettings: true,
+                        });
                     }
+
                 }
             }
 

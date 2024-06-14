@@ -514,6 +514,7 @@ export class MeetingsGateway
           query: {
             templateId: userData.templateId,
           },
+          populatePaths: 'users',
           session,
         });
 
@@ -524,18 +525,35 @@ export class MeetingsGateway
           }))
           : null;
 
-        if (userData.meetingRole == MeetingRole.Host && !meeting) {
-          meeting = await this.meetingsService.createMeeting({
-            data: {
-              isMonetizationEnabled: false,
-              mode: 'together',
-              ownerProfileId: userData.profileId,
-              maxParticipants: userData.maxParticipants,
-              templateId: userData.templateId,
-              links
-            },
-            session,
-          });
+        if (userData.meetingRole == MeetingRole.Host) {
+          if (
+            meeting &&
+            meeting.users?.length > 0 &&
+            meeting.users?.findIndex(meetingUser => meetingUser.accessStatus === MeetingAccessStatusEnum.InMeeting) === -1
+          ) {
+            await this.meetingsCommonService.handleClearMeetingData({
+              userId: meeting.ownerProfileId,
+              templateId: template?.id,
+              instanceId: template?.meetingInstance?.instanceId,
+              meetingId: meeting?.id,
+              session,
+            });
+            meeting = null;
+          }
+
+          if (!meeting) {
+            meeting = await this.meetingsService.createMeeting({
+              data: {
+                isMonetizationEnabled: false,
+                mode: 'together',
+                ownerProfileId: userData.profileId,
+                maxParticipants: userData.maxParticipants,
+                templateId: userData.templateId,
+                links
+              },
+              session,
+            });
+          }
         }
 
         if (!meeting) {
@@ -2787,9 +2805,9 @@ export class MeetingsGateway
           let attachmentContent = "";
 
           if (transcription.length > 1000) {
-            attachmentContent = 'Summary\n\n\n' +  summary + '\n\n\nTranscript\n\n\n' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
+            attachmentContent = 'Summary\n\n\n' + summary + '\n\n\nTranscript\n\n\n' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
 
-            transcription = transcription.slice(0, transcription.slice(0,1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
+            transcription = transcription.slice(0, transcription.slice(0, 1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
           }
 
           transcription = transcription.replace(/-/g, ": ").replace(/ \|/g, "<br>").trim();
