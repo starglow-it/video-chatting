@@ -287,17 +287,18 @@ const MeetingContainer = memo(() => {
                 setCurrentAudioDeviceEvent(savedSettings.savedAudioDeviceId);
                 setCurrentVideoDeviceEvent(savedSettings.savedVideoDeviceId);
             }
-            
-            if (isMeetingSocketConnected) {
+
+            if (isMeetingSocketConnected && Boolean(meetingTemplate?.meetingInstance?.owner)) {
                 if (!isAudience && !isRecorder) {
                     await initDevicesEventFxWithStore();
                 }
 
                 let meetingUserId: string = localStorage.getItem('meetingUserId') || '';
-                
+
                 await sendJoinWaitingRoomSocketEvent({ meetingUserId, isScheduled: Boolean(isMuteYb) });
 
                 if (isOwner) {
+
                     if (isHasSettings) {
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:

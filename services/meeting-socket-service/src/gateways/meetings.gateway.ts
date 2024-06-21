@@ -732,11 +732,11 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        const user = this.getUserFromSocket(socket);
+        // const user = this.getUserFromSocket(socket);
 
         const u = await this.usersService.updateVideoContainer({
           userTemplate: template,
-          userId: user._id.toString(),
+          userId: message.user.id,
           event: UserActionInMeeting.Join,
         });
 
@@ -791,7 +791,7 @@ export class MeetingsGateway
 
         await this.meetingHostTimeService.create({
           data: {
-            host: user.id,
+            host: message.user.id,
             meeting: meeting.id,
           },
           session,
@@ -824,7 +824,7 @@ export class MeetingsGateway
               ts: finishTime - timeLimitNotificationTimeout,
               callback: this.sendTimeLimit.bind(this, {
                 meetingId: meeting._id,
-                userId: user._id,
+                userId: message.user.id,
                 mainUserId: mainUser.id,
               }),
             });
