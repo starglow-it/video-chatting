@@ -123,12 +123,12 @@ export class MeetingsCommonService {
     session,
   }) {
     await this.clearMeeting({ meetingId, session });
-    await this.coreService.updateMeetingInstance({
-      instanceId,
-      data: {
-        owner: null,
-      },
-    });
+    // await this.coreService.updateMeetingInstance({
+    //   instanceId,
+    //   data: {
+    //     owner: null,
+    //   },
+    // });
     await this.coreService.updateUserTemplate({
       templateId,
       userId,
