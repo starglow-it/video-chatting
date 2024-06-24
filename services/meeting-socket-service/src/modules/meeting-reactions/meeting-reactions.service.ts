@@ -7,7 +7,11 @@ import {
   MeetingReactionDocument,
 } from '../../schemas/meeting-reaction.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelMultipleQuery } from 'src/types/mongoose';
+
+import {
+  DeleteModelQuery,
+  GetModelMultipleQuery,
+} from '../../types/mongoose';
 
 @Injectable()
 export class MeetingReactionsService {
@@ -23,6 +27,14 @@ export class MeetingReactionsService {
   async deleteOne(query, { session }: ITransactionSession): Promise<void> {
     await this.meetingReaction.deleteOne(query, { session });
 
+    return;
+  }
+
+  async deleteMany({
+    query,
+    session = null,
+  }: DeleteModelQuery<MeetingReactionDocument>): Promise<void> {
+    await this.meetingReaction.deleteMany(query, { session: session?.session });
     return;
   }
 

@@ -15,7 +15,6 @@ import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import OpenAI from 'openai'
 
-
 import { BaseGateway } from './base.gateway';
 
 import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';

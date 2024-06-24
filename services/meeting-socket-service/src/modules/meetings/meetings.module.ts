@@ -8,6 +8,7 @@ import { MeetingTimeModule } from '../meeting-time/meeting-time.module';
 import { MeetingsCommonService } from './meetings.common';
 import { MeetingChatsModule } from '../meeting-chats/meeting-chats.module';
 import { MeetingQuestionAnswersModule } from '../meeting-question-answer/meeting-question-answer.module';
+import { MeetingReactionsModule } from '../meeting-reactions/meeting-reactions.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MeetingQuestionAnswersModule } from '../meeting-question-answer/meeting
     UsersModule,
     MeetingChatsModule,
     MeetingQuestionAnswersModule,
+    MeetingReactionsModule
   ],
   controllers: [],
   providers: [MeetingsService, MeetingsCommonService],

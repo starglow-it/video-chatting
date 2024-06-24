@@ -16,6 +16,7 @@ import { MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
 import { MeetingChatReactionsService } from '../meeting-chats/meeting-chat-reactions.service';
+import { MeetingReactionsService } from '../meeting-reactions/meeting-reactions.service';
 import { MeetingQuestionAnswersService } from '../meeting-question-answer/meeting-question-answer.service';
 import { MeetingQuestionAnswerReactionsService } from '../meeting-question-answer/meeting-question-answer-reactions.service';
 
@@ -27,6 +28,7 @@ export class MeetingsCommonService {
     private coreService: CoreService,
     private usersService: UsersService,
     private readonly meetingChatsService: MeetingChatsService,
+    private readonly meetingReactionsService: MeetingReactionsService,
     private readonly meetingChatReactionsService: MeetingChatReactionsService,
     private readonly meetingQuestionAnswersService: MeetingQuestionAnswersService,
     private readonly meeetingQuestionAnswerReactionsService: MeetingQuestionAnswerReactionsService,
@@ -85,6 +87,11 @@ export class MeetingsCommonService {
     session: ITransactionSession;
   }) {
     await this.meetingChatReactionsService.deleteMany({
+      query: { meeting: meetingId },
+      session,
+    });
+
+    await this.meetingReactionsService.deleteMany({
       query: { meeting: meetingId },
       session,
     });
