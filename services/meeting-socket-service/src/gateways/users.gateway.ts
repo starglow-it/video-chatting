@@ -118,7 +118,7 @@ export class UsersGateway extends BaseGateway {
   private dateFormat = (value, country) => {
     let date = new Date(value);
     const allCountries = getAllCountries();
-    let countryInstance: { id: string, name: string, timezones: string[] } | {} | undefined;
+    let countryInstance: { id: string, name: string, timezones: string[] } | undefined;
 
     if (country) {
       countryInstance = Object.values(allCountries).find((countryObj: { id: string, name: string, timezones: string[] }) => countryObj.name === country);
