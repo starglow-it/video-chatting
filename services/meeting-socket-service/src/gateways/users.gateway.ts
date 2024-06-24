@@ -118,7 +118,7 @@ export class UsersGateway extends BaseGateway {
   private dateFormat = (value, country) => {
     let date = new Date(value);
     const allCountries = getAllCountries();
-    let countryInstance: { id: string, name: string, timezones: string[] } | undefined;
+    let countryInstance: { id: string, name: string, timezones: string[] } | {} | undefined;
 
     if (country) {
       countryInstance = Object.values(allCountries).find((countryObj: { id: string, name: string, timezones: string[] }) => countryObj.name === country);
@@ -142,13 +142,10 @@ export class UsersGateway extends BaseGateway {
     const hours = date.getHours() % 12 || 12;
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'America/Los_Angeles Timezone'}`;
+    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'Pacific Timezone'}`;
 
     return formattedDate;
   };
-
-
-
 
   @WsEvent(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
@@ -261,7 +258,6 @@ export class UsersGateway extends BaseGateway {
               startedAt: meeting.startAt ? this.dateFormat(meeting.startAt, ownerProfile.country || '') : ""
             };
             try {
-
               const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
 
               if (template) {

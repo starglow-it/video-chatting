@@ -153,7 +153,6 @@ const Component = () => {
         })();
     }, [isMeetingSocketConnected]);
 
-
     useEffect(() => {
         getRoomRatingStatisticsFx({
             basedOn: 'createdAt',
