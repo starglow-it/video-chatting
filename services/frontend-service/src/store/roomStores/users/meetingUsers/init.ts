@@ -21,7 +21,8 @@ import {
     toggleNoteEmojiListPanelEvent,
     togglePaymentCurrencyPanelEvent,
     $isToggleEditRuumeSelectMenuOpenStore,
-    $isPaymentCurrencyDropdownOpenStore
+    $isPaymentCurrencyDropdownOpenStore,
+    addRequestedMeetingUserEvent
 } from './model';
 import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 import { resetRoomStores } from '../../../root';
@@ -63,6 +64,13 @@ $meetingUsersStore
             resetMeetingReactionsStore();
             return state.map(_user =>
                 _user.id === user?.id ? { ..._user, ...user } : _user,
+            );
+        }
+    )
+    .on(addRequestedMeetingUserEvent, (state, { user }) =>{
+            resetMeetingReactionsStore();
+            return state.map(_user =>
+                _user.id === user?.id ? { ..._user, ...user } : user,
             );
         }
     )

@@ -573,6 +573,7 @@ export class UserTemplatesController {
           links: data.links,
           templateType: data.templateType,
           isPublishAudience: data.isPublishAudience,
+          waitingAttendeesList: data.waitingAttendeesList
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {

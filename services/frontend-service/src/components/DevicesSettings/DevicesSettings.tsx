@@ -21,7 +21,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { Translation } from '@library/common/Translation/Translation';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
@@ -47,6 +47,7 @@ import {
     $videoDevicesStore,
     $videoErrorStore,
     $isPaywallPaid,
+    $isNotifiedToHostForWaitingUserRequest,
     setIsPaywallPaymentEnabled,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
@@ -58,7 +59,10 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateUserSocketEvent,
-    cancelPaymentIntentWithData
+    cancelPaymentIntentWithData,
+    notifyToHostWhileWaitingRoomFx,
+    removeWaitingUserFromUserTemplateFx,
+    setIsNotifiedToHostForWaitingUserRequest
 } from '../../store/roomStores';
 
 // types
@@ -67,6 +71,7 @@ import { NotificationType } from '../../store/types';
 // styles
 import styles from './DevicesSettings.module.scss';
 import { MEDIA_NOT_ALLOWED_BY_BROWSER, MEDIA_NOT_ALLOWED_BY_SYSTEM, MEDIA_OPERATION_ABORTED, MEDIA_DEVICE_NOT_FOUND, MEDIA_DEVICE_NOT_ACCESSIBLE, MEDIA_CONSTRAINTS_CANNOT_BE_SATISFIED, MEDIA_SECURITY_ERROR, MEDIA_INVALID_CONSTRAINTS, MEDIA_GENERAL_ERROR } from 'src/helpers/media/getMediaStream';
+import { useRouter } from 'next/router';
 
 const Component = () => {
     const [waitingPaywall, setWaitingPaywall] = useState(false);
@@ -83,6 +88,7 @@ const Component = () => {
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
     const isPaywallPaid = useStore($isPaywallPaid);
+    const isNotifiedToHostForWaitingUserRequest = useStore($isNotifiedToHostForWaitingUserRequest);
     const [showDeviceError, setShowDeviceError] = useState("");
 
     const isOwner = useStore($isOwner);
@@ -123,6 +129,8 @@ const Component = () => {
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
 
+    const router = useRouter();
+
     const {
         value: needToRememberSettings,
         onToggleSwitch: handleToggleRememberSettings,
@@ -148,6 +156,18 @@ const Component = () => {
     useEffect(() => {
         isCameraActiveRef.current = isCameraActive;
     }, [isCameraActive]);
+
+    useEffect(() => {
+        if (
+            localUser.meetingRole === MeetingRole.Participant &&
+            isOwnerInMeeting &&
+            isNotifiedToHostForWaitingUserRequest &&
+            !isOwnerDoNotDisturb
+        ) {
+            setTimeout(handleJoinMeeting, 5000);
+            setIsNotifiedToHostForWaitingUserRequest(false);
+        }
+    }, [localUser, isOwnerInMeeting, isNotifiedToHostForWaitingUserRequest, isOwnerDoNotDisturb]);
 
     const handleToggleMic = useCallback(() => {
         if (isAudioError) {
@@ -217,7 +237,7 @@ const Component = () => {
 
     const onSubmit = useCallback(handleJoinMeeting, [handleJoinMeeting]);
 
-    const handleBack = useCallback(async () => {
+    const handleBack = async () => {
         if (isUserSentEnterRequest) {
             await sendCancelAccessMeetingRequestEvent();
         }
@@ -228,7 +248,7 @@ const Component = () => {
         updateUserSocketEvent({
             accessStatus: MeetingAccessStatusEnum.EnterName,
         });
-    }, [isUserSentEnterRequest]);
+    };
 
     const handlePaywallPayment = useCallback(() => {
         if (isHasMeeting && isOwnerInMeeting && isOwnerDoNotDisturb) {
@@ -253,15 +273,57 @@ const Component = () => {
     const isVideoError = Boolean(videoError);
     useEffect(() => {
         if (isAudioError) {
-            setIsAudioActiveEvent(false); // This assumes setIsAudioActiveEvent will set isMicActive to false
+            setIsAudioActiveEvent(false);
         }
     }, [isAudioError]);
 
     useEffect(() => {
         if (isVideoError) {
-            setIsCameraActiveEvent(false); // This assumes setIsCameraActiveEvent will set isCameraActive to false
+            setIsCameraActiveEvent(false);
         }
     }, [isVideoError]);
+
+    useEffect(() => {
+        let roomId = '';
+
+        if (router.asPath) {
+            const path = router.asPath.split('?')[0];
+            const parts = path.split('/');
+            roomId = parts[2];
+        }
+
+        const handleNotifyToHostWhileWaitingRoom = async () => {
+            if (roomId) {
+                // await notifyToHostWhileWaitingRoomFx({
+                //     roomId,
+                //     localUserId: localUser.id
+                // });
+                setIsNotifiedToHostForWaitingUserRequest(true);
+            }
+        };
+
+        const handleRemoveWaitingUserFromUserTemplate = async () => {
+            if (roomId && isNotifiedToHostForWaitingUserRequest) {
+                await removeWaitingUserFromUserTemplateFx({
+                    roomId,
+                    localUserId: localUser.id
+                });
+                setIsNotifiedToHostForWaitingUserRequest(false);
+            }
+        };
+
+        if (
+            localUser.meetingRole === MeetingRole.Participant &&
+            localUser.accessStatus === MeetingAccessStatusEnum.Waiting &&
+            !isOwnerInMeeting &&
+            !isOwnerDoNotDisturb &&
+            !isNotifiedToHostForWaitingUserRequest
+        ) {
+            handleNotifyToHostWhileWaitingRoom();
+        }
+
+        return () => handleRemoveWaitingUserFromUserTemplate();
+    }, [localUser.accessStatus, isOwnerInMeeting, isOwnerDoNotDisturb, isNotifiedToHostForWaitingUserRequest]);
 
     const isAccessStatusWaiting =
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
@@ -317,14 +379,6 @@ const Component = () => {
                         />
                     </CustomGrid>
                 </ConditionalRender>
-                {/* <CustomGrid className={styles.titleLeaveMessage}>
-                    <CustomTypography
-                        variant="body1"
-                        color="text.secondary"
-                        nameSpace="meeting"
-                        translation="hostWaitingNotify.text"
-                    />
-                </CustomGrid> */}
                 <CustomGrid className={styles.actions} gap={2}>
                     <CustomGrid
                         className={styles.actionItem}
@@ -500,7 +554,6 @@ const Component = () => {
                         >
                             {renderMeetingNotStartedYet()}
                         </ConditionalRender>
-
                     </>
                 );
 

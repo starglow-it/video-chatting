@@ -32,6 +32,7 @@ import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../dtos/response/common-meeting.dto';
 import { GetStatisticsDTO } from '../dtos/requests/users/get-statistics-dto';
 import { SendRequestToHostWhenDnd } from '../dtos/requests/send-request-to-host-when-dnd';
+import { GetMeetingWaitingUsersDto } from 'src/dtos/requests/get-meeting-waiting-users.dto';
 
 // helpers
 import {
@@ -142,13 +143,10 @@ export class UsersGateway extends BaseGateway {
     const hours = date.getHours() % 12 || 12;
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'America/Los_Angeles Timezone'}`;
+    const formattedDate = `${month} ${day}, ${year}, ${hours}:${minutes} ${ampm} ${countryInfo && countryInfo.length > 0 ? countryInfo[0].name + ' Timezone' : 'Pacific Timezone'}`;
 
     return formattedDate;
   };
-
-
-
 
   @WsEvent(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
@@ -261,7 +259,6 @@ export class UsersGateway extends BaseGateway {
               startedAt: meeting.startAt ? this.dateFormat(meeting.startAt, ownerProfile.country || '') : ""
             };
             try {
-
               const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });
 
               if (template) {
@@ -614,6 +611,44 @@ export class UsersGateway extends BaseGateway {
 
         return wsResult({
           message: 'success'
+        });
+      },
+      {
+        onFinaly: (err) => wsError(socket, err),
+      },
+    );
+  }
+
+  @WsEvent(UsersSubscribeEvents.getWaitingUsers)
+  async getWaitingUsers(
+    @MessageBody() msg: GetMeetingWaitingUsersDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session) => {
+        subscribeWsError(socket);
+        const user = this.getUserFromSocket(socket);
+        const { users } = msg;
+        const waitingUsers = [];
+
+        if (users.length) {
+          for (let waitingUser of users) {
+            const waitingUserModel = await this.usersComponent.findById({ id: waitingUser, session });
+
+            if (waitingUserModel) {
+              waitingUsers.push(waitingUserModel);
+            }
+          }
+        }
+
+        let plainUsers = userSerialization(waitingUsers);
+        plainUsers = Array.from(new Set(plainUsers.map(item => item.id)))
+          .map(id => plainUsers.find(item => item.id === id));
+
+        return wsResult({
+          message: 'success',
+          users: plainUsers
         });
       },
       {

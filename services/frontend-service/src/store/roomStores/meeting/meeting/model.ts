@@ -11,6 +11,7 @@ import {
     JoinMeetingFxPayload,
     GetMeetingUsersStatisticsPayload,
     JoinMeetingWithAudienceFxPayload,
+    NotifyToHostWhileWaitingRoomPayload
 } from './types';
 import { joinWaitingRoomSocketEvent } from '../sockets/model';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
@@ -113,6 +114,16 @@ export const joinMeetingWithAudienceFx = meetingDomain.createEffect<
     JoinMeetingWithAudienceFxPayload,
     void
 >('joinMeetingWithAudienceFx');
+
+export const notifyToHostWhileWaitingRoomFx = meetingDomain.createEffect<
+    NotifyToHostWhileWaitingRoomPayload,
+    void
+>('notifyToHostWhileWaitingRoomFx');
+
+export const removeWaitingUserFromUserTemplateFx = meetingDomain.createEffect<
+    NotifyToHostWhileWaitingRoomPayload,
+    void
+>('removeWaitingUserFromUserTemplateFx');
 
 export const toggleLinksDrawerEvent = meetingDomain.createEvent<
     undefined | boolean

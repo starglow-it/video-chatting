@@ -15,7 +15,6 @@ import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import OpenAI from 'openai'
 
-
 import { BaseGateway } from './base.gateway';
 
 import { MeetingQuestionAnswersService } from '../modules/meeting-question-answer/meeting-question-answer.service';
@@ -529,7 +528,10 @@ export class MeetingsGateway
           if (
             meeting &&
             meeting.users?.length > 0 &&
-            meeting.users?.findIndex(meetingUser => meetingUser.accessStatus === MeetingAccessStatusEnum.InMeeting) === -1
+            meeting.users?.findIndex(meetingUser =>
+              meetingUser.meetingRole !== MeetingRole.Host &&
+              meetingUser.accessStatus === MeetingAccessStatusEnum.InMeeting
+            ) === -1
           ) {
             await this.meetingsCommonService.handleClearMeetingData({
               userId: meeting.ownerProfileId,
@@ -538,7 +540,7 @@ export class MeetingsGateway
               meetingId: meeting?.id,
               session,
             });
-            meeting = null;
+            // meeting = null;
           }
 
           if (!meeting) {
@@ -627,8 +629,6 @@ export class MeetingsGateway
                 session
               );
 
-              console.log(user);
-
               isExist = true;
             }
           }
@@ -671,7 +671,8 @@ export class MeetingsGateway
 
         await user.save({ session: session.session });
 
-        if (meeting.users.findIndex(userId => userId.toString() === user.id.toString()) === -1) {
+        const meetingUserIndex = meeting.users.findIndex(userId => userId.toString() === user.id.toString());
+        if (meetingUserIndex === -1) {
           meeting.users.push(user.id);
         }
 
@@ -2801,11 +2802,11 @@ export class MeetingsGateway
           let summary = parsedContent.summary || 'No summary';
           // let transcription = parsedContent.transcription || 'No transcription';
           let transcription = scriptString || 'No transcription';
-          
-          const attachmentContent = 'Summary\n\n\n' +  summary + '\n\n\nTranscript\n\n\n ' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
+
+          const attachmentContent = 'Summary\n\n\n' + summary + '\n\n\nTranscript\n\n\n ' + transcription.replace(/-/g, ": ").replace(/ \|/g, "\n").trim();
 
           if (transcription.length > 1000) {
-            transcription = transcription.slice(0, transcription.slice(0,1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
+            transcription = transcription.slice(0, transcription.slice(0, 1000).lastIndexOf('|')) + "<br>...</br>( Please refer to the attachment for the completed transcription. )";
           }
 
           transcription = transcription.replace(/-/g, ": ").replace(/ \|/g, "<br>").trim();

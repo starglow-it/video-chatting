@@ -269,6 +269,12 @@ export class UserTemplate {
     default: false,
   })
   isPublishAudience: boolean;
+
+  @Prop({
+    type: [mongoose.Schema.Types.String],
+    default: [],
+  })
+  waitingAttendeesList: string[];
 }
 
 export type UserTemplateDocument = UserTemplate & Document;
