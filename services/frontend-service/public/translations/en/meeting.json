@@ -279,7 +279,8 @@
     },
     "hostWaitingNotify": {
         "title": "The host will be here soon.",
-        "text": "Please wait or leave a message"
+        "text": "Please wait or leave a message",
+        "notify": "The host has been notified."
     },
     "controlButtonsLabel": {
         "reactions": "reactions",

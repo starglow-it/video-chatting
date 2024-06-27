@@ -7,6 +7,7 @@ import {
     $isPaywallPaymentEnabled,
     $preEventPaymentCodeStore,
     $preEventPaymentCodeCheckStore,
+    $isNotifiedToHostForWaitingUserRequest,
     setIsPaywallPaymentEnabled,
     leaveDeletedUserMeetingEvent,
     leaveExpiredMeetingEvent,
@@ -16,7 +17,8 @@ import {
     updateLocalUserEvent,
     setUserLocation,
     setPreEvenyPaymentCodeEvent,
-    setPreEvenyPaymentCodeCheckEvent
+    setPreEvenyPaymentCodeCheckEvent,
+    setIsNotifiedToHostForWaitingUserRequest
 } from './model';
 import { appDialogsApi } from '../../../dialogs/init';
 import { AppDialogsEnum } from '../../../types';
@@ -34,11 +36,16 @@ $localUserStore
     .on(updateMeetingUserEvent, (state, data) =>
         data.user.id === state.id ? { ...state, ...data.user } : state,
     )
-    .on(updateLocalUserEvent, (state, user) => ({
-        ...state,
-        ...user,
-        username: user.username || state.username,
-    }))
+    .on(updateLocalUserEvent, (state, user) => {
+        
+        const updateUser = {
+            ...state,
+            ...user,
+            username: user.username || state.username,
+        }
+
+        return updateUser;
+    })
     .on(leaveMeetingEvent, state => {
         Router.push(
             state.isGenerated
@@ -78,6 +85,8 @@ $localUserStore
         return state;
     })
     .reset(resetRoomStores);
+
+$isNotifiedToHostForWaitingUserRequest.on(setIsNotifiedToHostForWaitingUserRequest, (_, data) => data);
 
 split({
     clock: leaveExpiredMeetingEvent,

@@ -32,7 +32,9 @@ import {
     deleteRecordingUrlEvent,
     updateRecordingVideoPriceEvent,
     setRecordingVideoEvent,
-    setMeetingRecordingIdEvent
+    setMeetingRecordingIdEvent,
+    notifyToHostWhileWaitingRoomFx,
+    removeWaitingUserFromUserTemplateFx
 } from './model';
 import {
     $changeStreamStore,
@@ -55,6 +57,8 @@ import { $localUserStore } from '../../users/localUser/model';
 import { $meetingRoleStore } from '../meetingRole/model';
 import { handleJoinMeetingWithAudience } from './handlers/handleJoinMeetingWithAudience';
 import { handleUpdateMeetingTemplateDash } from './handlers/handleUpdateMeetingTemplateDash';
+import { handleNotifyToHostWhileWaitingRoom } from './handlers/handleNotifyToHostWhileWaitingRoom';
+import { handleRemoveWaitingUserFromUserTemplate } from './handlers/handleRemoveWaitingUserFromUserTemplate';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -132,6 +136,8 @@ joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
 joinMeetingWithAudienceFx.use(handleJoinMeetingWithAudience);
 updateMeetingTemplateDashFx.use(handleUpdateMeetingTemplateDash);
+notifyToHostWhileWaitingRoomFx.use(handleNotifyToHostWhileWaitingRoom);
+removeWaitingUserFromUserTemplateFx.use(handleRemoveWaitingUserFromUserTemplate);
 
 sample({
     clock: joinMeetingEvent,

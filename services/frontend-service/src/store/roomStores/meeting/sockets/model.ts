@@ -15,6 +15,7 @@ import {
     StartMeetingPayload,
     ClickMeetingLinkPayload,
     GetMeetingUsersStatisticsPayload,
+    GetMeetingUsersPayload,
     JoinWaitingRoomResponse,
     StartMeetingResponse,
     EnterMeetingRequestResponse,
@@ -56,6 +57,7 @@ import {
     CheckPrePaymentCodePayload,
     sendAiTranscriptionPayload,
     GeneratePrePaymentCodeResponse,
+    GetMeetingUsersResponse
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -85,6 +87,10 @@ export const getMeetingUserStatisticsSocketEvent = createMeetingSocketEvent<
     GetMeetingUsersStatisticsPayload,
     StartMeetingResponse
 >(MeetingSocketEmitters.GetMeetingUserStatistics);
+export const getMeetingUsersEvent = createMeetingSocketEvent<
+    GetMeetingUsersPayload,
+    GetMeetingUsersResponse
+>(MeetingSocketEmitters.GetMeetingUsers);
 export const startMeetingSocketEvent = createMeetingSocketEvent<
     StartMeetingPayload,
     StartMeetingResponse

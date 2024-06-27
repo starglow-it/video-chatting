@@ -110,9 +110,9 @@ export class MeetingsCommonService {
       query: { meeting: meetingId },
       session,
     });
-    await this.usersService.deleteMany({ meeting: meetingId }, session);
+    await this.usersService.deleteMany({ meeting: meetingId, accessStatus: { $ne: MeetingAccessStatusEnum.Waiting } }, session);
 
-    await this.meetingsService.deleteById({ meetingId }, session);
+    // await this.meetingsService.deleteById({ meetingId }, session);
   }
 
   async handleClearMeetingData({

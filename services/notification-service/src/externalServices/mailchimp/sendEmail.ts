@@ -51,8 +51,6 @@ export const sendEmail = async ({
         let buff = Buffer.from(icalEventContent ?? '');
         let content = buff.toString('base64');
 
-        console.log('attachmentContent: ---------', attachmentContent)
-
         const sendTemplateData: MessagesSendTemplateRequest = {
             template_name: targetTemplate.slug,
             template_content: [],

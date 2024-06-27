@@ -1,6 +1,7 @@
 export enum MeetingSocketEmitters {
     JoinWaitingRoom = 'meeting:waitingRoom:join',
     GetMeetingUserStatistics = 'meeting:get:users',
+    GetMeetingUsers = 'meeting:get:waiting:users',
     StartMeeting = 'meeting:start',
     ClickMeetingLink = 'meeting:link:click',
     EndMeeting = 'meeting:end',

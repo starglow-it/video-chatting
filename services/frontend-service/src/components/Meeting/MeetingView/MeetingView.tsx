@@ -26,7 +26,6 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { EmojiPlayground } from '@components/Meeting/EmojiPlayground/EmojiPlayground'
 import { AudienceEmojiPlayground } from '@components/Meeting/EmojiPlayground/AudienceEmojiPlayground'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 

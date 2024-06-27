@@ -7,6 +7,11 @@ export type JoinMeetingEventPayload = {
     settingsBackgroundAudioVolume: number;
 };
 
+export type NotifyToHostWhileWaitingRoomPayload = {
+    roomId: string;
+    localUserId: string;
+};
+
 export type GetMeetingUsersStatisticsPayload = {
     meetingId?: string,
     userId: string

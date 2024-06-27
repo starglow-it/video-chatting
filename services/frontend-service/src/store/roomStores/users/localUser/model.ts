@@ -33,6 +33,8 @@ export const $preEventPaymentCodeStore = meetingUsersDomain.createStore<preEvetn
     email: ''
 });
 export const $preEventPaymentCodeCheckStore = meetingUsersDomain.createStore<string>('');
+export const $isNotifiedToHostForWaitingUserRequest = meetingUsersDomain.createStore<Boolean>(false);
+export const setIsNotifiedToHostForWaitingUserRequest = meetingUsersDomain.event<Boolean>('setIsNotifiedToHostForWaitingUserRequest');
 
 export const $isPaywallPaid = combine<{
     localUser: MeetingUser;

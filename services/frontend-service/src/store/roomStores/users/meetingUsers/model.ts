@@ -48,6 +48,10 @@ export const updateMeetingUserEvent =
     meetingUsersDomain.event<UpdateMeetingUserPayload>(
         'updateMeetingUserEvent',
     );
+export const addRequestedMeetingUserEvent =
+    meetingUsersDomain.event<UpdateMeetingUserPayload>(
+        'addRequestedMeetingUserEvent',
+    );
 
 export const toggleUsersPanelEvent = meetingUsersDomain.createEvent<
     boolean | undefined
