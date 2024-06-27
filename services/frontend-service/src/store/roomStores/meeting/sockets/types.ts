@@ -38,6 +38,9 @@ export type GetMeetingUsersStatisticsPayload = {
     meetingId?: Meeting['id'];
     userId: MeetingUser['id'];
 };
+export type GetMeetingUsersPayload = {
+    users: MeetingUser[];
+};
 export type StartMeetingPayload = {
     meetingId: Meeting['id'];
     user: MeetingUser;
@@ -78,6 +81,9 @@ export type StartMeetingResponse = {
     user?: MeetingUser;
     meeting?: Meeting;
     users?: MeetingUser[];
+};
+export type GetMeetingUsersResponse = {
+    users: MeetingUser[];
 };
 export type EnterMeetingRequestResponse = {
     user?: MeetingUser;

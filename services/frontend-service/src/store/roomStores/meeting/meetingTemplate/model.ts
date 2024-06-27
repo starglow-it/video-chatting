@@ -48,6 +48,7 @@ export const initialTemplateState: IUserTemplate = {
         owner: '',
         serverStatus: '',
     },
+    waitingAttendeesList: []
 };
 
 export const $meetingTemplateStore =
@@ -99,12 +100,10 @@ export const $isOwnerDoNotDisturb = combine<{
         users.find(
             user =>
                 user.profileId === template?.meetingInstance?.owner &&
-                user.doNotDisturb //For 'do not disturb' action in meeting
+                user.doNotDisturb
         ),
     ),
 );
-
-
 
 export const setIsUserSendEnterRequest = meetingDomain.createEvent<boolean>(
     'setIsUserSendEnterRequest',

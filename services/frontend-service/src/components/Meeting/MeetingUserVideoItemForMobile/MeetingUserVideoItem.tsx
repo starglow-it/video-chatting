@@ -126,14 +126,6 @@ const MeetingUserVideoChildCom = ({
             }
 
             mediaStreamRef.current.addTrack(videoTrack);
-
-            // console.log(isSafari);
-            // if (isAuraActive && !isSafari) {
-            //     handleRemoveBackground(mediaStreamRef.current, true, stream => {
-            //         mediaStreamRef.current = stream;
-            //     });
-            // }
-
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }

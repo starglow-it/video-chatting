@@ -168,4 +168,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   isPublishAudience: IUserTemplate['isPublishAudience'];
+
+  @Expose()
+  waitingAttendeesList: IUserTemplate['waitingAttendeesList'];
 }

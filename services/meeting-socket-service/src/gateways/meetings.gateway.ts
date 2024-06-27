@@ -540,7 +540,7 @@ export class MeetingsGateway
               meetingId: meeting?.id,
               session,
             });
-            meeting = null;
+            // meeting = null;
           }
 
           if (!meeting) {
@@ -629,8 +629,6 @@ export class MeetingsGateway
                 session
               );
 
-              console.log(user);
-
               isExist = true;
             }
           }
@@ -674,7 +672,6 @@ export class MeetingsGateway
         await user.save({ session: session.session });
 
         const meetingUserIndex = meeting.users.findIndex(userId => userId.toString() === user.id.toString());
-        console.log(meetingUserIndex);
         if (meetingUserIndex === -1) {
           meeting.users.push(user.id);
         }

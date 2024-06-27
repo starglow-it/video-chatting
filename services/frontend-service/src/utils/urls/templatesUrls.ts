@@ -103,3 +103,13 @@ export const updateUserTemplateUrl = ({
     url: `${serverUrl}/user-templates/${templateId}`,
     method: HttpMethods.Put,
 });
+
+export const notifyToHostWhileWaitingRoomUrl = () => ({
+    url: `${serverUrl}/user-templates/notify-to-host-while-waiting-room`,
+    method: HttpMethods.Post,
+});
+
+export const removeWaitingUserFromUserTemplateUrl = () => ({
+    url: `${serverUrl}/user-templates/remove-waiting-user-from-user-template`,
+    method: HttpMethods.Post,
+});

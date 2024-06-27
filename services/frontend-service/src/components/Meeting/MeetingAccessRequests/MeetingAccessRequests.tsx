@@ -35,8 +35,7 @@ const Component = () => {
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
                     user.accessStatus === MeetingAccessStatusEnum.RequestSentWhenDnd ||
-                    user.accessStatus ===
-                        MeetingAccessStatusEnum.SwitchRoleSent,
+                    user.accessStatus === MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
 

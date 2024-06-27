@@ -18,6 +18,7 @@ import {
 import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
 import { JoinMeetingFxPayload } from '../types';
 import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
+import { updateUserSocketEvent } from 'src/store/roomStores/users/init';
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -52,7 +53,11 @@ export const handleJoinMeting = async ({
             accessStatus: MeetingAccessStatusEnum.Waiting,
             isAuraActive,
         });
-        emitEnterWaitingRoom();
+        if (meetingRole === MeetingRole.Participant) {
+            updateUserSocketEvent({
+                accessStatus: MeetingAccessStatusEnum.Waiting
+            });
+        }
     }
 
     setBackgroundAudioVolume(settingsBackgroundAudioVolume);

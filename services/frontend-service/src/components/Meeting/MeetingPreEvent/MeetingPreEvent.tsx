@@ -37,7 +37,6 @@ import {
     $preEventPaymentCodeCheckStore,
     createPaymentIntentFx,
     updateLocalUserEvent,
-    sendJoinWaitingRoomSocketEvent
 } from '../../../store/roomStores';
 
 // styles
@@ -240,10 +239,12 @@ const Component = ({
                                         nameSpace="meeting"
                                         translation="preview.preEventText1"
                                     />
-                                    <CustomTypography
-                                        nameSpace="meeting"
-                                        translation="preview.preEventText2"
-                                    />
+                                    <ConditionalRender condition={enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience}>
+                                        <CustomTypography
+                                            nameSpace="meeting"
+                                            translation="preview.preEventText2"
+                                        />
+                                    </ConditionalRender>
                                 </CustomGrid>
                             </ConditionalRender>
                             <CustomGrid
@@ -268,7 +269,6 @@ const Component = ({
                                 </CustomGrid>
                                 <CustomGrid item xs>
                                     {
-                                        // !isOwnerInMeeting || doNotDisturb || enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience
                                         enabledPaymentPaywallParticipant || enabledPaymentPaywallAudience
                                             ? <ActionButton
                                                 label={isJoinWaitingRoomPending ? <CustomLoader /> : "Pre-pay"}

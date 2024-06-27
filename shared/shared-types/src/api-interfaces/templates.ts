@@ -102,6 +102,7 @@ export interface IUserTemplate extends ITemplate {
   isPublishAudience: boolean;
   isMonetizationEnabled?: boolean;
   templatePrice?: number;
+  waitingAttendeesList?: string[];
 }
 
 export interface IUpdateTemplate {
@@ -136,10 +137,12 @@ export interface IUpdateTemplate {
   };
   templateType: string;
   subdomain: string;
+  waitingAttendeesList?: string[];
 }
 
 export interface IUpdateUserTemplate extends IUpdateTemplate {
   isPublishAudience: boolean;
+  waitingAttendeesList?: string[];
 }
 
 export interface IUploadTemplateFile {
