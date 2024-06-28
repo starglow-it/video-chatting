@@ -256,7 +256,8 @@ export class UsersGateway extends BaseGateway {
             let meetingInstance = {
               id: meeting._id,
               name: 'Anonymous',
-              startedAt: meeting.startAt ? this.dateFormat(meeting.startAt, ownerProfile.country || '') : ""
+              // startedAt: meeting.startAt ? this.dateFormat(meeting.startAt, ownerProfile.country || '') : ""
+              startedAt: meeting.startAt
             };
             try {
               const template = await this.coreService.findMeetingTemplateById({ id: meeting.templateId });

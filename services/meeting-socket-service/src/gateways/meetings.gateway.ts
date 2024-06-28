@@ -540,6 +540,12 @@ export class MeetingsGateway
               meetingId: meeting?.id,
               session,
             });
+            const meetingWaitingUsers = meeting.users?.filter(meetingUser => meetingUser.accessStatus === MeetingAccessStatusEnum.Waiting);
+
+            if (meetingWaitingUsers.length > 0) {
+              meeting.users = meetingWaitingUsers;
+              await meeting.save();
+            }
             // meeting = null;
           }
 
@@ -768,11 +774,9 @@ export class MeetingsGateway
         });
 
         await meeting.populate('users');
-
-        if (!meeting.startAt) {
-          meeting.startAt = Date.now();
-        }
-
+        meeting.startAt = Date.now();
+        console.log('meeting.startAt++++++++++++++');
+        console.log(meeting.startAt);
         let finishTime: number;
 
         const endsAtTimeout = getTimeoutTimestamp({
@@ -782,13 +786,12 @@ export class MeetingsGateway
 
         if (!meeting.endsAt) {
           meeting.endsAt = Date.now() + endsAtTimeout;
-
-          await meeting.save();
-
           finishTime = endsAtTimeout;
         } else {
           finishTime = meeting.endsAt - Date.now();
         }
+
+        await meeting.save();
 
         await this.meetingHostTimeService.create({
           data: {
