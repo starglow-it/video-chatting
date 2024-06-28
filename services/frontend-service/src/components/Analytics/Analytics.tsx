@@ -77,7 +77,7 @@ const Component = () => {
                 ? roomsStatistics.meetingNames
                     .map(meeting => ({
                         id: meeting.id,
-                        name: `${meeting.name} - ${meeting.startedAt}`
+                        name: `${meeting.name} - ${new Date(meeting.startedAt)}`
                     }))
                 : [];
 
