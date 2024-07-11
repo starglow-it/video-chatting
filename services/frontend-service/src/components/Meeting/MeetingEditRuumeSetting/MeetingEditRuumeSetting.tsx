@@ -71,6 +71,7 @@ import {
     $paymentMeetingParticipant,
     $paymentMeetingAudience,
     $paymentIntent,
+    $isToggleEditRuumePanel,
     createPaymentIntentWithData,
     cancelPaymentIntentWithData,
     setDoNotDisturbEvent,
@@ -100,6 +101,7 @@ export const MeetingEditRuumeSetting = () => {
     const isParticipant = useStore($isParticipant);
     const localUser = useStore($localUserStore);
     const isCameraActive = useStore($isCameraActiveStore);
+    const isToggleEditRuumePanel = useStore($isToggleEditRuumePanel);
     const enabledPaymentMeetingParticipant = useStore(
         $enabledPaymentMeetingParticipant,
     );
@@ -177,6 +179,12 @@ export const MeetingEditRuumeSetting = () => {
             }
         }
     }, [errors]);
+
+    useEffect(() => {
+        if (!isToggleEditRuumePanel) {
+            handleMonetizationSubmit();
+        }
+    }, [isToggleEditRuumePanel]);
 
     const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
