@@ -170,12 +170,6 @@ export const MeetingMonezationForm = forwardRef(
             }
         }, [enabledMeeting, enabledPaywall, templateCurrency, paywallCurrency]);
 
-        const handleOnChange = async (event: any): Promise<void> => {
-            if (onSave) {
-                await onSave();
-            }
-        };
-
         useImperativeHandle(ref, () => ({
             getValues,
         }));
@@ -293,7 +287,6 @@ export const MeetingMonezationForm = forwardRef(
                                             !enabledPaywall ||
                                             !isConnectedStripe
                                         }
-                                        onChange={handleOnChange}
                                     />
                                     <CustomGrid>
                                         <CustomDropdown
@@ -413,7 +406,6 @@ export const MeetingMonezationForm = forwardRef(
                                             !enabledMeeting ||
                                             !isConnectedStripe
                                         }
-                                        onChange={handleOnChange}
                                     />
                                     <CustomGrid>
                                         <CustomDropdown
