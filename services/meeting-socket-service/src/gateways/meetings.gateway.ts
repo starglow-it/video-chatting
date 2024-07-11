@@ -775,8 +775,6 @@ export class MeetingsGateway
 
         await meeting.populate('users');
         meeting.startAt = Date.now();
-        console.log('meeting.startAt++++++++++++++');
-        console.log(meeting.startAt);
         let finishTime: number;
 
         const endsAtTimeout = getTimeoutTimestamp({
@@ -2829,6 +2827,8 @@ export class MeetingsGateway
               to: [{ email: userProfile.email }],
               attachmentContent
             });
+
+            console.log('Email sent.');
           }
         }
 
