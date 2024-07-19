@@ -361,7 +361,7 @@ async function injectButton() {
       parentElement.appendChild(chatRuumeContainer);
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }
 
