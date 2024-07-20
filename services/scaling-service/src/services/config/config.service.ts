@@ -8,6 +8,7 @@ export class ConfigClientService {
         url: `http://config-service:4000/v1/config/${key}`,
         method: 'GET',
       });
+      // Console this url
 
       return response.data.success;
     } catch (err) {
